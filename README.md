@@ -139,7 +139,7 @@ Google geeft een website maar 1 uur toegang. Het hulpprogramma kan een blijvende
 5. Dubbelklik op **start.bat**. De koppelpagina opent vanzelf (anders: `http://127.0.0.1:8765/koppel`). Klik op **Koppelen** bij "Agenda en Gmail" en bij "Gezondheid", en vink alles aan.
 
 Daarna haalt het dashboard op deze pc zelf nieuwe toegang. Op je telefoon of een andere pc werkt het zoals eerst (met de knop).
-Stoppen: haal de toegang weg op myaccount.google.com/permissions en verwijder `helper	okens.json`.
+Stoppen: haal de toegang weg op myaccount.google.com/permissions en verwijder `helper\tokens.json`.
 
 **Automatisch starten met Windows:** druk op Windows-toets + R, typ `shell:startup` en druk op Enter. Er opent een map. Klik met rechts op **start.bat** (in `dashboard\helper`) → **Snelkoppeling maken**, en sleep die snelkoppeling naar die map.
 
