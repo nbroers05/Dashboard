@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#121212">
+  <title>Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400..800&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="dashboard">
+
+    <!-- Spotify -->
+    <section id="spotify" class="card player" data-state="loading" aria-live="polite">
+
+      <div class="view login-view">
+        <p class="eyebrow">Spotify</p>
+        <h1 class="title">Wat speelt er?</h1>
+        <p class="muted" id="login-msg">Log in om je speler hier te zien.</p>
+        <div class="row">
+          <button id="login" class="pill-btn">Inloggen met Spotify</button>
+          <a id="demo-link" class="text-btn" href="?demo">Demo bekijken</a>
+        </div>
+      </div>
+
+      <div class="view idle-view">
+        <p class="eyebrow">Spotify</p>
+        <h1 class="title" id="idle-title">Niets aan het spelen</h1>
+        <p class="muted" id="idle-msg"></p>
+        <div class="devices" id="devices"></div>
+        <div class="meta"><button class="text-btn logout">Uitloggen</button></div>
+      </div>
+
+      <div class="view player-view">
+        <div class="info">
+          <p class="eyebrow" id="album"></p>
+          <h1 class="title" id="title"></h1>
+          <p class="artist" id="artist"></p>
+        </div>
+
+        <img class="cover" id="cover" alt="">
+
+        <div class="progress">
+          <div class="bar" id="bar" role="slider" aria-label="Voortgang" tabindex="0">
+            <div class="fill" id="fill"></div>
+          </div>
+          <div class="times"><span id="pos">0:00</span><span id="dur">0:00</span></div>
+        </div>
+
+        <div class="controls">
+          <div class="group main">
+            <button class="btn" id="prev" aria-label="Vorige"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg></button>
+            <button class="btn pill" id="play" aria-label="Afspelen/pauzeren">
+              <svg class="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+              <svg class="i-pause" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            </button>
+            <button class="btn" id="next" aria-label="Volgende"><svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg></button>
+          </div>
+          <div class="group extra">
+            <button class="btn small" id="shuffle" aria-label="Shuffle" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M10.59 9.17 5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg></button>
+            <button class="btn small" id="repeat" aria-label="Herhalen" data-mode="off">
+              <svg class="i-repeat" viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
+              <svg class="i-repeat-one" viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4zm-4-2V9h-1l-2 1v1h1.5v4H13z"/></svg>
+            </button>
+            <button class="btn small" id="save" aria-label="Opslaan in bibliotheek" aria-pressed="false">
+              <svg class="i-add" viewBox="0 0 24 24"><path d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+              <svg class="i-check" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="meta">
+          <span id="device"></span>
+          <button class="text-btn logout">Uitloggen</button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Later: Google Calendar komt hier als extra .card -->
+
+  </main>
+
+  <div id="toast" role="status"></div>
+
+  <script src="config.js"></script>
+  <script src="spotify.js"></script>
+</body>
+</html>
