@@ -678,6 +678,29 @@ button.al-item:hover { background: rgba(255, 255, 255, .1); }
 .ah-month b { font-size: 1.5rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .ah-pay { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255, 255, 255, .12); }
 .ah-pay b { color: var(--ct); }
+.ah-net { font-size: .78rem; }
+.ah-wk-pay { margin-top: 2px; }
+
+/* Loonberekening (pop-up) */
+.panel-dialog.ah-dialog { height: fit-content; max-height: calc(100dvh - 24px); }
+.ah-dialog .panel-body { height: auto; max-height: calc(100dvh - 90px); }
+.ahp { padding: 18px; display: flex; flex-direction: column; gap: 16px; }
+.ahp-sum { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.ahp-sum > div { display: flex; flex-direction: column; gap: 2px; padding: 12px 14px; border-radius: 14px; background: rgba(255, 255, 255, .05); }
+.ahp-sum b { font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+.ahp-title { margin: 4px 0 0; font-size: .8rem; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.ahp-table { display: flex; flex-direction: column; }
+.ahp-row { display: grid; grid-template-columns: minmax(0, 2.2fr) 3.2rem minmax(0, 2fr) 5.5rem; gap: 10px; align-items: baseline; padding: 7px 0; border-top: 1px solid rgba(255, 255, 255, .07); font-variant-numeric: tabular-nums; font-size: .92rem; }
+.ahp-row > :last-child { text-align: right; }
+.ahp-head { border-top: 0; font-size: .72rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+.ahp-row.planned { color: var(--muted); }
+.ahp-extra { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; font-size: .85rem; color: var(--muted); }
+.ahp-miss { color: #ffc27a; }
+@media (max-width: 700px) {
+  .ahp-sum { grid-template-columns: 1fr; }
+  .ahp-row { grid-template-columns: minmax(0, 1fr) 2.6rem 5rem; }
+  .ahp-row > :nth-child(3) { grid-column: 1 / -1; grid-row: 2; }
+}
 .ah-bars { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; align-items: end; height: 110px; margin-top: 6px; }
 .ah-bar { height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 4px; }
 .ah-bar .stack { width: 100%; display: flex; flex-direction: column-reverse; border-radius: 6px; overflow: hidden; background: rgba(255, 255, 255, .06); min-height: 4px; }
