@@ -333,12 +333,7 @@ button { font: inherit; color: inherit; }
 }
 #w-weather { --c: var(--wx, var(--c-sky)); transition: --c .8s; }
 #w-f1 { --c: var(--c-f1); }
-#w-sun {
-  --c: var(--c-sun);
-  background: linear-gradient(160deg,
-    color-mix(in srgb, var(--c-sun) 28%, #151518) 0%,
-    color-mix(in srgb, var(--c-sun2) 26%, #121214) 100%);
-}
+#w-rain { --c: #5a9bd3; }
 #w-ah { --c: var(--ah, var(--c-ah)); }
 #w-canvas { --c: var(--c-study); }
 #w-episodes { --c: var(--c-anime); }
@@ -420,13 +415,108 @@ button { font: inherit; color: inherit; }
 .wx-icon img { width: 100%; height: 100%; }
 .wx-icon .fallback { font-size: 4rem; display: grid; place-items: center; height: 100%; }
 .wx-temp { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-.wx-chart { display: grid; grid-template-columns: 34px repeat(8, 1fr); grid-template-rows: 90px auto; gap: 4px 5px; margin-top: 4px; }
-.wx-scale { grid-row: 1; display: flex; flex-direction: column; justify-content: space-between; font-size: .68rem; color: var(--muted); text-align: right; padding-right: 4px; font-variant-numeric: tabular-nums; }
-.wx-bar { grid-row: 1; display: flex; align-items: flex-end; border-radius: 6px; background: rgba(255, 255, 255, .06); }
-.wx-bar i { display: block; width: 100%; border-radius: 6px; background: var(--ct); min-height: 4px; }
-.wx-bar.dry i { background: rgba(255, 255, 255, .18); }
-.wx-x { grid-row: 2; font-size: .7rem; color: var(--muted); text-align: center; font-variant-numeric: tabular-nums; }
+.wx-today { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 4px; }
+.wx-today div { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.wx-today b { font-size: 1.05rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .wx-commute { margin-top: auto; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, .1); font-size: .95rem; line-height: 1.4; }
+.tile.clickable { cursor: pointer; transition: border-color .2s, filter .2s; }
+.tile.clickable:hover { border-color: color-mix(in srgb, var(--c) 55%, transparent); filter: brightness(1.06); }
+.dashboard.editing .tile.clickable { cursor: default; }
+
+/* Buienalarm */
+.rn-text { font-size: 1.45rem; }
+.rn-chart { flex: 1; min-height: 90px; display: grid; grid-template-columns: repeat(24, 1fr); gap: 3px; align-items: end; margin-top: 6px; }
+.rn-bar { height: 100%; display: flex; align-items: flex-end; }
+.rn-bar i { display: block; width: 100%; border-radius: 4px; background: var(--ct); }
+.rn-bar.dry i { height: 3px; background: rgba(255, 255, 255, .2); }
+.rn-axis { display: grid; grid-template-columns: repeat(4, 1fr); font-size: .72rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.rn-foot { font-size: .78rem; }
+#w-rain.is-wet { --c: #3b82f6; }
+
+/* Weer-popup in de stijl van een weer-app: achtergrond naar weer en tijdstip */
+.panel-dialog.wx-dialog {
+  --sky1: #3a7bd5; --sky2: #6fb1fc;
+  width: min(760px, calc(100vw - 24px));
+  height: min(1000px, calc(100dvh - 24px));
+  border: 0;
+  background: linear-gradient(180deg, var(--sky1), var(--sky2));
+}
+.wx-dialog.wx-scene-clear-day { --sky1: #2f6fcf; --sky2: #74b4f5; }
+.wx-dialog.wx-scene-clear-night { --sky1: #0a1430; --sky2: #23345f; }
+.wx-dialog.wx-scene-cloudy-day { --sky1: #4f6077; --sky2: #8798ad; }
+.wx-dialog.wx-scene-cloudy-night { --sky1: #151b26; --sky2: #343d4d; }
+.wx-dialog.wx-scene-rain-day { --sky1: #3a4859; --sky2: #607085; }
+.wx-dialog.wx-scene-rain-night { --sky1: #121a26; --sky2: #2b3747; }
+.wx-dialog.wx-scene-snow-day { --sky1: #6f8098; --sky2: #aebdd2; }
+.wx-dialog.wx-scene-snow-night { --sky1: #1d2535; --sky2: #46536a; }
+.wx-dialog.wx-scene-fog-day { --sky1: #5f6773; --sky2: #9aa1ab; }
+.wx-dialog.wx-scene-fog-night { --sky1: #1f2228; --sky2: #41464f; }
+.wx-dialog.wx-scene-storm-day { --sky1: #272a3d; --sky2: #4c5070; }
+.wx-dialog.wx-scene-storm-night { --sky1: #12131c; --sky2: #2d3047; }
+.wx-dialog .panel-head { position: absolute; top: 0; right: 0; z-index: 2; border: 0; padding: 14px; }
+.wx-dialog .panel-head b { display: none; }
+.wx-dialog .panel-head .w-btn { background: rgba(0, 0, 0, .22); }
+.wx-dialog .panel-body { height: 100%; padding: 28px 20px 24px; display: flex; flex-direction: column; gap: 14px; text-shadow: 0 1px 2px rgba(0, 0, 0, .15); }
+
+.wxp-hero { text-align: center; padding: 18px 0 14px; }
+.wxp-hero p { margin: 0; }
+.wxp-place { font-size: 1.6rem; font-weight: 600; }
+.wxp-temp { font-size: 6rem; font-weight: 300; line-height: 1; letter-spacing: -.04em; margin-left: .2em; }
+.wxp-desc { font-size: 1.2rem; font-weight: 600; opacity: .9; }
+.wxp-hilo { margin-top: 4px !important; font-size: 1.05rem; font-weight: 600; opacity: .9; }
+
+.wxp-card { background: rgba(0, 0, 0, .16); border-radius: 18px; padding: 12px 16px; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); min-width: 0; }
+.wxp-title { margin: 0 0 8px; padding-bottom: 8px; border-bottom: 1px solid rgba(255, 255, 255, .15); font-size: .78rem; font-weight: 650; letter-spacing: .06em; text-transform: uppercase; opacity: .7; }
+
+.wxp-hour-row { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: thin; padding-bottom: 6px; margin: 0 -6px; scroll-snap-type: x proximity; }
+.wxp-hour { flex: 0 0 58px; display: flex; flex-direction: column; align-items: center; gap: 2px; scroll-snap-align: start; font-variant-numeric: tabular-nums; }
+.wxp-hour.sun { flex-basis: 74px; }
+.wxp-hlabel { font-size: .9rem; font-weight: 600; }
+.wxp-hicon { width: 44px; height: 44px; display: grid; place-items: center; }
+.wxp-hicon img { width: 100%; height: 100%; }
+.wxp-hour b { font-size: 1.1rem; }
+.wxp-htext { font-size: .85rem !important; text-align: center; }
+.wxp-prob { min-height: 1em; font-size: .78rem; font-weight: 700; color: #a8d8ff; }
+
+.wxp-day { display: grid; grid-template-columns: 4.6rem 36px 2.6rem 2.4rem minmax(60px, 1fr) 2.4rem; align-items: center; gap: 8px; padding: 6px 0; border-top: 1px solid rgba(255, 255, 255, .1); font-variant-numeric: tabular-nums; }
+.wxp-title + .wxp-day { border-top: 0; }
+.wxp-dname { font-weight: 650; font-size: 1.05rem; text-transform: capitalize; }
+.wxp-dicon { width: 36px; height: 36px; }
+.wxp-dicon img { width: 100%; height: 100%; }
+.wxp-min { text-align: right; opacity: .65; font-weight: 600; }
+.wxp-max { font-weight: 650; }
+.wxp-track { position: relative; height: 5px; border-radius: 99px; background: rgba(0, 0, 0, .25); }
+.wxp-track i { position: absolute; top: 0; bottom: 0; border-radius: 99px; }
+.wxp-now { position: absolute; top: 50%; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 2px rgba(0, 0, 0, .35); }
+.wxp-hicon .fallback, .wxp-dicon .fallback { font-size: 1.6rem; }
+
+.wxp-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.wxp-stat { display: flex; flex-direction: column; }
+.wxp-value { font-size: 1.9rem; font-weight: 600; line-height: 1.1; }
+.wxp-sub { margin: 6px 0 0; font-size: .92rem; opacity: .85; line-height: 1.35; }
+.wxp-wind { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.wxp-rose { width: 92px; height: 92px; flex: none; }
+.wxp-rose .ring { fill: none; stroke: rgba(255, 255, 255, .3); stroke-width: 2; stroke-dasharray: 2 4; }
+.wxp-rose text { fill: rgba(255, 255, 255, .7); font-size: 11px; font-weight: 700; }
+.wxp-rose .shaft { stroke: #fff; stroke-width: 3; stroke-linecap: round; }
+.wxp-rose .head { fill: #fff; }
+.wxp-uvbar { position: relative; height: 6px; margin-top: 12px; border-radius: 99px; background: linear-gradient(90deg, #4ade80, #facc15, #fb923c, #ef4444, #a855f7); }
+.wxp-uvbar b { position: absolute; top: 50%; width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 2px rgba(0, 0, 0, .35); }
+.wxp-sun { grid-column: 1 / -1; }
+.wxp-sun .sun-arc { max-height: 170px; }
+@media (max-width: 700px) {
+  .panel-dialog.wx-dialog { width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh; border-radius: 0; }
+  .wx-dialog .panel-body { padding: max(24px, env(safe-area-inset-top)) 12px 24px; gap: 10px; }
+  .wxp-temp { font-size: 5rem; }
+  .wxp-card { padding: 10px 12px; }
+  .wxp-day { grid-template-columns: 4.4rem 28px 2.4rem 2rem minmax(30px, 1fr) 2rem; gap: 5px; }
+  .wxp-dname { font-size: .95rem; }
+  .wxp-dicon { width: 28px; height: 28px; }
+  .wxp-grid { gap: 10px; }
+  .wxp-value { font-size: 1.5rem; }
+  .wxp-rose { width: 64px; height: 64px; }
+  .wxp-wind { flex-direction: column; align-items: flex-start; }
+}
 
 /* F1 */
 .f1-head { display: flex; align-items: center; gap: 16px; }
@@ -439,8 +529,7 @@ button { font: inherit; color: inherit; }
 .f1-count { font-size: 2.6rem; font-weight: 750; letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: var(--ct); line-height: 1; }
 .f1-count small { font-size: .42em; font-weight: 600; color: var(--muted); margin-left: 2px; }
 
-/* Zon: de boog is het hoofdbeeld */
-.sun-wrap { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; }
+/* Zonneboog (in de weer-popup) */
 .sun-arc { width: 100%; max-height: 230px; overflow: visible; }
 .sun-horizon { stroke: rgba(255, 255, 255, .35); stroke-width: 1.5; }
 .sun-path { fill: none; stroke: rgba(255, 255, 255, .45); stroke-width: 1.5; stroke-dasharray: 3 4; }
@@ -451,8 +540,7 @@ button { font: inherit; color: inherit; }
 .sun-labels div { display: flex; flex-direction: column; line-height: 1.15; }
 .sun-labels div:last-child { text-align: right; }
 .sun-labels b { font-size: 1.6rem; font-variant-numeric: tabular-nums; }
-.sun-labels .w-sub { font-size: .78rem; }
-.sun-foot { font-size: .85rem; margin-top: 8px; }
+.sun-labels .w-sub { font-size: .78rem; color: inherit; opacity: .8; }
 
 /* Songtekst: zelfde hoogte als de speler, de tekst scrolt binnen het vak */
 #lyrics { --c: var(--accent); grid-column: span 4; grid-row: span 2; min-height: 0; }
@@ -970,6 +1058,34 @@ a.event:hover { background: color-mix(in srgb, var(--c, #888) 24%, rgba(255, 255
 .tb-icon img { width: 100%; height: 100%; object-fit: contain; }
 .tb-icon .fb { font-size: .8rem; font-weight: 700; padding: 0; }
 .tb-name { display: none; }
+.tb-edit { border: 0; background: none; cursor: pointer; font: inherit; }
+.tb-plus { display: grid; place-items: center; border: 1px dashed rgba(255, 255, 255, .3); font-size: 1.2rem; color: var(--muted); }
+
+/* Snelkoppelingen aanpassen */
+.panel-dialog.links-dialog { height: fit-content; max-height: calc(100dvh - 24px); width: min(640px, calc(100vw - 24px)); }
+.links-dialog .panel-body { height: auto; padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 14px; }
+.lk-rows { display: flex; flex-direction: column; gap: 8px; }
+.lk-row { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 3fr) auto auto; gap: 8px; }
+.lk-row input {
+  min-width: 0;
+  padding: 9px 12px;
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .06);
+  color: var(--text);
+  font: inherit;
+  font-size: .95rem;
+}
+.lk-row input:focus { outline: none; border-color: var(--accent); }
+.lk-row .w-btn { padding: 9px 12px; justify-content: center; }
+.lk-foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.lk-actions { display: flex; gap: 8px; }
+.links-dialog .w-btn:not(.ghost) { --c: var(--accent); }
+@media (max-width: 700px) {
+  .lk-row { grid-template-columns: minmax(0, 1fr) auto auto; }
+  .lk-row input[type="url"] { grid-column: 1; grid-row: 2; }
+  .lk-row { padding-bottom: 8px; border-bottom: 1px solid rgba(255, 255, 255, .08); }
+}
 
 .tb-search {
   flex: 0 1 360px;

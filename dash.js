@@ -64,6 +64,74 @@ window.DASH = (() => {
     if (window.DASH_CALENDAR) fn(window.DASH_CALENDAR);
   }
 
+  // ---------- Regen voor de komende 2 uur (gedeeld door weer, buienalarm en de fietscheck) ----------
+  // Eerst Buienradar (radar, per 5 minuten). Lukt dat niet, dan Open-Meteo per kwartier (weermodel, minder precies).
+  // Geeft { source, updated, slots: [{ start, end, mmh }] } met mmh = neerslag in mm per uur.
+  const HOME = { lat: 51.9225, lon: 4.4792 }; // Rotterdam
+  const FIVE = 5 * 60000;
+  let radarCache = null;
+
+  async function buienradar() {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 10000);
+    let text;
+    try {
+      const res = await fetch(`https://gpsgadget.buienradar.nl/data/raintext?lat=${HOME.lat.toFixed(2)}&lon=${HOME.lon.toFixed(2)}`, { signal: ctrl.signal });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      text = await res.text();
+    } finally {
+      clearTimeout(timer);
+    }
+    // Regels als "087|22:55": waarde 0-255 en de (Nederlandse) tijd
+    const now = Date.now();
+    const slots = [];
+    let prev = null;
+    for (const line of text.trim().split(/\r?\n/)) {
+      const m = line.match(/^(\d+)\|(\d{1,2}):(\d{2})/);
+      if (!m) continue;
+      const d = new Date(now);
+      d.setHours(Number(m[2]), Number(m[3]), 0, 0);
+      let t = d.getTime();
+      if (prev == null) {
+        if (t - now > 12 * 3600000) t -= 86400000; // rond middernacht
+        if (now - t > 12 * 3600000) t += 86400000;
+      } else {
+        while (t <= prev) t += 86400000;
+      }
+      prev = t;
+      const v = Number(m[1]);
+      slots.push({ start: t, end: t + FIVE, mmh: v ? 10 ** ((v - 109) / 32) : 0 });
+    }
+    if (slots.length < 6) throw new Error('Buienradar gaf geen bruikbare data');
+    return { source: 'Buienradar', slots };
+  }
+
+  async function openMeteoRain() {
+    const data = await getJSON('https://api.open-meteo.com/v1/forecast?' + new URLSearchParams({
+      latitude: HOME.lat, longitude: HOME.lon, minutely_15: 'precipitation', forecast_minutely_15: 12,
+      timezone: 'Europe/Amsterdam', timeformat: 'unixtime',
+    }));
+    const m = data.minutely_15;
+    const slots = [];
+    // Een waarde op tijd T is de som van het kwartier dáárvoor: verdelen over drie stukjes van 5 minuten
+    m.time.forEach((t, i) => {
+      for (let k = 3; k > 0; k--) slots.push({ start: t * 1000 - k * FIVE, end: t * 1000 - (k - 1) * FIVE, mmh: (m.precipitation[i] || 0) * 4 });
+    });
+    return { source: 'Open-Meteo', slots };
+  }
+
+  // Eén keer per 5 minuten echt ophalen, ook als meerdere vakken tegelijk vragen
+  function radar() {
+    if (radarCache && Date.now() - radarCache.at < FIVE) return radarCache.promise;
+    const promise = buienradar()
+      .catch((e) => { console.warn('[regen] Buienradar lukt niet, Open-Meteo gebruikt:', e); return openMeteoRain(); })
+      .then((r) => ({ ...r, updated: Date.now(), slots: r.slots.filter((s) => s.end > Date.now()) }));
+    radarCache = { at: Date.now(), promise };
+    promise.catch(() => { radarCache = null; });
+    return promise;
+  }
+  const RAIN_MIN = 0.1; // mm per uur: vanaf hier telt het als regen
+
   const AH = /\bAH\b/;
   const isAH = (ev) => !ev.allDay && AH.test(ev.title || '');
 
@@ -115,5 +183,5 @@ window.DASH = (() => {
     return { dialog, head, body: content, open: () => dialog.showModal(), close: () => dialog.close() };
   }
 
-  return { DEMO, h, store, getJSON, widget, every, onCalendar, isAH, startOfDay, addDays, startOfWeek, fmtTime, fmtWeekday, fmtDay, nl, img, panel };
+  return { DEMO, h, store, getJSON, widget, every, onCalendar, HOME, radar, RAIN_MIN, isAH, startOfDay, addDays, startOfWeek, fmtTime, fmtWeekday, fmtDay, nl, img, panel };
 })();

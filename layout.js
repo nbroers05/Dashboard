@@ -10,13 +10,23 @@
   const tiles = () => [...holder.querySelectorAll(':scope > .tile')];
 
   // Standaard: [breedte in kolommen (van 12), hoogte in rijen]
-  const ORDER = ['w-weather', 'w-f1', 'w-sun', 'w-ah', 'w-canvas', 'w-episodes', 'w-stars', 'w-todo'];
+  const ORDER = ['w-weather', 'w-f1', 'w-rain', 'w-ah', 'w-canvas', 'w-episodes', 'w-stars', 'w-todo'];
+  // Vakken die vervangen zijn: het nieuwe vak neemt de plek en grootte van het oude over
+  const RENAMED = { 'w-sun': 'w-rain' };
   const DEFAULT_WIDE = [4, 2];
   const MAX_ROWS = 10;
   const mode = () => (window.matchMedia('(max-width: 700px)').matches ? 'phone' : 'wide');
   const key = () => `dash.layout.v2.${mode()}`;
 
-  const load = () => { try { return JSON.parse(localStorage.getItem(key())) || {}; } catch { return {}; } };
+  const load = () => {
+    let saved;
+    try { saved = JSON.parse(localStorage.getItem(key())) || {}; } catch { return {}; }
+    for (const [from, to] of Object.entries(RENAMED)) {
+      if (saved.order) saved.order = saved.order.map((id) => (id === from ? to : id));
+      if (saved.sizes && saved.sizes[from] && !saved.sizes[to]) saved.sizes[to] = saved.sizes[from];
+    }
+    return saved;
+  };
   const save = () => {
     const sizes = {};
     for (const t of tiles()) sizes[t.id] = [Number(t.dataset.w), Number(t.dataset.h)];
