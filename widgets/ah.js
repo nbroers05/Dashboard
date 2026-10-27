@@ -34,6 +34,8 @@ DASH.widget('w-ah', (card, body, guard) => {
       holidays: new Set(l.feestdagen || []),
       breaks: (l.pauzes || []).filter((p) => p && p.langerDanUren != null && p.minuten != null).sort((a, b) => b.langerDanUren - a.langerDanUren),
       holidayPct: l.vakantiegeldProcent,
+      holidayInPeriod: l.vakantiegeldPerPeriode === true,
+      extraHours: (l.uitbetaaldeUren || []).filter((x) => x && x.procent != null),
       fixed: (l.vasteToeslagen || []).filter((f) => f && f.bedrag != null),
       ratio: l.nettoVerhouding,
     };
@@ -101,12 +103,12 @@ DASH.widget('w-ah', (card, body, guard) => {
   function periodPay(shifts, range) {
     const p = pay(shifts, range.start, range.end);
     const fixed = CFG.fixed.reduce((t, f) => t + Number(f.bedrag), 0);
-    const gross = p.gross + fixed;
-    return {
-      ...p, fixed, gross,
-      holidayPay: CFG.holidayPct != null ? p.gross * (CFG.holidayPct / 100) : null,
-      net: CFG.ratio != null ? gross * CFG.ratio : null,
-    };
+    // Uren die elke periode worden uitbetaald (ADV, vakantie-uren), als % van je betaalde uren
+    const extras = CFG.extraHours.map((x) => ({ naam: x.naam, hours: p.hours * (x.procent / 100), pay: p.hours * (x.procent / 100) * CFG.wage }));
+    const extra = extras.reduce((t, x) => t + x.pay, 0);
+    const holidayPay = CFG.holidayPct != null ? (p.gross + extra) * (CFG.holidayPct / 100) : null;
+    const gross = p.gross + extra + fixed + (CFG.holidayInPeriod && holidayPay ? holidayPay : 0);
+    return { ...p, fixed, extras, holidayPay, gross, net: CFG.ratio != null ? gross * CFG.ratio : null };
   }
 
   // Wat er nog in config.js moet (getallen van je loonstrook)
@@ -136,7 +138,7 @@ DASH.widget('w-ah', (card, body, guard) => {
     const cell = (label, value, sub) => { const d = h('div'); d.append(h('span', 'w-label', label), h('b', null, value)); if (sub) d.append(h('span', 'w-sub', sub)); return d; };
     sum.append(
       cell('Deze week', euro(wkPay.gross, 2), `${fmtH(wkPay.hours)} u betaald`),
-      cell('Periode bruto', euro(p.gross, 2), `${fmtH(p.hours)} u betaald${p.fixed ? ` + ${euro(p.fixed, 2)} vast` : ''}`),
+      cell('Periode bruto', euro(p.gross, 2), `${fmtH(p.hours)} u gewerkt${p.extras.length || p.fixed || CFG.holidayInPeriod ? ' + extra’s, zie hieronder' : ''}`),
       cell('Netto (schatting)', p.net != null ? euro(p.net, 2) : '–', p.net != null ? `× ${nl(CFG.ratio, 2)} uit config` : 'vul nettoVerhouding in'),
     );
     inner.append(sum);
@@ -160,8 +162,13 @@ DASH.widget('w-ah', (card, body, guard) => {
     inner.append(h('h3', 'ahp-title', `Periode ${short(range.start)} – ${short(addDays(range.end, -1))}`), table);
 
     const extra = h('ul', 'ahp-extra');
+    for (const x of p.extras) extra.append(h('li', null, `${x.naam} uitbetaald: ${fmtH(Math.round(x.hours * 100) / 100)} u = ${euro(x.pay, 2)}`));
     for (const f of CFG.fixed) extra.append(h('li', null, `${f.naam}: ${euro(Number(f.bedrag), 2)}`));
-    if (p.holidayPay != null) extra.append(h('li', null, `Vakantiegeld-opbouw deze periode: ${euro(p.holidayPay, 2)} (${nl(CFG.holidayPct, 2)}%, meestal één keer per jaar uitbetaald, niet in het bedrag hierboven)`));
+    if (p.holidayPay != null) {
+      extra.append(h('li', null, CFG.holidayInPeriod
+        ? `Vakantietoeslag ${nl(CFG.holidayPct, CFG.holidayPct % 1 ? 2 : 0)}%: ${euro(p.holidayPay, 2)} (zit in het periodebedrag)`
+        : `Vakantiegeld-opbouw deze periode: ${euro(p.holidayPay, 2)} (${nl(CFG.holidayPct, 2)}%, wordt later uitbetaald, niet in het bedrag hierboven)`));
+    }
     extra.append(h('li', null, `Uurloon ${euro(CFG.wage, 2)} · ${CFG.rules.length ? CFG.rules.map((r) => `${r.naam} +${nl(r.procent, r.procent % 1 ? 1 : 0)}% (${r.van}–${r.tot})`).join(', ') : 'nog geen toeslagen ingevuld'} · bij overlap ${CFG.stack ? 'opgeteld' : 'de hoogste'}`));
     if (CFG.breaks.length) extra.append(h('li', null, `Onbetaalde pauze: ${CFG.breaks.map((b) => `${b.minuten} min bij meer dan ${nl(b.langerDanUren, 1)} u`).join(', ')}`));
     const miss = missing();

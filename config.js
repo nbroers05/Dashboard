@@ -5,7 +5,8 @@ window.DASHBOARD_CONFIG = {
   // null = nog niet ingevuld: dat deel telt dan niet mee, en het dashboard zegt wat er ontbreekt.
   // Bedragen in euro's met een punt (12.75), percentages als getal (50 = 50%).
   ahLoon: {
-    brutoUurloon: 20,
+    // Uit de loonstrook van periode 2026/10 (7 sep – 4 okt 2026)
+    brutoUurloon: 11.99,
     // Toeslag bovenop het uurloon per tijdvak. dagen: ma di wo do vr za zo, of 'feestdag'. tot: '24:00' = einde van de dag.
     // Een dienst die over meerdere tijdvakken loopt, wordt per minuut opgesplitst.
     toeslagen: [
@@ -20,10 +21,17 @@ window.DASHBOARD_CONFIG = {
     feestdagen: ['nieuwjaar', 'pasen1', 'pasen2', 'koningsdag', 'bevrijdingsdag', 'hemelvaart', 'pinksteren1', 'pinksteren2', 'kerst1', 'kerst2'],
     // Onbetaalde pauze, bijv. { langerDanUren: 5.5, minuten: 30 }. Leeg = geen pauze afgetrokken.
     pauzes: [],
-    vakantiegeldProcent: null, // TODO: vakantiegeld in % van je bruto loon (wordt meestal één keer per jaar uitbetaald)
+    vakantiegeldProcent: 8, // "Vakantietoeslag KPT" op de loonstrook: 8% over alle uurposten
+    vakantiegeldPerPeriode: true, // true = elke periode uitbetaald (zo staat het op je loonstrook), false = later in één keer
+    // Uren die elke periode extra worden uitbetaald, als % van je gewerkte uren.
+    // Afgeleid uit één loonstrook (ADV 7,03 u en vakantie 8,65 u bij 41,25 u gewerkt): controleer met een volgende strook.
+    uitbetaaldeUren: [
+      { naam: 'ADV-uren', procent: 17.04 },
+      { naam: 'Vakantie-uren', procent: 20.97 },
+    ],
     // Vaste bedragen per periode bovenop je uren, bijv. { naam: 'Reiskosten', bedrag: 12.50 }
     vasteToeslagen: [],
-    nettoVerhouding: null, // TODO: netto ÷ bruto van een recente loonstrook, bijv. 0.88 (alleen voor de schatting)
+    nettoVerhouding: 0.96, // netto ÷ bruto van de loonstrook (1.205,09 ÷ 1.251,96); alleen voor de schatting
   },
   // Voor filmposters (themoviedb.org → Instellingen → API → "API Key"). Leeg laten mag: dan een kleurvlak.
   tmdbApiKey: '0d5a58e53bb2d4420ee65e51e1d6f63a',
