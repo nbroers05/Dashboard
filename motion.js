@@ -16,14 +16,14 @@
   cards.forEach(({ c }, i) => c.style.setProperty('--i', Math.min(i, 12)));
   document.body.classList.add('intro');
   // Daarna weghalen, anders speelt het opnieuw als een vak later verschijnt (songtekst, minimale modus uit)
-  setTimeout(() => document.body.classList.remove('intro'), 1600);
+  setTimeout(() => document.body.classList.remove('intro'), 2600);
 
   // ---------- Cijfers optellen ----------
   // De eerste keer dat een vak een groot getal laat zien, telt het vanaf 0 op. Latere verversingen niet.
   // Per vak de starttijd: tekent het vak zich tijdens het optellen opnieuw (weer + regen komen los binnen), dan loopt het gewoon door
   const started = new WeakMap();
   const seen = new WeakSet();
-  const DURATION = 700;
+  const DURATION = 1200;
   const ease = (t) => 1 - (1 - t) ** 3;
 
   function countUp(el, t0) {

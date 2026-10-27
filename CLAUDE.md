@@ -31,7 +31,7 @@ In demo-modus komen weer, F1, zon, AniList-covers, TMDB-poster en LRCLIB-teksten
 | `config.js` | Client-ID's en sleutels (zie hieronder) |
 | `dash.js` | Gedeelde hulpjes: `DASH.widget()` (elk vak faalt los), `DASH.radar()` (regen komende 2 uur per 5 min: Buienradar raintext, anders Open-Meteo minutely_15; 5 min cache; `DASH.HOME` = Rotterdam), `img()` (kleurvlak als plaatje niet laadt), `panel()` (pop-up), `onCalendar()`, datumfuncties |
 | `topbar.js` | Topbalk: klok, datum + ISO-weeknummer, snelkoppelingen (uit `config.snelkoppelingen`, icoon = favicon via Google s2 of eigen `icon`), Google-zoekbalk (sneltoets `/`), minimale modus (`body.minimal`, bewaard als `dash.minimal`, Esc zet terug). Telefoon: snelkoppelingen in uitklapmenu. Knop **+** opent een paneel om links toe te voegen/wijzigen/verplaatsen; eigen lijst in `dash.links` (localStorage) gaat vóór `config.snelkoppelingen` |
-| `motion.js` | Eenmalige animaties bij laden: vakken schuiven in (`body.intro` + `--i`, na 1,6 s weg), grote getallen (`.w-big`) tellen op (alleen eerste 30 s). Doet niets bij prefers-reduced-motion |
+| `motion.js` | Eenmalige animaties bij laden: vakken schuiven in (`body.intro` + `--i`, na 2,6 s weg), grote getallen (`.w-big`) tellen op (alleen eerste 30 s). Doet niets bij prefers-reduced-motion |
 | `layout.js` | Knop "Indelen": vakken verplaatsen/vergroten, bewaard in `localStorage` (`dash.layout.v2.wide/phone`) |
 | `spotify.js` | Spotify-speler (Authorization Code + PKCE, refresh token in localStorage). Publiceert `dash:track`, `window.spotifyPosition()`, `window.spotifySeek()` |
 | `calendar.js` | Google Agenda (lijst/week), kleuren per categorie, tooltips. Publiceert afspraken via `dash:calendar` / `window.DASH_CALENDAR` |
@@ -44,7 +44,7 @@ Daarna vakken van 4 kolommen: Weer, F1, Buienalarm / AH-uren, Canvas, Episodes L
 
 ### Vakken (`widgets/`)
 
-- `weather.js`: Open-Meteo (Rotterdam, `past_days=1`, 10 dagen), Meteocons-iconen via jsDelivr; er bestaan alleen bewegende in v2.0.0, dus `staticIcon()` haalt de SVG op en knipt de `<animate*>`-tags eruit (blob-URL). Vak: temperatuur, min/max, regenkans, zon op/onder, fietscheck (25 min) voor de volgende AH-dienst: binnen 2 uur via `DASH.radar()`, verder weg via het Open-Meteo-model. Klik = popup in weer-app-stijl (per uur met zon op/onder ertussen, 10 dagen met min/max-balkjes, wind met windroos, UV, vocht, neerslag, zonneboog); achtergrond via `wx-scene-<weer>-<day|night>`. Vakkleur verandert met het weer.
+- `weather.js`: Open-Meteo (Rotterdam, `past_days=1`, 10 dagen), geanimeerde Meteocons-iconen via jsDelivr (Noah wil ze bewegend houden; een stilstaande versie is op zijn verzoek teruggedraaid). Vak: temperatuur, min/max, regenkans, zon op/onder, fietscheck (25 min) voor de volgende AH-dienst: binnen 2 uur via `DASH.radar()`, verder weg via het Open-Meteo-model. Klik = popup in weer-app-stijl (per uur met zon op/onder ertussen, 10 dagen met min/max-balkjes, wind met windroos, UV, vocht, neerslag, zonneboog); achtergrond via `wx-scene-<weer>-<day|night>`. Vakkleur verandert met het weer.
 - `rain.js`: Buienalarm, 24 staafjes van 5 min uit `DASH.radar()`, zin als "Droog tot 19:40" / "Over 15 minuten lichte regen", toont de bron. Vervangt het oude zon-vak (`layout.js` zet een bewaarde `w-sun`-plek om naar `w-rain`).
 - `f1.js`: Jolpica-API (volgende sessie, aftellen "3d 4h 35min", seconden alleen op de dag zelf), vlag via flagcdn, circuit-omtrek uit bacinger/f1-circuits (MIT). Knop **Stream**: pop-up waarin Noah zelf een link/embed-code plakt (YouTube, Vimeo, Twitch); de video is 16:9 en het paneel past zich daarop aan.
 - `ah.js`: AH-diensten = afspraken met "AH" in de titel. Uren deze week (staafjes per dag) en per **AH-periode**: 4 weken (ma–zo), daarna een week ertussen, in de week erna het salaris. De periode wordt afgeleid uit afspraken met "Salaris" in de titel. Verwacht bruto salaris = uren × `ahUurloon`.
@@ -54,7 +54,7 @@ Daarna vakken van 4 kolommen: Weer, F1, Buienalarm / AH-uren, Canvas, Episodes L
 - `lyrics.js`: songtekst via LRCLIB (Spotify geeft zelf geen teksten). Loopt mee, klik op een regel om te spoelen. Bij sped-up/slowed versies worden de tijden omgerekend.
 - `todo.js`: to-do-lijst, alleen in `localStorage` van die browser.
 
-**Animaties:** nooit iets dat blijft bewegen als er niets gebeurt (afspraak met Noah). Alleen bij laden, bij openen of bij een wijziging. Alles uit bij prefers-reduced-motion (staat onderaan `style.css`).
+**Animaties:** nooit iets dat blijft bewegen als er niets gebeurt (afspraak met Noah), behalve de weericoontjes: die vindt hij leuk. Alleen bij laden, bij openen of bij een wijziging. Alles uit bij prefers-reduced-motion (staat onderaan `style.css`).
 
 ## API's, sleutels en waar ze staan
 
@@ -78,7 +78,7 @@ Noah wil per fase: bouwen, committen, kort zeggen wat er gedaan is en wat hij mo
 
 1. Topbalk en minimale modus: **gebouwd** (AH-rooster-link weggehaald, links aanpasbaar op het dashboard)
 2. Weer-popup en buienalarm: **gebouwd**, bron Buienradar (Open-Meteo als terugval)
-3. Animaties: **gebouwd** (inschuiven, optellen, popup schaal-fade, hoes-crossfade via View Transitions, weericonen stil; alles uit bij prefers-reduced-motion)
+3. Animaties: **gebouwd** (inschuiven, optellen, popup schaal-fade, hoes-crossfade via View Transitions; op verzoek wat langzamer: inschuiven 0,9 s + 75 ms per vak, optellen 1,2 s, popup 0,35 s, hoes 0,7 s; alles uit bij prefers-reduced-motion)
 4. Canvas op urgentie (Te laat / Vandaag / Morgen / Deze week / Later), vak toont top 3, aparte pagina met de rest
 5. Letterboxd via GitHub Action → `data/letterboxd.json`, TMDB-key als secret, vak "Laatst gekeken"
 6. Meldingenvak + telefoonmeldingen via ntfy.sh vanuit een Action (eerlijk zijn over wat zonder server niet veilig kan)

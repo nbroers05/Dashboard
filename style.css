@@ -1238,16 +1238,16 @@ body.minimal .tb-actions { position: absolute; top: max(16px, env(safe-area-inse
   to { opacity: 1; transform: none; }
 }
 body.intro .topbar, body.intro .dashboard > .card, body.intro .widgets > .tile {
-  animation: rise .55s cubic-bezier(.2, .7, .2, 1) both;
-  animation-delay: calc(var(--i, 0) * 45ms);
+  animation: rise .9s cubic-bezier(.2, .7, .2, 1) both;
+  animation-delay: calc(var(--i, 0) * 75ms);
 }
 
 /* Hoes wisselt met een crossfade (spotify.js gebruikt View Transitions); de rest van de pagina wisselt direct */
 .cover { view-transition-name: player-cover; }
 ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
-::view-transition-group(player-cover) { animation-duration: .45s; }
-::view-transition-old(player-cover), ::view-transition-new(player-cover) { animation-duration: .45s; height: 100%; object-fit: cover; }
-.player::before { transition: background-image .6s; }
+::view-transition-group(player-cover) { animation-duration: .7s; }
+::view-transition-old(player-cover), ::view-transition-new(player-cover) { animation-duration: .7s; height: 100%; object-fit: cover; }
+.player::before { transition: background-image 1s; }
 
 /* Pop-ups openen met een korte schaal-fade */
 @keyframes pop-in {
@@ -1255,8 +1255,8 @@ body.intro .topbar, body.intro .dashboard > .card, body.intro .widgets > .tile {
   to { opacity: 1; transform: none; }
 }
 @keyframes fade-in { from { opacity: 0; } }
-dialog[open] { animation: pop-in .22s cubic-bezier(.2, .8, .2, 1); }
-dialog[open]::backdrop { animation: fade-in .22s ease; }
+dialog[open] { animation: pop-in .35s cubic-bezier(.2, .8, .2, 1); }
+dialog[open]::backdrop { animation: fade-in .35s ease; }
 
 /* Beweging beperken (instelling van het apparaat): alles uit */
 @media (prefers-reduced-motion: reduce) {
