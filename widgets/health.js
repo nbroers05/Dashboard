@@ -11,12 +11,17 @@ DASH.widget('w-health', (card, body, guard) => {
 
   // ---------- Ophalen ----------
   async function call(path, init) {
-    const token = G && G.token();
+    const token = G && G.healthToken();
     if (!token) throw Object.assign(new Error('geen token'), { auth: true });
     const res = await fetch(`${API}/${path}`, { ...init, headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json', ...(init && init.headers) } });
     const json = await res.json().catch(() => ({}));
     if (res.status === 401) throw Object.assign(new Error('verlopen'), { auth: true });
-    if (!res.ok) throw Object.assign(new Error((json.error && json.error.message) || `Google Health ${res.status}`), { status: res.status });
+    if (!res.ok) {
+      // Volledige melding, inclusief eventuele details (welke scope, welke reden), zodat je hem kunt doorsturen
+      const err = json.error || {};
+      const extra = (err.details || []).map((d) => d.reason || (d.metadata && Object.values(d.metadata).join(', ')) || '').filter(Boolean).join('; ');
+      throw Object.assign(new Error(`${err.status ? `${err.status}: ` : ''}${err.message || `HTTP ${res.status}`}${extra ? ` (${extra})` : ''}`), { status: res.status });
+    }
     return json;
   }
 
@@ -157,17 +162,17 @@ DASH.widget('w-health', (card, body, guard) => {
   const load = guard(async () => {
     if (DEMO) return render(demo());
     if (!G || !G.connected()) return message('Koppel eerst je Google Agenda (onderaan). Daarna kan gezondheid erbij.');
-    if (!G.health()) {
-      return G.token()
-        ? message('Geef het dashboard leesrechten voor je stappen, slaap en hartslag.', 'Gezondheid koppelen', () => G.connect())
-        : message('Toegang tot Google is verlopen.', 'Vernieuwen', () => G.connect());
+    if (!G.healthToken()) {
+      return G.healthEverGranted()
+        ? message('Toegang tot je gezondheidsgegevens is verlopen (Google geeft een website maar 1 uur).', 'Vernieuwen', () => G.connectHealth())
+        : message('Geef het dashboard leesrechten voor je stappen, slaap en hartslag.', 'Gezondheid koppelen', () => G.connectHealth());
     }
     try {
       render(await fetchAll());
     } catch (e) {
-      if (e.auth) return message('Toegang tot Google is verlopen.', 'Vernieuwen', () => G.connect());
+      if (e.auth) return message('Toegang tot je gezondheidsgegevens is verlopen.', 'Vernieuwen', () => G.connectHealth());
       // Fout van Google zelf laten zien: helpt bij het instellen (API uit, app niet gekoppeld, ...)
-      message(`Google Health gaf een fout: ${e.message} (README, stap 10)`, 'Opnieuw koppelen', () => G.connect());
+      message(`Google Health gaf een fout: ${e.message} (README, stap 10)`, 'Opnieuw koppelen', () => G.connectHealth());
       console.warn('[health]', e);
     }
   });

@@ -6,7 +6,8 @@
   const SCOPE = 'https://www.googleapis.com/auth/calendar.readonly';
   // Gmail alleen lezen, voor het mailvak (widgets/mail.js). Mag ontbreken: dan werkt de agenda gewoon en vraagt het mailvak erom.
   const GMAIL = 'https://www.googleapis.com/auth/gmail.readonly';
-  // Google Health API (stappen, slaap, hartslag) voor widgets/health.js; alleen lezen
+  // Google Health API (stappen, slaap, hartslag) voor widgets/health.js; alleen lezen.
+  // Eigen token met álleen deze scopes: Google Health weigert een token waar ook agenda/Gmail in zit (DISALLOWED_OAUTH_SCOPES).
   const HEALTH = ['activity_and_fitness', 'sleep', 'health_metrics_and_measurements'].map((s) => `https://www.googleapis.com/auth/googlehealth.${s}.readonly`);
   const API = 'https://www.googleapis.com/calendar/v3';
   const DEMO = new URLSearchParams(location.search).has('demo');
@@ -15,7 +16,7 @@
   const REFETCH = 5 * 60 * 1000;     // afspraken opnieuw ophalen
   const SOON = 2 * 60 * 60 * 1000;   // "over 25 min" tonen binnen deze tijd
 
-  const KEY = { token: 'google.token', hint: 'google.hint', cache: 'google.events', view: 'calendar.view' };
+  const KEY = { healthToken: 'google.healthToken', token: 'google.token', hint: 'google.hint', cache: 'google.events', view: 'calendar.view' };
 
   const $ = (id) => document.getElementById(id);
   const card = $('calendar');
@@ -62,7 +63,7 @@
     if (!tokenClient) {
       tokenClient = google.accounts.oauth2.initTokenClient({
         client_id: CLIENT_ID,
-        scope: [SCOPE, GMAIL, ...HEALTH].join(' '),
+        scope: [SCOPE, GMAIL].join(' '),
         include_granted_scopes: true,
         callback: onToken,
         error_callback: (err) => {
@@ -80,10 +81,34 @@
     if (!google.accounts.oauth2.hasGrantedAllScopes(resp, SCOPE)) {
       return showLogin('Geef bij het inloggen toegang tot je agenda (vinkje aanzetten).');
     }
-    store.set(KEY.token, { access: resp.access_token, expires: Date.now() + resp.expires_in * 1000, gmail: google.accounts.oauth2.hasGrantedAllScopes(resp, GMAIL), health: google.accounts.oauth2.hasGrantedAllScopes(resp, ...HEALTH) });
+    store.set(KEY.token, { access: resp.access_token, expires: Date.now() + resp.expires_in * 1000, gmail: google.accounts.oauth2.hasGrantedAllScopes(resp, GMAIL) });
     el.reconnect.hidden = true;
     shareToken();
     load();
+  }
+
+  // Los token voor Google Health (zie HEALTH hierboven)
+  let healthClient = null;
+  async function connectHealth() {
+    try { await waitForGoogle(); } catch { return; }
+    if (!healthClient) {
+      healthClient = google.accounts.oauth2.initTokenClient({
+        client_id: CLIENT_ID,
+        scope: HEALTH.join(' '),
+        include_granted_scopes: false,
+        callback: (resp) => {
+          if (resp.error) return;
+          store.set(KEY.healthToken, { access: resp.access_token, expires: Date.now() + resp.expires_in * 1000, granted: google.accounts.oauth2.hasGrantedAllScopes(resp, ...HEALTH) });
+          shareToken();
+        },
+      });
+    }
+    const hint = store.get(KEY.hint);
+    healthClient.requestAccessToken({ prompt: '', ...(hint ? { login_hint: hint } : {}) });
+  }
+  function healthToken() {
+    const t = store.get(KEY.healthToken);
+    return t && t.granted && Date.now() < t.expires - 30000 ? t.access : null;
   }
 
   function token() {
@@ -94,7 +119,7 @@
   function disconnect() {
     const t = store.get(KEY.token);
     if (t && window.google && google.accounts) google.accounts.oauth2.revoke(t.access, () => {});
-    [KEY.token, KEY.hint, KEY.cache].forEach(store.del);
+    [KEY.token, KEY.healthToken, KEY.hint, KEY.cache].forEach(store.del);
     shareToken();
     events = [];
     clearTimeout(fetchTimer);
@@ -187,12 +212,14 @@
   // Het mailvak gebruikt hetzelfde Google-token (geen tweede inlog)
   function shareToken() {
     const t = store.get(KEY.token);
-    window.dispatchEvent(new CustomEvent('dash:google', { detail: { gmail: !!(t && t.gmail), health: !!(t && t.health) } }));
+    window.dispatchEvent(new CustomEvent('dash:google', { detail: { gmail: !!(t && t.gmail), health: !!healthToken() } }));
   }
   window.DASH_GOOGLE = {
     token: () => token(),
     gmail: () => { const t = store.get(KEY.token); return !!(t && t.gmail && token()); },
-    health: () => { const t = store.get(KEY.token); return !!(t && t.health && token()); },
+    healthToken: () => healthToken(),
+    healthEverGranted: () => { const t = store.get(KEY.healthToken); return !!(t && t.granted); },
+    connectHealth: () => connectHealth(),
     connected: () => !!store.get(KEY.hint),
     connect: () => connect(),
   };
