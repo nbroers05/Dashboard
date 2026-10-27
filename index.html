@@ -80,13 +80,90 @@
 
     </section>
 
-    <!-- Later: Google Calendar komt hier als extra .card -->
+    <!-- Kleine vakken -->
+    <div class="widgets">
+      <section id="w-weather" class="card tile" aria-live="polite">
+        <p class="eyebrow">Weer · Rotterdam</p>
+        <div class="w-body"><p class="w-note">Laden…</p></div>
+      </section>
+      <section id="w-f1" class="card tile">
+        <p class="eyebrow">Formule 1</p>
+        <div class="w-body"><p class="w-note">Laden…</p></div>
+      </section>
+      <section id="w-sun" class="card tile">
+        <p class="eyebrow">Zon</p>
+        <div class="w-body"></div>
+      </section>
+      <section id="w-ah" class="card tile">
+        <p class="eyebrow">AH-uren</p>
+        <div class="w-body"><p class="w-note">Wacht op je agenda…</p></div>
+      </section>
+      <section id="w-canvas" class="card tile">
+        <p class="eyebrow">Canvas · deze week</p>
+        <div class="w-body"><p class="w-note">Wacht op je agenda…</p></div>
+      </section>
+      <section id="w-stars" class="card tile">
+        <p class="eyebrow">Sterrenvoorspeller</p>
+        <div class="w-body"><p class="w-note">Laden…</p></div>
+      </section>
+      <section id="w-episodes" class="card tile">
+        <p class="eyebrow">Episodes Left</p>
+        <div class="w-body"><p class="w-note">Wacht op de extensie…</p></div>
+      </section>
+    </div>
+
+    <!-- Google Agenda -->
+    <section id="calendar" class="card agenda" data-state="loading" aria-live="polite">
+
+      <div class="view cal-login">
+        <p class="eyebrow">Agenda</p>
+        <h2 class="title">Je agenda</h2>
+        <p class="muted" id="cal-login-msg">Koppel je Google Agenda om je afspraken hier te zien.</p>
+        <div class="row">
+          <button id="cal-connect" class="pill-btn">Verbinden met Google</button>
+        </div>
+      </div>
+
+      <div class="view cal-main">
+        <div class="cal-head">
+          <div>
+            <p class="eyebrow">Agenda</p>
+            <h2 class="title" id="cal-today"></h2>
+          </div>
+          <div class="seg" role="group" aria-label="Weergave">
+            <button data-view="list" aria-pressed="true">Lijst</button>
+            <button data-view="week" aria-pressed="false">Week</button>
+          </div>
+        </div>
+        <div class="cal-reconnect" id="cal-reconnect" hidden>
+          <span>Toegang tot je agenda is verlopen.</span>
+          <button class="pill-btn small" id="cal-refresh">Vernieuwen</button>
+        </div>
+        <div class="cal-list" id="cal-list"></div>
+        <div class="meta">
+          <span id="cal-updated"></span>
+          <button class="text-btn" id="cal-logout">Ontkoppelen</button>
+        </div>
+      </div>
+
+    </section>
 
   </main>
 
   <div id="toast" role="status"></div>
 
   <script src="config.js"></script>
+  <script src="dash.js"></script>
+  <script src="layout.js"></script>
   <script src="spotify.js"></script>
+  <script src="https://accounts.google.com/gsi/client" async></script>
+  <script src="calendar.js"></script>
+  <script src="widgets/weather.js"></script>
+  <script src="widgets/f1.js"></script>
+  <script src="widgets/sun.js"></script>
+  <script src="widgets/ah.js"></script>
+  <script src="widgets/canvas.js"></script>
+  <script src="widgets/stars.js"></script>
+  <script src="widgets/episodes.js"></script>
 </body>
 </html>

@@ -1,0 +1,33 @@
+/* Aanpassingen voor het dashboard-vak. De kleuren volgen de donkere stijl van het dashboard. */
+:root {
+  --bg: rgba(255, 255, 255, .07);
+  --surface: rgba(255, 255, 255, .04);
+  --ink: #f2f2f4;
+  --muted: rgba(255, 255, 255, .62);
+  --line: rgba(255, 255, 255, .1);
+  --star: #f0a04b;
+  --star-soft: rgba(240, 160, 75, .14);
+  --chip: rgba(255, 255, 255, .09);
+  --focus: #7fa2ff;
+  color-scheme: dark;
+}
+html, body { height: 100%; }
+body { width: auto; background: transparent; padding: 0; font-size: 13px; }
+
+/* De titel staat al boven het vak; toegang en Vernieuwen horen bij de extensie (Letterboxd blokkeert dit vanaf een website) */
+header, .grant, #refresh { display: none !important; }
+
+.wrap { height: 100%; gap: 0; }
+.grid { height: 100%; align-items: stretch; gap: 12px; }
+.panel { min-height: 0; overflow: auto; padding: 12px; border-radius: 14px; }
+.list { max-height: none; flex: 1; min-height: 120px; }
+.big { font-size: 48px; }
+select option { background: #1d1f24; color: #f2f2f4; }
+
+/* Smal vak (of telefoon): onder elkaar en de hele pagina scrollt */
+@media (max-width: 620px) {
+  .wrap, .grid { height: auto; }
+  .grid { grid-template-columns: minmax(0, 1fr); }
+  .panel { overflow: visible; }
+  .list { max-height: 320px; }
+}

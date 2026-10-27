@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<title>Sterrenvoorspeller</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="popup.css">
+<!-- Alleen voor het dashboard: donker, past in het vak, geen extensie-knoppen -->
+<link rel="stylesheet" href="dashboard.css">
+<script src="dashboard-shim.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Hoeveel sterren geef jij deze film?</h1>
+    <p>Formule v2, getraind op je 683 ratings. Gemiddeld zit de voorspelling er 0,41 ster naast.</p>
+  </header>
+  <div class="grant" id="grant" hidden>
+    <span>De extensie heeft nog geen toegang tot letterboxd.com. Zonder die toegang werken de kaart, de sterren bij posters en Vernieuwen niet.</span>
+    <button class="btn" id="grant-btn">Toegang geven</button>
+  </div>
+  <div class="grid">
+    <section class="panel" aria-labelledby="calc-h">
+      <h2 id="calc-h">Voorspeller</h2>
+      <div class="result" aria-live="polite">
+        <div>
+          <div class="label">Verwacht cijfer</div>
+          <div class="big" id="out">0,0</div>
+        </div>
+        <div>
+          <div class="stars" id="stars" aria-hidden="true"></div>
+          <div class="calc" id="calc"></div>
+          <div class="meta"><span class="film-name" id="fname">Eigen invoer</span><br><span id="range"></span></div>
+          <button class="btn small" id="open" hidden>Open op Letterboxd ↗</button>
+        </div>
+      </div>
+      <div class="fields">
+        <label class="field" for="crowd"><span class="label">Letterboxd-gemiddelde</span><input id="crowd" type="number" min="0.5" max="5" step="0.01" value="3.80"></label>
+        <label class="field" for="n"><span class="label">Aantal ratings</span><input id="n" type="number" min="1" step="1" value="250000"></label>
+        <label class="field" for="loeka"><span class="label">Loeka's rating</span><select id="loeka" class="friend"><option value="">niet gezien</option></select></label>
+        <label class="field" for="marijn"><span class="label">Marijn's rating</span><select id="marijn" class="friend"><option value="">niet gezien</option></select></label>
+        <label class="field wide" for="regie"><span class="label">Regisseur</span><input id="regie" list="regielijst" placeholder="bijv. Wes Anderson" autocomplete="off"><datalist id="regielijst"></datalist></label>
+      </div>
+      <div class="checks" role="group" aria-label="Kenmerken">
+        <label class="check"><input type="checkbox" id="jp"> Japans</label>
+        <label class="check"><input type="checkbox" id="com"> Komedie</label>
+        <label class="check"><input type="checkbox" id="fam"> Familie</label>
+        <label class="check"><input type="checkbox" id="streng" checked> Vanaf 2025</label>
+      </div>
+      <table class="parts" aria-label="Opbouw van de voorspelling"><tbody id="parts"></tbody></table>
+      <button class="btn" id="back" hidden>Terug naar deze film</button>
+    </section>
+    <section class="panel" aria-labelledby="wl-h">
+      <h2 id="wl-h">Je watchlist, op verwacht cijfer</h2>
+      <div class="tools">
+        <input class="search" id="q" type="search" placeholder="Zoek een film" aria-label="Zoek een film">
+        <label class="check"><input type="checkbox" id="nojp"> Zonder Japans</label>
+        <button class="btn" id="refresh">Vernieuwen</button>
+        <button class="btn" id="to-wl" hidden>Watchlist</button>
+      </div>
+      <div class="label" id="count"></div>
+      <div class="list" id="list" role="list"></div>
+      <p class="note"><span id="wl-note">Snapshot van 19 oktober 2026.</span> Klik een film voor de opbouw.</p>
+    </section>
+  </div>
+</div>
+<script src="../lib/model-data.js"></script>
+<script src="../lib/model.js"></script>
+<script src="../lib/fonts.js"></script>
+<script src="../lib/selectors.js"></script>
+<script src="../lib/film.js"></script>
+<script src="watchlist.js"></script>
+<script src="refresh.js"></script>
+<script src="popup.js"></script>
+</body>
+</html>

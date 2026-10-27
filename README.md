@@ -2,7 +2,8 @@
 
 Persoonlijk dashboard (nu: Spotify-speler). Statische site voor GitHub Pages.
 
-Bestanden: `index.html`, `style.css`, `spotify.js`, `config.js`.
+Bestanden: `index.html`, `style.css`, `config.js`, `dash.js`, `spotify.js`, `calendar.js`, de map `widgets/` (één bestand per vak) en `data/films.json`.
+Upload altijd de mappen mee (sleep de hele inhoud van de map `dashboard` in GitHub).
 Demo zonder inloggen: voeg `?demo` toe aan de URL.
 
 ## 1. Spotify-dashboard (developer.spotify.com/dashboard)
@@ -28,7 +29,57 @@ Kopieer de **Client ID** en plak hem in `config.js` op de plek van `PLAK_HIER_JE
 
 Later iets aanpassen: bestand openen op GitHub → potloodje → **Commit changes**, of opnieuw uploaden.
 
-## 3. Lokaal testen (optioneel)
+## 3. Google Agenda (console.cloud.google.com)
+
+1. Bovenaan: projectkiezer → **New project** → naam `Dashboard` → **Create**. Zorg dat dit project geselecteerd is.
+2. Zoekbalk: **Google Calendar API** → **Enable**.
+3. Menu → **Google Auth Platform** (of "OAuth consent screen") → **Get started**:
+   app-naam `Dashboard`, je Gmail als support-e-mail, Audience **External**, je Gmail als contact → **Create**.
+4. **Audience** → **Test users** → **Add users** → je eigen Gmail-adres → **Save**.
+5. **Clients** → **Create client** → type **Web application**, naam `Dashboard`.
+   Bij **Authorized JavaScript origins** (géén `/` aan het eind, geen pad):
+   - `https://nbroers05.github.io`
+   - `http://127.0.0.1:8000`
+   Redirect URIs leeg laten → **Create**.
+6. Kopieer de **Client ID** (eindigt op `.apps.googleusercontent.com`) naar `config.js` bij `googleClientId`.
+
+Bij de eerste keer inloggen zegt Google "Google hasn't verified this app": klik **Continue** (het is je eigen app) en vink agenda-toegang aan.
+
+Let op: Google geeft een browser-site maar 1 uur toegang. Daarna verschijnt in de kaart **Vernieuwen**; één klik, geen nieuwe toestemming nodig. Je laatst opgehaalde afspraken blijven zichtbaar.
+
+## 4. Canvas-deadlines in Google Agenda
+
+1. Canvas → **Agenda** (links in het menu) → rechtsonder **Agendafeed** → kopieer de link.
+2. Google Agenda op de computer → links bij **Andere agenda's** het **+** → **Via URL** → link plakken → **Agenda toevoegen**.
+3. Zorg dat het woord **Canvas** in de naam van die agenda staat (Instellingen van die agenda → naam). Daaraan herkent het dashboard hem.
+4. Tip: vink hem links uit in Google Agenda als je de opdrachten niet in je weekoverzicht wil. Het Canvas-vak toont ze toch.
+
+Google ververst geabonneerde agenda's zelf, ongeveer elke 8 tot 24 uur. Een nieuwe deadline kan dus even duren.
+
+## 5. Sterrenvoorspeller
+
+De map `sterrenvoorspeller` is een kopie van de popup uit je extensie (plus `dashboard-shim.js` en `dashboard.css` om hem als website te laten draaien).
+Pas je de extensie aan, kopieer dan `lib/`, `popup/` (behalve die twee bestanden) en `fonts/` opnieuw.
+
+Zonder extensie toont hij de watchlist-snapshot van 19 oktober. **Vernieuwen** zit er niet in: Letterboxd laat een gewone website hun pagina's niet ophalen.
+Wil je je vernieuwde watchlist op het dashboard:
+
+1. Zip de **inhoud** van `Episodes Left/letterboxd-voorspeller` (zonder `test/`), onderteken als "unlisted" en installeer versie 0.2.2.
+2. Firefox → `about:addons` → Sterrenvoorspeller → **Rechten** → zet toegang tot `nbroers05.github.io` aan.
+3. Vernieuw in de extensie-popup zoals altijd. Het dashboard neemt de nieuwe lijst over zodra het open staat.
+
+## 6. Episodes Left op het dashboard
+
+Een website kan niet zelf in een extensie kijken. Daarom stuurt Episodes Left (vanaf versie 0.1.2) je lijst door naar het dashboard, alleen op je dashboard-pagina.
+
+1. Zip de **inhoud** van de map `Episodes Left/episodes-left` (niet de map zelf).
+2. Onderteken hem op addons.mozilla.org als "unlisted", net als eerder, en installeer de nieuwe versie in Firefox.
+   Snel testen kan ook: `about:debugging` → Deze Firefox → Tijdelijke add-on laden → `manifest.json`.
+3. Open één keer livechart.me (zoals altijd) en daarna je dashboard.
+
+Op je telefoon is er geen extensie: daar blijft dit vak leeg.
+
+## 7. Lokaal testen (optioneel)
 
 In deze map:
 
