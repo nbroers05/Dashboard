@@ -338,8 +338,11 @@
     img.crossOrigin = 'anonymous';
     img.onload = () => {
       if (currentCover !== url) return;
-      el.cover.src = url;
-      applyColor(img);
+      const swap = () => { el.cover.src = url; applyColor(img); };
+      // Nieuwe hoes vloeit over de oude heen (View Transitions); zonder ondersteuning of bij "beweging beperken" gewoon wisselen
+      const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (document.startViewTransition && el.cover.getAttribute('src') && !calm && !document.hidden) document.startViewTransition(swap);
+      else swap();
     };
     img.onerror = () => { if (currentCover === url) el.cover.src = url; };
     img.src = url;

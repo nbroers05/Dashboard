@@ -78,12 +78,27 @@ DASH.widget('w-weather', (card, body, guard) => {
     box.append(iconImg(name, emoji));
     return box;
   }
+  // Stilstaande versie van het icoon: de animatie-tags eruit, zodat er niets blijft bewegen
+  const staticIcons = new Map();
+  function staticIcon(name) {
+    if (!staticIcons.has(name)) {
+      const p = fetch(`${ICONS}${name}.svg`)
+        .then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.text(); })
+        .then((svgText) => URL.createObjectURL(new Blob([
+          svgText.replace(/<animate(?:Transform|Motion)?\b[^>]*\/>/g, '').replace(/<animate(?:Transform|Motion)?\b[\s\S]*?<\/animate(?:Transform|Motion)?>/g, ''),
+        ], { type: 'image/svg+xml' })));
+      p.catch(() => staticIcons.delete(name));
+      staticIcons.set(name, p);
+    }
+    return staticIcons.get(name);
+  }
   function iconImg(name, emoji) {
     const img = new Image();
     img.alt = '';
     img.decoding = 'async';
-    img.onerror = () => img.replaceWith(h('span', 'fallback', emoji));
-    img.src = `${ICONS}${name}.svg`;
+    const fail = () => img.replaceWith(h('span', 'fallback', emoji));
+    img.onerror = fail;
+    staticIcon(name).then((src) => { img.src = src; }, fail);
     return img;
   }
 
