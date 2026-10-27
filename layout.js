@@ -145,4 +145,6 @@
 
   apply();
   window.matchMedia('(max-width: 700px)').addEventListener('change', apply);
+  // desk.js zet de vakken terug als het scherm smaller wordt, en past dan je indeling opnieuw toe
+  DASH.layoutApply = apply;
 })();

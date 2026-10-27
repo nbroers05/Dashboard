@@ -34,6 +34,17 @@ DASH.widget('w-rain', (card, body, guard) => {
     const head = h('div', 'rn-head');
     head.append(h('div', 'w-mid rn-text', text));
 
+    // Helemaal droog: een vlakke lijn met de boodschap in het midden, geen lege staafjes
+    if (!wet) {
+      const flat = h('div', 'rn-flat');
+      flat.setAttribute('role', 'img');
+      flat.setAttribute('aria-label', 'Geen regen de komende 2 uur');
+      flat.append(h('span', null, 'Geen regen de komende 2 uur'));
+      const foot = h('div', 'w-sub rn-foot', `Bron: ${r.source}${r.source === 'Open-Meteo' ? ' (Buienradar niet bereikbaar)' : ''} · ${fmtTime(r.updated)}`);
+      body.replaceChildren(head, flat, foot);
+      return;
+    }
+
     // Staafjes: wortel-schaal, zodat motregen ook zichtbaar is naast een flinke bui
     const top = Math.max(2, ...slots.map((s) => s.mmh));
     const chart = h('div', 'rn-chart');

@@ -437,6 +437,10 @@ button.al-item:hover { background: rgba(255, 255, 255, .1); }
 .al-calm { margin: auto 0; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; }
 .al-check { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: color-mix(in srgb, var(--c) 30%, transparent); color: var(--ct); font-size: 1.6rem; font-weight: 800; }
 .al-helper { margin: 6px 0 0; font-size: .75rem; }
+.al-more { align-self: flex-start; margin-top: 2px; padding: 6px 12px; font-size: .8rem; }
+.panel-dialog.al-dialog { height: fit-content; max-height: calc(100dvh - 40px); width: min(620px, calc(100vw - 24px)); }
+.al-dialog .panel-body { height: auto; max-height: calc(100dvh - 110px); padding: 14px 16px 18px; }
+.al-dialog .al-list { overflow: visible; }
 #w-alerts.al-urgent { border-color: color-mix(in srgb, #ff4d4d 50%, transparent); }
 
 /* Laatst gekeken (Letterboxd) */
@@ -546,6 +550,9 @@ button.al-item:hover { background: rgba(255, 255, 255, .1); }
 .rn-axis { display: grid; grid-template-columns: repeat(4, 1fr); font-size: .72rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 .rn-foot { font-size: .78rem; }
 #w-rain.is-wet { --c: #3b82f6; }
+.rn-flat { flex: 1; min-height: 50px; position: relative; display: grid; place-items: center; }
+.rn-flat::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 2px; border-radius: 2px; background: color-mix(in srgb, var(--ct) 45%, transparent); }
+.rn-flat span { position: relative; padding: 2px 12px; border-radius: 99px; background: color-mix(in srgb, var(--c) 18%, #141417); color: var(--ct); font-size: .85rem; font-weight: 650; }
 
 /* Weer-popup in de stijl van een weer-app: achtergrond naar weer en tijdstip */
 .panel-dialog.wx-dialog {
@@ -1415,6 +1422,227 @@ body.minimal .tb-actions { position: absolute; top: max(16px, env(safe-area-inse
   .week { --cols: 38px repeat(7, minmax(84px, 1fr)); margin-left: -6px; margin-right: -6px; font-size: .82rem; }
 }
 
+/* ---------- Breed liggend scherm (desk.js zet .desk): alles in één scherm, niets scrollt behalve agenda en meldingen ---------- */
+html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
+.dashboard.desk {
+  max-width: none;
+  height: 100dvh;
+  padding: 10px 12px;
+  gap: 12px;
+  grid-template-columns: minmax(0, 24fr) minmax(0, 46fr) minmax(0, 30fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-auto-rows: auto;
+  grid-template-areas: "top top top" "left mid right" "more more more";
+  overflow: hidden;
+}
+.desk ~ .layout-bar { display: none; }
+.desk .topbar { grid-area: top; padding: 6px 10px 6px 20px; border-radius: 20px; }
+.desk .tb-time { font-size: 2rem; }
+.desk .tb-day { font-size: .9rem; line-height: 1.25; }
+.desk .tb-search { height: 40px; }
+.desk-col { min-height: 0; min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+.desk-left { grid-area: left; }
+.desk-mid { grid-area: mid; }
+.desk-right { grid-area: right; }
+
+/* Vakken compacter */
+.desk .tile { min-height: 0; padding: 11px 15px; border-radius: 22px; grid-column: auto !important; grid-row: auto !important; }
+.desk .tile .eyebrow { margin-bottom: 4px; font-size: .68rem; }
+.desk .w-big { font-size: 2.3rem; }
+.desk .w-big small { margin-top: 2px; font-size: .78rem; }
+.desk .w-body { gap: 6px; }
+.desk .w-mid { font-size: 1.05rem; }
+.desk .w-sub { font-size: .82rem; }
+
+/* Links: weer + buienalarm, meldingen, AH */
+.desk-weather { flex: 1.7 1 0; min-height: 0; display: flex; flex-direction: column; border-radius: 22px; overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--c-sky) 26%, transparent);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--c-sky) 22%, #151518), color-mix(in srgb, #5a9bd3 12%, #121214)); }
+.desk-weather > .tile { flex: 1 1 0; background: none; border: 0; border-radius: 0; }
+.desk-weather > #w-weather { flex: 1.35 1 0; }
+.desk-weather > #w-rain { border-top: 1px solid rgba(255, 255, 255, .12); }
+.desk .wx-icon { width: 60px; height: 60px; margin: -6px -2px -6px -6px; }
+.desk #w-weather .w-big { font-size: 2rem; }
+.desk #w-weather .w-mid { font-size: .95rem; }
+.desk .wx-temp { gap: 1px; }
+.desk .wx-today { margin-top: 0; }
+.desk .wx-today .w-label { font-size: .62rem; }
+.desk .wx-today b { font-size: .92rem; }
+.desk .wx-commute { padding-top: 6px; font-size: .8rem; line-height: 1.3; }
+.desk .wx-commute .w-pill { padding: 2px 8px; font-size: .72rem; }
+.desk .rn-text { font-size: 1.05rem; }
+.desk .rn-chart { min-height: 40px; }
+.desk #w-alerts { flex: .95 1 0; }
+.desk #w-ah { flex: 1.1 1 0; }
+.desk .ah-bars { height: 40px; margin-top: 0; }
+.desk .ah-bar .v { display: none; }
+.desk .ah-top { gap: 10px; }
+.desk #w-ah .w-big { font-size: 2rem; }
+.desk .ah-pay { margin-top: 4px; padding-top: 4px; }
+.desk .ah-days { font-size: .65rem; }
+.desk .ah-month b { font-size: 1.2rem; }
+
+/* Midden: speler als compacte strook, agenda vult de rest */
+.desk .media-stack { flex: none; }
+.desk .media-stack > .player { padding: 12px 16px; border-radius: 22px; }
+.desk .media-stack.stacked-1 { padding-bottom: 26px; }
+.desk .media-stack.stacked-2 { padding-bottom: 38px; }
+.desk .media-stack > .player[data-pos="1"] { transform: translateY(12px) scale(.97); }
+.desk .media-stack > .player[data-pos="2"] { transform: translateY(22px) scale(.94); }
+.desk .player-view {
+  grid-template-columns: 112px minmax(0, 1fr);
+  grid-template-areas: "cover info" "cover progress" "cover controls";
+  grid-template-rows: auto auto auto;
+  row-gap: 4px;
+  column-gap: 18px;
+  align-items: center;
+}
+.desk .player-view .cover { width: 112px; border-radius: 14px; box-shadow: 0 10px 24px rgba(0, 0, 0, .45); }
+.desk .player-view .info { align-self: end; }
+.desk .player-view .eyebrow { margin-bottom: 0; font-size: .75rem; }
+.desk .player-view .title { font-size: 1.35rem; -webkit-line-clamp: 1; }
+.desk .player-view .artist { margin-top: 0; font-size: .9rem; }
+.desk .player-view .meta { display: none; }
+.desk .player-view .bar { height: 14px; }
+.desk .player-view .times { font-size: .72rem; margin-top: 0; }
+.desk .player-view .controls { flex-direction: row; justify-content: flex-start; gap: 6px; align-self: start; }
+.desk .player-view .group { gap: 4px; }
+.desk .player-view .extra { margin-left: auto; }
+.desk .player-view .btn { width: 40px; height: 40px; }
+.desk .player-view .btn svg { width: 22px; height: 22px; }
+.desk .player-view .btn.pill { width: 64px; height: 40px; }
+.desk .player-view .btn.small { width: 36px; height: 36px; }
+.desk .player-view .btn.small svg { width: 20px; height: 20px; }
+/* Niets aan het spelen / inloggen: nog dunnere strook */
+.desk .player .login-view .title, .desk .player .idle-view .title { font-size: 1.2rem; }
+.desk .player .login-view .row, .desk .player .idle-view .meta { margin-top: 8px; }
+.desk .player .devices { margin-top: 8px; }
+.desk .player .pill-btn { padding: 9px 18px; font-size: .9rem; }
+.desk .player .muted { margin: 4px 0 0; font-size: .9rem; }
+.desk .media-dots { bottom: 0; }
+.desk #calendar { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; padding: 16px 20px; border-radius: 22px; }
+.desk #calendar .view { min-height: 0; }
+.desk #calendar[data-state="main"] .cal-main { flex: 1; min-height: 0; }
+.desk .cal-list { flex: 1; min-height: 0; overflow: auto; margin: 10px 0 6px; scrollbar-width: thin; }
+.desk .agenda .title { font-size: 1.5rem; }
+
+/* Rechts: Canvas, F1, Episodes, film/laatst gekeken */
+.desk #w-canvas { flex: 1.45 1 0; }
+.desk #w-canvas .w-big { font-size: 1.7rem; display: flex; align-items: baseline; gap: 8px; }
+.desk #w-canvas .w-big small { margin: 0; }
+.desk .cv-item.compact .cv-name { font-size: .88rem; }
+.desk .cv-meta { font-size: .72rem; margin-top: 0; }
+.desk #w-f1 { flex: .95 1 0; }
+/* F1: kop bovenaan, aftelklok groot links, circuit klein rechts */
+.desk #w-f1 .w-body { display: grid; grid-template-columns: minmax(0, 1fr) 38%; grid-template-rows: auto minmax(0, 1fr); grid-template-areas: "head head" "foot track"; gap: 6px 10px; }
+.desk #w-f1 .f1-head { grid-area: head; }
+.desk #w-f1 .f1-track { grid-area: track; overflow: hidden; }
+.desk #w-f1 .f1-track svg { width: 100%; height: 100%; }
+.desk #w-f1 .w-body > .w-row { grid-area: foot; align-self: end; flex-direction: column; align-items: flex-start; gap: 6px; }
+.desk #w-f1 .w-btn { padding: 5px 12px; font-size: .78rem; }
+.desk #w-episodes { flex: .9 1 0; }
+.desk #w-episodes .w-big { font-size: 1.7rem; display: flex; align-items: baseline; gap: 8px; }
+.desk #w-episodes .w-big small { margin: 0; }
+.desk .cv-item { padding: 4px 10px 4px 8px; gap: 8px; }
+.desk .cv-check { width: 18px; height: 18px; }
+.desk .cv-name { font-size: .92rem; }
+.desk .cv-list { gap: 5px; }
+.desk .cv-more { padding: 4px 12px; font-size: .78rem; }
+.desk .f1-head { gap: 10px; }
+.desk .f1-flag { width: 48px; border-radius: 6px; }
+.desk .f1-head .w-mid { font-size: 1rem; }
+.desk .f1-track { min-height: 0; flex: 1 1 0; }
+.desk .f1-track svg { max-height: 100%; }
+.desk .f1-count { font-size: 2.6rem; }
+.desk .ep-covers { padding: 2px 0 4px; flex: 1; min-height: 0; }
+.desk .ep-cover { width: auto; height: 100%; display: flex; flex-direction: column; }
+.desk .ep-cover .img-box { width: auto; height: 100%; min-height: 0; flex: 1; }
+.desk .ep-name { display: none; }
+.desk-tabs { flex: 1.1 1 0; min-height: 0; display: flex; flex-direction: column; border-radius: 22px; overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--c-film) 26%, transparent);
+  background: linear-gradient(150deg, color-mix(in srgb, var(--c-film) 18%, #151518), #121214); }
+.desk-tabbar { display: flex; gap: 4px; padding: 8px 10px 0; }
+.desk-tabbar button { flex: 1; border: 0; border-radius: 12px; padding: 7px 10px; background: none; color: var(--muted); font: inherit; font-size: .78rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; cursor: pointer; }
+.desk-tabbar button[aria-selected="true"] { background: rgba(255, 255, 255, .1); color: var(--text); }
+.desk-tabs > .tile { flex: 1 1 0; background: none; border: 0; border-radius: 0; padding-top: 8px; }
+.desk-tabs > .tile > .eyebrow { display: none; }
+.desk .film { gap: 12px; }
+.desk #w-stars .w-body { flex-direction: row; align-items: stretch; gap: 12px; }
+.desk #w-stars .film { flex: 1; min-width: 0; }
+.desk #w-stars .film-actions { flex: none; width: 140px; margin: 0; grid-template-columns: 1fr; align-content: center; gap: 6px; }
+.desk .film-poster { width: 72px; }
+.desk .film-info { gap: 2px; }
+.desk .film-info .w-mid { font-size: 1.1rem; }
+.desk .film-actions .w-btn { padding: 7px 10px; font-size: .8rem; }
+.desk .lb-row { gap: 8px; grid-auto-columns: minmax(60px, 1fr); }
+.desk .lb-poster { width: auto; height: 100%; max-width: 100%; min-height: 0; }
+.desk .lb-film { min-height: 0; }
+
+/* Onderaan: Meer (mail, to-do, gezondheid), klapt naar boven uit over de onderste helft */
+.desk-more { grid-area: more; position: relative; z-index: 30; }
+.desk-more-bar {
+  width: 100%; display: flex; align-items: center; gap: 14px;
+  padding: 7px 18px; border: 1px solid rgba(255, 255, 255, .08); border-radius: 16px;
+  background: color-mix(in srgb, var(--tint) 30%, rgba(22, 22, 24, .9)); color: var(--text); font: inherit; font-size: .88rem; cursor: pointer; text-align: left;
+}
+.desk-more-bar:hover { background: color-mix(in srgb, var(--tint) 40%, rgba(32, 32, 36, .95)); }
+.desk-more-label { font-weight: 750; }
+.desk-more-list { color: var(--muted); }
+.desk-more-chev { color: var(--muted); transition: transform .3s; }
+.desk-more.open .desk-more-chev { transform: rotate(180deg); }
+.desk-more-bar .version { grid-column: auto; margin-left: auto; padding: 0; font-size: .72rem; }
+.desk-drawer {
+  position: absolute; left: 0; right: 0; bottom: calc(100% + 10px);
+  height: calc(50dvh - 40px);
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px;
+  padding: 12px; border-radius: 24px;
+  background: rgba(14, 14, 16, .92); border: 1px solid rgba(255, 255, 255, .1);
+  box-shadow: 0 -20px 60px rgba(0, 0, 0, .55);
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  transform: translateY(16px); opacity: 0; visibility: hidden; pointer-events: none;
+  transition: transform .35s cubic-bezier(.2, .8, .2, 1), opacity .25s, visibility .35s;
+}
+.desk-more.open .desk-drawer { transform: none; opacity: 1; visibility: visible; pointer-events: auto; }
+.desk-drawer > .tile { min-height: 0; overflow: hidden; }
+
+/* Lage schermen (bijv. laptop 1366x768): bijzaken weg, zodat alles blijft passen */
+@media (max-height: 820px) {
+  .dashboard.desk { padding: 8px 10px; gap: 10px; }
+  .desk-col { gap: 10px; }
+  .desk .tb-time { font-size: 1.7rem; }
+  .desk .tb-search { height: 36px; }
+  .desk .tile { padding: 9px 13px; }
+  .desk .player-view { grid-template-columns: 88px minmax(0, 1fr); column-gap: 14px; }
+  .desk .player-view .cover { width: 88px; }
+  .desk .player-view .title { font-size: 1.15rem; }
+  .desk .player-view .btn { width: 36px; height: 36px; }
+  .desk .player-view .btn.pill { width: 56px; height: 36px; }
+  .desk .player-view .btn.small { width: 32px; height: 32px; }
+  .desk .wx-temp .w-sub, .desk .rn-foot, .desk .ah-bars, .desk .ah-days, .desk .film-info > .w-sub:nth-child(4), .desk .wx-today .w-label { display: none; }
+  .desk-weather > #w-weather { flex: 1.6 1 0; }
+  .desk #w-weather .w-big { font-size: 1.7rem; }
+  .desk .film-poster { width: 56px; }
+  .desk .wx-icon { width: 48px; height: 48px; }
+  .desk #w-canvas .w-body > .w-row { display: none; }
+  .desk .cv-meta .cv-course { display: none; }
+  .desk .f1-count { font-size: 2.1rem; }
+  .desk #w-episodes .w-big { font-size: 1.4rem; }
+  .desk #w-ah .w-big { font-size: 1.7rem; }
+}
+
+/* Songtekst als pop-up boven het dashboard (zoals de weer-popup) */
+.desk #lyrics:not([hidden]) {
+  position: fixed; z-index: 60; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: min(620px, 92vw); height: min(82dvh, 780px);
+  grid-column: auto; grid-row: auto;
+  padding: 22px 26px; border-radius: 28px; border: 0;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--tint) 75%, #0b0b0d), color-mix(in srgb, var(--tint) 30%, #0b0b0d));
+  box-shadow: 0 0 0 100vmax rgba(0, 0, 0, .55), 0 30px 80px rgba(0, 0, 0, .6);
+  animation: ly-pop .35s cubic-bezier(.2, .8, .2, 1);
+}
+@keyframes ly-pop { from { opacity: 0; transform: translate(-50%, -48%) scale(.96); } }
+.desk #lyrics .ly-line { font-size: 1.5rem; }
+
 /* ---------- Animaties: alleen als er iets gebeurt, nooit doorlopend ---------- */
 /* Vakken schuiven zacht in bij het laden (motion.js zet --i en de klasse .intro) */
 @keyframes rise {
@@ -1422,8 +1650,8 @@ body.minimal .tb-actions { position: absolute; top: max(16px, env(safe-area-inse
   to { opacity: 1; transform: none; }
 }
 /* dash.js zet .booting terwijl de vakken nog laden; motion.js haalt het weg en start .intro */
-body.booting .dashboard > .card, body.booting .media-stack, body.booting .widgets > .tile { opacity: 0; }
-body.intro .dashboard > .card, body.intro .media-stack, body.intro .widgets > .tile {
+body.booting .dashboard > .card, body.booting .media-stack, body.booting .widgets > .tile, body.booting .desk-col > *, body.booting .desk-more { opacity: 0; }
+body.intro .dashboard > .card, body.intro .media-stack, body.intro .widgets > .tile, body.intro .desk-col > *, body.intro .desk-more {
   animation: rise .9s cubic-bezier(.2, .7, .2, 1) both;
   animation-delay: calc(var(--i, 0) * 75ms);
 }

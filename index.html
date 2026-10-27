@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400..800&display=swap">
   <!-- ?v=N: ophogen bij elke wijziging (style.css, config, dash, topbar); de rest krijgt hetzelfde nummer via dash.js -->
-  <link rel="stylesheet" href="style.css?v=18">
+  <link rel="stylesheet" href="style.css?v=20">
 </head>
 <body>
   <main class="dashboard">
@@ -216,13 +216,13 @@
 
   <div id="toast" role="status"></div>
 
-  <script src="config.js?v=18"></script>
-  <script src="dash.js?v=18"></script>
-  <script src="topbar.js?v=18"></script>
+  <script src="config.js?v=20"></script>
+  <script src="dash.js?v=20"></script>
+  <script src="topbar.js?v=20"></script>
   <!-- De rest laadt dash.js in deze volgorde: meteen, of met ?mini=1 pas als je het volledige dashboard opent -->
   <script>
     DASH.boot([
-      'layout.js', 'motion.js', 'spotify.js', 'https://accounts.google.com/gsi/client', 'calendar.js',
+      'layout.js', 'desk.js', 'motion.js', 'spotify.js', 'https://accounts.google.com/gsi/client', 'calendar.js',
       'widgets/media.js', 'widgets/lyrics.js', 'widgets/weather.js', 'widgets/f1.js', 'widgets/rain.js', 'widgets/ah.js',
       'widgets/canvas.js', 'widgets/stars.js', 'widgets/episodes.js', 'widgets/letterboxd.js', 'widgets/todo.js',
       'widgets/mail.js', 'widgets/health.js', 'widgets/alerts.js',

@@ -22,11 +22,68 @@ DASH.widget('w-alerts', (card, body, guard) => {
     return b;
   }
 
+  // Eén melding als rij
+  function alertRow(a) {
+    const row = h(a.onClick ? 'button' : 'div', `al-item lv-${a.level}`);
+    if (a.onClick) { row.type = 'button'; row.onclick = a.onClick; }
+    const txt = h('div', 'al-txt');
+    txt.append(h('b', null, a.text));
+    if (a.sub) txt.append(h('span', 'w-sub', a.sub));
+    row.append(h('span', 'al-icon', a.icon || '•'), txt);
+    if (a.onDismiss) row.append(closeBtn('Gezien', a.onDismiss));
+    return row;
+  }
+  function phoneRow(n, icon) {
+    const row = h('div', 'al-item al-phone');
+    const txt = h('div', 'al-txt');
+    const top = h('div', 'al-top');
+    top.append(h('b', null, icon ? `📱 ${n.title}` : n.title), h('span', 'al-time', when(n.time)));
+    txt.append(top);
+    if (n.body) txt.append(h('span', 'al-body', n.body));
+    row.append(txt, closeBtn('Weghalen (ook van je pc)', () => dismissPhone(n.id)));
+    return row;
+  }
+
+  // Volledige lijst (vak in de gewone indeling, of de pop-up "Alle meldingen")
+  function fullList(alerts, phoneItems, more) {
+    const list = h('div', 'al-list');
+    alerts.forEach((a) => list.append(alertRow(a)));
+    if (phoneItems.length) {
+      const title = h('div', 'al-section');
+      title.append(h('span', null, '📱 Telefoon'));
+      if (more) title.append(h('span', 'w-sub', `+${more} meer`));
+      list.append(title);
+      phoneItems.forEach((n) => list.append(phoneRow(n, false)));
+    }
+    return list;
+  }
+
+  // Breed scherm: alleen de laatste 3, de rest via een knop
+  const COMPACT = 3;
+  const compact = () => !!document.querySelector('.dashboard.desk');
+  let allPanel = null;
+  function openAll() {
+    if (!allPanel) {
+      allPanel = DASH.panel('Alle meldingen', 'var(--c)');
+      allPanel.dialog.classList.add('al-dialog');
+      allPanel.dialog.style.setProperty('--c', '#a78bfa');
+    }
+    fillAll();
+    allPanel.open();
+  }
+  function fillAll() {
+    if (!allPanel) return;
+    const alerts = DASH.allAlerts().sort((a, b) => ORDER[a.level] - ORDER[b.level]);
+    const list = fullList(alerts, phone || [], 0);
+    if (!list.children.length) list.append(h('p', 'w-note', 'Niks aan de hand.'));
+    allPanel.body.replaceChildren(list);
+  }
+
   function render() {
     const alerts = DASH.allAlerts().sort((a, b) => ORDER[a.level] - ORDER[b.level]);
-    const phoneItems = (phone || []).slice(0, PHONE_SHOW);
     const total = alerts.length + (phone ? phone.length : 0);
     card.classList.toggle('al-urgent', alerts.some((a) => a.level === 'urgent'));
+    if (allPanel && allPanel.dialog.open) fillAll();
 
     if (!total) {
       const box = h('div', 'al-calm');
@@ -36,33 +93,21 @@ DASH.widget('w-alerts', (card, body, guard) => {
       return;
     }
 
-    const list = h('div', 'al-list');
-    for (const a of alerts) {
-      const row = h(a.onClick ? 'button' : 'div', `al-item lv-${a.level}`);
-      if (a.onClick) { row.type = 'button'; row.onclick = a.onClick; }
-      const txt = h('div', 'al-txt');
-      txt.append(h('b', null, a.text));
-      if (a.sub) txt.append(h('span', 'w-sub', a.sub));
-      row.append(h('span', 'al-icon', a.icon || '•'), txt);
-      if (a.onDismiss) row.append(closeBtn('Gezien', a.onDismiss));
-      list.append(row);
-    }
-
-    if (phoneItems.length) {
-      const title = h('div', 'al-section');
-      title.append(h('span', null, '📱 Telefoon'));
-      if (phone.length > PHONE_SHOW) title.append(h('span', 'w-sub', `+${phone.length - PHONE_SHOW} meer`));
-      list.append(title);
-      for (const n of phoneItems) {
-        const row = h('div', 'al-item al-phone');
-        const txt = h('div', 'al-txt');
-        const top = h('div', 'al-top');
-        top.append(h('b', null, n.title), h('span', 'al-time', when(n.time)));
-        txt.append(top);
-        if (n.body) txt.append(h('span', 'al-body', n.body));
-        row.append(txt, closeBtn('Weghalen (ook van je pc)', () => dismissPhone(n.id)));
-        list.append(row);
+    let list;
+    if (compact()) {
+      // Belangrijkste eerst (urgent, dan je telefoon, dan de rest), maximaal 3
+      const rows = [...alerts.filter((a) => a.level === 'urgent').map(alertRow), ...(phone || []).map((n) => phoneRow(n, true)), ...alerts.filter((a) => a.level !== 'urgent').map(alertRow)];
+      list = h('div', 'al-list');
+      list.append(...rows.slice(0, COMPACT));
+      if (rows.length > COMPACT) {
+        const more = h('button', 'w-btn ghost al-more', `Alle meldingen (${rows.length}) →`);
+        more.type = 'button';
+        more.onclick = openAll;
+        list.append(more);
       }
+    } else {
+      const phoneItems = (phone || []).slice(0, PHONE_SHOW);
+      list = fullList(alerts, phoneItems, phone && phone.length > PHONE_SHOW ? phone.length - PHONE_SHOW : 0);
     }
 
     const head = h('div', 'w-row');
@@ -72,6 +117,8 @@ DASH.widget('w-alerts', (card, body, guard) => {
     body.replaceChildren(head, list);
     if (helperError) body.append(h('p', 'w-sub al-helper', helperError));
   }
+  window.addEventListener('dash:layout', () => render());
+
 
   // ---------- Telefoon via het hulpprogramma ----------
   async function loadPhone() {
