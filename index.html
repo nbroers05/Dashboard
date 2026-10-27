@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400..800&display=swap">
   <!-- ?v=N: ophogen bij elke wijziging (style.css, config, dash, topbar); de rest krijgt hetzelfde nummer via dash.js -->
-  <link rel="stylesheet" href="style.css?v=16">
+  <link rel="stylesheet" href="style.css?v=17">
 </head>
 <body>
   <main class="dashboard">
@@ -37,8 +37,11 @@
       </div>
     </header>
 
+    <!-- Mediastapel: Spotify plus wat er verder op deze pc speelt (widgets/media.js); de kaart vooraan speelt, de rest steekt erachter uit -->
+    <div class="media-stack" id="media-stack">
+
     <!-- Spotify -->
-    <section id="spotify" class="card player" data-state="loading" aria-live="polite">
+    <section id="spotify" class="card player" data-state="loading" aria-live="polite" data-media-id="spotify">
 
       <div class="view login-view">
         <p class="eyebrow">Spotify</p>
@@ -106,6 +109,8 @@
       </div>
 
     </section>
+
+    </div>
 
     <!-- Songtekst: verschijnt naast de speler als je op de tekst-knop drukt -->
     <section id="lyrics" class="card tile lyrics" hidden>
@@ -211,14 +216,14 @@
 
   <div id="toast" role="status"></div>
 
-  <script src="config.js?v=16"></script>
-  <script src="dash.js?v=16"></script>
-  <script src="topbar.js?v=16"></script>
+  <script src="config.js?v=17"></script>
+  <script src="dash.js?v=17"></script>
+  <script src="topbar.js?v=17"></script>
   <!-- De rest laadt dash.js in deze volgorde: meteen, of met ?mini=1 pas als je het volledige dashboard opent -->
   <script>
     DASH.boot([
       'layout.js', 'motion.js', 'spotify.js', 'https://accounts.google.com/gsi/client', 'calendar.js',
-      'widgets/lyrics.js', 'widgets/weather.js', 'widgets/f1.js', 'widgets/rain.js', 'widgets/ah.js',
+      'widgets/media.js', 'widgets/lyrics.js', 'widgets/weather.js', 'widgets/f1.js', 'widgets/rain.js', 'widgets/ah.js',
       'widgets/canvas.js', 'widgets/stars.js', 'widgets/episodes.js', 'widgets/letterboxd.js', 'widgets/todo.js',
       'widgets/mail.js', 'widgets/health.js', 'widgets/alerts.js',
     ]);

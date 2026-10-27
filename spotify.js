@@ -348,50 +348,10 @@
     img.src = url;
   }
 
-  // Gemiddelde "levendige" kleur uit de hoes halen voor de achtergrond
+  // Achtergrondkleur uit de hoes (berekening in dash.js); de kaart die vooraan staat in de mediastapel bepaalt de kleur
   function applyColor(img) {
-    try {
-      const size = 32;
-      const c = document.createElement('canvas');
-      c.width = c.height = size;
-      const ctx = c.getContext('2d', { willReadFrequently: true });
-      ctx.drawImage(img, 0, 0, size, size);
-      const px = ctx.getImageData(0, 0, size, size).data;
-      let r = 0, g = 0, b = 0, w = 0;
-      for (let i = 0; i < px.length; i += 4) {
-        const max = Math.max(px[i], px[i + 1], px[i + 2]);
-        const min = Math.min(px[i], px[i + 1], px[i + 2]);
-        const sat = max ? (max - min) / max : 0;
-        const light = (max + min) / 510;
-        const weight = 0.03 + sat * sat * (1 - Math.abs(light - 0.5) * 1.6);
-        r += px[i] * weight; g += px[i + 1] * weight; b += px[i + 2] * weight; w += weight;
-      }
-      const [h, s] = rgbToHsl(r / w, g / w, b / w);
-      const root = document.documentElement.style;
-      if (s < 0.12) {
-        root.setProperty('--tint', `hsl(${h} 6% 26%)`);
-        root.setProperty('--accent', 'hsl(0 0% 92%)');
-      } else {
-        root.setProperty('--tint', `hsl(${h} ${Math.round(Math.min(s, 0.7) * 100)}% 30%)`);
-        root.setProperty('--accent', `hsl(${h} ${Math.round(Math.max(0.45, Math.min(s, 0.85)) * 100)}% 66%)`);
-      }
-    } catch {
-      // Geen CORS of iets anders: standaardkleuren houden
-    }
-  }
-
-  function rgbToHsl(r, g, b) {
-    r /= 255; g /= 255; b /= 255;
-    const max = Math.max(r, g, b), min = Math.min(r, g, b);
-    const l = (max + min) / 2;
-    if (max === min) return [0, 0, l];
-    const d = max - min;
-    const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
-    let h;
-    if (max === r) h = (g - b) / d + (g < b ? 6 : 0);
-    else if (max === g) h = (b - r) / d + 2;
-    else h = (r - g) / d + 4;
-    return [Math.round(h * 60), s, l];
+    const c = DASH.coverTint(img);
+    if (c) DASH.tint('spotify', c);
   }
 
   // Lokaal doortikken van de voortgang

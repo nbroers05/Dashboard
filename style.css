@@ -74,8 +74,8 @@ button { font: inherit; color: inherit; }
 }
 .widgets { display: contents; }
 /* Speler over de volle breedte; met de songtekst open schuift hij in naar 8 kolommen */
-.player { grid-column: 1 / -1; grid-row: span 2; }
-.dashboard.lyrics-open .player { grid-column: span 8; }
+.media-stack { grid-column: 1 / -1; grid-row: span 2; }
+.dashboard.lyrics-open .media-stack { grid-column: span 8; }
 .tile[hidden] { display: none; }
 .agenda { grid-column: 1 / -1; }
 
@@ -127,6 +127,31 @@ button { font: inherit; color: inherit; }
   text-overflow: ellipsis;
 }
 .muted { color: var(--muted); line-height: 1.5; }
+
+/* ---------- Mediastapel (Now Bar-stijl) ---------- */
+/* Alle kaarten in dezelfde cel; de kaart vooraan (pos 0) speelt, de volgende steekt er onderaan smaller uit */
+.media-stack { display: grid; position: relative; min-width: 0; }
+.media-stack > .player { grid-area: 1 / 1; min-width: 0; transition: transform .5s cubic-bezier(.2, .8, .2, 1), filter .5s, opacity .5s; transform-origin: 50% 100%; }
+/* Dicht (niet doorschijnend), anders schemert de kaart erachter door */
+.media-stack > .player { background: color-mix(in srgb, var(--tint) 35%, #161618); }
+.media-stack > .player[data-pos="0"] { z-index: 3; }
+.media-stack > .player[data-pos="1"] { z-index: 2; transform: translateY(20px) scale(.955); filter: brightness(.85); border-color: rgba(255, 255, 255, .22); background: color-mix(in srgb, var(--tint) 30%, #3a3a40); cursor: pointer; }
+.media-stack > .player[data-pos="2"] { z-index: 1; transform: translateY(38px) scale(.91); filter: brightness(.7); border-color: rgba(255, 255, 255, .16); background: color-mix(in srgb, var(--tint) 25%, #2e2e34); cursor: pointer; }
+.media-stack > .player[data-pos="hidden"] { visibility: hidden; opacity: 0; pointer-events: none; }
+.media-stack > .player[data-pos="1"] *, .media-stack > .player[data-pos="2"] * { pointer-events: none; }
+.media-stack.stacked-1 { padding-bottom: 38px; }
+.media-stack.stacked-2 { padding-bottom: 56px; }
+.media-stack > .player[data-pos="1"]:hover, .media-stack > .player[data-pos="2"]:hover { filter: brightness(1); }
+.media-dots { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); display: flex; gap: 6px; z-index: 4; }
+.media-dots button { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .3); cursor: pointer; }
+.media-dots button[aria-current="true"] { background: var(--accent); width: 20px; border-radius: 99px; }
+.media-dots button { transition: width .3s, background .3s; }
+/* Algemene mediakaart (YouTube enz.): zelfde opmaak als Spotify */
+.media-card .play-btn .i-pause, .media-card.playing .play-btn .i-play { display: none; }
+.media-card.playing .play-btn .i-pause { display: block; }
+.media-card .bar { cursor: default; }
+.media-card .app-badge { display: inline-flex; align-items: center; gap: 6px; }
+.media-card .app-badge i { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
 
 /* ---------- Speler ---------- */
 /* Vervaagde hoes als achtergrond van het hele vak */
@@ -1356,7 +1381,7 @@ body.minimal .tb-actions { position: absolute; top: max(16px, env(safe-area-inse
 
 /* Middelgroot (tablet): vakken twee aan twee */
 @media (min-width: 701px) and (max-width: 1000px) {
-  .player { grid-column: 1 / -1; }
+  .media-stack { grid-column: 1 / -1; }
 }
 
 /* ---------- Telefoon: alles onder elkaar ---------- */
@@ -1367,8 +1392,8 @@ body.minimal .tb-actions { position: absolute; top: max(16px, env(safe-area-inse
     padding-top: max(12px, env(safe-area-inset-top));
     gap: 14px;
   }
-  .player, .tile, .agenda { grid-column: 1 / -1; }
-  .player, .dashboard.lyrics-open .player { grid-row: auto; grid-column: 1 / -1; }
+  .media-stack, .tile, .agenda { grid-column: 1 / -1; }
+  .media-stack, .dashboard.lyrics-open .media-stack { grid-row: auto; grid-column: 1 / -1; }
   #lyrics { min-height: 380px; }
   .card { border-radius: 28px; padding: 20px; }
   .tile { padding: 22px; min-height: 200px; }
@@ -1397,14 +1422,14 @@ body.minimal .tb-actions { position: absolute; top: max(16px, env(safe-area-inse
   to { opacity: 1; transform: none; }
 }
 /* dash.js zet .booting terwijl de vakken nog laden; motion.js haalt het weg en start .intro */
-body.booting .dashboard > .card, body.booting .widgets > .tile { opacity: 0; }
-body.intro .dashboard > .card, body.intro .widgets > .tile {
+body.booting .dashboard > .card, body.booting .media-stack, body.booting .widgets > .tile { opacity: 0; }
+body.intro .dashboard > .card, body.intro .media-stack, body.intro .widgets > .tile {
   animation: rise .9s cubic-bezier(.2, .7, .2, 1) both;
   animation-delay: calc(var(--i, 0) * 75ms);
 }
 
 /* Hoes wisselt met een crossfade (spotify.js gebruikt View Transitions); de rest van de pagina wisselt direct */
-.cover { view-transition-name: player-cover; }
+#cover { view-transition-name: player-cover; }
 ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 ::view-transition-group(player-cover) { animation-duration: .7s; }
 ::view-transition-old(player-cover), ::view-transition-new(player-cover) { animation-duration: .7s; height: 100%; object-fit: cover; }

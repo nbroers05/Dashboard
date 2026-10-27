@@ -4,3 +4,5 @@ winrt-Windows.Foundation.Collections
 winrt-Windows.ApplicationModel
 winrt-Windows.UI.Notifications
 winrt-Windows.UI.Notifications.Management
+winrt-Windows.Media.Control
+winrt-Windows.Storage.Streams

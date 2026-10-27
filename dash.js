@@ -167,6 +167,58 @@ window.DASH = (() => {
   }
   const RAIN_MIN = 0.1; // mm per uur: vanaf hier telt het als regen
 
+  // ---------- Achtergrondkleur uit een hoes ----------
+  // Gemiddelde "levendige" kleur → { tint, accent }. De kaart die vooraan staat in de mediastapel bepaalt de kleur van de pagina.
+  function rgbToHsl(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    const l = (max + min) / 2;
+    if (max === min) return [0, 0, l];
+    const d = max - min;
+    const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    let hue;
+    if (max === r) hue = (g - b) / d + (g < b ? 6 : 0);
+    else if (max === g) hue = (b - r) / d + 2;
+    else hue = (r - g) / d + 4;
+    return [Math.round(hue * 60), s, l];
+  }
+  function coverTint(img) {
+    try {
+      const size = 32;
+      const c = document.createElement('canvas');
+      c.width = c.height = size;
+      const ctx = c.getContext('2d', { willReadFrequently: true });
+      ctx.drawImage(img, 0, 0, size, size);
+      const px = ctx.getImageData(0, 0, size, size).data;
+      let r = 0, g = 0, b = 0, w = 0;
+      for (let i = 0; i < px.length; i += 4) {
+        const max = Math.max(px[i], px[i + 1], px[i + 2]);
+        const min = Math.min(px[i], px[i + 1], px[i + 2]);
+        const sat = max ? (max - min) / max : 0;
+        const light = (max + min) / 510;
+        const weight = 0.03 + sat * sat * (1 - Math.abs(light - 0.5) * 1.6);
+        r += px[i] * weight; g += px[i + 1] * weight; b += px[i + 2] * weight; w += weight;
+      }
+      const [hue, s] = rgbToHsl(r / w, g / w, b / w);
+      return s < 0.12
+        ? { tint: `hsl(${hue} 6% 26%)`, accent: 'hsl(0 0% 92%)' }
+        : { tint: `hsl(${hue} ${Math.round(Math.min(s, 0.7) * 100)}% 30%)`, accent: `hsl(${hue} ${Math.round(Math.max(0.45, Math.min(s, 0.85)) * 100)}% 66%)` };
+    } catch {
+      return null; // geen CORS of iets anders: standaardkleuren houden
+    }
+  }
+  const tints = {};
+  let tintOwner = 'spotify';
+  function applyTint() {
+    const t = tints[tintOwner];
+    if (!t) return;
+    document.documentElement.style.setProperty('--tint', t.tint);
+    document.documentElement.style.setProperty('--accent', t.accent);
+  }
+  // Kleur van een bron onthouden; alleen de bron vooraan kleurt de pagina
+  function tint(owner, colors) { tints[owner] = colors; if (owner === tintOwner) applyTint(); }
+  function tintFront(owner) { tintOwner = owner; applyTint(); }
+
   // ---------- Meldingen (widgets/alerts.js toont ze) ----------
   // Elk vak meldt zelf wat er speelt: DASH.alert('canvas', [{ level, icon, text, sub, onDismiss }]) of DASH.alert('canvas', null).
   // level: 'urgent' (rood), 'warn' (oranje) of 'info'. onDismiss = er komt een ✕ bij.
@@ -229,5 +281,5 @@ window.DASH = (() => {
     return { dialog, head, body: content, open: () => dialog.showModal(), close: () => dialog.close() };
   }
 
-  return { VERSION, DEMO, MINI, boot, loadAll, h, store, getJSON, widget, every, onCalendar, HOME, radar, RAIN_MIN, alert, allAlerts, isAH, startOfDay, addDays, startOfWeek, fmtTime, fmtWeekday, fmtDay, nl, img, panel };
+  return { VERSION, DEMO, MINI, boot, loadAll, coverTint, tint, tintFront, h, store, getJSON, widget, every, onCalendar, HOME, radar, RAIN_MIN, alert, allAlerts, isAH, startOfDay, addDays, startOfWeek, fmtTime, fmtWeekday, fmtDay, nl, img, panel };
 })();

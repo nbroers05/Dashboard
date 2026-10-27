@@ -20,6 +20,13 @@ from winrt.windows.ui.notifications.management import UserNotificationListener, 
 
 import google_token
 
+# Media (wat er afspeelt): als dat deel niet laadt, werkt de rest gewoon door
+try:
+    import media
+except Exception as e:  # bijv. pakket nog niet geïnstalleerd
+    media = None
+    MEDIA_FOUT = str(e)
+
 PORT = 8765
 # Alleen meldingen van je telefoon (Phone Link). Zet op False om alle Windows-meldingen te tonen.
 ALLEEN_TELEFOON = True
@@ -145,6 +152,26 @@ a.k{{display:inline-block;margin:6px 8px 6px 0;padding:12px 20px;border-radius:9
             except OSError as e:
                 return self.antwoord(502, {"error": f"Google niet bereikbaar: {e}"})
             return self.antwoord(200, {"access_token": t["access_token"], "expires_in": int(t["expires_at"] - time.time()), "scope": t["scope"]})
+        if pad == "/media":
+            if self.headers.get("Origin") not in TOEGESTAAN:
+                return self.antwoord(403, {"error": "niet toegestaan"})
+            if media is None:
+                return self.antwoord(503, {"error": f"media niet beschikbaar: {MEDIA_FOUT}"})
+            with lock:
+                items = asyncio.run(media.lijst())
+            return self.antwoord(200, {"items": items})
+        if pad == "/media/thumb":
+            t = media.thumb(params.get("k", "")) if media else None
+            if not t:
+                return self.antwoord(404, {"error": "geen hoes"})
+            self.send_response(200)
+            self.cors()
+            self.send_header("Content-Type", t[0])
+            self.send_header("Cache-Control", "max-age=3600")
+            self.send_header("Content-Length", str(len(t[1])))
+            self.end_headers()
+            self.wfile.write(t[1])
+            return
         if pad != "/meldingen":
             return self.antwoord(404, {"error": "niet gevonden"})
         # Andere sites mogen niets lezen
@@ -157,6 +184,15 @@ a.k{{display:inline-block;margin:6px 8px 6px 0;padding:12px 20px;border-radius:9
         self.antwoord(200, {"items": items})
 
     def do_POST(self):
+        # /media/playpause|next|prev?id=...: media bedienen
+        if self.path.startswith("/media/") and self.headers.get("Origin") in TOEGESTAAN and media is not None:
+            pad, _, query = self.path.partition("?")
+            try:
+                with lock:
+                    ok = asyncio.run(media.bedien(dict(urllib.parse.parse_qsl(query)).get("id", ""), pad.rsplit("/", 1)[1]))
+                return self.antwoord(200, {"ok": bool(ok)})
+            except (KeyError, ValueError) as e:
+                return self.antwoord(404, {"error": str(e)})
         # /weg/123: melding weghalen (ook uit het Windows-meldingencentrum)
         if not self.path.startswith("/weg/") or self.headers.get("Origin") not in TOEGESTAAN:
             return self.antwoord(403, {"error": "niet toegestaan"})

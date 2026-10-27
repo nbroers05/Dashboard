@@ -9,7 +9,7 @@
 
   // ---------- Inschuiven ----------
   // Volgorde zoals je ze ziet (na de indeling uit layout.js), daarna één voor één met een klein verschil
-  const cards = [...dash.querySelectorAll(':scope > .card, .widgets > .tile')]
+  const cards = [...dash.querySelectorAll(':scope > .card, :scope > .media-stack, .widgets > .tile')]
     .filter((c) => c.offsetParent !== null)
     .map((c) => ({ c, r: c.getBoundingClientRect() }))
     .sort((a, b) => a.r.top - b.r.top || a.r.left - b.r.left);

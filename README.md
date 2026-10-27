@@ -128,6 +128,10 @@ Je telefoon stuurt zijn meldingen al naar Windows (Phone Link). Een website kan 
 3. Herlaad het dashboard. Chrome of Edge vraagt misschien of de site "apparaten op je lokale netwerk" mag gebruiken: kies **Toestaan** (dat is je eigen pc).
 4. Vraagt Windows om toegang tot meldingen: **Instellingen** → **Privacy en beveiliging** → **Meldingen** → toegang voor apps **Aan**.
 
+### Wat er afspeelt (YouTube enz.)
+
+Het hulpprogramma geeft ook door wat er op deze pc afspeelt (YouTube in de browser, de Spotify-app, VLC, ...). Die verschijnen als kaarten in de speler bovenaan; de kaart die speelt staat vooraan, de andere steekt er onderaan uit. Klik daarop (of veeg) om te wisselen. Na een update van het hulpprogramma: dubbelklik nog een keer op **start.bat** (die installeert wat erbij moet en herstart).
+
 ### Nooit meer "Vernieuwen" (Google via het hulpprogramma)
 
 Google geeft een website maar 1 uur toegang. Het hulpprogramma kan een blijvende sleutel bewaren (alleen op deze pc) en het dashboard elk uur zelf een nieuwe toegang geven.

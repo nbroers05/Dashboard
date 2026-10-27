@@ -7,8 +7,9 @@ powershell -NoProfile -Command "Get-CimInstance Win32_Process -Filter \"Name lik
 if not exist ".venv\Scripts\pythonw.exe" (
   echo Eerste keer: benodigdheden installeren...
   python -m venv .venv || (echo Python niet gevonden. Installeer Python via python.org of de Microsoft Store. & pause & exit /b 1)
-  ".venv\Scripts\python.exe" -m pip install --quiet -r requirements.txt || (echo Installeren mislukt. & pause & exit /b 1)
 )
+rem Elke keer bijwerken: nieuwe onderdelen (bijv. media) komen er zo vanzelf bij; is alles er al, dan gaat dit snel
+".venv\Scripts\python.exe" -m pip install --quiet --disable-pip-version-check -r requirements.txt || (echo Installeren mislukt. & pause & exit /b 1)
 start "" ".venv\Scripts\pythonw.exe" meldingen.py
 echo Hulpprogramma gestart.
 if not exist "tokens.json" (
