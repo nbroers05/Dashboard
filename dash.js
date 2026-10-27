@@ -12,6 +12,34 @@ window.DASH = (() => {
     if (el) el.textContent = `Dashboard versie ${VERSION}${DEMO ? ' · demo' : ''}`;
   });
 
+  // ---------- Laden ----------
+  // ?mini=1 (nieuwe-tabpagina): alleen klok, datum en zoekbalk. De rest (Spotify, agenda, vakken) laadt pas
+  // als je het volledige dashboard opent, zodat een nieuw tabblad meteen klaar is. Zonder ?mini=1 laadt alles meteen.
+  const MINI = new URLSearchParams(location.search).get('mini') === '1';
+  let files = null, wanted = false, loaded = false;
+  function loadAll() {
+    if (loaded) return;
+    if (!files) { wanted = true; return; }
+    loaded = true;
+    // Vakken onzichtbaar tot motion.js ze laat inschuiven (anders flitsen ze eerst even), met een vangnet
+    if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.body.classList.add('booting');
+      setTimeout(() => document.body.classList.remove('booting'), 3000);
+    }
+    for (const f of files) {
+      const el = document.createElement('script');
+      const external = /^https?:/.test(f);
+      el.src = external ? f : `${f}?v=${VERSION}`;
+      // Eigen bestanden in volgorde uitvoeren; Google-login los erbij (calendar.js wacht er zelf op)
+      el.async = external;
+      document.body.append(el);
+    }
+  }
+  function boot(list) {
+    files = list;
+    if (!MINI || wanted) loadAll();
+  }
+
   function h(tag, cls, text) {
     const n = document.createElement(tag);
     if (cls) n.className = cls;
@@ -201,5 +229,5 @@ window.DASH = (() => {
     return { dialog, head, body: content, open: () => dialog.showModal(), close: () => dialog.close() };
   }
 
-  return { VERSION, DEMO, h, store, getJSON, widget, every, onCalendar, HOME, radar, RAIN_MIN, alert, allAlerts, isAH, startOfDay, addDays, startOfWeek, fmtTime, fmtWeekday, fmtDay, nl, img, panel };
+  return { VERSION, DEMO, MINI, boot, loadAll, h, store, getJSON, widget, every, onCalendar, HOME, radar, RAIN_MIN, alert, allAlerts, isAH, startOfDay, addDays, startOfWeek, fmtTime, fmtWeekday, fmtDay, nl, img, panel };
 })();

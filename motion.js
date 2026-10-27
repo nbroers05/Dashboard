@@ -9,12 +9,13 @@
 
   // ---------- Inschuiven ----------
   // Volgorde zoals je ze ziet (na de indeling uit layout.js), daarna één voor één met een klein verschil
-  const cards = [...dash.querySelectorAll(':scope > .topbar, :scope > .card, .widgets > .tile')]
+  const cards = [...dash.querySelectorAll(':scope > .card, .widgets > .tile')]
     .filter((c) => c.offsetParent !== null)
     .map((c) => ({ c, r: c.getBoundingClientRect() }))
     .sort((a, b) => a.r.top - b.r.top || a.r.left - b.r.left);
   cards.forEach(({ c }, i) => c.style.setProperty('--i', Math.min(i, 12)));
   document.body.classList.add('intro');
+  document.body.classList.remove('booting');
   // Daarna weghalen, anders speelt het opnieuw als een vak later verschijnt (songtekst, minimale modus uit)
   setTimeout(() => document.body.classList.remove('intro'), 2600);
 

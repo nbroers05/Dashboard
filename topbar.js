@@ -144,13 +144,17 @@
 
   // ---------- Minimale modus ----------
   const KEY = 'dash.minimal';
-  function setMinimal(on) {
+  // Met ?mini=1 (nieuwe-tabpagina) start hij altijd minimaal en wordt je opgeslagen keuze niet aangepast
+  function setMinimal(on, save = !DASH.MINI) {
     document.body.classList.toggle('minimal', on);
     minBtn.setAttribute('aria-pressed', on);
     minBtn.title = on ? 'Alles weer tonen (Esc)' : 'Minimale modus';
-    store.set(KEY, on);
+    if (save) store.set(KEY, on);
+    // Volledig dashboard: nu pas de rest laden (doet niets als dat al gebeurd is)
+    if (!on) DASH.loadAll();
   }
-  setMinimal(store.get(KEY) === true);
+  setMinimal(DASH.MINI || store.get(KEY) === true, false);
+  if (DASH.MINI) setTimeout(() => search.focus(), 0);
   minBtn.onclick = () => setMinimal(!document.body.classList.contains('minimal'));
 
   // ---------- Sneltoetsen ----------

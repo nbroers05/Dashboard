@@ -1396,7 +1396,9 @@ body.minimal .tb-actions { position: absolute; top: max(16px, env(safe-area-inse
   from { opacity: 0; transform: translateY(14px) scale(.985); }
   to { opacity: 1; transform: none; }
 }
-body.intro .topbar, body.intro .dashboard > .card, body.intro .widgets > .tile {
+/* dash.js zet .booting terwijl de vakken nog laden; motion.js haalt het weg en start .intro */
+body.booting .dashboard > .card, body.booting .widgets > .tile { opacity: 0; }
+body.intro .dashboard > .card, body.intro .widgets > .tile {
   animation: rise .9s cubic-bezier(.2, .7, .2, 1) both;
   animation-delay: calc(var(--i, 0) * 75ms);
 }

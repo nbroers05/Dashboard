@@ -10,6 +10,8 @@ Statische site: vanilla HTML/CSS/JS, geen build-stap, geen server. Hangt altijd 
 - Bij ontwerpwijzigingen: eerst één versie laten zien en op feedback wachten.
 - Sinds 27 okt 2026 commit en pusht Claude zelf naar `main` (daarvoor uploadde Noah met de hand). De Letterboxd-Action commit ook naar `main`: altijd eerst `git pull --rebase` voor het pushen. Zeg na elke wijziging dat hij **Ctrl+F5** moet doen (een oude, bewaarde `layout.js` of `style.css` gaf al eens verwarring).
 
+**Nieuwe-tabpagina:** Noah gebruikt `https://nbroers05.github.io/Dashboard/?mini=1` in Firefox (New Tab Override). `?mini=1` start altijd minimaal, schrijft `dash.minimal` niet weg (uitklappen/terug alleen voor dat tabblad), zet focus op de zoekbalk en laadt Spotify/agenda/vakken pas bij uitklappen (`DASH.loadAll`). Tijdens het laden staat `body.booting` (vakken onzichtbaar) tot motion.js de inschuif-animatie start. Spotify-redirect is `origin + pathname` (zonder query), Google gaat via pop-up/hulpprogramma: geen van beide raakt de parameter.
+
 **Cache:** in `index.html` staat `?v=N` achter `style.css` en alle eigen scripts. Datzelfde N staat onderaan het dashboard als "Dashboard versie N" (dash.js leest het uit zijn eigen script-URL); Noah wil dat versienummer zien, dus bij elke wijziging ophogen. Hoog N op (overal tegelijk) bij elke wijziging aan die bestanden, anders mengt de browser oude en nieuwe bestanden (gebeurde na fase 2: oude `weather.js` + oude `dash.js` → buienalarm "kon niet laden").
 
 ## Lokaal testen
@@ -26,7 +28,7 @@ In demo-modus komen weer, F1, zon, AniList-covers, TMDB-poster en LRCLIB-teksten
 
 | Bestand | Wat |
 |---|---|
-| `index.html` | Topbalk en alle vakken; scripts onderaan in volgorde: config, dash, topbar, layout, motion, spotify, calendar, widgets (alerts.js als laatste) |
+| `index.html` | Topbalk en alle vakken. Statisch geladen: config, dash, topbar. De rest staat in `DASH.boot([...])` onderaan en wordt door dash.js in die volgorde ingevoegd (met dezelfde `?v=`): meteen, of met **`?mini=1`** pas bij uitklappen. Nieuw script = toevoegen aan die lijst |
 | `style.css` | Alle opmaak. 12-koloms grid, per vak een eigen kleur (`--c`), telefoon onder `max-width: 700px` |
 | `config.js` | Client-ID's en sleutels (zie hieronder) |
 | `dash.js` | Gedeelde hulpjes: `DASH.widget()` (elk vak faalt los), `DASH.radar()` (regen komende 2 uur per 5 min: Buienradar raintext, anders Open-Meteo minutely_15; 5 min cache; `DASH.HOME` = Rotterdam), `img()` (kleurvlak als plaatje niet laadt), `panel()` (pop-up), `onCalendar()`, datumfuncties |
