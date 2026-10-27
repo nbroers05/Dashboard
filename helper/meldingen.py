@@ -2,17 +2,23 @@
 
 Draait op je eigen pc en luistert alleen op 127.0.0.1 (niet bereikbaar vanaf andere apparaten).
 Alleen het dashboard (github.io en de lokale testversie) mag de meldingen lezen.
+Geeft het dashboard ook nieuwe Google-tokens (google_token.py), zodat "Vernieuwen" niet meer nodig is.
 Starten: dubbelklik op start.bat in deze map. Zie README, stap 9.
 """
 
 import asyncio
+import html
 import json
 import sys
 import threading
+import time
+import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 from winrt.windows.ui.notifications import KnownNotificationBindings, NotificationKinds
 from winrt.windows.ui.notifications.management import UserNotificationListener, UserNotificationListenerAccessStatus
+
+import google_token
 
 PORT = 8765
 # Alleen meldingen van je telefoon (Phone Link). Zet op False om alle Windows-meldingen te tonen.
@@ -84,8 +90,62 @@ class Handler(BaseHTTPRequestHandler):
         self.cors()
         self.end_headers()
 
+    def pagina(self, code, titel, inhoud):
+        body = f"""<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{titel}</title><style>body{{font-family:system-ui,sans-serif;background:#121214;color:#eee;max-width:560px;margin:60px auto;padding:0 20px;line-height:1.5}}
+a.k{{display:inline-block;margin:6px 8px 6px 0;padding:12px 20px;border-radius:999px;background:#1ed760;color:#06210f;font-weight:700;text-decoration:none}}
+.ok{{color:#5bd38a}}.nee{{color:#ff8a5c}}code{{background:#222;padding:2px 6px;border-radius:6px}}</style>
+<h1>{titel}</h1>{inhoud}""".encode("utf-8")
+        self.send_response(code)
+        self.send_header("Content-Type", "text/html; charset=utf-8")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def koppel(self):
+        st = google_token.status()
+        if not st["client"]:
+            return self.pagina(200, "Google koppelen", "<p class='nee'>Eerst <code>google-client.json</code> in de map <code>helper</code> zetten (README stap 9). Daarna deze pagina vernieuwen.</p>")
+        regels = "".join(
+            f"<p>{google_token.NAMEN[w]}: {'<span class=ok>gekoppeld ✓</span>' if st[w] else '<span class=nee>nog niet gekoppeld</span>'}<br>"
+            f"<a class='k' href='/koppel/{w}'>{'Opnieuw koppelen' if st[w] else 'Koppelen'}</a></p>"
+            for w in google_token.SCOPES
+        )
+        self.pagina(200, "Google koppelen", "<p>Koppel allebei. Daarna haalt het dashboard zelf elk uur een nieuwe toegang op.</p>" + regels)
+
     def do_GET(self):
-        if self.path.split("?")[0] != "/meldingen":
+        pad, _, query = self.path.partition("?")
+        params = dict(urllib.parse.parse_qsl(query))
+        if pad == "/koppel":
+            return self.koppel()
+        if pad.startswith("/koppel/"):
+            try:
+                url = google_token.login_url(pad.rsplit("/", 1)[1], PORT)
+            except google_token.TokenError as e:
+                return self.pagina(400, "Koppelen lukt niet", f"<p class='nee'>{html.escape(str(e))}</p>")
+            self.send_response(302)
+            self.send_header("Location", url)
+            self.end_headers()
+            return
+        if pad == "/oauth":
+            try:
+                naam, missing = google_token.callback(params, PORT)
+            except google_token.TokenError as e:
+                return self.pagina(400, "Koppelen lukt niet", f"<p class='nee'>{html.escape(str(e))}</p><p><a class='k' href='/koppel'>Terug</a></p>")
+            waarschuwing = f"<p class='nee'>Niet alle vinkjes stonden aan; ontbreekt: {html.escape(', '.join(m.rsplit('/', 1)[1] for m in missing))}</p>" if missing else ""
+            return self.pagina(200, f"{naam} gekoppeld ✓", waarschuwing + "<p>Je kunt dit tabblad sluiten.</p><p><a class='k' href='/koppel'>Terug naar koppelen</a></p>")
+        if pad == "/token":
+            # Alleen het dashboard mag een token krijgen
+            if self.headers.get("Origin") not in TOEGESTAAN:
+                return self.antwoord(403, {"error": "niet toegestaan"})
+            try:
+                t = google_token.access_token(params.get("which", ""))
+            except google_token.TokenError as e:
+                return self.antwoord(409, {"error": str(e)})
+            except OSError as e:
+                return self.antwoord(502, {"error": f"Google niet bereikbaar: {e}"})
+            return self.antwoord(200, {"access_token": t["access_token"], "expires_in": int(t["expires_at"] - time.time()), "scope": t["scope"]})
+        if pad != "/meldingen":
             return self.antwoord(404, {"error": "niet gevonden"})
         # Andere sites mogen niets lezen
         if self.headers.get("Origin") not in TOEGESTAAN | {None}:
@@ -117,7 +177,7 @@ def main():
     except OSError:
         print(f"Poort {PORT} is al in gebruik: draait het hulpprogramma al?", file=sys.stderr)
         return
-    print(f"Meldingen voor het dashboard op http://127.0.0.1:{PORT}/meldingen (Ctrl+C om te stoppen)")
+    print(f"Meldingen: http://127.0.0.1:{PORT}/meldingen · Google koppelen: http://127.0.0.1:{PORT}/koppel (Ctrl+C om te stoppen)")
     server.serve_forever()
 
 

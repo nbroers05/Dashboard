@@ -161,6 +161,7 @@ DASH.widget('w-health', (card, body, guard) => {
 
   const load = guard(async () => {
     if (DEMO) return render(demo());
+    if (G && G.refresh) await G.refresh();
     if (!G || !G.connected()) return message('Koppel eerst je Google Agenda (onderaan). Daarna kan gezondheid erbij.');
     if (!G.healthToken()) {
       return G.healthEverGranted()

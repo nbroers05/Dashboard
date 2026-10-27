@@ -128,6 +128,19 @@ Je telefoon stuurt zijn meldingen al naar Windows (Phone Link). Een website kan 
 3. Herlaad het dashboard. Chrome of Edge vraagt misschien of de site "apparaten op je lokale netwerk" mag gebruiken: kies **Toestaan** (dat is je eigen pc).
 4. Vraagt Windows om toegang tot meldingen: **Instellingen** → **Privacy en beveiliging** → **Meldingen** → toegang voor apps **Aan**.
 
+### Nooit meer "Vernieuwen" (Google via het hulpprogramma)
+
+Google geeft een website maar 1 uur toegang. Het hulpprogramma kan een blijvende sleutel bewaren (alleen op deze pc) en het dashboard elk uur zelf een nieuwe toegang geven.
+
+1. console.cloud.google.com → project **Dashboard** → **Google Auth Platform** → **Clients** → **Create client**.
+2. Type: **Desktop app**, naam `Dashboard hulpprogramma` → **Create**.
+3. Klik op **Download JSON** (pijltje bij de nieuwe client). Zet dat bestand in de map `dashboard\helper` en noem het **google-client.json**. (Dit bestand gaat niet naar GitHub.)
+4. Zodat de sleutel niet na 7 dagen verloopt: **Google Auth Platform** → **Audience** → **Publish app** → **Confirm**. De app blijft van jou alleen; Google laat bij het inloggen wel "niet geverifieerd" zien, klik dan **Doorgaan**.
+5. Dubbelklik op **start.bat**. De koppelpagina opent vanzelf (anders: `http://127.0.0.1:8765/koppel`). Klik op **Koppelen** bij "Agenda en Gmail" en bij "Gezondheid", en vink alles aan.
+
+Daarna haalt het dashboard op deze pc zelf nieuwe toegang. Op je telefoon of een andere pc werkt het zoals eerst (met de knop).
+Stoppen: haal de toegang weg op myaccount.google.com/permissions en verwijder `helper	okens.json`.
+
 **Automatisch starten met Windows:** druk op Windows-toets + R, typ `shell:startup` en druk op Enter. Er opent een map. Klik met rechts op **start.bat** (in `dashboard\helper`) → **Snelkoppeling maken**, en sleep die snelkoppeling naar die map.
 
 Stoppen: Taakbeheer → zoek **pythonw** → **Taak beëindigen**.

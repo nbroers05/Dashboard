@@ -94,6 +94,7 @@ DASH.widget('w-mail', (card, body, guard) => {
 
   const load = guard(async () => {
     if (DEMO) return render(demoMail());
+    if (G && G.refresh) await G.refresh();
     if (!G || !G.connected()) return message('Koppel eerst je Google Agenda (onderaan). Daarna kan Gmail erbij.');
     if (!G.gmail()) {
       return G.token()

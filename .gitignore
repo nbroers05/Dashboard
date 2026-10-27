@@ -1,2 +1,6 @@
 helper/.venv/
 __pycache__/
+helper/tokens.json
+helper/tokens.json.tmp
+helper/google-client.json
+helper/client_secret*.json

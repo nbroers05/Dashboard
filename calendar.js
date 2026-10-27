@@ -127,11 +127,63 @@
   }
 
   // ---------- Afspraken ophalen ----------
+  // ---------- Tokens van het hulpprogramma op deze pc (helper/, README stap 9) ----------
+  // Is dat gekoppeld met Google, dan haalt het dashboard zelf een nieuw token als het oude verloopt: geen "Vernieuwen" meer.
+  // Niet bereikbaar (telefoon, andere pc, programma uit): dan gewoon de knop zoals altijd.
+  const HELPER = 'http://127.0.0.1:8765/token';
+  let helperUp = null;
+  async function fromHelper(which) {
+    if (DEMO || helperUp === false) return null;
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 3000);
+      const res = await fetch(`${HELPER}?which=${which}`, { signal: ctrl.signal, cache: 'no-store' }).finally(() => clearTimeout(timer));
+      helperUp = true;
+      return res.ok ? await res.json() : null;
+    } catch {
+      // Even niet meer proberen; na 5 minuten weer
+      helperUp = false;
+      setTimeout(() => { helperUp = null; }, 5 * 60 * 1000);
+      return null;
+    }
+  }
+  let refreshing = null;
+  function refreshFromHelper() {
+    if (refreshing) return refreshing;
+    refreshing = (async () => {
+      let changed = false;
+      if (!token()) {
+        const t = await fromHelper('main');
+        if (t && t.scope.includes(SCOPE)) {
+          store.set(KEY.token, { access: t.access_token, expires: Date.now() + t.expires_in * 1000, gmail: t.scope.includes(GMAIL), helper: true });
+          changed = true;
+        }
+      }
+      if (!healthToken()) {
+        const t = await fromHelper('health');
+        if (t && HEALTH.every((x) => t.scope.includes(x))) {
+          store.set(KEY.healthToken, { access: t.access_token, expires: Date.now() + t.expires_in * 1000, granted: true, helper: true });
+          changed = true;
+        }
+      }
+      if (changed) { el.reconnect.hidden = true; shareToken(); }
+      return changed;
+    })().finally(() => { refreshing = null; });
+    return refreshing;
+  }
+
   async function api(path) {
-    const access = token();
+    let access = token();
+    if (!access && await refreshFromHelper()) access = token();
     if (!access) throw new AuthError();
-    const res = await fetch(API + path, { headers: { Authorization: `Bearer ${access}` } });
-    if (res.status === 401) { store.del(KEY.token); throw new AuthError(); }
+    let res = await fetch(API + path, { headers: { Authorization: `Bearer ${access}` } });
+    if (res.status === 401) {
+      store.del(KEY.token);
+      // Token toch verlopen: één keer stil een nieuwe proberen
+      if (!(await refreshFromHelper()) || !token()) throw new AuthError();
+      res = await fetch(API + path, { headers: { Authorization: `Bearer ${token()}` } });
+      if (res.status === 401) { store.del(KEY.token); throw new AuthError(); }
+    }
     if (!res.ok) throw new Error(`Google-fout ${res.status}`);
     return res.json();
   }
@@ -220,7 +272,9 @@
     healthToken: () => healthToken(),
     healthEverGranted: () => { const t = store.get(KEY.healthToken); return !!(t && t.granted); },
     connectHealth: () => connectHealth(),
-    connected: () => !!store.get(KEY.hint),
+    connected: () => !!store.get(KEY.hint) || !!token(),
+    // Vóór elk gebruik: verlopen tokens zo mogelijk stil vernieuwen via het hulpprogramma
+    refresh: () => refreshFromHelper(),
     connect: () => connect(),
   };
 
@@ -675,8 +729,13 @@
     const cache = store.get(KEY.cache);
     if (cache) { events = cache.events || []; fetchedAt = cache.fetchedAt || 0; }
     if (token()) return load();
-    if (cache || store.get(KEY.hint)) return expired();
-    showLogin();
+    // Eerst stil proberen via het hulpprogramma; lukt dat niet, dan de knop
+    if (cache) render();
+    refreshFromHelper().then(() => {
+      if (token()) load();
+      else if (cache || store.get(KEY.hint)) expired();
+      else showLogin();
+    });
   }
 
   start();
