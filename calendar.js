@@ -4,6 +4,8 @@
   const CLIENT_ID = (window.DASHBOARD_CONFIG || {}).googleClientId || '';
   const CONFIGURED = CLIENT_ID && !/PLAK_HIER/.test(CLIENT_ID);
   const SCOPE = 'https://www.googleapis.com/auth/calendar.readonly';
+  // Gmail alleen lezen, voor het mailvak (widgets/mail.js). Mag ontbreken: dan werkt de agenda gewoon en vraagt het mailvak erom.
+  const GMAIL = 'https://www.googleapis.com/auth/gmail.readonly';
   const API = 'https://www.googleapis.com/calendar/v3';
   const DEMO = new URLSearchParams(location.search).has('demo');
 
@@ -58,7 +60,8 @@
     if (!tokenClient) {
       tokenClient = google.accounts.oauth2.initTokenClient({
         client_id: CLIENT_ID,
-        scope: SCOPE,
+        scope: `${SCOPE} ${GMAIL}`,
+        include_granted_scopes: true,
         callback: onToken,
         error_callback: (err) => {
           if (err && err.type === 'popup_closed') return;
@@ -75,8 +78,9 @@
     if (!google.accounts.oauth2.hasGrantedAllScopes(resp, SCOPE)) {
       return showLogin('Geef bij het inloggen toegang tot je agenda (vinkje aanzetten).');
     }
-    store.set(KEY.token, { access: resp.access_token, expires: Date.now() + resp.expires_in * 1000 });
+    store.set(KEY.token, { access: resp.access_token, expires: Date.now() + resp.expires_in * 1000, gmail: google.accounts.oauth2.hasGrantedAllScopes(resp, GMAIL) });
     el.reconnect.hidden = true;
+    shareToken();
     load();
   }
 
@@ -89,6 +93,7 @@
     const t = store.get(KEY.token);
     if (t && window.google && google.accounts) google.accounts.oauth2.revoke(t.access, () => {});
     [KEY.token, KEY.hint, KEY.cache].forEach(store.del);
+    shareToken();
     events = [];
     clearTimeout(fetchTimer);
     showLogin();
@@ -176,6 +181,18 @@
   function isCanvasCal(cal) {
     return /canvas/i.test(`${cal.summary || ''} ${cal.summaryOverride || ''}`);
   }
+
+  // Het mailvak gebruikt hetzelfde Google-token (geen tweede inlog)
+  function shareToken() {
+    const t = store.get(KEY.token);
+    window.dispatchEvent(new CustomEvent('dash:google', { detail: { gmail: !!(t && t.gmail) } }));
+  }
+  window.DASH_GOOGLE = {
+    token: () => token(),
+    gmail: () => { const t = store.get(KEY.token); return !!(t && t.gmail && token()); },
+    connected: () => !!store.get(KEY.hint),
+    connect: () => connect(),
+  };
 
   // Andere vakken (weer, AH-uren, Canvas) lezen de afspraken hieruit
   function publish(connected) {

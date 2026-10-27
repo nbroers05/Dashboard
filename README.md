@@ -107,7 +107,33 @@ Direct uitproberen: repo → **Actions** → links **Letterboxd** → **Run work
 
 Zonder geheim werkt het ook, maar dan komen de posters van Letterboxd zelf in plaats van TMDB.
 
-## 8. Lokaal testen (optioneel)
+## 8. Mail (Gmail)
+
+Het mailvak gebruikt dezelfde Google-koppeling als de agenda, maar heeft één extra stap nodig in Google Cloud:
+
+1. Ga naar console.cloud.google.com en kies bovenaan het project **Dashboard**.
+2. Zoekbalk: **Gmail API** → **Enable**.
+3. Menu → **Google Auth Platform** → **Data Access** → **Add or remove scopes**.
+4. Zoek `gmail.readonly`, vink **.../auth/gmail.readonly** aan → **Update** → **Save**.
+
+Daarna op het dashboard: klik in het mailvak op **Gmail koppelen** en vink bij Google de toegang tot Gmail aan. Het dashboard kan je mail alleen **lezen**, niet versturen of verwijderen.
+Net als bij de agenda is de toegang 1 uur geldig; daarna één klik op **Vernieuwen**.
+
+## 9. Telefoonmeldingen (hulpprogramma op je pc)
+
+Je telefoon stuurt zijn meldingen al naar Windows (Phone Link). Een website kan daar niet zelf bij, daarom is er een klein hulpprogramma dat ze doorgeeft. Het werkt alleen op de pc waar het draait, en alleen voor het dashboard (andere sites krijgen niets).
+
+1. Open de map `dashboard\helper` in Verkenner.
+2. Dubbelklik op **start.bat**. De eerste keer installeert hij wat hij nodig heeft (een minuutje). Daarna draait hij onzichtbaar op de achtergrond.
+3. Herlaad het dashboard. Chrome of Edge vraagt misschien of de site "apparaten op je lokale netwerk" mag gebruiken: kies **Toestaan** (dat is je eigen pc).
+4. Vraagt Windows om toegang tot meldingen: **Instellingen** → **Privacy en beveiliging** → **Meldingen** → toegang voor apps **Aan**.
+
+**Automatisch starten met Windows:** druk op Windows-toets + R, typ `shell:startup` en druk op Enter. Er opent een map. Klik met rechts op **start.bat** (in `dashboard\helper`) → **Snelkoppeling maken**, en sleep die snelkoppeling naar die map.
+
+Stoppen: Taakbeheer → zoek **pythonw** → **Taak beëindigen**.
+Alle Windows-meldingen tonen in plaats van alleen die van je telefoon: zet in `helper\meldingen.py` `ALLEEN_TELEFOON = False`.
+
+## 10. Lokaal testen (optioneel)
 
 In deze map:
 

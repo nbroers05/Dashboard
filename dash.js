@@ -132,6 +132,17 @@ window.DASH = (() => {
   }
   const RAIN_MIN = 0.1; // mm per uur: vanaf hier telt het als regen
 
+  // ---------- Meldingen (widgets/alerts.js toont ze) ----------
+  // Elk vak meldt zelf wat er speelt: DASH.alert('canvas', [{ level, icon, text, sub, onDismiss }]) of DASH.alert('canvas', null).
+  // level: 'urgent' (rood), 'warn' (oranje) of 'info'. onDismiss = er komt een ✕ bij.
+  const alerts = new Map();
+  function alert(key, list) {
+    if (!list || (Array.isArray(list) && !list.length)) alerts.delete(key);
+    else alerts.set(key, Array.isArray(list) ? list : [list]);
+    window.dispatchEvent(new CustomEvent('dash:alerts'));
+  }
+  const allAlerts = () => [...alerts.values()].flat();
+
   const AH = /\bAH\b/;
   const isAH = (ev) => !ev.allDay && AH.test(ev.title || '');
 
@@ -183,5 +194,5 @@ window.DASH = (() => {
     return { dialog, head, body: content, open: () => dialog.showModal(), close: () => dialog.close() };
   }
 
-  return { DEMO, h, store, getJSON, widget, every, onCalendar, HOME, radar, RAIN_MIN, isAH, startOfDay, addDays, startOfWeek, fmtTime, fmtWeekday, fmtDay, nl, img, panel };
+  return { DEMO, h, store, getJSON, widget, every, onCalendar, HOME, radar, RAIN_MIN, alert, allAlerts, isAH, startOfDay, addDays, startOfWeek, fmtTime, fmtWeekday, fmtDay, nl, img, panel };
 })();

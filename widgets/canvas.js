@@ -107,6 +107,7 @@ DASH.widget('w-canvas', (card, body, guard) => {
   }
 
   function empty(text) {
+    DASH.alert('canvas', null);
     const box = h('div', 'w-empty');
     box.append(h('p', null, text));
     body.replaceChildren(box);
@@ -125,6 +126,13 @@ DASH.widget('w-canvas', (card, body, guard) => {
     const top = [...late, ...upcoming].slice(0, 3);
 
     card.classList.toggle('has-late', late.length > 0);
+
+    // Meldingen: te laat, of binnen 24 uur
+    const soon = upcoming.filter((it) => it.due - now < DAY);
+    DASH.alert('canvas', [
+      ...(late.length ? [{ level: 'urgent', icon: '📚', text: late.length === 1 ? `Te laat: ${late[0].name}` : `${late.length} Canvas-deadlines te laat`, sub: late.length === 1 ? when(late[0], now) : late.map((x) => x.name).join(', '), onClick: openPage }] : []),
+      ...soon.map((it) => ({ level: it.due - now < 6 * HOUR ? 'urgent' : 'warn', icon: '📚', text: it.name, sub: `Canvas · ${when(it, now)}${it.course ? ` · ${it.course}` : ''}`, onClick: openPage })),
+    ]);
     const head = h('div', 'w-row');
     const big = h('div', 'w-big', String(open.length));
     big.append(h('small', null, open.length === 1 ? 'deadline open' : 'deadlines open'));

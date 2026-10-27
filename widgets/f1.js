@@ -107,9 +107,26 @@ DASH.widget('w-f1', (card, body, guard) => {
     return svg;
   }
 
+  // Melding als de volgende sessie binnen een uur begint (of nu bezig is)
+  function f1Alert() {
+    const now = Date.now();
+    const s = sessions.find((x) => x.end > now);
+    if (!s || s.start - now > 3600000) return DASH.alert('f1', null);
+    const live = s.start <= now;
+    const min = Math.max(1, Math.round((s.start - now) / 60000));
+    DASH.alert('f1', {
+      level: live ? 'info' : 'warn',
+      icon: '🏎️',
+      text: live ? `${s.name} is bezig` : `${s.name} begint over ${min} min`,
+      sub: `GP ${s.gp} · ${fmtTime(s.start)}`,
+    });
+  }
+  DASH.every(60 * 1000, guard(f1Alert));
+
   function render() {
     const now = Date.now();
     const s = sessions.find((x) => x.end > now);
+    f1Alert();
     clearInterval(countdown);
     if (!s) {
       body.replaceChildren(h('p', 'w-note', 'Geen sessies meer gepland. Tot volgend seizoen!'));

@@ -130,6 +130,7 @@ DASH.widget('w-weather', (card, body, guard) => {
       .sort((a, b) => a.start - b.start)[0];
     if (!shift) {
       box.append(h('span', 'w-sub', '🚲 Geen AH-dienst gepland.'));
+      DASH.alert('ah-rain', null);
       return box;
     }
     const leave = shift.start - BIKE_MIN * 60000;
@@ -153,7 +154,24 @@ DASH.widget('w-weather', (card, body, guard) => {
     }
     line.append(h('span', null, `🚲 AH ${when} · weg om ${fmtTime(leave)}`), h('span', `w-pill ${cls}`, verdict));
     box.append(line);
+    shiftAlerts(shift, leave, cls, verdict, now);
     return box;
+  }
+
+  // Meldingen: regen vlak voor (heen fietsen) of tijdens je volgende AH-dienst, als die binnen een dag is
+  function shiftAlerts(shift, leave, cls, verdict, now) {
+    const list = [];
+    if (shift.start - now < 24 * 3600000) {
+      const span = `${fmtDay(shift.start)} ${fmtTime(shift.start)}–${fmtTime(shift.end)}`;
+      if (cls === 'bad' || verdict.startsWith('kans')) {
+        list.push({ level: cls === 'bad' ? 'warn' : 'info', icon: '🌧️', text: 'Regen als je naar AH fietst', sub: `Weg om ${fmtTime(leave)} · ${verdict}` });
+      }
+      const during = rainBetween(shift.start, shift.end);
+      if (during.known && (during.mm >= 0.5 || during.prob >= 50)) {
+        list.push({ level: 'info', icon: '☔', text: 'Regen tijdens je AH-dienst', sub: `${span} · ${during.mm >= 0.1 ? `${nl(during.mm)} mm` : `kans ${during.prob}%`}` });
+      }
+    }
+    DASH.alert('ah-rain', list);
   }
 
   // ---------- Popup ----------

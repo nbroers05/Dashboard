@@ -70,6 +70,30 @@ DASH.widget('w-episodes', (card, body, guard) => {
     return inflight;
   }
 
+  // Melding bij een nieuwe aflevering: er staan er meer open dan de vorige keer dat je keek.
+  // De eerste keer wordt alleen onthouden. ✕ (gezien) of zelf kijken zet de teller bij.
+  const SEEN = 'episodes.seen';
+  function newEpisodeAlerts(all) {
+    const now = Object.fromEntries(all.map((r) => [r.title, r.left]));
+    let seen = store.get(SEEN);
+    if (!seen) { store.set(SEEN, now); seen = now; }
+    // Gekeken (minder over): meteen bijwerken, dat is geen melding
+    let changed = false;
+    for (const [t, left] of Object.entries(now)) if (seen[t] != null && left < seen[t]) { seen[t] = left; changed = true; }
+    if (changed) store.set(SEEN, seen);
+    const fresh = all.filter((r) => r.left > (seen[r.title] ?? 0));
+    DASH.alert('episodes', fresh.map((r) => {
+      const extra = r.left - (seen[r.title] ?? 0);
+      return {
+        level: 'info',
+        icon: '📺',
+        text: extra === 1 ? `Nieuwe aflevering: ${r.title}` : `${extra} nieuwe afleveringen: ${r.title}`,
+        sub: `Episodes Left · nog ${r.left} te kijken`,
+        onDismiss: () => { const s = store.get(SEEN) || {}; s[r.title] = r.left; store.set(SEEN, s); newEpisodeAlerts(current.rows); },
+      };
+    }));
+  }
+
   function render(data, covers = store.get(COVERS) || {}) {
     current = data;
     if (!data || !data.rows) return emptyState();
@@ -80,6 +104,7 @@ DASH.widget('w-episodes', (card, body, guard) => {
       body.replaceChildren(box);
       return;
     }
+    newEpisodeAlerts(data.rows);
     const total = rows.reduce((a, r) => a + r.left, 0);
     const head = h('div', 'w-big', String(total));
     head.append(h('small', null, total === 1 ? 'aflevering te gaan' : 'afleveringen te gaan'));

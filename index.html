@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400..800&display=swap">
   <!-- ?v=N: ophogen bij elke wijziging, dan haalt de browser de nieuwe bestanden op in plaats van oude uit de cache -->
-  <link rel="stylesheet" href="style.css?v=7">
+  <link rel="stylesheet" href="style.css?v=8">
 </head>
 <body>
   <main class="dashboard">
@@ -130,6 +130,10 @@
         <p class="eyebrow">Buienalarm · komende 2 uur</p>
         <div class="w-body"><p class="w-note">Laden…</p></div>
       </section>
+      <section id="w-alerts" class="card tile" aria-live="polite">
+        <p class="eyebrow">Meldingen</p>
+        <div class="w-body"></div>
+      </section>
       <section id="w-ah" class="card tile">
         <p class="eyebrow">AH-uren</p>
         <div class="w-body"><p class="w-note">Wacht op je agenda…</p></div>
@@ -137,6 +141,10 @@
       <section id="w-canvas" class="card tile">
         <p class="eyebrow">Canvas · deadlines</p>
         <div class="w-body"><p class="w-note">Wacht op je agenda…</p></div>
+      </section>
+      <section id="w-mail" class="card tile">
+        <p class="eyebrow">Mail</p>
+        <div class="w-body"><p class="w-note">Laden…</p></div>
       </section>
       <section id="w-episodes" class="card tile">
         <p class="eyebrow">Episodes Left</p>
@@ -196,23 +204,25 @@
 
   <div id="toast" role="status"></div>
 
-  <script src="config.js?v=7"></script>
-  <script src="dash.js?v=7"></script>
-  <script src="topbar.js?v=7"></script>
-  <script src="layout.js?v=7"></script>
-  <script src="motion.js?v=7"></script>
-  <script src="spotify.js?v=7"></script>
+  <script src="config.js?v=8"></script>
+  <script src="dash.js?v=8"></script>
+  <script src="topbar.js?v=8"></script>
+  <script src="layout.js?v=8"></script>
+  <script src="motion.js?v=8"></script>
+  <script src="spotify.js?v=8"></script>
   <script src="https://accounts.google.com/gsi/client" async></script>
-  <script src="calendar.js?v=7"></script>
-  <script src="widgets/lyrics.js?v=7"></script>
-  <script src="widgets/weather.js?v=7"></script>
-  <script src="widgets/f1.js?v=7"></script>
-  <script src="widgets/rain.js?v=7"></script>
-  <script src="widgets/ah.js?v=7"></script>
-  <script src="widgets/canvas.js?v=7"></script>
-  <script src="widgets/stars.js?v=7"></script>
-  <script src="widgets/episodes.js?v=7"></script>
-  <script src="widgets/letterboxd.js?v=7"></script>
-  <script src="widgets/todo.js?v=7"></script>
+  <script src="calendar.js?v=8"></script>
+  <script src="widgets/lyrics.js?v=8"></script>
+  <script src="widgets/weather.js?v=8"></script>
+  <script src="widgets/f1.js?v=8"></script>
+  <script src="widgets/rain.js?v=8"></script>
+  <script src="widgets/ah.js?v=8"></script>
+  <script src="widgets/canvas.js?v=8"></script>
+  <script src="widgets/stars.js?v=8"></script>
+  <script src="widgets/episodes.js?v=8"></script>
+  <script src="widgets/letterboxd.js?v=8"></script>
+  <script src="widgets/todo.js?v=8"></script>
+  <script src="widgets/mail.js?v=8"></script>
+  <script src="widgets/alerts.js?v=8"></script>
 </body>
 </html>
