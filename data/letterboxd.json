@@ -1,0 +1,225 @@
+{
+ "user": "nbroers05",
+ "logs": [
+  {
+   "title": "Clueless",
+   "year": 1995,
+   "rating": 3.5,
+   "watched": "2026-10-11",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/nbroers05/film/clueless/",
+   "tmdbId": "9603",
+   "poster": "https://image.tmdb.org/t/p/w342/8AwVTcgpTnmeOs4TdTWqcFDXEsA.jpg"
+  },
+  {
+   "title": "Planet of the Apes",
+   "year": 1968,
+   "rating": 3.5,
+   "watched": "2026-09-27",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/nbroers05/film/planet-of-the-apes/",
+   "tmdbId": "871",
+   "poster": "https://image.tmdb.org/t/p/w342/2r9iKnlSYEk4daQadsXfcjHfIjQ.jpg"
+  },
+  {
+   "title": "Teenage Sex and Death at Camp Miasma",
+   "year": 2026,
+   "rating": 3.0,
+   "watched": "2026-09-22",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/nbroers05/film/teenage-sex-and-death-at-camp-miasma/",
+   "tmdbId": "1240889",
+   "poster": "https://image.tmdb.org/t/p/w342/pW7Ee4eRM4ezWbev6YzYi0zWJKI.jpg"
+  },
+  {
+   "title": "Prometheus",
+   "year": 2012,
+   "rating": 3.0,
+   "watched": "2026-09-17",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/nbroers05/film/prometheus/",
+   "tmdbId": "70981",
+   "poster": "https://image.tmdb.org/t/p/w342/qsYQflQhOuhDpQ0W2aOcwqgDAeI.jpg"
+  },
+  {
+   "title": "Bottle Rocket",
+   "year": 1996,
+   "rating": 3.0,
+   "watched": "2026-09-16",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/nbroers05/film/bottle-rocket-1996/",
+   "tmdbId": "13685",
+   "poster": "https://image.tmdb.org/t/p/w342/6E7mJ5wpzTFbYFbJvTzzZ8Til9C.jpg"
+  },
+  {
+   "title": "Alien: Romulus",
+   "year": 2024,
+   "rating": 3.5,
+   "watched": "2026-09-14",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/nbroers05/film/alien-romulus/",
+   "tmdbId": "945961",
+   "poster": "https://image.tmdb.org/t/p/w342/6mrdmXRhXB2C0n3wJSr6vLntW8h.jpg"
+  },
+  {
+   "title": "Jennifer's Body",
+   "year": 2009,
+   "rating": 3.0,
+   "watched": "2026-09-12",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/nbroers05/film/jennifers-body/",
+   "tmdbId": "19994",
+   "poster": "https://image.tmdb.org/t/p/w342/wrkjsGcFJxcQqR56kJUYAEKKg2T.jpg"
+  },
+  {
+   "title": "A House of Dynamite",
+   "year": 2025,
+   "rating": 2.5,
+   "watched": "2026-09-11",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/nbroers05/film/a-house-of-dynamite/",
+   "tmdbId": "1290159",
+   "poster": "https://image.tmdb.org/t/p/w342/iZCp5pd9NuZQx7hiTT8JivH4Oc7.jpg"
+  },
+  {
+   "title": "Pride & Prejudice",
+   "year": 2005,
+   "rating": 4.0,
+   "watched": "2026-09-10",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/nbroers05/film/pride-prejudice/",
+   "tmdbId": "4348",
+   "poster": "https://image.tmdb.org/t/p/w342/o8UhmEbWPHmTUxP0lMuCoqNkbB3.jpg"
+  },
+  {
+   "title": "Corpse Bride",
+   "year": 2005,
+   "rating": 3.5,
+   "watched": "2026-09-05",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/nbroers05/film/corpse-bride/",
+   "tmdbId": "3933",
+   "poster": "https://image.tmdb.org/t/p/w342/3RAoVTxUk1OzZClscAsynuu670p.jpg"
+  },
+  {
+   "title": "Train Dreams",
+   "year": 2025,
+   "rating": 3.5,
+   "watched": "2026-09-03",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/nbroers05/film/train-dreams/",
+   "tmdbId": "1241983",
+   "poster": "https://image.tmdb.org/t/p/w342/jnaOmD9PmAkNjgVtCn17o7clOYe.jpg"
+  },
+  {
+   "title": "Fruitvale Station",
+   "year": 2013,
+   "rating": 3.5,
+   "watched": "2026-09-02",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/nbroers05/film/fruitvale-station/",
+   "tmdbId": "157354",
+   "poster": "https://image.tmdb.org/t/p/w342/oXSy3nEKFtfw5iRxdG8ouEFAnxs.jpg"
+  },
+  {
+   "title": "The Creator",
+   "year": 2023,
+   "rating": 3.0,
+   "watched": "2026-09-01",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/nbroers05/film/the-creator-2023/",
+   "tmdbId": "670292",
+   "poster": "https://image.tmdb.org/t/p/w342/4MGGsAcifgLFYHwbSGCPYGqg23T.jpg"
+  },
+  {
+   "title": "Lars and the Real Girl",
+   "year": 2007,
+   "rating": 3.5,
+   "watched": "2026-08-30",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/nbroers05/film/lars-and-the-real-girl/",
+   "tmdbId": "6615",
+   "poster": "https://image.tmdb.org/t/p/w342/nkAt4a7KIPc7Fi1BhxNHhYYbe2b.jpg"
+  },
+  {
+   "title": "Guardians of the Galaxy",
+   "year": 2014,
+   "rating": 4.0,
+   "watched": "2026-08-27",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/nbroers05/film/guardians-of-the-galaxy/",
+   "tmdbId": "118340",
+   "poster": "https://image.tmdb.org/t/p/w342/r7vmZjiyZw9rpJMQJdXpjgiCOk9.jpg"
+  },
+  {
+   "title": "The 40 Year Old Virgin",
+   "year": 2005,
+   "rating": 3.5,
+   "watched": "2026-08-27",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/nbroers05/film/the-40-year-old-virgin/",
+   "tmdbId": "6957",
+   "poster": "https://image.tmdb.org/t/p/w342/mVeoqL37gzhMXQVpONi9DGOQ3tZ.jpg"
+  },
+  {
+   "title": "Ghost World",
+   "year": 2001,
+   "rating": 3.5,
+   "watched": "2026-08-27",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/nbroers05/film/ghost-world/",
+   "tmdbId": "1548",
+   "poster": "https://image.tmdb.org/t/p/w342/uwKqnUPE4dSM0kKuMW0vXpURh2T.jpg"
+  },
+  {
+   "title": "Mean Girls",
+   "year": 2004,
+   "rating": 4.0,
+   "watched": "2026-08-26",
+   "rewatch": false,
+   "liked": true,
+   "link": "https://letterboxd.com/nbroers05/film/mean-girls/",
+   "tmdbId": "10625",
+   "poster": "https://image.tmdb.org/t/p/w342/2ZkuQXvVhh45uSvkBej4S7Ix1NJ.jpg"
+  },
+  {
+   "title": "Snatch",
+   "year": 2000,
+   "rating": 3.5,
+   "watched": "2026-08-25",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/nbroers05/film/snatch/",
+   "tmdbId": "107",
+   "poster": "https://image.tmdb.org/t/p/w342/kIBMvdZ3qLUycHLbT6IFs7UtaCq.jpg"
+  },
+  {
+   "title": "The Drama",
+   "year": 2026,
+   "rating": 4.0,
+   "watched": "2026-08-24",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/nbroers05/film/the-drama/",
+   "tmdbId": "1325734",
+   "poster": "https://image.tmdb.org/t/p/w342/rnIOUhzwJDfgQakx8EjoNyItKgs.jpg"
+  }
+ ]
+}

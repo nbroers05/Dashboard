@@ -10,10 +10,12 @@
   const tiles = () => [...holder.querySelectorAll(':scope > .tile')];
 
   // Standaard: [breedte in kolommen (van 12), hoogte in rijen]
-  const ORDER = ['w-weather', 'w-f1', 'w-rain', 'w-ah', 'w-canvas', 'w-episodes', 'w-stars', 'w-todo'];
+  const ORDER = ['w-weather', 'w-f1', 'w-rain', 'w-ah', 'w-canvas', 'w-episodes', 'w-stars', 'w-letterboxd', 'w-todo'];
   // Vakken die vervangen zijn: het nieuwe vak neemt de plek en grootte van het oude over
   const RENAMED = { 'w-sun': 'w-rain' };
   const DEFAULT_WIDE = [4, 2];
+  // Vakken die standaard breder zijn
+  const DEFAULTS = { 'w-letterboxd': [8, 2] };
   const MAX_ROWS = 10;
   const mode = () => (window.matchMedia('(max-width: 700px)').matches ? 'phone' : 'wide');
   const key = () => `dash.layout.v2.${mode()}`;
@@ -54,7 +56,7 @@
       if (t && t.parentElement === holder) holder.append(t);
     }
     for (const t of tiles()) {
-      const [w, h] = (saved.sizes && saved.sizes[t.id]) || DEFAULT_WIDE;
+      const [w, h] = (saved.sizes && saved.sizes[t.id]) || DEFAULTS[t.id] || DEFAULT_WIDE;
       setSize(t, w, h);
     }
   }

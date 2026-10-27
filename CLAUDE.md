@@ -8,7 +8,7 @@ Statische site: vanilla HTML/CSS/JS, geen build-stap, geen server. Hangt altijd 
 - Schrijf in het **Nederlands**, **kort en direct**.
 - Noah is **geen programmeur**: leg stappen (GitHub, Google Cloud, Spotify-dashboard, extensies) concreet en stap voor stap uit.
 - Bij ontwerpwijzigingen: eerst één versie laten zien en op feedback wachten.
-- Sinds 27 okt 2026 commit en pusht Claude zelf naar `main` (daarvoor uploadde Noah met de hand). Zeg na elke wijziging dat hij **Ctrl+F5** moet doen (een oude, bewaarde `layout.js` of `style.css` gaf al eens verwarring).
+- Sinds 27 okt 2026 commit en pusht Claude zelf naar `main` (daarvoor uploadde Noah met de hand). De Letterboxd-Action commit ook naar `main`: altijd eerst `git pull --rebase` voor het pushen. Zeg na elke wijziging dat hij **Ctrl+F5** moet doen (een oude, bewaarde `layout.js` of `style.css` gaf al eens verwarring).
 
 **Cache:** in `index.html` staat `?v=N` achter `style.css` en alle eigen scripts. Hoog N op (overal tegelijk) bij elke wijziging aan die bestanden, anders mengt de browser oude en nieuwe bestanden (gebeurde na fase 2: oude `weather.js` + oude `dash.js` → buienalarm "kon niet laden").
 
@@ -37,6 +37,8 @@ In demo-modus komen weer, F1, zon, AniList-covers, TMDB-poster en LRCLIB-teksten
 | `calendar.js` | Google Agenda (lijst/week), kleuren per categorie, tooltips. Publiceert afspraken via `dash:calendar` / `window.DASH_CALENDAR` |
 | `widgets/*.js` | Eén bestand per vak (zie hieronder) |
 | `sterrenvoorspeller/` | Kopie van de popup van Noahs Firefox-extensie, met `popup/dashboard-shim.js` (nabootsing van `browser.*`) en `popup/dashboard.css` |
+| `.github/workflows/letterboxd.yml` + `.github/scripts/letterboxd.py` | GitHub Action, elk uur (:17) en met de hand: Letterboxd-RSS van nbroers05 → `data/letterboxd.json` (titel, jaar, rating, kijkdatum, rewatch, like, link, tmdbId, poster). Poster via TMDB met secret `TMDB_API_KEY`, anders uit de RSS; poster van vorige keer wordt hergebruikt. Geen tijdstempel in de JSON, commit alleen bij verandering |
+| `data/letterboxd.json` | Wordt door de Action geschreven, niet met de hand aanpassen |
 | `README.md` | Stappen voor Noah (Spotify, GitHub Pages, Google Cloud, Canvas, TMDB, extensies) |
 
 Indeling: bovenaan de topbalk over de volle breedte. Daarna de speler over de volle breedte (met songtekst open: speler 8 kolommen + songtekstvak 4).
@@ -52,6 +54,7 @@ Daarna vakken van 4 kolommen: Weer, F1, Buienalarm / AH-uren, Canvas, Episodes L
 - `episodes.js`: data van de Episodes Left-extensie via `postMessage`; covers via AniList GraphQL. Gebruik `Page { media(search:) }` en niet `Media(search:)`: daarbij maakt één onbekende titel het hele verzoek leeg.
 - `stars.js`: Film van vanavond = bovenste film van de watchlist volgens de Sterrenvoorspeller-formule; poster via TMDB; knop "Voorspel een film" opent de echte popup in een paneel.
 - `lyrics.js`: songtekst via LRCLIB (Spotify geeft zelf geen teksten). Loopt mee, klik op een regel om te spoelen. Bij sped-up/slowed versies worden de tijden omgerekend.
+- `letterboxd.js`: "Laatst gekeken", 5 nieuwste logs (poster, sterren, datum, ♥ en ↻ voor like/rewatch) uit `data/letterboxd.json` (`?t=` per kwartier). Standaard 8 kolommen breed (`DEFAULTS` in `layout.js`).
 - `todo.js`: to-do-lijst, alleen in `localStorage` van die browser.
 
 **Animaties:** nooit iets dat blijft bewegen als er niets gebeurt (afspraak met Noah), behalve de weericoontjes: die vindt hij leuk. Alleen bij laden, bij openen of bij een wijziging. Alles uit bij prefers-reduced-motion (staat onderaan `style.css`).
@@ -64,7 +67,7 @@ Alles staat in `config.js` en is openbaar (staat op GitHub). Dat is bewust: het 
 |---|---|---|
 | Spotify Web API | speler | `spotifyClientId`. App in Dev Mode, geen client secret. Redirect URI's: `https://nbroers05.github.io/Dashboard/`, `https://nbroers05.github.io/dashboard/`, `http://127.0.0.1:8000/` |
 | Google Calendar API | agenda, AH, Canvas | `googleClientId` (OAuth "Web application", project "Dashboard"). JavaScript origins: `https://nbroers05.github.io`, `http://127.0.0.1:8000`. Scope `calendar.readonly`. Token is maar 1 uur geldig (geen server), daarna knop "Vernieuwen" |
-| TMDB | filmposters | `tmdbApiKey` (v3 API key) |
+| TMDB | filmposters | `tmdbApiKey` (v3 API key) in `config.js` voor Film van vanavond; dezelfde key als repository secret `TMDB_API_KEY` voor de Letterboxd-Action |
 | AH-loon | verwacht salaris | `ahUurloon` (bruto, nu 20) |
 | Snelkoppelingen | topbalk | `snelkoppelingen` (lijst van `{ name, url, icon? }`). Canvas-link is nog een placeholder (TODO) |
 | Buienradar (`gpsgadget.buienradar.nl/data/raintext`, CORS `*`), Open-Meteo, Jolpica, AniList, LRCLIB, flagcdn, jsDelivr | buienalarm, weer, F1, covers, songteksten, vlaggen, iconen/circuits | geen sleutel |
@@ -80,16 +83,15 @@ Noah wil per fase: bouwen, committen, kort zeggen wat er gedaan is en wat hij mo
 2. Weer-popup en buienalarm: **gebouwd**, bron Buienradar (Open-Meteo als terugval)
 3. Animaties: **gebouwd** (inschuiven, optellen, popup schaal-fade, hoes-crossfade via View Transitions; op verzoek wat langzamer: inschuiven 0,9 s + 75 ms per vak, optellen 1,2 s, popup 0,35 s, hoes 0,7 s; alles uit bij prefers-reduced-motion)
 4. Canvas op urgentie: **gebouwd** ("aparte pagina" = schermvullend paneel op `#canvas`, omdat alleen het dashboard de agenda-inlog heeft; ingeleverd = zelf afvinken)
-5. Letterboxd via GitHub Action → `data/letterboxd.json`, TMDB-key als secret, vak "Laatst gekeken"
+5. Letterboxd via GitHub Action: **gebouwd** (Noah moet nog secret `TMDB_API_KEY` zetten, zie README stap 7)
 6. Meldingenvak + telefoonmeldingen via ntfy.sh vanuit een Action (eerlijk zijn over wat zonder server niet veilig kan)
 7. AH-loon: alles in één config-object, toeslagen per tijdvak, netto als schatting. Geen verzonnen CAO-getallen
 8. Gezondheid (Google Fit / Health Connect): eerst onderzoeken en rapporteren, pas bouwen na akkoord
 
 ## Af
 
-Speler met bediening, opslaan, spoelen, vervaagde hoes en songtekst; agenda (lijst/week, categoriekleuren, tooltips); weer met popup; buienalarm; F1 met stream-pop-up; AH-uren met periode en salaris; Canvas-deadlines op urgentie met eigen pagina; Episodes Left met covers; Film van vanavond met poster en voorspeller; to-do; Indelen; telefoonweergave. Gecontroleerd op de echte site: AH-periode, Canvas-feed, spelerknoppen in Firefox.
+Speler met bediening, opslaan, spoelen, vervaagde hoes en songtekst; agenda (lijst/week, categoriekleuren, tooltips); weer met popup; buienalarm; F1 met stream-pop-up; AH-uren met periode en salaris; Canvas-deadlines op urgentie met eigen pagina; Episodes Left met covers; Film van vanavond met poster en voorspeller; Laatst gekeken (Letterboxd via Action); to-do; Indelen; telefoonweergave. Gecontroleerd op de echte site: AH-periode, Canvas-feed, spelerknoppen in Firefox.
 
 ## Open / ideeën
 
 - To-do eventueel later koppelen aan Google Tasks (zelfde Google-inlog).
-- Letterboxd: laatste logs (RSS kan niet direct vanuit de browser, er is een tussenstation nodig).

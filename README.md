@@ -90,7 +90,24 @@ Een website kan niet zelf in een extensie kijken. Daarom stuurt Episodes Left (v
 
 Op je telefoon is er geen extensie: daar blijft dit vak leeg.
 
-## 7. Lokaal testen (optioneel)
+## 7. Laatst gekeken (Letterboxd via GitHub Action)
+
+Letterboxd is niet direct vanuit de browser te lezen. Daarom haalt een GitHub Action elk uur je Letterboxd-feed op en zet die in `data/letterboxd.json`. Het vak "Laatst gekeken" leest dat bestand.
+
+De posters komen van TMDB. Daarvoor heeft de Action je TMDB-sleutel nodig, als **geheim** (niet in de code):
+
+1. Ga naar github.com/nbroers05/Dashboard → **Settings** (bovenaan, tandwiel).
+2. Links: **Secrets and variables** → **Actions**.
+3. Klik **New repository secret**.
+4. **Name**: `TMDB_API_KEY` (precies zo, hoofdletters).
+5. **Secret**: je TMDB "API Key" (themoviedb.org → profiel → **Instellingen** → **API** → het vak **API Key**, de korte code van 32 tekens).
+6. **Add secret**.
+
+Direct uitproberen: repo → **Actions** → links **Letterboxd** → **Run workflow** → **Run workflow**. Na een halve minuut staat er een groen vinkje. Daarna draait hij elk uur vanzelf en slaat hij alleen iets op als je iets nieuws gelogd hebt.
+
+Zonder geheim werkt het ook, maar dan komen de posters van Letterboxd zelf in plaats van TMDB.
+
+## 8. Lokaal testen (optioneel)
 
 In deze map:
 

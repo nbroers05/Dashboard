@@ -1,0 +1,39 @@
+# Elk uur de Letterboxd-RSS ophalen en data/letterboxd.json bijwerken.
+# Commit alleen als er iets veranderd is. TMDB-key staat als repository secret TMDB_API_KEY.
+name: Letterboxd
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: letterboxd
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: RSS ophalen
+        env:
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+        run: python3 .github/scripts/letterboxd.py
+
+      - name: Opslaan als er iets veranderd is
+        run: |
+          if git diff --quiet -- data/letterboxd.json && git ls-files --error-unmatch data/letterboxd.json >/dev/null 2>&1; then
+            echo "Niets nieuws"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
+          git add data/letterboxd.json
+          git commit -m "Letterboxd bijgewerkt"
+          git push
