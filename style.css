@@ -1142,6 +1142,9 @@ a.event:hover { background: color-mix(in srgb, var(--c, #888) 24%, rgba(255, 255
 }
 #toast.show { opacity: 1; transform: translate(-50%, 0); }
 
+/* Versienummer onderaan */
+.version { grid-column: 1 / -1; text-align: center; font-size: .78rem; color: var(--muted); opacity: .7; padding: 4px 0 8px; }
+
 /* ---------- Topbalk ---------- */
 .topbar {
   grid-column: 1 / -1;

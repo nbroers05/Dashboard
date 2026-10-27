@@ -5,6 +5,13 @@
 window.DASH = (() => {
   const DEMO = new URLSearchParams(location.search).has('demo');
 
+  // Versienummer onderaan: hetzelfde getal als ?v=N achter de bestanden in index.html
+  const VERSION = (new URL(document.currentScript.src).searchParams.get('v')) || '?';
+  document.addEventListener('DOMContentLoaded', () => {
+    const el = document.getElementById('version');
+    if (el) el.textContent = `Dashboard versie ${VERSION}${DEMO ? ' · demo' : ''}`;
+  });
+
   function h(tag, cls, text) {
     const n = document.createElement(tag);
     if (cls) n.className = cls;
@@ -194,5 +201,5 @@ window.DASH = (() => {
     return { dialog, head, body: content, open: () => dialog.showModal(), close: () => dialog.close() };
   }
 
-  return { DEMO, h, store, getJSON, widget, every, onCalendar, HOME, radar, RAIN_MIN, alert, allAlerts, isAH, startOfDay, addDays, startOfWeek, fmtTime, fmtWeekday, fmtDay, nl, img, panel };
+  return { VERSION, DEMO, h, store, getJSON, widget, every, onCalendar, HOME, radar, RAIN_MIN, alert, allAlerts, isAH, startOfDay, addDays, startOfWeek, fmtTime, fmtWeekday, fmtDay, nl, img, panel };
 })();
