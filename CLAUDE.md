@@ -57,6 +57,7 @@ Daarna vakken van 4 kolommen: Weer, F1, Buienalarm / AH-uren, Canvas, Episodes L
 - `lyrics.js`: songtekst via LRCLIB (Spotify geeft zelf geen teksten). Loopt mee, klik op een regel om te spoelen. Bij sped-up/slowed versies worden de tijden omgerekend.
 - `alerts.js`: Meldingen. Verzamelt `DASH.alert(key, lijst)` van de andere vakken: `ah-rain` (weather.js: regen bij heen fietsen of tijdens de dienst, als die binnen 24 u is), `canvas` (te laat / binnen 24 u, klik opent de Canvas-pagina), `f1` (sessie binnen 1 u of bezig), `episodes` (meer open dan `episodes.seen`, ✕ = gezien). Plus telefoonmeldingen uit het hulpprogramma (`http://127.0.0.1:8765/meldingen`, elke 20 s; ✕ haalt hem ook van de pc). Niks = "Niks aan de hand".
 - `mail.js`: ongelezen Gmail (`is:unread in:inbox -category:promotions -category:social`, 5 stuks), via `window.DASH_GOOGLE` uit calendar.js (zelfde token, scope `gmail.readonly` erbij). Demo heeft nepmails.
+- `health.js`: Gezondheid via de **Google Health API** (`health.googleapis.com/v4`, opvolger van Google Fit; CORS werkt vanaf github.io). Route: Samsung Health → Health Connect → Google Health-app → cloud. Stappen: `steps/dataPoints:dailyRollUp` (7 dagen, `countSum`), slaap: `sleep/dataPoints` met filter `sleep.interval.civil_end_time >= "YYYY-MM-DD"` (`summary.minutesAsleep`, `stagesSummary`), hartslag: laatste `heart-rate` (pageSize 1, aflopend) en `daily-resting-heart-rate`. Scopes `googlehealth.{activity_and_fitness,sleep,health_metrics_and_measurements}.readonly` in calendar.js. Onderdelen mogen los mislukken; Google-foutmelding wordt getoond. Doel in `config.gezondheid.stappenDoel`. **Nog niet met echte data getest** (alleen demo): veldnamen komen uit de API-docs.
 - `letterboxd.js`: "Laatst gekeken", 5 nieuwste logs (poster, sterren, datum, ♥ en ↻ voor like/rewatch) uit `data/letterboxd.json` (`?t=` per kwartier). Standaard 8 kolommen breed (`DEFAULTS` in `layout.js`).
 - `todo.js`: to-do-lijst, alleen in `localStorage` van die browser.
 
@@ -69,7 +70,7 @@ Alles staat in `config.js` en is openbaar (staat op GitHub). Dat is bewust: het 
 | Dienst | Waarvoor | Sleutel / instelling |
 |---|---|---|
 | Spotify Web API | speler | `spotifyClientId`. App in Dev Mode, geen client secret. Redirect URI's: `https://nbroers05.github.io/Dashboard/`, `https://nbroers05.github.io/dashboard/`, `http://127.0.0.1:8000/` |
-| Google Calendar + Gmail API | agenda, AH, Canvas, mail | `googleClientId` (OAuth "Web application", project "Dashboard"). JavaScript origins: `https://nbroers05.github.io`, `http://127.0.0.1:8000`. Scopes `calendar.readonly` en `gmail.readonly` (Gmail API moet aan staan en de scope bij Data Access, README stap 8). Token is maar 1 uur geldig (geen server), daarna knop "Vernieuwen" |
+| Google Calendar + Gmail + Google Health API | agenda, AH, Canvas, mail, gezondheid | `googleClientId` (OAuth "Web application", project "Dashboard"). JavaScript origins: `https://nbroers05.github.io`, `http://127.0.0.1:8000`. Scopes `calendar.readonly` en `gmail.readonly` (Gmail API moet aan staan en de scope bij Data Access, README stap 8). Token is maar 1 uur geldig (geen server), daarna knop "Vernieuwen" |
 | TMDB | filmposters | `tmdbApiKey` (v3 API key) in `config.js` voor Film van vanavond; dezelfde key als repository secret `TMDB_API_KEY` voor de Letterboxd-Action |
 | AH-loon | verwacht salaris | `ahLoon` in `config.js`, afgeleid uit Noahs loonstroken 2026/09 en 2026/10 (narekening periode 09: dashboard € 1.388,34 vs strook € 1.388,27): uurloon 11,99 (jeugdloon; Noah wordt 4 nov 2026 21, dan gaat het waarschijnlijk omhoog), zondag +50%, feestdag +100% (volgens Noah de enige toeslagen), ADV 9,01% en vakantie-uren 11,09% van alle uren incl. toeslaguren, vakantietoeslag 8% en WUK (winstuitkering) 3,46% over alle uurposten, allemaal elke periode uitbetaald (KPT), netto/bruto 0,96. Contract 48 u per periode; meer uren komen als TVT, tegen gewoon uurloon. Geen adres/IBAN/personeelsnummer opslaan |
 | Snelkoppelingen | topbalk | `snelkoppelingen` (lijst van `{ name, url, icon? }`). Canvas-link is nog een placeholder (TODO) |
@@ -89,13 +90,13 @@ Noah wil per fase: bouwen, committen, kort zeggen wat er gedaan is en wat hij mo
 5. Letterboxd via GitHub Action: **gebouwd** (Noah moet nog secret `TMDB_API_KEY` zetten, zie README stap 7)
 6. Meldingen en mail: **gebouwd**. Op Noahs verzoek géén ntfy/Action met tokens; in plaats daarvan telefoonmeldingen via Phone Link + lokaal hulpprogramma, en een Gmail-vak
 7. AH-loon: **gebouwd** (getest met tijdelijke testgetallen; config staat weer op placeholders)
-8. Gezondheid (Google Fit / Health Connect): eerst onderzoeken en rapporteren, pas bouwen na akkoord
+8. Gezondheid: **gebouwd** via Google Health API (Google Fit API stopt eind 2026; Health Connect en Samsung Health hebben geen web-API). Noah zag zijn stappen/slaap/hartslag in de Google Health-app
 
 ## Af
 
-Speler met bediening, opslaan, spoelen, vervaagde hoes en songtekst; agenda (lijst/week, categoriekleuren, tooltips); weer met popup; buienalarm; F1 met stream-pop-up; AH-uren met periode en salaris (toeslagen per tijdvak, netto-schatting, pop-up met berekening); Canvas-deadlines op urgentie met eigen pagina; Episodes Left met covers; Film van vanavond met poster en voorspeller; Laatst gekeken (Letterboxd via Action); meldingenvak (incl. telefoon via hulpprogramma); Gmail; to-do; Indelen; telefoonweergave. Gecontroleerd op de echte site: AH-periode, Canvas-feed, spelerknoppen in Firefox.
+Speler met bediening, opslaan, spoelen, vervaagde hoes en songtekst; agenda (lijst/week, categoriekleuren, tooltips); weer met popup; buienalarm; F1 met stream-pop-up; AH-uren met periode en salaris (toeslagen per tijdvak, netto-schatting, pop-up met berekening); Canvas-deadlines op urgentie met eigen pagina; Episodes Left met covers; Film van vanavond met poster en voorspeller; Laatst gekeken (Letterboxd via Action); gezondheid (Google Health API); meldingenvak (incl. telefoon via hulpprogramma); Gmail; to-do; Indelen; telefoonweergave. Gecontroleerd op de echte site: AH-periode, Canvas-feed, spelerknoppen in Firefox.
 
 ## Open / ideeën
 
 - To-do eventueel later koppelen aan Google Tasks (zelfde Google-inlog).
-- Noah moet nog: Gmail API aanzetten + scope toevoegen (README 8), hulpprogramma starten en in Opstarten zetten (README 9).
+- Noah moet nog: Google Health API aanzetten + 3 scopes (README 10) en het gezondheidsvak met echte data testen; Gmail API aanzetten + scope toevoegen (README 8), hulpprogramma starten en in Opstarten zetten (README 9).

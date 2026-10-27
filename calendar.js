@@ -6,6 +6,8 @@
   const SCOPE = 'https://www.googleapis.com/auth/calendar.readonly';
   // Gmail alleen lezen, voor het mailvak (widgets/mail.js). Mag ontbreken: dan werkt de agenda gewoon en vraagt het mailvak erom.
   const GMAIL = 'https://www.googleapis.com/auth/gmail.readonly';
+  // Google Health API (stappen, slaap, hartslag) voor widgets/health.js; alleen lezen
+  const HEALTH = ['activity_and_fitness', 'sleep', 'health_metrics_and_measurements'].map((s) => `https://www.googleapis.com/auth/googlehealth.${s}.readonly`);
   const API = 'https://www.googleapis.com/calendar/v3';
   const DEMO = new URLSearchParams(location.search).has('demo');
 
@@ -60,7 +62,7 @@
     if (!tokenClient) {
       tokenClient = google.accounts.oauth2.initTokenClient({
         client_id: CLIENT_ID,
-        scope: `${SCOPE} ${GMAIL}`,
+        scope: [SCOPE, GMAIL, ...HEALTH].join(' '),
         include_granted_scopes: true,
         callback: onToken,
         error_callback: (err) => {
@@ -78,7 +80,7 @@
     if (!google.accounts.oauth2.hasGrantedAllScopes(resp, SCOPE)) {
       return showLogin('Geef bij het inloggen toegang tot je agenda (vinkje aanzetten).');
     }
-    store.set(KEY.token, { access: resp.access_token, expires: Date.now() + resp.expires_in * 1000, gmail: google.accounts.oauth2.hasGrantedAllScopes(resp, GMAIL) });
+    store.set(KEY.token, { access: resp.access_token, expires: Date.now() + resp.expires_in * 1000, gmail: google.accounts.oauth2.hasGrantedAllScopes(resp, GMAIL), health: google.accounts.oauth2.hasGrantedAllScopes(resp, ...HEALTH) });
     el.reconnect.hidden = true;
     shareToken();
     load();
@@ -185,11 +187,12 @@
   // Het mailvak gebruikt hetzelfde Google-token (geen tweede inlog)
   function shareToken() {
     const t = store.get(KEY.token);
-    window.dispatchEvent(new CustomEvent('dash:google', { detail: { gmail: !!(t && t.gmail) } }));
+    window.dispatchEvent(new CustomEvent('dash:google', { detail: { gmail: !!(t && t.gmail), health: !!(t && t.health) } }));
   }
   window.DASH_GOOGLE = {
     token: () => token(),
     gmail: () => { const t = store.get(KEY.token); return !!(t && t.gmail && token()); },
+    health: () => { const t = store.get(KEY.token); return !!(t && t.health && token()); },
     connected: () => !!store.get(KEY.hint),
     connect: () => connect(),
   };

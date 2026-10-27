@@ -33,6 +33,8 @@ window.DASHBOARD_CONFIG = {
     vasteToeslagen: [],
     nettoVerhouding: 0.96, // netto ÷ bruto: 1.205,09 / 1.251,96 en 1.333,01 / 1.388,27; alleen voor de schatting
   },
+  // Gezondheid (Google Health): je dagelijkse stappendoel
+  gezondheid: { stappenDoel: 10000 },
   // Voor filmposters (themoviedb.org → Instellingen → API → "API Key"). Leeg laten mag: dan een kleurvlak.
   tmdbApiKey: '0d5a58e53bb2d4420ee65e51e1d6f63a',
   googleClientId: '149288254289-i5t6b2sc6gio1r92nioscj61ij2n098c.apps.googleusercontent.com',

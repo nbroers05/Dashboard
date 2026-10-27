@@ -342,6 +342,36 @@ button { font: inherit; color: inherit; }
 #w-letterboxd { --c: #40bcf4; }
 #w-mail { --c: #ea4335; }
 #w-alerts { --c: #a78bfa; }
+#w-health { --c: #ff5f8f; }
+
+/* Gezondheid */
+.hl-steps { display: flex; align-items: center; gap: 14px; }
+.hl-ring {
+  --p: 0;
+  flex: none; width: 64px; height: 64px; border-radius: 50%;
+  display: grid; place-items: center;
+  position: relative;
+}
+/* De ring zelf als laag eronder, zodat het masker het percentage niet wegknipt */
+.hl-ring::before {
+  content: ''; position: absolute; inset: 0; border-radius: 50%;
+  background: conic-gradient(var(--ct) calc(var(--p) * 360deg), rgba(255, 255, 255, .1) 0);
+  -webkit-mask: radial-gradient(farthest-side, transparent 72%, #000 73%);
+  mask: radial-gradient(farthest-side, transparent 72%, #000 73%);
+}
+.hl-ring span { position: absolute; font-size: .78rem; font-weight: 750; color: var(--ct); }
+.hl-steps .w-big { font-size: 2.8rem; }
+.hl-bars { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; height: 74px; margin-top: 2px; }
+.hl-bar { display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 3px; min-height: 0; }
+.hl-bar i { width: 100%; border-radius: 5px; background: color-mix(in srgb, var(--ct) 45%, transparent); }
+.hl-bar.goal i { background: var(--ct); }
+.hl-bar.today span { color: var(--text); font-weight: 700; }
+.hl-bar span { font-size: .68rem; color: var(--muted); }
+.hl-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: auto; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, .1); }
+.hl-cell { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.hl-cell b { font-size: 1.25rem; font-variant-numeric: tabular-nums; }
+.hl-cell .w-sub { font-size: .78rem; }
+.hl-stages { display: flex; height: 6px; border-radius: 99px; overflow: hidden; margin-top: 4px; }
 
 /* Mail */
 .ml-list { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; min-height: 0; overflow: hidden; }

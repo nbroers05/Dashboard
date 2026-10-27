@@ -133,7 +133,27 @@ Je telefoon stuurt zijn meldingen al naar Windows (Phone Link). Een website kan 
 Stoppen: Taakbeheer → zoek **pythonw** → **Taak beëindigen**.
 Alle Windows-meldingen tonen in plaats van alleen die van je telefoon: zet in `helper\meldingen.py` `ALLEEN_TELEFOON = False`.
 
-## 10. Lokaal testen (optioneel)
+## 10. Gezondheid (stappen, slaap, hartslag)
+
+De gegevens gaan zo: Samsung Health → Health Connect → Google Health-app → Google → dashboard. Op je telefoon moet de **Google Health**-app dus ingelogd zijn met hetzelfde Google-account en gekoppeld aan Health Connect.
+
+In Google Cloud (eenmalig):
+
+1. console.cloud.google.com → project **Dashboard**.
+2. Zoekbalk: **Google Health API** → **Enable**.
+3. Menu → **Google Auth Platform** → **Data Access** → **Add or remove scopes**.
+4. Zoek in de kolom API naar **Google Health API** en vink deze drie aan (allemaal `.readonly`):
+   - `googlehealth.activity_and_fitness.readonly` (stappen)
+   - `googlehealth.sleep.readonly` (slaap)
+   - `googlehealth.health_metrics_and_measurements.readonly` (hartslag)
+5. **Update** → **Save**.
+
+Daarna op het dashboard: klik in het vak Gezondheid op **Gezondheid koppelen** en vink bij Google alles aan. Alleen lezen.
+Je stappendoel staat in `config.js` bij `gezondheid: { stappenDoel: 10000 }`.
+
+Gaat er iets mis, dan laat het vak de foutmelding van Google zien. Die kun je naar Claude sturen.
+
+## 11. Lokaal testen (optioneel)
 
 In deze map:
 
