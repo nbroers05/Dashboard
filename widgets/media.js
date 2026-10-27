@@ -9,13 +9,12 @@
   const spotify = document.getElementById('spotify');
   if (!stack || !spotify) return;
   const HELPER = 'http://127.0.0.1:8765';
-  const AUTO_AFTER = 8000;   // zo lang na je eigen keuze niet automatisch wisselen
 
   const cards = new Map();   // id -> { el, refs, data, at, thumb }
   let sessions = [];
   let order = [];
   let front = null;
-  let chosenAt = 0;
+  let wasPlaying = new Set();   // wat er de vorige keer speelde (om te zien wat nét begint)
 
   const svgIcon = (d) => `<svg viewBox="0 0 24 24"><path d="${d}"/></svg>`;
   const ICON = {
@@ -147,9 +146,13 @@
     for (const s of others) fillCard(cards.get(s.id) || makeCard(s.id), s);
     for (const [id, c] of cards) if (!ids.includes(id)) { c.el.remove(); cards.delete(id); }
 
-    // Wie vooraan: je eigen keuze, tenzij die stilstaat terwijl iets anders speelt
+    // Wie vooraan: je eigen keuze blijft staan. Alleen als de voorste weg is, of als er iets nieuw begint te spelen
+    // terwijl de voorste stilstaat, schuift dat vanzelf naar voren.
+    const nowPlaying = new Set(ids.filter(isPlaying));
+    const started = ids.find((id) => nowPlaying.has(id) && !wasPlaying.has(id) && id !== front);
     if (!ids.includes(front)) front = ids.find(isPlaying) || ids[0];
-    else if (!isPlaying(front) && Date.now() - chosenAt > AUTO_AFTER) front = ids.find(isPlaying) || front;
+    else if (started && !isPlaying(front)) front = started;
+    wasPlaying = nowPlaying;
 
     const rest = ids.filter((id) => id !== front).sort((a, b) => isPlaying(b) - isPlaying(a) || order.indexOf(a) - order.indexOf(b));
     order = [front, ...rest];
@@ -183,9 +186,11 @@
 
   function choose(id) {
     front = id;
-    chosenAt = Date.now();
     layout();
   }
+
+  // Klik op de Spotify-kaart als die erachter steekt: naar voren (de andere kaarten doen dit zelf)
+  spotify.addEventListener('click', () => { if (spotify.dataset.pos !== '0') choose('spotify'); });
 
   // Vegen (telefoon/touchscreen): naar de volgende kaart
   let startX = null;
