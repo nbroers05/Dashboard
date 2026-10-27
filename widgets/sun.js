@@ -58,7 +58,12 @@ DASH.widget('w-sun', (card, body, guard) => {
     const x = CX + R * Math.cos(a), y = CY - R * Math.sin(a);
 
     const s = svg('svg', { viewBox: '0 0 200 104', class: 'sun-arc', role: 'img', 'aria-label': `Zon op ${fmtTime(t.rise)}, onder ${fmtTime(t.set)}` });
+    const defs = svg('defs', {});
+    const grad = svg('linearGradient', { id: 'sunGrad', gradientUnits: 'userSpaceOnUse', x1: CX - R, y1: 0, x2: CX + R, y2: 0 });
+    grad.append(svg('stop', { offset: 0, 'stop-color': '#ff8a3d' }), svg('stop', { offset: 1, 'stop-color': '#ffd23f' }));
+    defs.append(grad);
     s.append(
+      defs,
       svg('line', { x1: 4, y1: CY, x2: 196, y2: CY, class: 'sun-horizon' }),
       svg('path', { d: `M${CX - R} ${CY} A${R} ${R} 0 0 1 ${CX + R} ${CY}`, class: 'sun-path' }),
     );

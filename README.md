@@ -56,7 +56,18 @@ Let op: Google geeft een browser-site maar 1 uur toegang. Daarna verschijnt in d
 
 Google ververst geabonneerde agenda's zelf, ongeveer elke 8 tot 24 uur. Een nieuwe deadline kan dus even duren.
 
-## 5. Sterrenvoorspeller
+## 5. Filmposters (TMDB, optioneel)
+
+1. Maak een gratis account op themoviedb.org.
+2. Klik rechtsboven op je profiel → **Instellingen** → **API** → **Een API-sleutel aanvragen** → kies **Developer**.
+3. Vul het formulier in (gebruik: persoonlijk dashboard, website: je GitHub-pagina) en accepteer de voorwaarden.
+4. Kopieer de **API Key** (de korte sleutel, niet het lange "Read Access Token") naar `config.js` bij `tmdbApiKey`.
+
+Zonder sleutel toont het filmvak een goudkleurig vlak met de titel.
+
+Beeldbronnen: weericonen Meteocons (Bas Milius, MIT), circuits bacinger/f1-circuits (MIT), vlaggen flagcdn.com, animecovers AniList.
+
+## 6. Sterrenvoorspeller
 
 De map `sterrenvoorspeller` is een kopie van de popup uit je extensie (plus `dashboard-shim.js` en `dashboard.css` om hem als website te laten draaien).
 Pas je de extensie aan, kopieer dan `lib/`, `popup/` (behalve die twee bestanden) en `fonts/` opnieuw.

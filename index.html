@@ -65,6 +65,9 @@
               <svg class="i-repeat" viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
               <svg class="i-repeat-one" viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4zm-4-2V9h-1l-2 1v1h1.5v4H13z"/></svg>
             </button>
+            <button class="btn small" id="lyrics-btn" aria-label="Songtekst" aria-pressed="false">
+              <svg viewBox="0 0 24 24"><path d="M3 6h11v2H3zm0 4h11v2H3zm0 4h7v2H3zM17 4h5v2.5h-3v10a2.5 2.5 0 1 1-2-2.45z"/></svg>
+            </button>
             <button class="btn small" id="save" aria-label="Opslaan in bibliotheek" aria-pressed="false">
               <svg class="i-add" viewBox="0 0 24 24"><path d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
               <svg class="i-check" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
@@ -78,6 +81,15 @@
         </div>
       </div>
 
+    </section>
+
+    <!-- Songtekst: verschijnt naast de speler als je op de tekst-knop drukt -->
+    <section id="lyrics" class="card tile lyrics" hidden>
+      <div class="w-row">
+        <p class="eyebrow">Songtekst</p>
+        <button class="text-btn" id="lyrics-close">Sluiten</button>
+      </div>
+      <div class="w-body"><div class="ly-scroll" id="ly-scroll"></div></div>
     </section>
 
     <!-- Kleine vakken -->
@@ -102,13 +114,17 @@
         <p class="eyebrow">Canvas · deze week</p>
         <div class="w-body"><p class="w-note">Wacht op je agenda…</p></div>
       </section>
-      <section id="w-stars" class="card tile">
-        <p class="eyebrow">Sterrenvoorspeller</p>
-        <div class="w-body"><p class="w-note">Laden…</p></div>
-      </section>
       <section id="w-episodes" class="card tile">
         <p class="eyebrow">Episodes Left</p>
         <div class="w-body"><p class="w-note">Wacht op de extensie…</p></div>
+      </section>
+      <section id="w-stars" class="card tile">
+        <p class="eyebrow">Film van vanavond</p>
+        <div class="w-body"><p class="w-note">Laden…</p></div>
+      </section>
+      <section id="w-todo" class="card tile">
+        <p class="eyebrow">To-do</p>
+        <div class="w-body"></div>
       </section>
     </div>
 
@@ -158,6 +174,7 @@
   <script src="spotify.js"></script>
   <script src="https://accounts.google.com/gsi/client" async></script>
   <script src="calendar.js"></script>
+  <script src="widgets/lyrics.js"></script>
   <script src="widgets/weather.js"></script>
   <script src="widgets/f1.js"></script>
   <script src="widgets/sun.js"></script>
@@ -165,5 +182,6 @@
   <script src="widgets/canvas.js"></script>
   <script src="widgets/stars.js"></script>
   <script src="widgets/episodes.js"></script>
+  <script src="widgets/todo.js"></script>
 </body>
 </html>

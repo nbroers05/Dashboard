@@ -116,8 +116,9 @@
       const today = startOfDay(Date.now());
       const d = new Date(today);
       const monday = addDays(today, -((d.getDay() + 6) % 7));
-      const from = Math.min(monday, new Date(d.getFullYear(), d.getMonth(), 1).getTime());
-      const to = Math.max(addDays(today, DAYS), addDays(monday, 7), new Date(d.getFullYear(), d.getMonth() + 1, 1).getTime());
+      // Ook 5 weken terug en 6 vooruit: daar staat altijd een "Salaris" voor de AH-periode
+      const from = Math.min(monday, new Date(d.getFullYear(), d.getMonth(), 1).getTime(), addDays(today, -35));
+      const to = Math.max(addDays(today, 42), addDays(monday, 7), new Date(d.getFullYear(), d.getMonth() + 1, 1).getTime());
       const qs = new URLSearchParams({
         timeMin: new Date(from).toISOString(),
         timeMax: new Date(to).toISOString(),
@@ -371,8 +372,10 @@
       for (const t of lanes(day.timed)) {
         const b = block(t.ev, 'wk-ev');
         const dur = (t.e - t.s) / HOUR_MS;
-        b.append(h('b', null, label(t.ev)), h('span', null, `${fmtTime(t.ev.start)} – ${fmtTime(t.ev.end)}`));
+        b.append(h('b', 'clip', label(t.ev)), h('span', null, `${fmtTime(t.ev.start)} – ${fmtTime(t.ev.end)}`));
         if (dur < 0.75) b.classList.add('short');
+        // Naast elkaar: alleen de titel, zodat die leesbaar blijft
+        if (t.lanes > 1) b.classList.add('narrow');
         b.dataset.dur = dur;
         b.style.top = at(hoursFrom(t.s - day.start));
         b.style.height = `max(22px, calc(var(--hour) * ${dur} - 2px))`;
@@ -408,9 +411,10 @@
     const hourPx = fit ? Math.max(30, Math.floor(body.clientHeight / weekHours)) : parseFloat(cs.getPropertyValue('--hour-base')) || 44;
     el.list.style.setProperty('--hour', `${hourPx}px`);
     // Zoveel titelregels als er in het blok passen
+    const lineH = parseFloat(getComputedStyle(body).fontSize) * 1.25 || 18;
     body.querySelectorAll('.wk-ev').forEach((b) => {
-      const px = b.dataset.dur * hourPx;
-      b.style.setProperty('--lines', Math.max(1, Math.floor((px - 26) / 16)));
+      const px = b.dataset.dur * hourPx - 10 - (b.classList.contains('narrow') || b.classList.contains('short') ? 0 : lineH);
+      b.style.setProperty('--lines', Math.max(1, Math.floor(px / lineH)));
     });
   }
 
@@ -435,12 +439,76 @@
   }
 
   function block(ev, cls, text) {
-    const b = h(ev.link ? 'a' : 'div', cls, text);
+    const b = h(ev.link ? 'a' : 'div', cls);
+    if (text != null) b.append(h('span', 'clip', text));
     if (ev.link) { b.href = ev.link; b.target = '_blank'; b.rel = 'noopener'; }
-    if (ev.color) b.style.setProperty('--c', ev.color);
-    b.title = ev.location ? `${ev.title} · ${ev.location}` : ev.title;
+    paint(b, ev);
     return b;
   }
+
+  // ---------- Kleur per categorie ----------
+  // AH houdt de kleur van je AH-agenda; F1 rood; Canvas/ESSB groen; de rest de kleur van zijn agenda
+  const IS_F1 = /formula\s*1|(^|\W)f1\b/i;
+  function colorOf(ev) {
+    if (!ev.allDay && /\bAH\b/.test(ev.title)) return ev.color || '#3f51b5';
+    if (IS_F1.test(ev.title)) return '#e10600';
+    if (ev.canvas || /\bESSB\b/.test(ev.title)) return '#2fbf71';
+    return ev.color || '#8a8aa0';
+  }
+  const rgb = (hex) => { const n = parseInt(hex.replace('#', '').padEnd(6, '0'), 16); return [n >> 16, (n >> 8) & 255, n & 255]; };
+  // Achtergrond = 30% categoriekleur op donker; tekst donker als die achtergrond licht genoeg is
+  function paint(node, ev) {
+    const c = colorOf(ev);
+    const [r, g, b] = rgb(c).map((v, i) => Math.round(v * 0.3 + [31, 31, 35][i] * 0.7));
+    const lum = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+    node.style.setProperty('--c', c);
+    node.style.setProperty('--evbg', `rgb(${r} ${g} ${b})`);
+    node.style.setProperty('--fg', lum > 0.55 ? '#111' : '#fff');
+    tipEvent.set(node, ev);
+  }
+
+  // ---------- Tooltip: volledige titel bij hover (pc) of eerste tik (telefoon) ----------
+  const tipEvent = new WeakMap();
+  const tip = h('div', 'cal-tip');
+  tip.hidden = true;
+  document.body.append(tip);
+  let tipFor = null;
+  let lastPointer = 'mouse';
+
+  function showTip(node) {
+    const ev = tipEvent.get(node);
+    if (!ev) return;
+    tipFor = node;
+    const when = ev.allDay ? 'Hele dag' : `${fmtTime(ev.start)} – ${fmtTime(ev.end)}`;
+    tip.style.setProperty('--c', colorOf(ev));
+    tip.replaceChildren(h('b', null, ev.title), h('span', null, ev.location ? `${when} · ${ev.location}` : when));
+    tip.hidden = false;
+    const r = node.getBoundingClientRect();
+    const t = tip.getBoundingClientRect();
+    const left = Math.min(Math.max(8, r.left), innerWidth - t.width - 8);
+    const top = r.bottom + t.height + 10 < innerHeight ? r.bottom + 6 : Math.max(8, r.top - t.height - 6);
+    tip.style.left = `${left}px`;
+    tip.style.top = `${top}px`;
+  }
+  function hideTip() { tip.hidden = true; tipFor = null; }
+
+  el.list.addEventListener('pointerdown', (e) => { lastPointer = e.pointerType; });
+  el.list.addEventListener('pointerover', (e) => {
+    if (e.pointerType === 'touch') return;
+    const node = e.target.closest('.wk-ev, .wk-chip, .event');
+    if (node && node !== tipFor) showTip(node);
+  });
+  el.list.addEventListener('pointerout', (e) => {
+    const node = e.target.closest('.wk-ev, .wk-chip, .event');
+    if (node && !node.contains(e.relatedTarget)) hideTip();
+  });
+  el.list.addEventListener('click', (e) => {
+    const node = e.target.closest('.wk-ev, .wk-chip, .event');
+    if (!node || lastPointer !== 'touch') return;
+    // Telefoon: eerste tik toont de volledige titel, tweede tik opent de afspraak
+    if (tipFor !== node) { e.preventDefault(); showTip(node); }
+  });
+  window.addEventListener('scroll', hideTip, { passive: true });
 
   // ---------- Wissel Lijst / Week ----------
   let view = store.get(KEY.view) === 'week' ? 'week' : 'list';
@@ -459,7 +527,7 @@
     const li = h('li');
     const row = h(ev.link ? 'a' : 'div', 'event');
     if (ev.link) { row.href = ev.link; row.target = '_blank'; row.rel = 'noopener'; }
-    if (ev.color) row.style.setProperty('--c', ev.color);
+    paint(row, ev);
 
     let time;
     if (ev.allDay) time = 'Hele dag';
@@ -467,8 +535,7 @@
     else time = `${fmtTime(ev.start)} – ${fmtTime(ev.end)}`;
 
     const body = h('div');
-    body.append(h('div', 'name', label(ev)));
-    row.title = ev.title;
+    body.append(h('div', 'name clip', label(ev)));
     body.append(h('div', 'sub', ev.location ? `${time} · ${ev.location}` : time));
     row.append(h('span', 'dot'), body);
 
@@ -533,6 +600,7 @@
       { id: '6', title: 'Sporten', location: 'Sportschool', allDay: false, start: at(1, 18), end: at(1, 19, 30), color: '#039be5' },
       { id: '7', title: 'Weekendje weg', location: 'Texel', allDay: true, start: addDays(t, 3), end: addDays(t, 5), color: '#33b679' },
       { id: '8', title: 'AH BERKEL EN RODENRIJS', location: 'Westerwater', allDay: false, start: at(2, 8), end: at(2, 13), color: '#3f51b5' },
+      { id: '16', title: 'Salaris', location: '', allDay: true, start: parseDate('2026-11-09'), end: parseDate('2026-11-10'), color: '#33b679' },
       { id: '9', title: 'AH BERKEL EN RODENRIJS', location: 'Westerwater', allDay: false, start: at(-1, 17), end: at(-1, 21, 30), color: '#3f51b5' },
       { id: '10', title: 'AH BERKEL EN RODENRIJS', location: 'Westerwater', allDay: false, start: at(-8, 9), end: at(-8, 15), color: '#3f51b5' },
       { id: '11', title: '🏁 FORMULA 1 GRAN PREMIO DE LA CIUDAD DE MÉXICO 2026 - Race', location: '', allDay: false, start: at(5, 21), end: at(5, 23), color: '#f09300' },

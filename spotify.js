@@ -278,6 +278,21 @@
       checkSaved(it);
     }
     setState('player');
+    publish(it.type === 'track' ? {
+      id: it.id, name: it.name, artist: (it.artists[0] || {}).name || '', album: (it.album && it.album.name) || '', duration: it.duration_ms,
+    } : null);
+  }
+
+  // Het songtekstvak (lyrics.js) leest het huidige nummer en de positie hieruit
+  window.spotifyPosition = () => position();
+  let publishedId = undefined;
+  function publish(track) {
+    window.DASH_TRACK = track;
+    const id = track && track.id;
+    if (id !== publishedId) {
+      publishedId = id;
+      window.dispatchEvent(new CustomEvent('dash:track', { detail: track }));
+    }
   }
 
   async function renderIdle(d) {
@@ -295,6 +310,7 @@
       loadDevices();
     }
     setState('idle');
+    publish(null);
   }
 
   async function loadDevices() {
@@ -315,6 +331,8 @@
   function setCover(url) {
     if (url === currentCover) return;
     currentCover = url;
+    // Vervaagde hoes als achtergrond van het hele vak
+    card.style.setProperty('--cover', url ? `url("${url}")` : 'none');
     if (!url) { el.cover.removeAttribute('src'); return; }
     const img = new Image();
     img.crossOrigin = 'anonymous';
@@ -526,6 +544,9 @@
     action(() => api('PUT', `/me/player/seek?position_ms=${ms}`), () => { base = { ...base, progress: ms, at: Date.now() }; lastSec = -1; });
   });
   el.bar.addEventListener('pointercancel', () => { dragging = false; });
+
+  // Voor het songtekstvak: klik op een regel = daarheen spoelen
+  window.spotifySeek = (ms) => action(() => api('PUT', `/me/player/seek?position_ms=${ms}`), () => { base = { ...base, progress: ms, at: Date.now() }; lastSec = -1; });
   el.bar.addEventListener('keydown', (ev) => {
     if (ev.key !== 'ArrowLeft' && ev.key !== 'ArrowRight') return;
     const ms = Math.max(0, Math.min(base.duration, position() + (ev.key === 'ArrowRight' ? 10000 : -10000)));

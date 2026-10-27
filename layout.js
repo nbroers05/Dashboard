@@ -4,18 +4,17 @@
 // sleep een vak aan ⠿ naar een andere plek, en trek aan de hoek rechtsonder om het groter/kleiner te maken.
 // De indeling wordt per apparaat-breedte (telefoon / groot scherm) in deze browser bewaard.
 (() => {
-  const grid = document.querySelector('.widgets');
-  if (!grid) return;
-  const tiles = () => [...grid.querySelectorAll(':scope > .tile')];
+  const dash = document.querySelector('.dashboard');
+  const holder = document.querySelector('.widgets'); // display: contents, de vakken doen mee in het grid van .dashboard
+  if (!dash || !holder) return;
+  const tiles = () => [...holder.querySelectorAll(':scope > .tile')];
 
-  // Standaard: [breedte in kolommen, hoogte in rijen]
-  const DEFAULTS = {
-    wide: { 'w-weather': [2, 3], 'w-f1': [1, 3], 'w-sun': [1, 3], 'w-ah': [1, 2], 'w-canvas': [1, 2], 'w-episodes': [1, 3], 'w-stars': [2, 4] },
-    phone: { 'w-weather': [2, 4], 'w-f1': [2, 2], 'w-sun': [1, 3], 'w-ah': [1, 3], 'w-canvas': [2, 2], 'w-episodes': [2, 3], 'w-stars': [2, 8] },
-  };
+  // Standaard: [breedte in kolommen (van 12), hoogte in rijen]
+  const ORDER = ['w-weather', 'w-f1', 'w-sun', 'w-ah', 'w-canvas', 'w-episodes', 'w-stars', 'w-todo'];
+  const DEFAULT_WIDE = [4, 2];
   const MAX_ROWS = 10;
   const mode = () => (window.matchMedia('(max-width: 700px)').matches ? 'phone' : 'wide');
-  const key = () => `dash.layout.${mode()}`;
+  const key = () => `dash.layout.v2.${mode()}`;
 
   const load = () => { try { return JSON.parse(localStorage.getItem(key())) || {}; } catch { return {}; } };
   const save = () => {
@@ -24,34 +23,33 @@
     try { localStorage.setItem(key(), JSON.stringify({ order: tiles().map((t) => t.id), sizes })); } catch {}
   };
 
-  const cols = () => getComputedStyle(grid).gridTemplateColumns.split(' ').length;
+  const cols = () => getComputedStyle(dash).gridTemplateColumns.split(' ').length;
 
   function setSize(t, w, h) {
     w = Math.max(1, Math.min(cols(), w));
     h = Math.max(1, Math.min(MAX_ROWS, h));
     t.dataset.w = w;
     t.dataset.h = h;
-    t.style.gridColumn = `span ${w}`;
+    // Op de telefoon is er één kolom: daar alleen de hoogte
+    t.style.gridColumn = mode() === 'phone' ? '' : `span ${w}`;
     t.style.gridRow = `span ${h}`;
   }
 
   function apply() {
     const saved = load();
-    const defaults = DEFAULTS[mode()];
-    if (saved.order) {
-      for (const id of saved.order) {
-        const t = document.getElementById(id);
-        if (t && t.parentElement === grid) grid.append(t);
-      }
+    const order = saved.order || ORDER;
+    // Nieuwe vakken die nog niet in een opgeslagen indeling staan, komen achteraan
+    for (const id of [...order, ...ORDER.filter((x) => !order.includes(x))]) {
+      const t = document.getElementById(id);
+      if (t && t.parentElement === holder) holder.append(t);
     }
     for (const t of tiles()) {
-      const [w, h] = (saved.sizes && saved.sizes[t.id]) || defaults[t.id] || [1, 2];
+      const [w, h] = (saved.sizes && saved.sizes[t.id]) || DEFAULT_WIDE;
       setSize(t, w, h);
     }
   }
 
   // ---------- Bewerkmodus ----------
-  const dash = document.querySelector('.dashboard');
   const bar = document.createElement('div');
   bar.className = 'layout-bar';
   const toggle = document.createElement('button');
@@ -72,12 +70,9 @@
   };
   reset.onclick = () => {
     try { localStorage.removeItem(key()); } catch {}
-    const order = Object.keys(DEFAULTS[mode()]);
-    for (const id of order) { const t = document.getElementById(id); if (t) grid.append(t); }
     apply();
   };
 
-  // Handvatten in elk vak
   for (const t of tiles()) {
     const move = document.createElement('button');
     move.className = 'tile-move';
@@ -91,58 +86,51 @@
     size.addEventListener('pointerdown', (e) => startResize(e, t));
   }
 
+  function track(onMove, onDone) {
+    const up = () => {
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', up);
+      window.removeEventListener('pointercancel', up);
+      onDone();
+    };
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', up);
+    window.addEventListener('pointercancel', up);
+  }
+
   function startMove(e, tile) {
     e.preventDefault();
     tile.classList.add('dragging');
-    const onMove = (ev) => {
+    track((ev) => {
       const under = document.elementFromPoint(ev.clientX, ev.clientY);
       const target = under && under.closest('.widgets > .tile');
       if (!target || target === tile) return;
       const r = target.getBoundingClientRect();
-      const before = ev.clientX < r.left + r.width / 2;
+      const before = mode() === 'phone' ? ev.clientY < r.top + r.height / 2 : ev.clientX < r.left + r.width / 2;
       const ref = before ? target : target.nextElementSibling;
-      if (ref !== tile && tile.nextElementSibling !== ref) grid.insertBefore(tile, ref);
-    };
-    const onUp = () => {
-      tile.classList.remove('dragging');
-      window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('pointerup', onUp);
-      window.removeEventListener('pointercancel', onUp);
-      save();
-    };
-    window.addEventListener('pointermove', onMove);
-    window.addEventListener('pointerup', onUp);
-    window.addEventListener('pointercancel', onUp);
+      if (ref !== tile && tile.nextElementSibling !== ref) holder.insertBefore(tile, ref);
+    }, () => { tile.classList.remove('dragging'); save(); });
   }
 
   function startResize(e, tile) {
     e.preventDefault();
-    const cs = getComputedStyle(grid);
+    const cs = getComputedStyle(dash);
     const gap = parseFloat(cs.columnGap) || 0;
     const rowGap = parseFloat(cs.rowGap) || 0;
     const n = cols();
-    const colW = (grid.clientWidth - gap * (n - 1)) / n;
-    const rowH = parseFloat(cs.gridAutoRows) || 90;
-    const start = { x: e.clientX, y: e.clientY, w: tile.getBoundingClientRect().width, h: tile.getBoundingClientRect().height };
+    const inner = dash.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    const colW = (inner - gap * (n - 1)) / n;
+    const rowH = parseFloat((cs.gridAutoRows.match(/[\d.]+px/) || ['110px'])[0]);
+    const box = tile.getBoundingClientRect();
+    const start = { x: e.clientX, y: e.clientY, w: box.width, h: box.height };
     tile.classList.add('resizing');
-    const onMove = (ev) => {
+    track((ev) => {
       const w = Math.round((start.w + ev.clientX - start.x + gap) / (colW + gap));
       const h = Math.round((start.h + ev.clientY - start.y + rowGap) / (rowH + rowGap));
       setSize(tile, w, h);
-    };
-    const onUp = () => {
-      tile.classList.remove('resizing');
-      window.removeEventListener('pointermove', onMove);
-      window.removeEventListener('pointerup', onUp);
-      window.removeEventListener('pointercancel', onUp);
-      save();
-    };
-    window.addEventListener('pointermove', onMove);
-    window.addEventListener('pointerup', onUp);
-    window.addEventListener('pointercancel', onUp);
+    }, () => { tile.classList.remove('resizing'); save(); });
   }
 
   apply();
-  // Telefoon draaien of venster smaller maken: andere indeling laden
   window.matchMedia('(max-width: 700px)').addEventListener('change', apply);
 })();

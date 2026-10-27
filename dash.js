@@ -82,5 +82,38 @@ window.DASH = (() => {
   }
   const nl = (v, d = 1) => v.toFixed(d).replace('.', ',');
 
-  return { DEMO, h, store, getJSON, widget, every, onCalendar, isAH, startOfDay, addDays, startOfWeek, fmtTime, fmtWeekday, fmtDay, nl };
+  // Plaatje met kleurvlak eronder: zolang het laadt (of als het mislukt) zie je het vlak met tekst, nooit een kapot icoon
+  function img(src, cls, fallbackText, color) {
+    const box = h('div', `img-box ${cls || ''}`.trim());
+    if (color) box.style.setProperty('--fb', color);
+    if (fallbackText) box.append(h('span', 'fb', fallbackText));
+    if (src) {
+      const i = new Image();
+      i.alt = '';
+      i.decoding = 'async';
+      i.onload = () => i.classList.add('loaded');
+      i.onerror = () => i.remove();
+      i.src = src;
+      box.append(i);
+    }
+    return box;
+  }
+
+  // Pop-up-paneel voor een vak (Voorspel een film, F1-video, ...). color = accentkleur van het vak.
+  function panel(title, color) {
+    const dialog = h('dialog', 'panel-dialog');
+    if (color) dialog.style.setProperty('--c', color);
+    const head = h('div', 'panel-head');
+    const close = h('button', 'w-btn ghost', 'Sluiten');
+    close.onclick = () => dialog.close();
+    head.append(h('b', null, title), close);
+    const content = h('div', 'panel-body');
+    dialog.append(head, content);
+    // Klik naast het paneel = sluiten
+    dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+    document.body.append(dialog);
+    return { dialog, head, body: content, open: () => dialog.showModal(), close: () => dialog.close() };
+  }
+
+  return { DEMO, h, store, getJSON, widget, every, onCalendar, isAH, startOfDay, addDays, startOfWeek, fmtTime, fmtWeekday, fmtDay, nl, img, panel };
 })();
