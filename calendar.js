@@ -163,8 +163,14 @@
       color: cal.backgroundColor || null,
       link: e.htmlLink || null,
       hidden: !(cal.selected || cal.primary),
-      ...(canvas ? { canvas: true, assignment: /assignment/i.test(e.iCalUID || '') } : {}),
+      ...(canvas ? { canvas: true, assignment: /assignment/i.test(e.iCalUID || ''), canvasUrl: canvasLink(e.description) } : {}),
     };
+  }
+
+  // Link naar de opdracht in Canvas, als die in de beschrijving staat
+  function canvasLink(text) {
+    const m = (text || '').match(/https?:\/\/[^\s"'<>]*(?:instructure\.com|\/courses\/\d+)[^\s"'<>]*/);
+    return m ? m[0] : null;
   }
 
   function isCanvasCal(cal) {
@@ -608,6 +614,9 @@
       { id: '13', title: 'Essay week 6 [ESSB-MP6020]', location: '', allDay: false, start: at(1, 23, 59), end: at(1, 23, 59), color: '#9e69af', canvas: true, assignment: true, hidden: true },
       { id: '14', title: 'Quiz hoofdstuk 4 [ESSB-MP6020]', location: '', allDay: false, start: at(3, 12), end: at(3, 12), color: '#9e69af', canvas: true, assignment: true, hidden: true },
       { id: '15', title: 'Reflectieverslag [ESSB-BS2100]', location: '', allDay: false, start: at(-1, 17), end: at(-1, 17), color: '#9e69af', canvas: true, assignment: true, hidden: true },
+      { id: '17', title: 'Leesopdracht hoofdstuk 5 [ESSB-BS2100]', location: '', allDay: false, start: now + 5 * 3600000, end: now + 5 * 3600000, color: '#9e69af', canvas: true, assignment: true, hidden: true },
+      { id: '18', title: 'Groepspresentatie [ESSB-PS3040]', location: '', allDay: false, start: at(9, 9), end: at(9, 9), color: '#9e69af', canvas: true, assignment: true, hidden: true },
+      { id: '19', title: 'Logboek week 7 [ESSB-PS3040]', location: '', allDay: false, start: at(-4, 23, 59), end: at(-4, 23, 59), color: '#9e69af', canvas: true, assignment: true, hidden: true },
     ];
   }
 

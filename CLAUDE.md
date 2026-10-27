@@ -48,7 +48,7 @@ Daarna vakken van 4 kolommen: Weer, F1, Buienalarm / AH-uren, Canvas, Episodes L
 - `rain.js`: Buienalarm, 24 staafjes van 5 min uit `DASH.radar()`, zin als "Droog tot 19:40" / "Over 15 minuten lichte regen", toont de bron. Vervangt het oude zon-vak (`layout.js` zet een bewaarde `w-sun`-plek om naar `w-rain`).
 - `f1.js`: Jolpica-API (volgende sessie, aftellen "3d 4h 35min", seconden alleen op de dag zelf), vlag via flagcdn, circuit-omtrek uit bacinger/f1-circuits (MIT). Knop **Stream**: pop-up waarin Noah zelf een link/embed-code plakt (YouTube, Vimeo, Twitch); de video is 16:9 en het paneel past zich daarop aan.
 - `ah.js`: AH-diensten = afspraken met "AH" in de titel. Uren deze week (staafjes per dag) en per **AH-periode**: 4 weken (ma–zo), daarna een week ertussen, in de week erna het salaris. De periode wordt afgeleid uit afspraken met "Salaris" in de titel. Verwacht bruto salaris = uren × `ahUurloon`.
-- `canvas.js`: deadlines van deze week als tijdlijn, uit de Canvas-iCal die in Google Agenda is geabonneerd (agendanaam bevat "Canvas"; opdrachten herkend aan `iCalUID` met "assignment").
+- `canvas.js`: deadlines op urgentie, uit de Canvas-iCal die in Google Agenda is geabonneerd (agendanaam bevat "Canvas"; opdrachten herkend aan `iCalUID` met "assignment"; link naar de opdracht als die in de beschrijving staat, `canvasUrl`). Vak: aantal open, "X te laat" en de 3 urgentste. Knop "Alle deadlines" opent een schermvullend paneel (`.page-dialog`, adres `#canvas`, terug-knop sluit) met groepen Te laat / Vandaag / Morgen / Deze week / Later / Ingeleverd. Kleur: rood < 24 u, oranje < 3 dagen, te laat met rode achtergrond. **Ingeleverd vinkt Noah zelf af** (de iCal-feed heeft geen inleverstatus en de Canvas-API werkt niet vanuit de browser); bewaard in `canvas.done`, tonen/verbergen in `canvas.showDone`.
 - `episodes.js`: data van de Episodes Left-extensie via `postMessage`; covers via AniList GraphQL. Gebruik `Page { media(search:) }` en niet `Media(search:)`: daarbij maakt één onbekende titel het hele verzoek leeg.
 - `stars.js`: Film van vanavond = bovenste film van de watchlist volgens de Sterrenvoorspeller-formule; poster via TMDB; knop "Voorspel een film" opent de echte popup in een paneel.
 - `lyrics.js`: songtekst via LRCLIB (Spotify geeft zelf geen teksten). Loopt mee, klik op een regel om te spoelen. Bij sped-up/slowed versies worden de tijden omgerekend.
@@ -79,7 +79,7 @@ Noah wil per fase: bouwen, committen, kort zeggen wat er gedaan is en wat hij mo
 1. Topbalk en minimale modus: **gebouwd** (AH-rooster-link weggehaald, links aanpasbaar op het dashboard)
 2. Weer-popup en buienalarm: **gebouwd**, bron Buienradar (Open-Meteo als terugval)
 3. Animaties: **gebouwd** (inschuiven, optellen, popup schaal-fade, hoes-crossfade via View Transitions; op verzoek wat langzamer: inschuiven 0,9 s + 75 ms per vak, optellen 1,2 s, popup 0,35 s, hoes 0,7 s; alles uit bij prefers-reduced-motion)
-4. Canvas op urgentie (Te laat / Vandaag / Morgen / Deze week / Later), vak toont top 3, aparte pagina met de rest
+4. Canvas op urgentie: **gebouwd** ("aparte pagina" = schermvullend paneel op `#canvas`, omdat alleen het dashboard de agenda-inlog heeft; ingeleverd = zelf afvinken)
 5. Letterboxd via GitHub Action → `data/letterboxd.json`, TMDB-key als secret, vak "Laatst gekeken"
 6. Meldingenvak + telefoonmeldingen via ntfy.sh vanuit een Action (eerlijk zijn over wat zonder server niet veilig kan)
 7. AH-loon: alles in één config-object, toeslagen per tijdvak, netto als schatting. Geen verzonnen CAO-getallen
@@ -87,10 +87,9 @@ Noah wil per fase: bouwen, committen, kort zeggen wat er gedaan is en wat hij mo
 
 ## Af
 
-Speler met bediening, opslaan, spoelen, vervaagde hoes en songtekst; agenda (lijst/week, categoriekleuren, tooltips); weer met popup; buienalarm; F1 met stream-pop-up; AH-uren met periode en salaris; Canvas-tijdlijn; Episodes Left met covers; Film van vanavond met poster en voorspeller; to-do; Indelen; telefoonweergave. Gecontroleerd op de echte site: AH-periode, Canvas-feed, spelerknoppen in Firefox.
+Speler met bediening, opslaan, spoelen, vervaagde hoes en songtekst; agenda (lijst/week, categoriekleuren, tooltips); weer met popup; buienalarm; F1 met stream-pop-up; AH-uren met periode en salaris; Canvas-deadlines op urgentie met eigen pagina; Episodes Left met covers; Film van vanavond met poster en voorspeller; to-do; Indelen; telefoonweergave. Gecontroleerd op de echte site: AH-periode, Canvas-feed, spelerknoppen in Firefox.
 
 ## Open / ideeën
 
 - To-do eventueel later koppelen aan Google Tasks (zelfde Google-inlog).
 - Letterboxd: laatste logs (RSS kan niet direct vanuit de browser, er is een tussenstation nodig).
-- Pop-ups (`DASH.panel`) ook voor andere vakken, bijvoorbeeld de volledige Canvas-lijst.
