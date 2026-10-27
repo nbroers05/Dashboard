@@ -5,33 +5,33 @@ window.DASHBOARD_CONFIG = {
   // null = nog niet ingevuld: dat deel telt dan niet mee, en het dashboard zegt wat er ontbreekt.
   // Bedragen in euro's met een punt (12.75), percentages als getal (50 = 50%).
   ahLoon: {
-    // Uit de loonstrook van periode 2026/10 (7 sep – 4 okt 2026)
+    // Afgeleid uit de loonstroken van periode 2026/09 en 2026/10 (10 aug – 4 okt 2026)
     brutoUurloon: 11.99,
     // Toeslag bovenop het uurloon per tijdvak. dagen: ma di wo do vr za zo, of 'feestdag'. tot: '24:00' = einde van de dag.
     // Een dienst die over meerdere tijdvakken loopt, wordt per minuut opgesplitst.
     toeslagen: [
-      { naam: 'Avond', dagen: ['ma', 'di', 'wo', 'do', 'vr'], van: null, tot: '24:00', procent: null }, // TODO: vanaf hoe laat, en hoeveel %
-      { naam: 'Zaterdag', dagen: ['za'], van: '00:00', tot: '24:00', procent: null }, // TODO: hoeveel % (en hele dag of pas vanaf een tijd?)
-      { naam: 'Zondag', dagen: ['zo'], van: '00:00', tot: '24:00', procent: null }, // TODO: hoeveel %
-      { naam: 'Feestdag', dagen: ['feestdag'], van: '00:00', tot: '24:00', procent: null }, // TODO: hoeveel %
+      { naam: 'Zondag', dagen: ['zo'], van: '00:00', tot: '24:00', procent: 50 },
+      { naam: 'Feestdag', dagen: ['feestdag'], van: '00:00', tot: '24:00', procent: 100 }, // dubbel betaald
     ],
-    // Vallen er twee toeslagen tegelijk (bijv. zondagavond): 'hoogste' telt alleen de hoogste, 'optellen' telt ze bij elkaar op
+    // Vallen er twee toeslagen tegelijk (bijv. een feestdag op zondag): 'hoogste' telt alleen de hoogste, 'optellen' telt ze bij elkaar op
     meerdereToeslagen: 'hoogste',
     // Welke feestdagen meetellen voor de feestdagtoeslag. Haal weg wat bij jou niet telt.
     feestdagen: ['nieuwjaar', 'pasen1', 'pasen2', 'koningsdag', 'bevrijdingsdag', 'hemelvaart', 'pinksteren1', 'pinksteren2', 'kerst1', 'kerst2'],
     // Onbetaalde pauze, bijv. { langerDanUren: 5.5, minuten: 30 }. Leeg = geen pauze afgetrokken.
     pauzes: [],
-    vakantiegeldProcent: 8, // "Vakantietoeslag KPT" op de loonstrook: 8% over alle uurposten
-    vakantiegeldPerPeriode: true, // true = elke periode uitbetaald (zo staat het op je loonstrook), false = later in één keer
-    // Uren die elke periode extra worden uitbetaald, als % van je gewerkte uren.
-    // Afgeleid uit één loonstrook (ADV 7,03 u en vakantie 8,65 u bij 41,25 u gewerkt): controleer met een volgende strook.
+    // Uren die elke periode extra worden uitbetaald, als % van al je uren (gewerkt + toeslaguren + TVT).
+    // Beide loonstroken: ADV 7,03 u / 78 u en 7,79 u / 86,5 u; vakantie 8,65 u / 78 u en 9,59 u / 86,5 u.
     uitbetaaldeUren: [
-      { naam: 'ADV-uren', procent: 17.04 },
-      { naam: 'Vakantie-uren', procent: 20.97 },
+      { naam: 'ADV-uren', procent: 9.01 },
+      { naam: 'Vakantie-uren', procent: 11.09 },
     ],
+    // Percentages over alle uurposten samen (uren + toeslag + ADV + vakantie-uren), elke periode uitbetaald
+    vakantiegeldProcent: 8, // "Vakantietoeslag KPT"
+    vakantiegeldPerPeriode: true, // true = elke periode uitbetaald (zo staat het op je loonstrook), false = later in één keer
+    winstuitkeringProcent: 3.46, // "WUK voorschot KPT" (38,88 / 1.123,22 en 43,11 / 1.245,52)
     // Vaste bedragen per periode bovenop je uren, bijv. { naam: 'Reiskosten', bedrag: 12.50 }
     vasteToeslagen: [],
-    nettoVerhouding: 0.96, // netto ÷ bruto van de loonstrook (1.205,09 ÷ 1.251,96); alleen voor de schatting
+    nettoVerhouding: 0.96, // netto ÷ bruto: 1.205,09 / 1.251,96 en 1.333,01 / 1.388,27; alleen voor de schatting
   },
   // Voor filmposters (themoviedb.org → Instellingen → API → "API Key"). Leeg laten mag: dan een kleurvlak.
   tmdbApiKey: '0d5a58e53bb2d4420ee65e51e1d6f63a',
