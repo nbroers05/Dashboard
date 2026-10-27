@@ -10,6 +10,8 @@ Statische site: vanilla HTML/CSS/JS, geen build-stap, geen server. Hangt altijd 
 - Bij ontwerpwijzigingen: eerst één versie laten zien en op feedback wachten.
 - Sinds 27 okt 2026 commit en pusht Claude zelf naar `main` (daarvoor uploadde Noah met de hand). Zeg na elke wijziging dat hij **Ctrl+F5** moet doen (een oude, bewaarde `layout.js` of `style.css` gaf al eens verwarring).
 
+**Cache:** in `index.html` staat `?v=N` achter `style.css` en alle eigen scripts. Hoog N op (overal tegelijk) bij elke wijziging aan die bestanden, anders mengt de browser oude en nieuwe bestanden (gebeurde na fase 2: oude `weather.js` + oude `dash.js` → buienalarm "kon niet laden").
+
 ## Lokaal testen
 
 ```
