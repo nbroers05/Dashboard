@@ -24,10 +24,11 @@ In demo-modus komen weer, F1, zon, AniList-covers, TMDB-poster en LRCLIB-teksten
 
 | Bestand | Wat |
 |---|---|
-| `index.html` | Alle vakken; scripts onderaan in volgorde: config, dash, layout, spotify, calendar, widgets |
+| `index.html` | Topbalk en alle vakken; scripts onderaan in volgorde: config, dash, topbar, layout, spotify, calendar, widgets |
 | `style.css` | Alle opmaak. 12-koloms grid, per vak een eigen kleur (`--c`), telefoon onder `max-width: 700px` |
 | `config.js` | Client-ID's en sleutels (zie hieronder) |
 | `dash.js` | Gedeelde hulpjes: `DASH.widget()` (elk vak faalt los), `img()` (kleurvlak als plaatje niet laadt), `panel()` (pop-up), `onCalendar()`, datumfuncties |
+| `topbar.js` | Topbalk: klok, datum + ISO-weeknummer, snelkoppelingen (uit `config.snelkoppelingen`, icoon = favicon via Google s2 of eigen `icon`), Google-zoekbalk (sneltoets `/`), minimale modus (`body.minimal`, bewaard als `dash.minimal`, Esc zet terug). Telefoon: snelkoppelingen in uitklapmenu |
 | `layout.js` | Knop "Indelen": vakken verplaatsen/vergroten, bewaard in `localStorage` (`dash.layout.v2.wide/phone`) |
 | `spotify.js` | Spotify-speler (Authorization Code + PKCE, refresh token in localStorage). Publiceert `dash:track`, `window.spotifyPosition()`, `window.spotifySeek()` |
 | `calendar.js` | Google Agenda (lijst/week), kleuren per categorie, tooltips. Publiceert afspraken via `dash:calendar` / `window.DASH_CALENDAR` |
@@ -35,7 +36,7 @@ In demo-modus komen weer, F1, zon, AniList-covers, TMDB-poster en LRCLIB-teksten
 | `sterrenvoorspeller/` | Kopie van de popup van Noahs Firefox-extensie, met `popup/dashboard-shim.js` (nabootsing van `browser.*`) en `popup/dashboard.css` |
 | `README.md` | Stappen voor Noah (Spotify, GitHub Pages, Google Cloud, Canvas, TMDB, extensies) |
 
-Indeling: rij 1 de speler over de volle breedte (met songtekst open: speler 8 kolommen + songtekstvak 4).
+Indeling: bovenaan de topbalk over de volle breedte. Daarna de speler over de volle breedte (met songtekst open: speler 8 kolommen + songtekstvak 4).
 Daarna vakken van 4 kolommen: Weer, F1, Zon / AH-uren, Canvas, Episodes Left / Film van vanavond, To-do. Onderaan de agenda over de volle breedte.
 
 ### Vakken (`widgets/`)
@@ -60,19 +61,31 @@ Alles staat in `config.js` en is openbaar (staat op GitHub). Dat is bewust: het 
 | Google Calendar API | agenda, AH, Canvas | `googleClientId` (OAuth "Web application", project "Dashboard"). JavaScript origins: `https://nbroers05.github.io`, `http://127.0.0.1:8000`. Scope `calendar.readonly`. Token is maar 1 uur geldig (geen server), daarna knop "Vernieuwen" |
 | TMDB | filmposters | `tmdbApiKey` (v3 API key) |
 | AH-loon | verwacht salaris | `ahUurloon` (bruto, nu 20) |
+| Snelkoppelingen | topbalk | `snelkoppelingen` (lijst van `{ name, url, icon? }`). Canvas- en AH-rooster-link zijn nog placeholders (TODO) |
 | Open-Meteo, Jolpica, AniList, LRCLIB, flagcdn, jsDelivr | weer, F1, covers, songteksten, vlaggen, iconen/circuits | geen sleutel |
 
 Firefox-extensies van Noah staan buiten deze repo (`Documents/Claude eigen mapje/Episodes Left/`):
-`episodes-left` (0.1.2) en `letterboxd-voorspeller` (Sterrenvoorspeller, 0.2.2) hebben elk een klein `dashboard-bridge.js` dat hun data alleen op de dashboard-pagina doorgeeft. Noah moet die versies zelf laten ondertekenen en installeren; zonder die versies is Episodes Left leeg en toont de Sterrenvoorspeller de snapshot van 19 oktober 2026.
+`episodes-left` (0.1.2) en `letterboxd-voorspeller` (Sterrenvoorspeller, 0.2.2) hebben elk een klein `dashboard-bridge.js` dat hun data alleen op de dashboard-pagina doorgeeft. Episodes Left 0.1.2 is ondertekend en geïnstalleerd. Sterrenvoorspeller 0.2.2 ligt ter ondertekening; dat regelt Noah zelf. Tot die versie draait toont het dashboard de snapshot van 19 oktober 2026.
+
+## Uitbreidingen in fases (gestart 27 okt 2026)
+
+Noah wil per fase: bouwen, committen, kort zeggen wat er gedaan is en wat hij moet testen, en dan **stoppen tot hij akkoord geeft**. Nooit zelf aan de volgende fase beginnen. Telefoonweergave na elke fase checken. Geen geheimen in de code: alleen als GitHub-secret of in Noahs eigen localStorage. Het felle AH-blauw blijft zoals het is.
+
+1. Topbalk en minimale modus: **gebouwd**
+2. Weer-popup (zon-vak gaat erin op), buienalarm-vak (eerst Buienradar proberen, anders Open-Meteo minutely_15; eerlijk melden welke bron)
+3. Subtiele animaties, alles uit bij prefers-reduced-motion
+4. Canvas op urgentie (Te laat / Vandaag / Morgen / Deze week / Later), vak toont top 3, aparte pagina met de rest
+5. Letterboxd via GitHub Action → `data/letterboxd.json`, TMDB-key als secret, vak "Laatst gekeken"
+6. Meldingenvak + telefoonmeldingen via ntfy.sh vanuit een Action (eerlijk zijn over wat zonder server niet veilig kan)
+7. AH-loon: alles in één config-object, toeslagen per tijdvak, netto als schatting. Geen verzonnen CAO-getallen
+8. Gezondheid (Google Fit / Health Connect): eerst onderzoeken en rapporteren, pas bouwen na akkoord
 
 ## Af
 
-Speler met bediening, opslaan, spoelen, vervaagde hoes en songtekst; agenda (lijst/week, categoriekleuren, tooltips); weer; F1 met stream-pop-up; zon; AH-uren met periode en salaris; Canvas-tijdlijn; Episodes Left met covers; Film van vanavond met poster en voorspeller; to-do; Indelen; telefoonweergave.
+Speler met bediening, opslaan, spoelen, vervaagde hoes en songtekst; agenda (lijst/week, categoriekleuren, tooltips); weer; F1 met stream-pop-up; zon; AH-uren met periode en salaris; Canvas-tijdlijn; Episodes Left met covers; Film van vanavond met poster en voorspeller; to-do; Indelen; telefoonweergave. Gecontroleerd op de echte site: AH-periode, Canvas-feed, spelerknoppen in Firefox.
 
 ## Open / ideeën
 
-- Nagaan op de echte site: AH-periode tegen Noahs echte Salaris-afspraken, Canvas met de echte feed, donkere blokken achter de spelerknoppen in Firefox (backdrop-filter weggehaald, niet in Firefox getest).
-- Extensie-updates (Episodes Left 0.1.2, Sterrenvoorspeller 0.2.2) moeten nog ondertekend en geïnstalleerd worden.
 - To-do eventueel later koppelen aan Google Tasks (zelfde Google-inlog).
 - Letterboxd: laatste logs (RSS kan niet direct vanuit de browser, er is een tussenstation nodig).
 - Pop-ups (`DASH.panel`) ook voor andere vakken, bijvoorbeeld een weekoverzicht van het weer of de volledige Canvas-lijst.

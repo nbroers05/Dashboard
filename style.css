@@ -928,6 +928,157 @@ a.event:hover { background: color-mix(in srgb, var(--c, #888) 24%, rgba(255, 255
 }
 #toast.show { opacity: 1; transform: translate(-50%, 0); }
 
+/* ---------- Topbalk ---------- */
+.topbar {
+  grid-column: 1 / -1;
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 16px 20px;
+  padding: 14px 14px 14px 28px;
+  border-radius: 28px;
+  background: color-mix(in srgb, var(--tint) 30%, rgba(22, 22, 24, .78));
+  border: 1px solid rgba(255, 255, 255, .06);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, .3);
+}
+.tb-clock { display: flex; align-items: center; gap: 18px; flex: none; }
+.tb-time {
+  font-size: 3rem;
+  font-weight: 750;
+  line-height: 1;
+  letter-spacing: -.03em;
+  font-variant-numeric: tabular-nums;
+}
+.tb-day { margin: 0; color: var(--muted); font-size: 1rem; line-height: 1.35; white-space: nowrap; }
+.tb-date { display: block; color: var(--text); font-weight: 600; }
+.tb-date::first-letter { text-transform: uppercase; }
+.tb-week { display: block; }
+
+.tb-links { display: flex; gap: 2px; margin-left: auto; }
+.tb-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px;
+  border-radius: 14px;
+  color: var(--text);
+  text-decoration: none;
+}
+.tb-link:hover { background: var(--surface-hover); }
+.tb-icon { width: 28px; height: 28px; border-radius: 8px; --fb: #555; flex: none; }
+.tb-icon img { width: 100%; height: 100%; object-fit: contain; }
+.tb-icon .fb { font-size: .8rem; font-weight: 700; padding: 0; }
+.tb-name { display: none; }
+
+.tb-search {
+  flex: 0 1 360px;
+  min-width: 240px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px 0 16px;
+  height: 48px;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid transparent;
+}
+.tb-search:focus-within { border-color: var(--accent); background: var(--surface-hover); }
+.tb-search svg { width: 20px; height: 20px; fill: var(--muted); flex: none; }
+.tb-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-size: 1rem;
+  outline: none;
+}
+.tb-search input::-webkit-search-cancel-button { filter: invert(1); }
+.tb-search kbd {
+  font: inherit;
+  font-size: .8rem;
+  color: var(--muted);
+  border: 1px solid rgba(255, 255, 255, .2);
+  border-radius: 6px;
+  padding: 1px 7px;
+}
+.tb-search:focus-within kbd { display: none; }
+
+.tb-actions { display: flex; gap: 6px; }
+.tb-btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 14px;
+  background: none;
+  cursor: pointer;
+}
+.tb-btn:hover { background: var(--surface-hover); }
+.tb-btn svg { width: 24px; height: 24px; fill: currentColor; }
+.tb-menu { display: none; }
+.tb-min .i-full, .tb-min[aria-pressed="true"] .i-min { display: none; }
+.tb-min[aria-pressed="true"] .i-full { display: block; }
+
+/* Minimale modus: alleen klok, datum en zoekbalk in het midden */
+body.minimal .dashboard > :not(.topbar),
+body.minimal .layout-bar { display: none !important; }
+body.minimal .topbar {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  flex-direction: column;
+  justify-content: center;
+  gap: 40px;
+  padding: 24px;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+body.minimal .tb-clock { flex: none; flex-direction: column; align-items: center; gap: 12px; }
+body.minimal .tb-time { font-size: clamp(5rem, 20vw, 16rem); }
+body.minimal .tb-day { font-size: clamp(1.1rem, 2.6vw, 2rem); white-space: normal; text-align: center; }
+body.minimal .tb-links, body.minimal .tb-menu { display: none; }
+body.minimal .tb-search { flex: none; width: min(640px, 100%); height: 58px; }
+body.minimal .tb-actions { position: absolute; top: max(16px, env(safe-area-inset-top)); right: 16px; }
+
+@media (max-width: 700px) {
+  .topbar {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 14px 14px 14px 20px;
+    border-radius: 24px;
+  }
+  .tb-clock { flex-direction: column; align-items: flex-start; gap: 6px; flex: 1; min-width: 0; }
+  .tb-time { font-size: 2.4rem; }
+  .tb-day { font-size: .9rem; white-space: normal; }
+  .tb-actions { align-self: flex-start; }
+  .tb-menu { display: grid; }
+  .tb-search { order: 3; flex: 1 1 100%; min-width: 0; }
+  .tb-search kbd { display: none; }
+  /* Snelkoppelingen als uitklapmenu */
+  .tb-links {
+    display: none;
+    position: absolute;
+    top: 72px;
+    right: 14px;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 200px;
+    padding: 8px;
+    border-radius: 18px;
+    background: #222226;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, .5);
+  }
+  .topbar.menu-open .tb-links { display: flex; }
+  .tb-link { padding: 10px 12px; }
+  .tb-name { display: inline; }
+}
+
 /* Middelgroot (tablet): vakken twee aan twee */
 @media (min-width: 701px) and (max-width: 1000px) {
   .player { grid-column: 1 / -1; }

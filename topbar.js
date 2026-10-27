@@ -1,0 +1,93 @@
+'use strict';
+
+// Topbalk: klok, datum, weeknummer, snelkoppelingen (uit config.js), Google-zoekbalk en de knop voor minimale modus.
+// Minimale modus: alleen een grote klok, datum en zoekbalk. Esc of dezelfde knop zet hem terug. Keuze blijft bewaard.
+(() => {
+  const { h, store } = DASH;
+  const bar = document.getElementById('topbar');
+  if (!bar) return;
+
+  const timeEl = bar.querySelector('.tb-time');
+  const dateEl = bar.querySelector('.tb-date');
+  const weekEl = bar.querySelector('.tb-week');
+  const links = bar.querySelector('.tb-links');
+  const menuBtn = bar.querySelector('.tb-menu');
+  const minBtn = bar.querySelector('.tb-min');
+  const search = bar.querySelector('.tb-search input');
+
+  // ---------- Klok en datum ----------
+  // ISO-weeknummer (week begint op maandag, week 1 bevat de eerste donderdag)
+  function isoWeek(d) {
+    const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    t.setUTCDate(t.getUTCDate() + 4 - (t.getUTCDay() || 7));
+    return Math.ceil(((t - Date.UTC(t.getUTCFullYear(), 0, 1)) / 86400000 + 1) / 7);
+  }
+
+  function tick() {
+    const now = new Date();
+    const time = now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+    const date = now.toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    const week = `week ${isoWeek(now)}`;
+    if (timeEl.textContent !== time) {
+      timeEl.textContent = time;
+      timeEl.dateTime = now.toISOString();
+    }
+    if (dateEl.textContent !== date) dateEl.textContent = date;
+    if (weekEl.textContent !== week) weekEl.textContent = week;
+    // Precies op de volgende seconde opnieuw, zodat de minuut op tijd omslaat
+    setTimeout(tick, 1000 - now.getMilliseconds() + 5);
+  }
+  tick();
+
+  // ---------- Snelkoppelingen ----------
+  const list = (window.DASHBOARD_CONFIG && DASHBOARD_CONFIG.snelkoppelingen) || [];
+  for (const { name, url, icon } of list) {
+    let host = '';
+    try { host = new URL(url).hostname; } catch { continue; }
+    const a = h('a', 'tb-link');
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.title = name;
+    const src = icon ? icon.replace('{dag}', new Date().getDate()) : `https://www.google.com/s2/favicons?domain=${host}&sz=64`;
+    a.append(DASH.img(src, 'tb-icon', name[0]), h('span', 'tb-name', name));
+    links.append(a);
+  }
+
+  // Telefoon: snelkoppelingen in een uitklapmenu
+  menuBtn.onclick = () => {
+    const open = !bar.classList.contains('menu-open');
+    bar.classList.toggle('menu-open', open);
+    menuBtn.setAttribute('aria-expanded', open);
+  };
+  document.addEventListener('click', (e) => {
+    if (bar.classList.contains('menu-open') && !e.target.closest('.tb-links, .tb-menu')) {
+      bar.classList.remove('menu-open');
+      menuBtn.setAttribute('aria-expanded', false);
+    }
+  });
+
+  // ---------- Minimale modus ----------
+  const KEY = 'dash.minimal';
+  function setMinimal(on) {
+    document.body.classList.toggle('minimal', on);
+    minBtn.setAttribute('aria-pressed', on);
+    minBtn.title = on ? 'Alles weer tonen (Esc)' : 'Minimale modus';
+    store.set(KEY, on);
+  }
+  setMinimal(store.get(KEY) === true);
+  minBtn.onclick = () => setMinimal(!document.body.classList.contains('minimal'));
+
+  // ---------- Sneltoetsen ----------
+  const typing = (el) => el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === '/' && !typing(document.activeElement) && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      e.preventDefault();
+      search.focus();
+      search.select();
+    } else if (e.key === 'Escape' && !document.querySelector('dialog[open]')) {
+      if (document.activeElement === search) search.blur();
+      if (document.body.classList.contains('minimal')) setMinimal(false);
+    }
+  });
+})();
