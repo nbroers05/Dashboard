@@ -123,11 +123,99 @@ DASH.widget('w-f1', (card, body, guard) => {
   }
   DASH.every(60 * 1000, guard(f1Alert));
 
+  // ---------- Na de race: uitslag en klassement tot de volgende sessie (meestal VT1 van de volgende GP) ----------
+  const RKEY = 'f1.results';
+  const NAT = {
+    Dutch: 'nl', British: 'gb', German: 'de', Spanish: 'es', French: 'fr', Italian: 'it', Monegasque: 'mc', Australian: 'au',
+    Mexican: 'mx', Canadian: 'ca', Finnish: 'fi', Danish: 'dk', Thai: 'th', Japanese: 'jp', Chinese: 'cn', American: 'us',
+    Brazilian: 'br', 'New Zealander': 'nz', Argentine: 'ar', Argentinian: 'ar', Swiss: 'ch', Austrian: 'at', Belgian: 'be',
+    Polish: 'pl', Russian: 'ru', Swedish: 'se', Estonian: 'ee', Indian: 'in', Irish: 'ie',
+  };
+  let results = store.get(RKEY);   // { raceStart, race, at, top: [...], standings: [...] }
+  // Laatste sessie die al voorbij is: een race? Dan tonen we de uitslag in plaats van de aftelklok
+  const lastRace = (now) => {
+    const prev = sessions.filter((x) => x.end <= now).pop();
+    return prev && prev.name === 'Race' && now - prev.end < 10 * 86400000 ? prev : null;
+  };
+  async function loadResults(race) {
+    const cached = store.get(RKEY);
+    if (cached && cached.raceStart === race.start && cached.top.length && cached.standings.length && Date.now() - cached.at < 6 * 3600000) return cached;
+    const [r, st] = await Promise.all([
+      DASH.getJSON('https://api.jolpi.ca/ergast/f1/current/last/results/?format=json'),
+      DASH.getJSON('https://api.jolpi.ca/ergast/f1/current/driverStandings/?format=json'),
+    ]);
+    const rr = (r.MRData.RaceTable.Races || [])[0];
+    const sl = (st.MRData.StandingsTable.StandingsLists || [])[0];
+    // Nog de vorige race in de API (uitslag nog niet verwerkt): dan nog even de aftelklok
+    if (!rr || Math.abs(Date.parse(`${rr.date}T${rr.time || '12:00:00Z'}`) - race.start) > 86400000) return null;
+    const driver = (d) => ({ code: d.code || d.familyName.slice(0, 3).toUpperCase(), name: `${d.givenName} ${d.familyName}`, last: d.familyName, flag: NAT[d.nationality] || null });
+    const out = {
+      raceStart: race.start,
+      at: Date.now(),
+      race: rr.raceName.replace(/\s*Grand Prix$/i, ''),
+      top: rr.Results.slice(0, 10).map((x) => ({ pos: +x.position, ...driver(x.Driver), team: x.Constructor.name, gap: x.Time ? x.Time.time : x.status })),
+      standings: sl ? sl.DriverStandings.slice(0, 5).map((x) => ({ pos: +x.position, points: +x.points, ...driver(x.Driver) })) : [],
+    };
+    store.set(RKEY, out);
+    return out;
+  }
+  const flag = (code, cls) => DASH.img(code ? `https://flagcdn.com/w80/${code}.png` : null, cls, code ? code.toUpperCase() : '');
+
+  function renderResults(res, next) {
+    clearInterval(countdown);
+    const head = h('div', 'w-row');
+    const t = h('div');
+    t.style.minWidth = '0';
+    t.append(h('div', 'w-mid', `Uitslag GP ${res.race}`), h('div', 'w-sub', next ? `Volgende: ${next.name} GP ${next.gp} · ${fmtDay(next.start)} ${fmtTime(next.start)}` : 'Laatste race van het seizoen'));
+    head.append(t);
+    const podium = h('div', 'f1-podium');
+    for (const d of res.top.slice(0, 3)) {
+      const p = h('div', `f1-pod p${d.pos}`);
+      p.title = `${d.pos}. ${d.name} (${d.team}) · ${d.gap}`;
+      p.append(h('span', 'f1-pos', String(d.pos)), flag(d.flag, 'f1-dflag'), h('b', null, d.last), h('span', 'w-sub', d.pos === 1 ? d.team : d.gap));
+      podium.append(p);
+    }
+    const rest = h('ol', 'f1-rest');
+    rest.start = 4;
+    for (const d of res.top.slice(3, 10)) {
+      const li = h('li');
+      li.title = `${d.pos}. ${d.name} (${d.team}) · ${d.gap}`;
+      li.append(h('span', 'f1-n', String(d.pos)), flag(d.flag, 'f1-sflag'), h('span', null, d.code));
+      rest.append(li);
+    }
+    const champ = h('div', 'f1-champ');
+    champ.append(h('p', 'f1-champ-head', 'Kampioenschap'));
+    for (const d of res.standings) {
+      const row = h('div', 'f1-champ-row');
+      row.append(h('span', 'f1-n', String(d.pos)), flag(d.flag, 'f1-sflag'), h('span', 'f1-champ-name', d.last), h('b', null, `${d.points}`));
+      champ.append(row);
+    }
+    const foot = h('div', 'w-row');
+    const vbtn = h('button', 'w-btn', '▶ Stream');
+    vbtn.onclick = openVideo;
+    foot.append(h('span', 'w-sub', 'Uitslag tot de volgende sessie'), vbtn);
+    body.replaceChildren(head, podium, rest, champ, foot);
+    body.classList.add('f1-res');
+    // Op het moment dat de volgende sessie begint: terug naar de aftelklok
+    if (next) countdown = setTimeout(guard(render), Math.min(next.start - Date.now(), 2 ** 31 - 1));
+  }
+
   function render() {
     const now = Date.now();
     const s = sessions.find((x) => x.end > now);
     f1Alert();
     clearInterval(countdown);
+    clearTimeout(countdown);
+    body.classList.remove('f1-res');
+    const race = lastRace(now);
+    if (race && (!s || s.start > now)) {
+      if (results && results.raceStart === race.start) return renderResults(results, s);
+      loadResults(race).then((res) => {
+        if (!res) return setTimeout(guard(render), 15 * 60000);   // nog geen uitslag: over een kwartier opnieuw
+        results = res;
+        render();
+      }).catch((e) => console.warn('[f1] uitslag', e));
+    }
     if (!s) {
       body.replaceChildren(h('p', 'w-note', 'Geen sessies meer gepland. Tot volgend seizoen!'));
       return;
