@@ -1534,10 +1534,11 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk .cv-meta { font-size: .72rem; margin-top: 0; }
 .desk #w-f1 { flex: .95 1 0; }
 /* F1: kop bovenaan, aftelklok groot links, circuit klein rechts */
-.desk #w-f1 .w-body { display: grid; grid-template-columns: minmax(0, 1fr) 38%; grid-template-rows: auto minmax(0, 1fr); grid-template-areas: "head head" "foot track"; gap: 6px 10px; }
+.desk #w-f1 .w-body { display: grid; grid-template-columns: minmax(0, 1fr) 42%; grid-template-rows: auto minmax(0, 1fr); grid-template-areas: "head track" "foot track"; gap: 6px 12px; }
 .desk #w-f1 .f1-head { grid-area: head; }
-.desk #w-f1 .f1-track { grid-area: track; overflow: hidden; }
-.desk #w-f1 .f1-track svg { width: 100%; height: 100%; }
+.desk #w-f1 .f1-track { grid-area: track; position: relative; overflow: hidden; align-self: stretch; }
+/* Absoluut binnen het vak: zo past het circuit altijd in de beschikbare hoogte */
+.desk #w-f1 .f1-track svg { position: absolute; inset: 8px; width: calc(100% - 16px); height: calc(100% - 16px); max-height: none; }
 .desk #w-f1 .w-body > .w-row { grid-area: foot; align-self: end; flex-direction: column; align-items: flex-start; gap: 6px; }
 .desk #w-f1 .w-btn { padding: 5px 12px; font-size: .78rem; }
 .desk #w-episodes { flex: .9 1 0; }
@@ -1570,7 +1571,9 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk #w-stars .w-body { flex-direction: row; align-items: stretch; gap: 12px; }
 .desk #w-stars .film { flex: 1; min-width: 0; }
 .desk #w-stars .film-actions { flex: none; width: 140px; margin: 0; grid-template-columns: 1fr; align-content: center; gap: 6px; }
-.desk .film-poster { width: 72px; }
+/* Poster zo hoog als het vak, breedte volgt (2:3) */
+.desk #w-stars .film { align-items: stretch; min-height: 0; }
+.desk .film-poster { width: auto; height: 100%; min-height: 0; align-self: stretch; aspect-ratio: 2 / 3; }
 .desk .film-info { gap: 2px; }
 .desk .film-info .w-mid { font-size: 1.1rem; }
 .desk .film-actions .w-btn { padding: 7px 10px; font-size: .8rem; }
@@ -1621,7 +1624,6 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
   .desk .wx-temp .w-sub, .desk .rn-foot, .desk .ah-bars, .desk .ah-days, .desk .film-info > .w-sub:nth-child(4), .desk .wx-today .w-label { display: none; }
   .desk-weather > #w-weather { flex: 1.6 1 0; }
   .desk #w-weather .w-big { font-size: 1.7rem; }
-  .desk .film-poster { width: 56px; }
   .desk .wx-icon { width: 48px; height: 48px; }
   .desk #w-canvas .w-body > .w-row { display: none; }
   .desk .cv-meta .cv-course { display: none; }
