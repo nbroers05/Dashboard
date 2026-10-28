@@ -83,8 +83,18 @@ DASH.widget('w-alerts', (card, body, guard) => {
   function render() {
     const alerts = DASH.allAlerts().sort((a, b) => ORDER[a.level] - ORDER[b.level]);
     const total = alerts.length + (phone ? phone.length : 0);
-    card.classList.toggle('al-urgent', alerts.some((a) => a.level === 'urgent'));
     if (allPanel && allPanel.dialog.open) fillAll();
+
+    // Focusmodus (focus.js): meldingen gedempt tot de timer klaar is, alleen het aantal dat wacht
+    if (DASH.focus) {
+      card.classList.remove('al-urgent');
+      const box = h('div', 'al-calm al-muted');
+      box.append(h('div', 'al-check', '🔕'), h('div', 'w-mid', `Gedempt tot ${fmtTime(DASH.focus.until)}`));
+      box.append(h('p', 'w-sub', total ? `${total} ${total === 1 ? 'melding wacht' : 'meldingen wachten'} tot na je focus` : 'Focusmodus staat aan'));
+      body.replaceChildren(box);
+      return;
+    }
+    card.classList.toggle('al-urgent', alerts.some((a) => a.level === 'urgent'));
 
     if (!total) {
       const box = h('div', 'al-calm');
@@ -165,6 +175,7 @@ DASH.widget('w-alerts', (card, body, guard) => {
   }
 
   window.addEventListener('dash:alerts', guard(render));
+  window.addEventListener('dash:focus', guard(render));
   DASH.every(20 * 1000, guard(loadPhone));
   render();
   loadPhone();

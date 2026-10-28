@@ -46,6 +46,14 @@ window.DASHBOARD_CONFIG = {
     { user: 'Marrie01', name: 'Margriet' },
     { user: 'MARIJN_GEBRUIKERSNAAM', name: 'Marijn' }, // TODO: Marijns Letterboxd-gebruikersnaam (staat in de adresbalk van zijn profiel)
   ],
+  // Focusmodus (knop met het klokje in de topbalk). playlist = het ID uit de Spotify-link van je studieplaylist:
+  // open.spotify.com/playlist/<DIT DEEL>?si=... ntfy-onderwerp vul je op het dashboard zelf in (blijft in je browser).
+  focus: {
+    werkMinuten: 50,
+    pauzeMinuten: 10,
+    playlist: 'STUDIE_PLAYLIST_ID', // TODO: ID van je studieplaylist (22 tekens)
+    ntfyServer: 'https://ntfy.sh',
+  },
   // Gezondheid (Google Health): je dagelijkse stappendoel
   gezondheid: { stappenDoel: 10000 },
   // Voor filmposters (themoviedb.org → Instellingen → API → "API Key"). Leeg laten mag: dan een kleurvlak.

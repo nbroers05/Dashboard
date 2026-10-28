@@ -239,9 +239,24 @@
       const days = Math.round((DASH.startOfDay(due(next)) - today) / 86400000);
       parts.push(`${name} ${days === 0 ? `vandaag ${DASH.fmtTime(due(next))}` : days === 1 ? 'morgen' : `over ${days} dagen`}`);
     }
+    // Verjaardagen (agenda-veld birthday, uit de verjaardagen-agenda van je contacten): komende 7 dagen
+    const bdays = cal.filter((e) => e.birthday && e.end > now && e.start < DASH.addDays(today, 8))
+      .sort((a, b) => a.start - b.start).filter((e, i, arr) => arr.findIndex((x) => x.birthday === e.birthday) === i);
+    let todayBday = null;
+    for (const e of bdays.slice(0, 2)) {
+      const days = Math.round((DASH.startOfDay(e.start) - today) / 86400000);
+      if (days <= 0) todayBday = `🎂 ${e.birthday} is vandaag jarig!`;
+      else parts.push(`🎂 ${e.birthday} ${days === 1 ? 'morgen' : `over ${days} dagen`} jarig`);
+    }
     const text = parts.join(' · ');
-    if (dayLineEl.textContent !== text) dayLineEl.textContent = text;
-    dayLineEl.hidden = !text;
+    const key = `${todayBday || ''}|${text}`;
+    if (dayLineEl.dataset.key !== key) {
+      dayLineEl.dataset.key = key;
+      dayLineEl.replaceChildren();
+      if (todayBday) dayLineEl.append(h('span', 'tb-bday-today', todayBday), text ? ' · ' : '');
+      if (text) dayLineEl.append(text);
+    }
+    dayLineEl.hidden = !text && !todayBday;
   }
   const loadRain = () => DASH.radar().then((r) => { rain = r; dayLine(); }).catch(() => {});
   window.addEventListener('dash:calendar', dayLine);

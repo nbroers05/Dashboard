@@ -215,7 +215,8 @@
         maxResults: '250',
       });
       // Canvas altijd ophalen (voor het deadlinesvak), ook als die agenda in Google verborgen is
-      const visible = cals.items.filter((c) => c.selected || c.primary || isCanvasCal(c));
+      // En de verjaardagen-agenda (contacten), voor de dagregel, ook als die verborgen is
+      const visible = cals.items.filter((c) => c.selected || c.primary || isCanvasCal(c) || isBirthdayCal(c));
       const lists = await Promise.all(visible.map((cal) =>
         api(`/calendars/${encodeURIComponent(cal.id)}/events?${qs}`)
           .then((r) => (r.items || []).map((e) => simplify(e, cal)).filter(Boolean))
@@ -251,6 +252,7 @@
       color: cal.backgroundColor || null,
       link: e.htmlLink || null,
       hidden: !(cal.selected || cal.primary),
+      ...(birthdayName(e, cal) ? { birthday: birthdayName(e, cal) } : {}),
       ...(canvas ? { canvas: true, assignment: /assignment/i.test(e.iCalUID || ''), canvasUrl: canvasLink(e.description) } : {}),
     };
   }
@@ -259,6 +261,18 @@
   function canvasLink(text) {
     const m = (text || '').match(/https?:\/\/[^\s"'<>]*(?:instructure\.com|\/courses\/\d+)[^\s"'<>]*/);
     return m ? m[0] : null;
+  }
+
+  // Verjaardagen: Google zet ze in een eigen agenda (#contacts@group.v.calendar.google.com) of als eventType 'birthday'
+  function isBirthdayCal(cal) {
+    return /#contacts@group\.v\.calendar\.google\.com$/.test(cal.id || '');
+  }
+  function birthdayName(e, cal) {
+    if (e.eventType !== 'birthday' && !isBirthdayCal(cal)) return null;
+    const t = (e.summary || '').trim();
+    return t.replace(/^(?:verjaardag van|birthday of|happy birthday,?)\s+/i, '')
+      .replace(/(?:['’]s|['’])?\s+(?:verjaardag|birthday)$/i, '')
+      .replace(/\s+is jarig$/i, '').trim() || t;
   }
 
   function isCanvasCal(cal) {
@@ -775,7 +789,8 @@
       { id: '2', title: 'Werkblok', location: '', allDay: false, start: now - 20 * 60000, end: now + 40 * 60000, color: '#7986cb' },
       { id: '3', title: 'Tandarts', location: 'Hoofdstraat 12', allDay: false, start: now + 95 * 60000, end: now + 125 * 60000, color: '#e67c73' },
       { id: '4', title: 'Filmavond', location: '', allDay: false, start: at(0, 20), end: at(0, 23), color: '#33b679' },
-      { id: '5', title: 'Verjaardag oma', location: '', allDay: true, start: addDays(t, 1), end: addDays(t, 2), color: '#8e24aa' },
+      { id: '5', title: 'Verjaardag oma', location: '', allDay: true, start: addDays(t, 1), end: addDays(t, 2), color: '#8e24aa', birthday: 'Oma' },
+      { id: '20', title: "Loeka's verjaardag", location: '', allDay: true, start: addDays(t, 3), end: addDays(t, 4), color: '#8e24aa', birthday: 'Loeka', hidden: true },
       { id: '6', title: 'Sporten', location: 'Sportschool', allDay: false, start: at(1, 18), end: at(1, 19, 30), color: '#039be5' },
       { id: '7', title: 'Weekendje weg', location: 'Texel', allDay: true, start: addDays(t, 3), end: addDays(t, 5), color: '#33b679' },
       { id: '8', title: 'AH BERKEL EN RODENRIJS', location: 'Westerwater', allDay: false, start: at(2, 8), end: at(2, 13), color: '#3f51b5' },

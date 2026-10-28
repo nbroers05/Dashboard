@@ -1327,6 +1327,33 @@ body.minimal .tb-dayline { max-width: none; margin-top: 6px; }
 body.minimal .tb-research { display: none; }
 /* Nachtstand-knop */
 .tb-night[aria-pressed="false"] { color: var(--muted); }
+/* Focusmodus: knop, resterende tijd naast de klok, dashboard licht gedimd */
+.tb-focus[aria-pressed="true"] { color: var(--c-study); background: color-mix(in srgb, var(--c-study) 18%, transparent); }
+.tb-focus-pill { display: inline-block; margin-bottom: 2px; padding: 2px 10px; border: 0; border-radius: 999px; background: color-mix(in srgb, var(--c-study) 22%, transparent); color: color-mix(in srgb, var(--c-study) 70%, white); font: inherit; font-weight: 750; font-variant-numeric: tabular-nums; white-space: nowrap; cursor: pointer; }
+html.focus-pause .tb-focus-pill { background: color-mix(in srgb, var(--c-film) 22%, transparent); color: color-mix(in srgb, var(--c-film) 70%, white); }
+.tb-focus-pill[hidden] { display: none; }
+html.portrait-wide.focus-on body:not(.minimal) .tb-date { display: none; }
+body.minimal .tb-focus-pill { font-size: .8em; padding: 4px 14px; margin-bottom: 8px; }
+html.portrait-wide body:not(.minimal) .tb-search { min-width: 200px; }
+.dashboard > :not(.topbar) { transition: filter .6s ease; }
+html.focus-on:not(.focus-pause) .dashboard > :not(.topbar) { filter: brightness(.68) saturate(.75); }
+html.focus-on:not(.focus-pause) .dashboard > :not(.topbar):hover { filter: none; }
+body.minimal .tb-focus { display: none; }
+.panel-dialog.focus-dialog { height: fit-content; max-height: calc(100dvh - 24px); width: min(480px, calc(100vw - 24px)); }
+.focus-dialog .panel-body { height: auto; padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 12px; }
+.fc-form { display: flex; flex-direction: column; gap: 14px; }
+.fc-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.fc-field { display: flex; flex-direction: column; gap: 5px; font-size: .85rem; color: var(--muted); }
+.fc-field input { min-width: 0; padding: 9px 12px; border: 1px solid rgba(255, 255, 255, .12); border-radius: 12px; background: rgba(255, 255, 255, .06); color: var(--text); font: inherit; font-size: 1rem; }
+.fc-field input:focus { outline: none; border-color: var(--c-study); }
+.fc-check { display: flex; align-items: center; gap: 10px; font-size: .9rem; }
+.fc-check input { width: 18px; height: 18px; accent-color: var(--c-study); }
+.fc-status { margin: 0; font-size: 1.1rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.fc-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.focus-dialog .w-btn:not(.ghost) { --c: var(--c-study); }
+.al-muted .al-check { background: rgba(255, 255, 255, .08); }
+/* Verjaardag in de dagregel; vandaag extra opvallend */
+.tb-bday-today { padding: 1px 8px; border-radius: 999px; background: linear-gradient(90deg, #ff5fa2, #f5b02e); color: #1a1a1a; font-weight: 800; }
 /* Nachtstand: alles minder fel en minder kleur (ook het AH-blauw); pop-ups erboven blijven gewoon */
 html.night body::after {
   content: ''; position: fixed; inset: 0; z-index: 200; pointer-events: none;
@@ -1497,7 +1524,10 @@ body.minimal .tb-actions { position: absolute; top: max(16px, env(safe-area-inse
     padding: 14px 14px 14px 20px;
     border-radius: 24px;
   }
-  .tb-clock { flex-direction: column; align-items: flex-start; gap: 6px; flex: 1; min-width: 0; }
+  .tb-clock { flex-direction: column; align-items: flex-start; gap: 6px; flex: 1 1 100%; min-width: 0; }
+  /* Tweede rij: Onderzoek (alleen icoon) links, knoppen rechts */
+  .tb-research .tb-name { display: none; }
+  .tb-actions { margin-left: auto; }
   .tb-time { font-size: 2.4rem; }
   .tb-day { font-size: .9rem; white-space: normal; }
   .tb-actions { align-self: flex-start; }
@@ -1508,7 +1538,7 @@ body.minimal .tb-actions { position: absolute; top: max(16px, env(safe-area-inse
   .tb-links {
     display: none;
     position: absolute;
-    top: 72px;
+    top: calc(100% - 68px);   /* net onder de knoppenrij (daaronder zit alleen nog de zoekbalk) */
     right: 14px;
     flex-direction: column;
     gap: 2px;
