@@ -4,6 +4,12 @@
    "name": "NOS",
    "items": [
     {
+     "title": "Tienduizenden noodknoppen ouderen straks defect door stoppen 2G-netwerk",
+     "link": "https://nos.nl/l/2637029",
+     "time": "2026-10-28T15:05:58+01:00",
+     "img": "https://images.cdn.nos.nl/7/E/N/E/L/1/qg2tgJfRaGHot4g5KtSCQVmfb7R64k7KH9bjvbc/2x1x2496x1404-1024x576.webp"
+    },
+    {
      "title": "Flávio Bolsonaro en gezin geland in de Verenigde Staten",
      "link": "https://nos.nl/l/2637028",
      "time": "2026-10-28T14:55:57+01:00",
@@ -86,12 +92,6 @@
      "link": "https://nos.nl/l/2636977",
      "time": "2026-10-28T09:34:07+01:00",
      "img": "https://images.cdn.nos.nl/3/E/5/U/9/X/x7QYfVUe1f2CJnDAoLVU19zwRD2TrXwxWYRnEae/0x208x4000x2250-1024x576.webp"
-    },
-    {
-     "title": "Bredaas ziekenhuis pakt eigen personeel aan: wielklem voor foutparkeren",
-     "link": "https://nos.nl/l/2636975",
-     "time": "2026-10-28T09:21:38+01:00",
-     "img": "https://images.cdn.nos.nl/2/6/W/n/Y/f/kxreUNCQW3YtTnrsJ8hWoeQnpjXqmySviiNiBUk/285x126x3552x1998-1024x576.webp"
     }
    ]
   },
@@ -392,15 +392,56 @@
  "youtube": {
   "channels": [
    "Patrick (H) Willems",
-   "The Yard"
+   "The Yard",
+   "Ken"
   ],
   "videos": [
+   {
+    "title": "2.1 autism cycle",
+    "channel": "Ken",
+    "link": "https://www.youtube.com/watch?v=4hcxyCR3gng",
+    "thumb": "https://i.ytimg.com/vi/4hcxyCR3gng/mqdefault.jpg",
+    "time": "2026-10-28T12:00:14+00:00",
+    "short": false
+   },
+   {
+    "title": "20 win challenge (day 2)",
+    "channel": "Ken",
+    "link": "https://www.youtube.com/watch?v=dla0WPMI1lI",
+    "thumb": "https://i.ytimg.com/vi/dla0WPMI1lI/mqdefault.jpg",
+    "time": "2026-10-28T11:59:47+00:00",
+    "short": false
+   },
+   {
+    "title": "20 win challenge (day 2)",
+    "channel": "Ken",
+    "link": "https://www.youtube.com/watch?v=18dNbPMGz2M",
+    "thumb": "https://i.ytimg.com/vi/18dNbPMGz2M/mqdefault.jpg",
+    "time": "2026-10-28T11:44:16+00:00",
+    "short": false
+   },
    {
     "title": "Killing my friends because I have to | Yard D&D | S1E65",
     "channel": "The Yard",
     "link": "https://www.youtube.com/watch?v=U0W6YEky_jk",
     "thumb": "https://i.ytimg.com/vi/U0W6YEky_jk/mqdefault.jpg",
     "time": "2026-10-27T23:44:27+00:00",
+    "short": false
+   },
+   {
+    "title": "I don't care",
+    "channel": "Ken",
+    "link": "https://www.youtube.com/watch?v=ScNtqik22iA",
+    "thumb": "https://i.ytimg.com/vi/ScNtqik22iA/mqdefault.jpg",
+    "time": "2026-10-27T12:00:12+00:00",
+    "short": false
+   },
+   {
+    "title": "20 win challenge",
+    "channel": "Ken",
+    "link": "https://www.youtube.com/watch?v=Y3pyM_yQW90",
+    "thumb": "https://i.ytimg.com/vi/Y3pyM_yQW90/mqdefault.jpg",
+    "time": "2026-10-27T08:31:15+00:00",
     "short": false
    },
    {

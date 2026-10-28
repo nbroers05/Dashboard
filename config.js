@@ -68,7 +68,7 @@ window.DASHBOARD_CONFIG = {
   youtubeKanalen: [
     { name: 'Patrick (H) Willems', id: 'UCF1fG3gT44nGTPU2sVLoFWg' },
     { name: 'The Yard', id: 'UCGbg3DjQdcqWwqOLHpYHXIg' },
-    { name: 'Ken', id: 'KANAAL_ID_KEN' }, // TODO: welk kanaal van Ken? (@ken is een leeg kanaal)
+    { name: 'Ken', id: 'UCiFOL6V9KbvxfXvzdFSsqCw' }, // @kenforrest
   ],
   // Markten: alleen koers, verandering vandaag en een lijntje van de afgelopen maand. Geen advies.
   // Aandelen/indexen via Twelve Data (gratis key, vul je op de Feeds-pagina zelf in; blijft in je browser).

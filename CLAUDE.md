@@ -12,7 +12,7 @@ Statische site: vanilla HTML/CSS/JS, geen build-stap, geen server. Hangt altijd 
 
 **Nieuwe-tabpagina:** Noah gebruikt `https://nbroers05.github.io/Dashboard/?mini=1` in Firefox (New Tab Override). `?mini=1` start altijd minimaal, schrijft `dash.minimal` niet weg (uitklappen/terug alleen voor dat tabblad), zet focus op de zoekbalk en laadt Spotify/agenda/vakken pas bij uitklappen (`DASH.loadAll`). Tijdens het laden staat `body.booting` (vakken onzichtbaar) tot motion.js de inschuif-animatie start. Spotify-redirect is `origin + pathname` (zonder query), Google gaat via pop-up/hulpprogramma: geen van beide raakt de parameter.
 
-**Versie (afspraak met Noah, vanaf 28 okt 2026):** `0.MINOR.PATCH`. Grote opdracht = MINOR omhoog (PATCH terug naar 0), kleine fix = PATCH omhoog. Het nummer staat als `?v=0.MINOR.PATCH` achter `style.css`, config, dash en topbar in `index.html` (alle andere scripts krijgen het via dash.js) en onderaan als "Dashboard versie …". Altijd ophogen bij een wijziging, anders mengt de browser oude en nieuwe bestanden. Huidige: 0.35.1.
+**Versie (afspraak met Noah, vanaf 28 okt 2026):** `0.MINOR.PATCH`. Grote opdracht = MINOR omhoog (PATCH terug naar 0), kleine fix = PATCH omhoog. Het nummer staat als `?v=0.MINOR.PATCH` achter `style.css`, config, dash en topbar in `index.html` (alle andere scripts krijgen het via dash.js) en onderaan als "Dashboard versie …". Altijd ophogen bij een wijziging, anders mengt de browser oude en nieuwe bestanden. Huidige: 0.35.2.
 
 ## Lokaal testen
 
@@ -92,7 +92,7 @@ Alles staat in `config.js` en is openbaar (staat op GitHub). Dat is bewust: het 
 | Jolpica `current/last/results`, `current/driverStandings` | F1 na de race | geen sleutel |
 | Spotify `user-top-read` | maandoverzicht | zelfde client-ID; scope bij het inloggen |
 | Focusmodus | studieplaylist | `focus` in `config.js` (`werkMinuten`, `pauzeMinuten`, `playlist` = Noahs studieplaylist) |
-| NOS-RSS (`feeds.nos.nl`), YouTube-kanaal-RSS | Feeds | `nieuwsFeeds` (NOS, NOS Sport, NU.nl `nu.nl/rss/Algemeen`), `youtubeKanalen` (Patrick (H) Willems `UCF1fG3gT44nGTPU2sVLoFWg`, The Yard `UCGbg3DjQdcqWwqOLHpYHXIg`, Ken = placeholder `KANAAL_ID_KEN`: `@ken` is een leeg kanaal, Noah nog vragen welke Ken) |
+| NOS-RSS (`feeds.nos.nl`), YouTube-kanaal-RSS | Feeds | `nieuwsFeeds` (NOS, NOS Sport, NU.nl `nu.nl/rss/Algemeen`), `youtubeKanalen` (Patrick (H) Willems `UCF1fG3gT44nGTPU2sVLoFWg`, The Yard `UCGbg3DjQdcqWwqOLHpYHXIg`, Ken `UCiFOL6V9KbvxfXvzdFSsqCw` (@kenforrest)) |
 | Letterboxd Journal (RSS) | Feeds › Filmnieuws | `filmFeeds` in `config.js`, geen sleutel. Meer filmbronnen mag (zelfde formaat) |
 | Twelve Data, CoinGecko | Feeds › Markten | Twelve Data-key alleen in localStorage `feeds.twelvedata` (gratis plan 800 verzoeken/dag; AEX en andere indexen zitten niet in het gratis plan, getest 28 okt 2026); CoinGecko zonder key. `markten` in `config.js`: ASML, Apple (AAPL; beide NASDAQ, in USD) en Bitcoin |
 | Snelkoppelingen | topbalk | `snelkoppelingen` (lijst van `{ name, url, icon? }`). Canvas = `https://canvas.eur.nl/` (geldt niet als Noah een eigen lijst `dash.links` heeft opgeslagen) |

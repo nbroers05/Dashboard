@@ -3,7 +3,7 @@
 ## 0.35.1 (28 oktober 2026): ingevuld
 
 - Nieuws: **NU.nl** als tweede bron naast de NOS.
-- YouTube: **The Yard** erbij. Ken nog niet: `@ken` op YouTube is een leeg kanaal, dus welke Ken is nog de vraag.
+- YouTube: **The Yard** en **Ken** (@kenforrest, in 0.35.2) erbij.
 - Markten: **ASML** en **Apple**. De AEX is weggehaald: die zit niet in het gratis plan van Twelve Data.
 - Snelkoppeling **Canvas** wijst nu naar canvas.eur.nl.
 - Focusmodus: **ntfy weggehaald** (de Phone Link-meldingen zijn genoeg).
@@ -44,7 +44,6 @@ Eén Action ("Dashboard-data", bestand `.github/workflows/letterboxd.yml`) doet 
 
 | Waar | Wat |
 |---|---|
-| `youtubeKanalen` → `KANAAL_ID_KEN` | Het kanaal-ID van Ken (begint met `UC`) |
 
 **Op het dashboard zelf** (blijft alleen in je eigen browser, staat nergens op GitHub):
 
