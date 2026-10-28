@@ -9,6 +9,7 @@
     'user-modify-playback-state',
     'user-library-read',
     'user-library-modify',
+    'user-top-read',   // maandoverzicht (widgets/spotify-top.js); oudere logins missen deze en moeten opnieuw inloggen
   ].join(' ');
   const AUTH_URL = 'https://accounts.spotify.com/authorize';
   const TOKEN_URL = 'https://accounts.spotify.com/api/token';
@@ -117,6 +118,7 @@
       access: data.access_token,
       refresh: data.refresh_token || old.refresh,
       expires: Date.now() + data.expires_in * 1000,
+      scope: data.scope || old.scope || '',
     };
     store.set(KEY.tokens, tokens);
     return tokens;
@@ -589,6 +591,18 @@
     },
   };
   let demoAt = Date.now();
+  // Nep-maandoverzicht: kleurvlakken als hoes/foto
+  const swatch = (a, b) => `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="200" height="200" fill="url(#g)"/></svg>`)}`;
+  const DEMO_COLORS = [['#ff7a59', '#3a1c71'], ['#36d1dc', '#5b86e5'], ['#f7971e', '#ffd200'], ['#ee0979', '#ff6a00'], ['#11998e', '#38ef7d']];
+  function demoTop(artists) {
+    const names = artists ? ['Voorbeeldband', 'De Gastzangers', 'Nachtbus', 'Maanlicht', 'Rotterdam Ritme'] : ['Nachtrit over de A2', 'Kade bij nacht', 'Regen op het raam', 'Laatste tram', 'Ochtendlicht'];
+    return { items: names.map((name, i) => ({
+      name,
+      external_urls: { spotify: 'https://open.spotify.com/' },
+      images: [{ url: swatch(...DEMO_COLORS[i]) }],
+      ...(artists ? { genres: ['indie'] } : { artists: [{ name: 'Voorbeeldband' }], album: { images: [{ url: swatch(...DEMO_COLORS[i]) }] } }),
+    })) };
+  }
 
   function demoApi(method, path) {
     const now = Date.now();
@@ -603,9 +617,19 @@
     else if (path.startsWith('/me/player/shuffle')) demo.shuffle_state = q.get('state') === 'true';
     else if (path.startsWith('/me/player/repeat')) demo.repeat_state = q.get('state');
     else if (path.startsWith('/me/library/contains')) return Promise.resolve([demo.saved]);
+    else if (path.startsWith('/me/top/')) return Promise.resolve(demoTop(path.includes('artists')));
     else if (path.startsWith('/me/library')) demo.saved = method === 'PUT';
     return Promise.resolve(null);
   }
+
+  // Voor andere vakken (maandoverzicht, focusmodus): dezelfde inlog en dezelfde API-aanroep
+  window.DASH_SPOTIFY = {
+    api: (method, path, body) => api(method, path, body),
+    connected: () => DEMO || !!store.get(KEY.tokens),
+    // Heeft deze inlog toestemming voor scope? (oude inlog zonder scope-informatie: onbekend = null)
+    hasScope: (scope) => { if (DEMO) return true; const t = store.get(KEY.tokens); return t && t.scope ? t.scope.split(' ').includes(scope) : null; },
+    login: () => login(),
+  };
 
   // ---------- Start ----------
   async function start() {

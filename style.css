@@ -370,6 +370,7 @@ button { font: inherit; color: inherit; }
 #w-todo { --c: #2ec4b6; }
 #w-letterboxd { --c: #40bcf4; }
 #w-friends { --c: #00e054; }
+#w-sptop { --c: #1ed760; }
 #w-mail { --c: #ea4335; }
 #w-alerts { --c: #a78bfa; }
 #w-health { --c: #ff5f8f; }
@@ -465,6 +466,19 @@ button.al-item:hover { background: rgba(255, 255, 255, .1); }
 .lb-re { color: #40bcf4; }
 .lb-stars { font-size: .9rem; color: #00e054; letter-spacing: .02em; white-space: nowrap; }
 .lb-date { font-size: .72rem; color: var(--muted); }
+/* Spotify-maandoverzicht: twee kolommen (nummers, artiesten) */
+.sp-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.sp-head { margin: 0 0 6px; font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.sp-list { display: flex; flex-direction: column; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.sp-item { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 4px 6px; border-radius: 10px; color: inherit; text-decoration: none; }
+.sp-item:hover { background: var(--surface-hover); }
+.sp-rank { width: 1.1em; flex: none; text-align: right; font-weight: 800; color: var(--ct); font-variant-numeric: tabular-nums; }
+.sp-img { width: 40px; height: 40px; flex: none; border-radius: 6px; }
+.sp-img.round { border-radius: 50%; }
+.sp-txt { display: flex; flex-direction: column; min-width: 0; }
+.sp-txt b, .sp-txt .w-sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sp-txt b { font-size: .92rem; }
+@media (max-width: 420px) { .sp-grid { grid-template-columns: 1fr; } }
 /* Vrienden op Letterboxd: naam linksboven op de poster, jouw verwachte cijfer rechtsonder als hij op je watchlist staat */
 .fr-name { position: absolute; top: 6px; left: 6px; z-index: 1; max-width: calc(100% - 12px); padding: 2px 7px; border-radius: 999px; background: rgba(0, 0, 0, .7); font-size: .7rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fr-mine.film-score { left: auto; right: 6px; bottom: 6px; padding: 2px 7px; border-radius: 9px; font-size: .85rem; --ct: var(--c-film); color: var(--c-film); }
@@ -1765,7 +1779,7 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk-drawer {
   position: absolute; left: 0; right: 0; bottom: calc(100% + 10px);
   height: calc(50dvh - 40px);
-  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px;
   padding: 12px; border-radius: 24px;
   background: rgba(14, 14, 16, .92); border: 1px solid rgba(255, 255, 255, .1);
   box-shadow: 0 -20px 60px rgba(0, 0, 0, .55);

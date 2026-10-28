@@ -10,12 +10,12 @@
   const tiles = () => [...holder.querySelectorAll(':scope > .tile')];
 
   // Standaard: [breedte in kolommen (van 12), hoogte in rijen]
-  const ORDER = ['w-weather', 'w-f1', 'w-rain', 'w-alerts', 'w-ah', 'w-canvas', 'w-mail', 'w-health', 'w-episodes', 'w-stars', 'w-letterboxd', 'w-friends', 'w-todo'];
+  const ORDER = ['w-weather', 'w-f1', 'w-rain', 'w-alerts', 'w-ah', 'w-canvas', 'w-mail', 'w-health', 'w-episodes', 'w-stars', 'w-letterboxd', 'w-friends', 'w-sptop', 'w-todo'];
   // Vakken die vervangen zijn: het nieuwe vak neemt de plek en grootte van het oude over
   const RENAMED = { 'w-sun': 'w-rain' };
   const DEFAULT_WIDE = [4, 2];
   // Vakken die standaard breder zijn
-  const DEFAULTS = { 'w-letterboxd': [8, 2], 'w-friends': [8, 2] };
+  const DEFAULTS = { 'w-letterboxd': [8, 2], 'w-friends': [8, 2], 'w-sptop': [8, 2] };
   const MAX_ROWS = 10;
   const mode = () => (window.matchMedia('(max-width: 700px)').matches ? 'phone' : 'wide');
   const key = () => `dash.layout.v2.${mode()}`;

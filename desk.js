@@ -5,7 +5,7 @@
 //
 // desk: breed liggend scherm (vanaf 1280px, liggend). Alles in één scherm zonder scrollen: topbalk, drie kolommen
 //       (links weer+buienalarm, meldingen, AH; midden speler en agenda; rechts Canvas, F1, Episodes, film/laatst
-//       gekeken/vrienden met tabjes) en onderaan een "Meer"-balk met mail, to-do en gezondheid die naar boven uitklapt.
+//       gekeken/vrienden met tabjes) en onderaan een "Meer"-balk met mail, to-do, gezondheid en Spotify-maandoverzicht die naar boven uitklapt.
 // tall: staand scherm (breder dan 700px, niet desk), het "nieuwe" staande ontwerp: speler, rij weer/F1/AH (buienalarm
 //       zit in het weervak), rij Canvas/meldingen, één roterend vak (laatst gekeken, film, Episodes, gezondheid),
 //       agenda, en een "Meer"-balk met to-do. Met de knop in de topbalk wissel je naar het oude ontwerp (dash.design).
@@ -74,7 +74,7 @@
   const rot = h('div', 'tall-rot');
   const dots = h('div', 'tall-dots');
   rot.append(dots);
-  const ROT = ['w-letterboxd', 'w-friends', 'w-stars', 'w-episodes', 'w-health'];
+  const ROT = ['w-letterboxd', 'w-friends', 'w-stars', 'w-sptop', 'w-episodes', 'w-health'];
   const ROT_MS = 12000;
   let rotIndex = 0, rotTimer = null, pausedUntil = 0, hover = false;
   const calm = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -129,15 +129,15 @@
   const MODES = {
     desk: {
       enter() {
-        const ids = ['media-stack', 'calendar', 'version', 'w-weather', 'w-rain', 'w-alerts', 'w-ah', 'w-canvas', 'w-f1', 'w-episodes', 'w-stars', 'w-letterboxd', 'w-friends', 'w-mail', 'w-todo', 'w-health'];
+        const ids = ['media-stack', 'calendar', 'version', 'w-weather', 'w-rain', 'w-alerts', 'w-ah', 'w-canvas', 'w-f1', 'w-episodes', 'w-stars', 'w-letterboxd', 'w-friends', 'w-mail', 'w-todo', 'w-health', 'w-sptop'];
         remember(ids);
         put(weather, ['w-weather', 'w-rain']);
         put(tabs, ['w-stars', 'w-letterboxd', 'w-friends']);
         put(left, [weather, 'w-alerts', 'w-ah']);
         put(mid, ['media-stack', 'calendar']);
         put(right, ['w-canvas', 'w-f1', 'w-episodes', tabs]);
-        put(drawer, ['w-mail', 'w-todo', 'w-health']);
-        moreList.textContent = 'Mail · To-do · Gezondheid';
+        put(drawer, ['w-mail', 'w-todo', 'w-health', 'w-sptop']);
+        moreList.textContent = 'Mail · To-do · Gezondheid · Spotify';
         if ($('version')) moreBar.append($('version'));
         dash.append(left, mid, right, more);
         setTab(store.get(TAB_KEY) || 'w-stars');
