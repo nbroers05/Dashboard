@@ -60,7 +60,7 @@ DASH.widget('w-alerts', (card, body, guard) => {
 
   // Breed scherm: alleen de laatste 3, de rest via een knop
   const COMPACT = 3;
-  const compact = () => !!document.querySelector('.dashboard.desk');
+  const compact = () => !!document.querySelector('.dashboard.desk, .dashboard.tall');
   let allPanel = null;
   function openAll() {
     if (!allPanel) {

@@ -65,6 +65,7 @@
     edit.append(h('span', 'tb-icon tb-plus', '+'), h('span', 'tb-name', 'Aanpassen'));
     edit.onclick = openEditor;
     links.append(edit);
+    if (window.DASH_MAIL) mailBadge(window.DASH_MAIL.count);
   }
 
   // Paneel om links toe te voegen, te wijzigen, te verplaatsen en weg te halen
@@ -156,6 +157,33 @@
   setMinimal(DASH.MINI || store.get(KEY) === true, false);
   if (DASH.MINI) setTimeout(() => search.focus(), 0);
   minBtn.onclick = () => setMinimal(!document.body.classList.contains('minimal'));
+
+  // ---------- Ontwerp wisselen (alleen op staande/middelgrote schermen, desk.js doet het werk) ----------
+  const DESIGN_KEY = 'dash.design';
+  const designBtn = bar.querySelector('.tb-design');
+  function designLabel() {
+    const old = store.get(DESIGN_KEY) === 'old';
+    designBtn.setAttribute('aria-pressed', old);
+    designBtn.title = old ? 'Oud ontwerp (klik voor het nieuwe)' : 'Nieuw ontwerp (klik voor het oude)';
+  }
+  designBtn.onclick = () => {
+    store.set(DESIGN_KEY, store.get(DESIGN_KEY) === 'old' ? 'new' : 'old');
+    designLabel();
+    window.dispatchEvent(new Event('dash:design'));
+  };
+  designLabel();
+
+  // ---------- Ongelezen mail als rood getal op het Gmail-icoon ----------
+  function mailBadge(count) {
+    for (const a of links.querySelectorAll('.tb-link[href*="mail.google.com"]')) {
+      let b = a.querySelector('.tb-badge');
+      if (!count) { if (b) b.remove(); continue; }
+      if (!b) { b = h('span', 'tb-badge'); a.append(b); }
+      b.textContent = count > 99 ? '99+' : String(count);
+      a.title = `Gmail · ${count} ongelezen`;
+    }
+  }
+  window.addEventListener('dash:mail', (e) => mailBadge(e.detail && e.detail.count));
 
   // ---------- Sneltoetsen ----------
   const typing = (el) => el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));

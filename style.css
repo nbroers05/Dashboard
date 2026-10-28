@@ -1648,6 +1648,64 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 @keyframes ly-pop { from { opacity: 0; transform: translate(-50%, -48%) scale(.96); } }
 .desk #lyrics .ly-line { font-size: 1.5rem; }
 
+/* ---------- Staand scherm, nieuw ontwerp (desk.js zet .tall) ---------- */
+/* Knop in de topbalk om te wisselen tussen nieuw en oud; alleen op staande/middelgrote schermen */
+.tb-design { display: none; }
+html.portrait-wide .tb-design { display: grid; }
+body.minimal .tb-design { display: none; }
+.tb-design[aria-pressed="true"] { color: var(--muted); }
+/* Rood getal op het Gmail-icoon */
+.tb-link { position: relative; }
+.tb-badge {
+  position: absolute; top: 1px; right: 0;
+  min-width: 17px; height: 17px; padding: 0 4px;
+  display: grid; place-items: center;
+  border-radius: 99px; background: #ea4335; color: #fff;
+  font-size: .66rem; font-weight: 800; line-height: 1;
+  box-shadow: 0 0 0 2px #1a1a1d;
+}
+.topbar.menu-open .tb-badge { position: static; margin-left: auto; }
+
+.tall ~ .layout-bar { display: none; }
+.tall-row { grid-column: 1 / -1; display: grid; gap: 24px; min-width: 0; }
+.tall-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.tall-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.dashboard.tall { grid-auto-rows: auto; }
+.tall .tall-row > .tile { grid-column: auto !important; grid-row: auto !important; min-height: 0; }
+.tall-hidden { display: none; }
+
+/* Weer met het buienalarm erin: droog = één regel onderin, regen in de komende 2 uur = de grafiek klapt uit */
+.tall .desk-weather { display: flex; flex-direction: column; min-width: 0; border-radius: 30px; overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--c-sky) 26%, transparent);
+  background: linear-gradient(150deg, color-mix(in srgb, var(--c-sky) 24%, #151518), color-mix(in srgb, #5a9bd3 10%, #121214)); }
+.tall .desk-weather > .tile { background: none; border: 0; border-radius: 0; min-height: 0; }
+.tall .desk-weather > #w-weather { flex: 1 1 auto; padding-bottom: 8px; }
+.tall .desk-weather > #w-rain { flex: none; padding-top: 0; }
+.tall #w-rain > .eyebrow { display: none; }
+.tall #w-rain:not(.is-wet) .rn-flat, .tall #w-rain:not(.is-wet) .rn-foot { display: none; }
+.tall #w-rain:not(.is-wet) .rn-text { font-size: .92rem; font-weight: 600; color: var(--muted); }
+.tall #w-rain:not(.is-wet) .rn-text::before { content: '☂ '; }
+.tall #w-rain.is-wet { border-top: 1px solid rgba(255, 255, 255, .12); padding-top: 12px; }
+.tall #w-rain.is-wet .rn-chart { min-height: 70px; }
+.tall #w-rain .w-body { gap: 4px; }
+
+/* Roterend vak: één onderdeel tegelijk, rustige crossfade */
+.tall-rot { grid-column: 1 / -1; display: grid; position: relative; min-width: 0; }
+/* Allemaal in dezelfde cel; de hoogste bepaalt de hoogte, dus het vak verspringt niet bij het wisselen */
+.tall .tall-rot > .tile { grid-area: 1 / 1 !important; min-height: 280px; opacity: 0; visibility: hidden; transition: opacity .9s ease, visibility .9s; padding-bottom: 34px; }
+.tall .tall-rot > .tile.on { opacity: 1; visibility: visible; }
+.tall #w-letterboxd .lb-row { grid-auto-columns: minmax(84px, 140px); justify-content: start; }
+.tall .ep-covers { padding-bottom: 4px; }
+/* Agenda: begrensde hoogte, de rest scrollt binnen het vak */
+.tall .cal-list { max-height: 640px; overflow: auto; scrollbar-width: thin; }
+.tall-dots { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 2; display: flex; gap: 8px; }
+.tall-dots button { width: 9px; height: 9px; padding: 0; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .3); cursor: pointer; transition: width .3s, background .3s; }
+.tall-dots button[aria-current="true"] { width: 22px; border-radius: 99px; background: var(--accent); }
+
+/* Meer-balk (to-do) blijft onderaan in beeld */
+.tall .desk-more { grid-area: auto; grid-column: 1 / -1; position: sticky; bottom: 10px; z-index: 30; }
+.tall .desk-drawer { height: min(55dvh, 560px); grid-template-columns: minmax(0, 560px); justify-content: center; }
+
 /* ---------- Animaties: alleen als er iets gebeurt, nooit doorlopend ---------- */
 /* Vakken schuiven zacht in bij het laden (motion.js zet --i en de klasse .intro) */
 @keyframes rise {
@@ -1655,8 +1713,8 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
   to { opacity: 1; transform: none; }
 }
 /* dash.js zet .booting terwijl de vakken nog laden; motion.js haalt het weg en start .intro */
-body.booting .dashboard > .card, body.booting .media-stack, body.booting .widgets > .tile, body.booting .desk-col > *, body.booting .desk-more { opacity: 0; }
-body.intro .dashboard > .card, body.intro .media-stack, body.intro .widgets > .tile, body.intro .desk-col > *, body.intro .desk-more {
+body.booting .dashboard > .card, body.booting .media-stack, body.booting .widgets > .tile, body.booting .desk-col > *, body.booting .desk-more, body.booting .tall-row > *, body.booting .tall-rot { opacity: 0; }
+body.intro .dashboard > .card, body.intro .media-stack, body.intro .widgets > .tile, body.intro .desk-col > *, body.intro .desk-more, body.intro .tall-row > *, body.intro .tall-rot {
   animation: rise .9s cubic-bezier(.2, .7, .2, 1) both;
   animation-delay: calc(var(--i, 0) * 75ms);
 }
