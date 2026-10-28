@@ -41,6 +41,14 @@ jobs:
           FORCE: ${{ github.event_name == 'workflow_dispatch' && '1' || '' }}
         run: python3 .github/scripts/cinema.py
 
+      - name: Feeds (elk half uur)
+        continue-on-error: true
+        env:
+          REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
+          REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+          REDDIT_USER_AGENT: ${{ secrets.REDDIT_USER_AGENT }}
+        run: python3 .github/scripts/feeds.py
+
       - name: Opslaan als er iets veranderd is
         run: |
           if [ -z "$(git status --porcelain -- data/)" ]; then

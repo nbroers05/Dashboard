@@ -50,7 +50,8 @@ def config_items(name):
             src = f.read()
     except OSError:
         return []
-    block = re.sub(r"//[^\n]*", "", _block(src, name))
+    # Commentaar weghalen, maar niet de // in https://
+    block = re.sub(r"(^|\s)//[^\n]*", r"\1", _block(src, name), flags=re.M)
     out = []
     for obj in re.findall(r"\{([^{}]*)\}", block):
         out.append({k: v for k, v in re.findall(r"(\w+)\s*:\s*'([^']*)'", obj)})

@@ -1328,6 +1328,78 @@ body.minimal .tb-research { display: none; }
 /* Nachtstand-knop */
 .tb-night[aria-pressed="false"] { color: var(--muted); }
 /* Focusmodus: knop, resterende tijd naast de klok, dashboard licht gedimd */
+.tb-feeds[aria-pressed="true"] { color: var(--accent); background: var(--surface-hover); }
+body.minimal .tb-feeds { display: none; }
+/* ---------- Feeds-pagina: vaste laag onder de topbalk, eigen raster ---------- */
+.feeds-page { position: fixed; left: 0; right: 0; bottom: 0; top: 120px; z-index: 4; overflow-y: auto; overscroll-behavior: contain; padding: 0 max(16px, env(safe-area-inset-right)) 24px max(16px, env(safe-area-inset-left)); animation: fd-in .35s ease; }
+.feeds-page[hidden] { display: none; }
+@keyframes fd-in { from { opacity: 0; transform: translateY(8px); } }
+body.feeds-open { overflow: hidden; }
+body.feeds-open .dashboard > :not(.topbar), body.feeds-open .layout-bar { opacity: 0 !important; pointer-events: none; }
+body.feeds-open .tall-rot > .tile { visibility: hidden !important; }
+.feeds-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; max-width: 1800px; margin: 0 auto; }
+.fd-card { grid-column: span 6; min-height: 0; display: flex; flex-direction: column; }
+#fd-news, #fd-reddit { height: min(70dvh, 760px); }
+#fd-yt { grid-column: span 8; }
+#fd-mkt { grid-column: span 4; }
+.fd-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.fd-body { flex: 1; min-height: 0; overflow-y: auto; }
+.fd-tabs { display: flex; gap: 4px; }
+.fd-tabs button { border: 0; border-radius: 999px; padding: 4px 12px; background: rgba(255, 255, 255, .06); color: var(--muted); font: inherit; font-size: .8rem; font-weight: 700; cursor: pointer; }
+.fd-tabs button[aria-pressed="true"] { background: color-mix(in srgb, var(--c) 30%, transparent); color: var(--text); }
+.fd-list { display: flex; flex-direction: column; gap: 4px; }
+.fd-item { display: flex; align-items: center; gap: 12px; padding: 8px; border-radius: 12px; color: inherit; text-decoration: none; }
+.fd-item:hover { background: var(--surface-hover); }
+.fd-txt { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.fd-txt b { font-size: .95rem; line-height: 1.3; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+.fd-thumb { width: 96px; aspect-ratio: 16 / 9; flex: none; border-radius: 8px; }
+.fd-thumb.sq { width: 56px; aspect-ratio: 1; }
+.fd-sub { margin: 10px 8px 2px; font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ct); }
+.fd-sub:first-child { margin-top: 0; }
+.fd-score { display: flex; flex-direction: column; align-items: center; width: 44px; flex: none; color: var(--ct); font-variant-numeric: tabular-nums; }
+.fd-score small { font-size: .65rem; opacity: .7; }
+.fd-yt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+.fd-yt-item { display: flex; flex-direction: column; gap: 6px; color: inherit; text-decoration: none; min-width: 0; }
+.fd-yt-thumb { width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; box-shadow: 0 8px 20px rgba(0, 0, 0, .35); transition: transform .2s; }
+.fd-yt-item:hover .fd-yt-thumb { transform: translateY(-3px); }
+.fd-mkt-list { display: flex; flex-direction: column; gap: 6px; }
+.fd-mkt-row { display: grid; grid-template-columns: minmax(0, 1fr) 80px auto auto; align-items: center; gap: 12px; padding: 8px 10px; border-radius: 12px; background: rgba(255, 255, 255, .04); }
+.fd-mkt-name { display: flex; flex-direction: column; min-width: 0; }
+.fd-mkt-name b { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fd-mkt-err { grid-column: 2 / -1; text-align: right; }
+.fd-spark { width: 80px; height: 28px; overflow: visible; }
+.fd-spark polyline { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.fd-spark.up polyline { stroke: #2fbf71; }
+.fd-spark.down polyline { stroke: #ff5a5a; }
+.fd-mkt-price { font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; }
+.fd-mkt-chg { min-width: 64px; text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; }
+.fd-mkt-chg.up { color: #2fbf71; }
+.fd-mkt-chg.down { color: #ff5a5a; }
+.fd-mkt-note { margin: 10px 2px 0; }
+.fd-key { display: flex; gap: 8px; margin-top: 10px; }
+.fd-key input { flex: 1; min-width: 0; padding: 8px 12px; border: 1px solid rgba(255, 255, 255, .12); border-radius: 12px; background: rgba(255, 255, 255, .06); color: var(--text); font: inherit; font-size: .88rem; }
+/* Breed liggend: vier kolommen naast elkaar, alles in één scherm */
+html.desk-mode .feeds-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr); height: 100%; max-width: none; }
+html.desk-mode .feeds-page { padding-bottom: 12px; }
+html.desk-mode .feeds-grid > .fd-card, html.desk-mode #fd-yt, html.desk-mode #fd-mkt { grid-column: span 1; }
+html.desk-mode #fd-news, html.desk-mode #fd-reddit { height: auto; min-height: 0; }
+html.desk-mode .fd-yt-grid { grid-template-columns: 1fr; }
+/* Staand: twee kolommen, YouTube en markten eronder */
+@media (max-width: 1279px), (orientation: portrait) {
+  html:not(.desk-mode) #fd-yt { grid-column: span 12; }
+  html:not(.desk-mode) #fd-mkt { grid-column: span 12; }
+}
+@media (max-width: 700px) {
+  .feeds-grid { grid-template-columns: 1fr; gap: 12px; }
+  .fd-card, #fd-yt, #fd-mkt { grid-column: auto !important; }
+  #fd-news, #fd-reddit { height: 70dvh; }
+  .fd-thumb { width: 72px; }
+  .fd-yt-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .fd-mkt-row { grid-template-columns: minmax(0, 1fr) 56px auto; }
+  .fd-spark { width: 56px; }
+  .fd-mkt-chg { grid-column: 3; }
+  .fd-mkt-price { grid-column: 3; grid-row: 1; }
+}
 .tb-focus[aria-pressed="true"] { color: var(--c-study); background: color-mix(in srgb, var(--c-study) 18%, transparent); }
 .tb-focus-pill { display: inline-block; margin-bottom: 2px; padding: 2px 10px; border: 0; border-radius: 999px; background: color-mix(in srgb, var(--c-study) 22%, transparent); color: color-mix(in srgb, var(--c-study) 70%, white); font: inherit; font-weight: 750; font-variant-numeric: tabular-nums; white-space: nowrap; cursor: pointer; }
 html.focus-pause .tb-focus-pill { background: color-mix(in srgb, var(--c-film) 22%, transparent); color: color-mix(in srgb, var(--c-film) 70%, white); }
@@ -1335,6 +1407,9 @@ html.focus-pause .tb-focus-pill { background: color-mix(in srgb, var(--c-film) 2
 html.portrait-wide.focus-on body:not(.minimal) .tb-date { display: none; }
 body.minimal .tb-focus-pill { font-size: .8em; padding: 4px 14px; margin-bottom: 8px; }
 html.portrait-wide body:not(.minimal) .tb-search { min-width: 200px; }
+html.portrait-wide body:not(.minimal) .tb-actions { gap: 2px; }
+html.portrait-wide body:not(.minimal) .tb-btn { width: 40px; }
+html.portrait-wide body:not(.minimal) .tb-search kbd { display: none; }
 .dashboard > :not(.topbar) { transition: filter .6s ease; }
 html.focus-on:not(.focus-pause) .dashboard > :not(.topbar) { filter: brightness(.68) saturate(.75); }
 html.focus-on:not(.focus-pause) .dashboard > :not(.topbar):hover { filter: none; }

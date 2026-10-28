@@ -54,6 +54,34 @@ window.DASHBOARD_CONFIG = {
     playlist: 'STUDIE_PLAYLIST_ID', // TODO: ID van je studieplaylist (22 tekens)
     ntfyServer: 'https://ntfy.sh',
   },
+  // ---------- Feeds-pagina (icoon met de krant in de topbalk) ----------
+  // Nieuws, Reddit en YouTube haalt de GitHub Action elk half uur op (data/feeds.json); hou het formaat precies zo.
+  nieuwsFeeds: [
+    { name: 'NOS', url: 'https://feeds.nos.nl/nosnieuwsalgemeen' },
+    { name: 'NOS Sport', url: 'https://feeds.nos.nl/nossportalgemeen' },
+    { name: 'Extra', url: 'EXTRA_RSS_URL' }, // TODO: RSS-adres van een extra nieuwsbron (of deze regel weghalen)
+  ],
+  // Subreddits zonder "r/". Werkt pas als de Reddit-secrets in GitHub staan (zie CHANGELOG.md).
+  subreddits: [
+    { sub: 'SUBREDDIT_1' }, // TODO: bijvoorbeeld 'movies'
+    { sub: 'SUBREDDIT_2' }, // TODO: bijvoorbeeld 'formula1'
+    { sub: 'SUBREDDIT_3' }, // TODO: bijvoorbeeld 'Rotterdam'
+  ],
+  // YouTube-kanalen: id = kanaal-ID (begint met UC, 24 tekens; staat in de pagina-bron van het kanaal als "channelId")
+  youtubeKanalen: [
+    { name: 'Patrick (H) Willems', id: 'UCF1fG3gT44nGTPU2sVLoFWg' },
+    { name: 'Kanaal 2', id: 'KANAAL_ID_2' }, // TODO
+    { name: 'Kanaal 3', id: 'KANAAL_ID_3' }, // TODO
+  ],
+  // Markten: alleen koers, verandering vandaag en een lijntje van de afgelopen maand. Geen advies.
+  // Aandelen/indexen via Twelve Data (gratis key, vul je op de Feeds-pagina zelf in; blijft in je browser).
+  // Crypto via CoinGecko (geen key): zet coingecko: '<id>' erbij.
+  markten: [
+    { symbol: 'AEX', name: 'AEX' },
+    { symbol: 'TICKER_1', name: 'Aandeel 1' }, // TODO: bijvoorbeeld 'ASML' of 'AAPL'
+    { symbol: 'TICKER_2', name: 'Aandeel 2' }, // TODO
+    { symbol: 'BTC', name: 'Bitcoin', coingecko: 'bitcoin' },
+  ],
   // Gezondheid (Google Health): je dagelijkse stappendoel
   gezondheid: { stappenDoel: 10000 },
   // Voor filmposters (themoviedb.org → Instellingen → API → "API Key"). Leeg laten mag: dan een kleurvlak.
