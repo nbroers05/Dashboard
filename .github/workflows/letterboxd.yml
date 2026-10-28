@@ -33,6 +33,14 @@ jobs:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
         run: python3 .github/scripts/letterboxd.py
 
+      # Het script kijkt zelf of het vandaag al gedaan is (veld "day" in data/cinema.json); met de hand = altijd
+      - name: Bioscopen (één keer per dag)
+        if: github.event.schedule != '47 * * * *'
+        continue-on-error: true
+        env:
+          FORCE: ${{ github.event_name == 'workflow_dispatch' && '1' || '' }}
+        run: python3 .github/scripts/cinema.py
+
       - name: Opslaan als er iets veranderd is
         run: |
           if [ -z "$(git status --porcelain -- data/)" ]; then

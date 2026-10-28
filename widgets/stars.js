@@ -96,7 +96,56 @@ DASH.widget('w-stars', async (card, body, guard) => {
     more.onclick = openPanel;
     actions.append(more);
     body.replaceChildren(row, actions);
+    addCinema();
   }
+
+  // ---------- Draait nu in de bios: films van je watchlist in het programma (data/cinema.json, Action, dagelijks) ----------
+  let cinema = null;
+  const when = (show) => {
+    if (show.next) {
+      const t = new Date(show.next).getTime();
+      return `${DASH.fmtDay(t)} ${DASH.fmtTime(t)}`;
+    }
+    if (show.until) return `t/m ${new Date(`${show.until}T12:00`).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' }).replace('.', '')}`;
+    return 'in het programma';
+  };
+  function cinemaMatches() {
+    if (!cinema || !window.DASH_FILM) return [];
+    const now = Date.now();
+    return (cinema.films || []).map((f) => {
+      const mine = window.DASH_FILM.predict({ title: f.title });
+      if (!mine) return null;
+      // Eerstvolgende voorstelling: met tijd eerst, daarna de rest
+      const shows = f.shows.filter((s) => !s.next || new Date(s.next).getTime() > now)
+        .sort((a, b) => (a.next || '9').localeCompare(b.next || '9'));
+      return shows.length ? { ...f, mine, show: shows[0] } : null;
+    }).filter(Boolean).sort((a, b) => b.mine.value - a.mine.value);
+  }
+  function addCinema() {
+    body.querySelector('.cine')?.remove();
+    const list = cinemaMatches();
+    if (!list.length) return;
+    const box = h('div', 'cine');
+    box.append(h('p', 'cine-head', 'Draait nu in de bios'));
+    for (const f of list.slice(0, card.closest('.desk-tabs') ? 1 : 3)) {
+      const a = h('a', 'cine-row');
+      a.href = f.show.url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.title = `${f.title} · ${f.show.cinema} · ${when(f.show)} · verwacht ${nl(f.mine.value, 2)}`;
+      a.append(h('b', null, f.title), h('span', 'w-sub', `${f.show.cinema} · ${when(f.show)}`), h('span', 'cine-score', nl(f.mine.value, 1)));
+      box.append(a);
+    }
+    body.append(box);
+  }
+  const loadCinema = guard(async () => {
+    try {
+      cinema = await DASH.getJSON(`data/cinema.json?t=${Math.floor(Date.now() / 3600000)}`);
+      addCinema();
+    } catch (e) {
+      console.warn('[bioscoop]', e);   // geen bioscoopdata: het filmvak werkt gewoon zonder
+    }
+  });
 
   async function poster(f) {
     if (!TMDB_KEY) return null;
@@ -159,6 +208,7 @@ DASH.widget('w-stars', async (card, body, guard) => {
     actions.append(lb, more);
     wrap.append(pbox, info);
     body.replaceChildren(wrap, actions);
+    addCinema();
 
     // Poster erbij zodra die binnen is; lukt het niet, dan blijft het kleurvlak met de titel
     addPoster(f, pbox);
@@ -180,4 +230,6 @@ DASH.widget('w-stars', async (card, body, guard) => {
 
   share();
   await render();
+  loadCinema();
+  DASH.every(3 * 3600 * 1000, loadCinema);
 });

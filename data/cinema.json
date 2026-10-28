@@ -1,0 +1,2070 @@
+{
+ "day": "2026-10-28",
+ "sources": [
+  "LantarenVenster"
+ ],
+ "skipped": {
+  "KINO Rotterdam": "robots.txt van kinorotterdam.nl verbiedt het ophalen van /filmladder",
+  "Pathé": "pathe.nl weigert verzoeken van een GitHub Action (403)"
+ },
+ "films": [
+  {
+   "title": "A Talent For Murder",
+   "key": "atalentformurder",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/a-talent-for-murder/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Ablaye Cissoko & Cyrille Brotto",
+   "key": "ablayecissokoandcyrillebrotto",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/cissoko-brotto/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Abre los ojos (1997)",
+   "key": "abrelosojos1997",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/abre-los-ojos-1997/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "All of a Sudden",
+   "key": "allofasudden",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/all-of-a-sudden/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "All of a Sudden - Expat Cinema Rotterdam",
+   "key": "allofasuddenexpatcinemarotterdam",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/all-of-a-sudden-expat-cinema-rotterdam/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Amarga Navidad - Film&Ontbijt",
+   "key": "amarganavidadfilmandontbijt",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/amarga-navidad/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Ambrose Akinmusire",
+   "key": "ambroseakinmusire",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/ambrose-akinmusire-quartet-26/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "An Evening With The Blues",
+   "key": "aneveningwiththeblues",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/an-evening-with-the-blues-27/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Andiamo a bere l'ultima",
+   "key": "andiamoaberelultima",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/andiamo-a-bere-lultima/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Bassekou Kouyaté & Amy Sacko",
+   "key": "bassekoukouyateandamysacko",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/bassekou-kouyate-amy-sacko/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Being John Malkovich (1999)",
+   "key": "beingjohnmalkovich1999",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/being-john-malkovich-1999/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Belle & Sebastian",
+   "key": "belleandsebastian",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/belle-sebastian/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Berget Lewis: De kinderen van de Emmastraat",
+   "key": "bergetlewisdekinderenvandeemmastraat",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/berget-lewis-de-kinderen-van-de-emmastraat/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Berlinguer: La grande ambizione",
+   "key": "berlinguerlagrandeambizione",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/berlinguer-la-grande-ambizione/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Bertolf",
+   "key": "bertolf",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/bertolf/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Best of WdKA 2026",
+   "key": "bestofwdka2026",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/best-of-wdka-2026-panel-talk/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Bettie Serveert",
+   "key": "bettieserveert",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/bettie-serveert/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Bill Stewart Trio",
+   "key": "billstewarttrio",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/bill-stewart-trio-26/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Boekpresentatie: Healing is a vibe door Mike Bindraban",
+   "key": "boekpresentatiehealingisavibedoormikebindraban",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/boekpresentatie-healing-is-a-vibe-door-mike-bindraban/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Caoilfhionn Rose",
+   "key": "caoilfhionnrose",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/caoilfhionn-rose/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Cardinals",
+   "key": "cardinals",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/cardinals/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Carel Kraayenhof & Matangi Quartet",
+   "key": "carelkraayenhofandmatangiquartet",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/carel-kraayenhof-matangi-quartet/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Chico Pinheiro Quartet",
+   "key": "chicopinheiroquartet",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/chico-pinheiro-quartet/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Chris Potter Trio",
+   "key": "chrispottertrio",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/chris-potter-trio/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Cinemini: Het Molletje",
+   "key": "cineminihetmolletje",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/cinemini-het-molletje/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Cinemini: In de keuken",
+   "key": "cineminiindekeuken",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/cinemini-in-de-keuken/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Cinemini: Kareltje Kat",
+   "key": "cineminikareltjekat",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/cinemini-kareltje-kat/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Cinemini: Vreemde Vissen",
+   "key": "cineminivreemdevissen",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/cinemini-vreemde-vissen/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Cinemini: Zusjes",
+   "key": "cineminizusjes",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/cinemini-zusjes/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Clean Pete's Kerstshow",
+   "key": "cleanpeteskerstshow",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/clean-petes-kerstshow-26/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Club Kid",
+   "key": "clubkid",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/club-kid/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Compañía María La Serrana",
+   "key": "companiamarialaserrana",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/compania-maria-la-serrana-26/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Coward",
+   "key": "coward",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/coward/",
+     "day": null,
+     "next": null,
+     "until": "2026-11-04"
+    }
+   ]
+  },
+  {
+   "title": "Dave Douglas Quartet",
+   "key": "davedouglasquartet",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/dave-douglas-quartet/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "De Gaulle: Liberté",
+   "key": "degaulleliberte",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/de-gaulle-liberte/",
+     "day": null,
+     "next": null,
+     "until": "2026-10-31"
+    }
+   ]
+  },
+  {
+   "title": "De Kift",
+   "key": "dekift",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/de-kift-26/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "De Manager",
+   "key": "demanager",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/de-manager/",
+     "day": null,
+     "next": null,
+     "until": "2026-11-01"
+    }
+   ]
+  },
+  {
+   "title": "Dial Q Filmquiz",
+   "key": "dialqfilmquiz",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/dialq-filmquiz/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Digger",
+   "key": "digger",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/digger/",
+     "day": null,
+     "next": null,
+     "until": "2026-10-28"
+    }
+   ]
+  },
+  {
+   "title": "Donnie Darko (25th Anniversary)",
+   "key": "donniedarko25thanniversary",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/donnie-darko-25th-anniversary/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Dorona Alberti",
+   "key": "doronaalberti",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/dorona-alberti/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Downtown",
+   "key": "downtown",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/downtown/",
+     "day": null,
+     "next": null,
+     "until": "2026-11-02"
+    }
+   ]
+  },
+  {
+   "title": "Eddie 9V",
+   "key": "eddie9v",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/eddie-9v/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "EHBO",
+   "key": "ehbo",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/ehbo-27/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Eivind Aarset 4tet",
+   "key": "eivindaarset4tet",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/eivind-aarset-4tet/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Eliana Glass",
+   "key": "elianaglass",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/eliana-glass/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Eric Vloeimans, Frank Woeste & Franck Agulhon",
+   "key": "ericvloeimansfrankwoesteandfranckagulhon",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/eric-vloeimans-frank-woeste-franck-agulhon/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Fatherland",
+   "key": "fatherland",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/fatherland/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Filmcollege: Mindfuck Films + Donnie Darko (2001)",
+   "key": "filmcollegemindfuckfilmsdonniedarko2001",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/filmcollege-mindfuck-film-donnie-darko-2001/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Filmcollege: Psychosexual Drama + Possession (1981)",
+   "key": "filmcollegepsychosexualdramapossession1981",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/filmcollege-psychosexual-drama-possession-1981/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Filmconcert: Metropolis",
+   "key": "filmconcertmetropolis",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/filmconcert-metropolis/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Fjord",
+   "key": "fjord",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/fjord/",
+     "day": null,
+     "next": null,
+     "until": "2026-12-03"
+    }
+   ]
+  },
+  {
+   "title": "Forêt ivre",
+   "key": "foretivre",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/foret-ivre/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Gallowstreet",
+   "key": "gallowstreet",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/gallowstreet-26/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Het Geheim van Hotel New York",
+   "key": "hetgeheimvanhotelnewyork",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/het-geheim-van-hotel-new-york/",
+     "day": null,
+     "next": null,
+     "until": "2026-11-04"
+    }
+   ]
+  },
+  {
+   "title": "Holy Motors (2012)",
+   "key": "holymotors2012",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/holy-motors-2012/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "How to Take Your Second Film to the Next Level",
+   "key": "howtotakeyoursecondfilmtothenextlevel",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/how-to-take-your-second-film-to-the-next-level/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Imago",
+   "key": "imago",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/imago/",
+     "day": null,
+     "next": null,
+     "until": "2026-11-02"
+    }
+   ]
+  },
+  {
+   "title": "Immanuel Wilkins Quartet",
+   "key": "immanuelwilkinsquartet",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/immanuel-wilkins-quartet-26/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Incendies (re-release)",
+   "key": "incendiesrerelease",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/incendies-re-release/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Inception (2010)",
+   "key": "inception2010",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/inception-2010/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Jacob's Ladder (1990)",
+   "key": "jacobsladder1990",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/jacobs-ladder/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Jasper Høiby's 3Elements",
+   "key": "jasperhibys3elements",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/jasper-hoibys-3elements/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Jazz Yoga",
+   "key": "jazzyoga",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/jazz-yoga-winter26/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Jef Neve",
+   "key": "jefneve",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/jef-neve-27/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Jelle x Tarang x TIIGRI",
+   "key": "jellextarangxtiigri",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/jelle-x-tarang-x-tiigri/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "John Scofield Combo 75",
+   "key": "johnscofieldcombo75",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/john-scofield-combo-75/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Johnathan Blake",
+   "key": "johnathanblake",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/johnathan-blake/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Jong Metropole & Jeangu Macrooy",
+   "key": "jongmetropoleandjeangumacrooy",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/jong-metropole-jeangu-macrooy/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Jorge Rossy Vibes Quartet",
+   "key": "jorgerossyvibesquartet",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/jorge-rossy-vibes-quartet/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Josh Ritter (solo)",
+   "key": "joshrittersolo",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/josh-ritter-solo/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Joyce Moreno",
+   "key": "joycemoreno",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/joyce-moreno-2026/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Juste une illusion",
+   "key": "justeuneillusion",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/juste-une-illusion/",
+     "day": null,
+     "next": null,
+     "until": "2026-10-28"
+    }
+   ]
+  },
+  {
+   "title": "Kids With Buns",
+   "key": "kidswithbuns",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/kids-with-buns/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Kika Sprangers Quintet",
+   "key": "kikasprangersquintet",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/kika-sprangers-quintet-26/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Klara and the Sun",
+   "key": "klaraandthesun",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/klara-and-the-sun/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Koninklijke Rotterdamse Post Harmonie",
+   "key": "koninklijkerotterdamsepostharmonie",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/koninklijke-rotterdamse-post-harmonie/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Kraak & Smaak",
+   "key": "kraakandsmaak",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/kraak-smaak-27/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Laatbloeier",
+   "key": "laatbloeier",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/laatbloeier/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Last Year at Marienbad (1961)",
+   "key": "lastyearatmarienbad1961",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/last-year-at-marienbad-1961/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Licks & Brains' Funky Xmas met Mrs. Hips & Jared Grant",
+   "key": "licksandbrainsfunkyxmasmetmrshipsandjaredgrant",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/licks-brains-funky-xmas-met-mrs-hips-jared-grant/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "LINA_ & Marco Mezquida",
+   "key": "linaandmarcomezquida",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/lina-marco-mezquida/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Lions Film Award 2026",
+   "key": "lionsfilmaward2026",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/lions-film-award/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Loek van den Berg Quintet",
+   "key": "loekvandenbergquintet",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/loek-van-den-berg-quintet-27/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Maridalen",
+   "key": "maridalen",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/maridalen/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Martha High & The Funky Divas",
+   "key": "marthahighandthefunkydivas",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/martha-high-the-funky-divas/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Maspalomas",
+   "key": "maspalomas",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/maspalomas/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Memento (2000)",
+   "key": "memento2000",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/memento-2000/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Millennium Jazz Orchestra met Claron McFadden & Manu van Kersbergen",
+   "key": "millenniumjazzorchestrametclaronmcfaddenandmanuvankersbergen",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/millennium-jazz-orchestra-met-claron-mcfadden-manu-van-kersbergen/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Minotaur",
+   "key": "minotaur",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/minotaur/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Mister and Mississippi",
+   "key": "misterandmississippi",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/mister-and-mississippi/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Moppervis (5+)",
+   "key": "moppervis5",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/moppervis/",
+     "day": null,
+     "next": null,
+     "until": "2026-11-01"
+    }
+   ]
+  },
+  {
+   "title": "Mulholland Drive (2001)",
+   "key": "mulhollanddrive2001",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/mulholland-drive-2001/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Nagi Notes",
+   "key": "naginotes",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/nagi-notes/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Naza",
+   "key": "naza",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/naza/",
+     "day": null,
+     "next": null,
+     "until": "2026-11-04"
+    }
+   ]
+  },
+  {
+   "title": "New Rotterdam Jazz Orchestra",
+   "key": "newrotterdamjazzorchestra",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/new-rotterdam-jazz-orchestra-26/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Nik Bärtsch Ronin",
+   "key": "nikbartschronin",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/nik-bartsch-ronin-27/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "One Cut of the Dead - NextGen Cinema",
+   "key": "onecutofthedeadnextgencinema",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/one-cut-of-the-dead/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Paradox Jazz Orchestra & James Carter spelen John Coltrane",
+   "key": "paradoxjazzorchestraandjamescarterspelenjohncoltrane",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/paradox-jazz-orchestra-james-carter/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Philipp Rüttgers Trio",
+   "key": "philippruttgerstrio",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/philipp-ruttgers-trio/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Possession (1981)",
+   "key": "possession1981",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/possession-1981/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Pressure",
+   "key": "pressure",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/pressure/",
+     "day": null,
+     "next": null,
+     "until": "2026-10-28"
+    }
+   ]
+  },
+  {
+   "title": "Primetime",
+   "key": "primetime",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/primetime/",
+     "day": null,
+     "next": null,
+     "until": "2026-11-04"
+    }
+   ]
+  },
+  {
+   "title": "Queen at Sea",
+   "key": "queenatsea",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/queen-at-sea/",
+     "day": null,
+     "next": null,
+     "until": "2026-11-17"
+    }
+   ]
+  },
+  {
+   "title": "Queer Cinema x Queer & the City: Club Kid",
+   "key": "queercinemaxqueerandthecityclubkid",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/queer-cinema-x-queer-the-city-club-kid/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Raymond Van Het Groenewoud",
+   "key": "raymondvanhetgroenewoud",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/raymond-van-het-groenewoud-27/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Re-Score – The Burial of Kojo door Peter Somuah ft. Latanya Alberto & MiDi KwaKwa",
+   "key": "rescoretheburialofkojodoorpetersomuahftlatanyaalbertoandmidikwakwa",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/re-score-the-burial-of-kojo/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Rembrandt Trio",
+   "key": "rembrandttrio",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/rembrandt-trio/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Roosbeef",
+   "key": "roosbeef",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/roosbeef-27/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Rotterdams Open Doek",
+   "key": "rotterdamsopendoek",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/rotterdams-open-doek/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Salsa aan de haven",
+   "key": "salsaaandehaven",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/salsa-aan-de-haven-4/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Scott Kinsey Group",
+   "key": "scottkinseygroup",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/scott-kinsey-group/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Sense and Sensibility",
+   "key": "senseandsensibility",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/sense-and-sensibility/",
+     "day": null,
+     "next": null,
+     "until": "2026-11-02"
+    }
+   ]
+  },
+  {
+   "title": "Shaun het Schaap: Het Beest van de Boerderij (6+)",
+   "key": "shaunhetschaaphetbeestvandeboerderij6",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/shaun-het-schaap-het-beest-van-de-boerderij/",
+     "day": null,
+     "next": null,
+     "until": "2026-11-01"
+    }
+   ]
+  },
+  {
+   "title": "Shutter Island (2010)",
+   "key": "shutterisland2010",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/shutter-island-2010/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Sietepè: Gabriel Ríos, Augusto Bracho, Ruben Samama",
+   "key": "sietepegabrielriosaugustobrachorubensamama",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/sietepe/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Signalen van boven",
+   "key": "signalenvanboven",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/signalen-van-boven/",
+     "day": null,
+     "next": null,
+     "until": "2026-11-02"
+    }
+   ]
+  },
+  {
+   "title": "SML",
+   "key": "sml",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/sml/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Sneakpreview",
+   "key": "sneakpreview",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/sneakpreview/",
+     "day": null,
+     "next": null,
+     "until": "2026-11-02"
+    }
+   ]
+  },
+  {
+   "title": "Sonico Quintet",
+   "key": "sonicoquintet",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/sonico-quintet/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Spinoza",
+   "key": "spinoza",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/spinoza/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Sullivan Fortner Trio",
+   "key": "sullivanfortnertrio",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/sullivan-fortner-trio-27/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Tango aan de Haven",
+   "key": "tangoaandehaven",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/tango-aan-de-haven-3/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "The Beloved",
+   "key": "thebeloved",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/the-beloved/",
+     "day": null,
+     "next": null,
+     "until": "2026-11-04"
+    }
+   ]
+  },
+  {
+   "title": "The Cycle of Love",
+   "key": "thecycleoflove",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/the-cycle-of-love/",
+     "day": null,
+     "next": null,
+     "until": "2026-11-04"
+    }
+   ]
+  },
+  {
+   "title": "The Debut",
+   "key": "thedebut",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/the-debut/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "The Devils (1971)",
+   "key": "thedevils1971",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/the-devils-1971/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "The Meltdown",
+   "key": "themeltdown",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/the-meltdown/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "The Preacher Men",
+   "key": "thepreachermen",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/the-preacher-men-26/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "The Price of Staying",
+   "key": "thepriceofstaying",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/the-price-of-staying/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "The Rocky Horror Picture Show (1975)",
+   "key": "therockyhorrorpictureshow1975",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/the-rocky-horror-picture-show-1975/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "The Wailing (2016)",
+   "key": "thewailing2016",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/the-wailing-2016/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "The Zawose Queens",
+   "key": "thezawosequeens",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/the-zawose-queens/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Theatercollege Jeroen Hendrikse: Humor met inhoud",
+   "key": "theatercollegejeroenhendriksehumormetinhoud",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/theatercollege-jeroen-hendrikse-humor-met-inhoud/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Time and Water",
+   "key": "timeandwater",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/time-and-water/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Tomeka Reid Quartet",
+   "key": "tomekareidquartet",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/tomeka-reid-quartet/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "True Loves",
+   "key": "trueloves",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/true-loves-26/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "VanWyck",
+   "key": "vanwyck",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/vanwyck/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Wende",
+   "key": "wende",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/wende-27/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Whispers in May",
+   "key": "whispersinmay",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/whispers-in-may/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Wicker",
+   "key": "wicker",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/wicker/",
+     "day": null,
+     "next": null,
+     "until": "2026-11-04"
+    }
+   ]
+  },
+  {
+   "title": "Wild Horse Nine",
+   "key": "wildhorsenine",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/wild-horse-nine/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Yellow Letters",
+   "key": "yellowletters",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/yellow-letters/",
+     "day": null,
+     "next": null,
+     "until": "2026-10-31"
+    }
+   ]
+  },
+  {
+   "title": "Youn Sun Nah",
+   "key": "younsunnah",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/youn-sun-nah-27/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Youri",
+   "key": "youri",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/youri/",
+     "day": null,
+     "next": null,
+     "until": "2026-11-04"
+    }
+   ]
+  },
+  {
+   "title": "Yuri Honing Acoustic Quartet",
+   "key": "yurihoningacousticquartet",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/yuri-honing-acoustic-quartet-26/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Ão",
+   "key": "ao",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/ao/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  }
+ ]
+}

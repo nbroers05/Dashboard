@@ -873,6 +873,14 @@ a.cv-name:hover { text-decoration: underline; }
 .ep-name { margin-top: 6px; font-size: .75rem; color: var(--muted); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 
 /* Film van vanavond */
+/* Draait nu in de bios: films van je watchlist in het programma */
+.cine { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, .08); }
+.cine-head { margin: 0; font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--c-film); }
+.cine-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 't s' 'w s'; column-gap: 10px; padding: 6px 10px; border-radius: 12px; background: rgba(255, 255, 255, .05); color: inherit; text-decoration: none; }
+.cine-row:hover { background: var(--surface-hover); }
+.cine-row b { grid-area: t; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cine-row .w-sub { grid-area: w; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cine-score { grid-area: s; align-self: center; font-weight: 800; font-size: 1.15rem; color: var(--c-film); font-variant-numeric: tabular-nums; }
 .film { display: flex; gap: 16px; flex: 1; min-height: 0; }
 .film-poster { position: relative; flex: none; width: clamp(96px, 42%, 170px); align-self: flex-start; aspect-ratio: 2 / 3; border-radius: 14px; box-shadow: 0 12px 30px rgba(0, 0, 0, .5); }
 .film-score {
@@ -1701,6 +1709,7 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk .film-info { gap: 2px; }
 .desk .film-info .w-mid { font-size: 1.1rem; }
 .desk .film-actions .w-btn { padding: 7px 10px; font-size: .8rem; }
+.desk #w-stars .cine { flex: none; width: 190px; margin: 0; padding: 0 0 0 12px; border-top: 0; border-left: 1px solid rgba(255, 255, 255, .08); justify-content: center; }
 .desk .lb-row { --lb-w: 52px; gap: 8px; }
 .desk .fr-name { font-size: .55rem; padding: 1px 4px; top: 3px; left: 3px; }
 .desk .fr-mine.film-score { font-size: .65rem; padding: 1px 4px; right: 3px; bottom: 3px; }
