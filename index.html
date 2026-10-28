@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400..800&display=swap">
   <!-- ?v=N: ophogen bij elke wijziging (style.css, config, dash, topbar); de rest krijgt hetzelfde nummer via dash.js -->
-  <link rel="stylesheet" href="style.css?v=23">
+  <link rel="stylesheet" href="style.css?v=25">
 </head>
 <body>
   <main class="dashboard">
@@ -194,10 +194,22 @@
             <p class="eyebrow">Agenda</p>
             <h2 class="title" id="cal-today"></h2>
           </div>
-          <div class="seg" role="group" aria-label="Weergave">
-            <button data-view="list" aria-pressed="true">Lijst</button>
-            <button data-view="week" aria-pressed="false">Week</button>
+          <div class="cal-ctl">
+            <div class="seg seg-view" role="group" aria-label="Weergave">
+              <button data-view="list" aria-pressed="true">Lijst</button>
+              <button data-view="week" aria-pressed="false">Week</button>
+            </div>
+            <div class="seg seg-fit cal-weekonly" role="group" aria-label="Uren">
+              <button data-fit="fit" aria-pressed="true" title="08:00–24:00 passen in het vak">Passend</button>
+              <button data-fit="scroll" aria-pressed="false" title="Normale uurhoogte, scrollt naar wat er nu komt">Scrollen</button>
+            </div>
           </div>
+        </div>
+        <div class="cal-weeknav cal-weekonly">
+          <button class="cal-nav-btn" id="cal-prev" aria-label="Vorige week">‹</button>
+          <button class="cal-nav-btn" id="cal-next" aria-label="Volgende week">›</button>
+          <button class="cal-nav-btn wide" id="cal-this-week">Vandaag</button>
+          <span class="cal-week-label" id="cal-week-label"></span>
         </div>
         <div class="cal-reconnect" id="cal-reconnect" hidden>
           <span>Toegang tot je agenda is verlopen.</span>
@@ -219,9 +231,9 @@
 
   <div id="toast" role="status"></div>
 
-  <script src="config.js?v=23"></script>
-  <script src="dash.js?v=23"></script>
-  <script src="topbar.js?v=23"></script>
+  <script src="config.js?v=25"></script>
+  <script src="dash.js?v=25"></script>
+  <script src="topbar.js?v=25"></script>
   <!-- De rest laadt dash.js in deze volgorde: meteen, of met ?mini=1 pas als je het volledige dashboard opent -->
   <script>
     DASH.boot([

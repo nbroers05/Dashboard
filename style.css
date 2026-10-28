@@ -438,6 +438,9 @@ button.al-item:hover { background: rgba(255, 255, 255, .1); }
 .al-check { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: color-mix(in srgb, var(--c) 30%, transparent); color: var(--ct); font-size: 1.6rem; font-weight: 800; }
 .al-helper { margin: 6px 0 0; font-size: .75rem; }
 .al-more { align-self: flex-start; margin-top: 2px; padding: 6px 12px; font-size: .8rem; }
+.al-more[hidden], .al-fit > [hidden] { display: none !important; }
+/* Kaartjes niet laten krimpen: wat niet past wordt weggelaten, niet platgedrukt */
+.al-fit > * { flex: none; }
 .panel-dialog.al-dialog { height: fit-content; max-height: calc(100dvh - 40px); width: min(620px, calc(100vw - 24px)); }
 .al-dialog .panel-body { height: auto; max-height: calc(100dvh - 110px); padding: 14px 16px 18px; }
 .al-dialog .al-list { overflow: visible; }
@@ -1002,7 +1005,7 @@ a.cv-name:hover { text-decoration: underline; }
 .cal-reconnect[hidden] { display: none; }
 .pill-btn.small { padding: 8px 16px; font-size: .9rem; }
 
-.cal-list { --hour: 60px; --hour-base: 60px; margin: 18px 0 16px; display: flex; flex-direction: column; gap: 18px; }
+.cal-list { --hour: 60px; --hour-base: 60px; --fit-h: 600px; margin: 18px 0 16px; display: flex; flex-direction: column; gap: 18px; }
 
 .cal-day h3 {
   margin: 0 0 8px;
@@ -1082,6 +1085,20 @@ a.event:hover { background: color-mix(in srgb, var(--c, #888) 24%, rgba(255, 255
 }
 .seg button[aria-pressed="true"] { background: var(--accent); color: #0b0b0b; }
 
+/* Agenda-kop: Lijst/Week en Passend/Scrollen; daaronder vorige/volgende week en welke week het is */
+.cal-ctl { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.dashboard:not(.week-mode) .cal-weekonly { display: none; }
+.cal-weeknav { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
+.cal-nav-btn {
+  min-width: 34px; height: 34px; padding: 0 10px;
+  border: 0; border-radius: 999px; background: var(--surface); color: var(--text);
+  font: inherit; font-size: 1.1rem; font-weight: 700; line-height: 1; cursor: pointer;
+}
+.cal-nav-btn.wide { font-size: .85rem; padding: 0 14px; }
+.cal-nav-btn:hover { background: var(--surface-hover); }
+.cal-nav-btn:disabled { opacity: .4; cursor: default; }
+.cal-week-label { margin-left: 6px; color: var(--muted); font-size: .9rem; font-variant-numeric: tabular-nums; }
+
 /* Weekweergave */
 .week {
   --cols: 52px repeat(7, minmax(0, 1fr));
@@ -1110,6 +1127,13 @@ a.event:hover { background: color-mix(in srgb, var(--c, #888) 24%, rgba(255, 255
 .wk-label { color: var(--muted); font-size: .7rem; padding-top: 4px; }
 
 .wk-row.wk-body { border-top: 1px solid rgba(255, 255, 255, .08); }
+/* Passend: alles past, niets scrolt. Scrollen: het raster scrolt zelf (de dagen blijven erboven staan) */
+.week.fit .wk-body { overflow: hidden; }
+.week.scroll .wk-body { overflow-y: auto; scrollbar-width: thin; }
+/* Weinig hoogte: titel op één regel met puntjes, de tijd staat in de tooltip */
+.wk-ev.tight { padding: 1px 6px; border-left-width: 3px; }
+.wk-ev.tight b.clip { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: .85em; line-height: 1.3; }
+.wk-ev.tight span { display: none; }
 .wk-times > div {
   height: var(--hour);
   color: var(--muted);
@@ -1245,9 +1269,8 @@ a.event:hover { background: color-mix(in srgb, var(--c, #888) 24%, rgba(255, 255
   text-decoration: none;
 }
 .tb-link:hover { background: var(--surface-hover); }
-.tb-icon { width: 28px; height: 28px; border-radius: 8px; --fb: #555; flex: none; }
+.tb-icon { width: 28px; height: 28px; border-radius: 8px; flex: none; background: none; } /* alleen het logo, geen kleurvlak of letter */
 .tb-icon img { width: 100%; height: 100%; object-fit: contain; }
-.tb-icon .fb { font-size: .8rem; font-weight: 700; padding: 0; }
 .tb-name { display: none; }
 .tb-edit { border: 0; background: none; cursor: pointer; font: inherit; }
 .tb-plus { display: grid; place-items: center; border: 1px dashed rgba(255, 255, 255, .3); font-size: 1.2rem; color: var(--muted); }
@@ -1418,7 +1441,9 @@ body.minimal .tb-actions { position: absolute; top: max(16px, env(safe-area-inse
   .btn.pill { width: 112px; }
   .w-big { font-size: 3rem; }
 
-  .cal-list { --hour-base: 48px; }
+  .cal-list { --hour-base: 48px; --fit-h: 480px; }
+  .cal-head { flex-wrap: wrap; }
+  .cal-week-label { font-size: .8rem; }
   .week { --cols: 38px repeat(7, minmax(84px, 1fr)); margin-left: -6px; margin-right: -6px; font-size: .82rem; }
 }
 
@@ -1455,12 +1480,19 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk .w-sub { font-size: .82rem; }
 
 /* Links: weer + buienalarm, meldingen, AH */
-.desk-weather { flex: 1.7 1 0; min-height: 0; display: flex; flex-direction: column; border-radius: 22px; overflow: hidden;
+.desk-weather { flex: none; min-height: 0; display: flex; flex-direction: column; border-radius: 22px; overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--c-sky) 26%, transparent);
   background: linear-gradient(160deg, color-mix(in srgb, var(--c-sky) 22%, #151518), color-mix(in srgb, #5a9bd3 12%, #121214)); }
-.desk-weather > .tile { flex: 1 1 0; background: none; border: 0; border-radius: 0; }
-.desk-weather > #w-weather { flex: 1.35 1 0; }
-.desk-weather > #w-rain { border-top: 1px solid rgba(255, 255, 255, .12); }
+.desk-weather > .tile { flex: none; background: none; border: 0; border-radius: 0; }
+.desk-weather > #w-weather { padding-bottom: 6px; }
+/* Buienalarm in het weervak: droog = één regel, regen in de komende 2 uur = de grafiek klapt uit (zoals staand) */
+.desk #w-rain { padding-top: 0; }
+.desk #w-rain > .eyebrow { display: none; }
+.desk #w-rain:not(.is-wet) .rn-flat, .desk #w-rain:not(.is-wet) .rn-foot { display: none; }
+.desk #w-rain:not(.is-wet) .rn-text { font-size: .85rem; font-weight: 600; color: var(--muted); }
+.desk #w-rain:not(.is-wet) .rn-text::before { content: '☂ '; }
+.desk #w-rain.is-wet { border-top: 1px solid rgba(255, 255, 255, .12); padding-top: 10px; }
+.desk #w-rain.is-wet .rn-chart { min-height: 56px; }
 .desk .wx-icon { width: 60px; height: 60px; margin: -6px -2px -6px -6px; }
 .desk #w-weather .w-big { font-size: 2rem; }
 .desk #w-weather .w-mid { font-size: .95rem; }
@@ -1472,10 +1504,16 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk .wx-commute .w-pill { padding: 2px 8px; font-size: .72rem; }
 .desk .rn-text { font-size: 1.05rem; }
 .desk .rn-chart { min-height: 40px; }
-.desk #w-alerts { flex: .95 1 0; }
-.desk #w-ah { flex: 1.1 1 0; }
+.desk #w-alerts { flex: 1 1 0; }
+/* Meldingen: alleen kaartjes die helemaal passen (alerts.js laat de rest weg), knop eronder */
+.desk #w-alerts .w-body { min-height: 0; }
+.desk #w-alerts .w-big { font-size: 1.7rem; display: flex; align-items: baseline; gap: 8px; }
+.desk #w-alerts .w-big small { margin: 0; }
+.desk #w-alerts .al-fit { flex: 1 1 0; min-height: 0; overflow: hidden; align-content: start; }
+
+.desk #w-ah { flex: none; }
 /* Staafjes vullen de vrije ruimte in het vak (minstens 48px), met de uren erboven */
-.desk .ah-bars { flex: 1 1 auto; height: auto; min-height: 20px; margin-top: 2px; }
+.desk .ah-bars { flex: none; height: 56px; margin-top: 2px; }
 .desk #w-ah .w-sub { line-height: 1.25; }
 .desk #w-ah .w-label { line-height: 1.2; }
 .desk .ah-bar .v { font-size: .66rem; }
@@ -1526,7 +1564,13 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk #calendar { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; padding: 16px 20px; border-radius: 22px; }
 .desk #calendar .view { min-height: 0; }
 .desk #calendar[data-state="main"] .cal-main { flex: 1; min-height: 0; }
-.desk .cal-list { flex: 1; min-height: 0; overflow: auto; margin: 10px 0 6px; scrollbar-width: thin; }
+.desk .cal-list { --fit-source: box; flex: 1; min-height: 0; overflow: hidden; margin: 8px 0 4px; }
+/* Weekweergave: de datum staat al in de topbalk, de weeknavigatie komt ernaast op dezelfde hoogte */
+.desk.week-mode #cal-today { display: none; }
+.desk.week-mode .cal-head { align-items: center; }
+.desk.week-mode .cal-head .eyebrow { margin: 0; }
+.desk .cal-weeknav { margin-top: 6px; }
+.desk .cal-nav-btn { height: 30px; min-width: 30px; }
 .desk .agenda .title { font-size: 1.5rem; }
 
 /* Rechts: Canvas, F1, Episodes, film/laatst gekeken */
@@ -1625,7 +1669,6 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
   .desk .player-view .btn.pill { width: 56px; height: 36px; }
   .desk .player-view .btn.small { width: 32px; height: 32px; }
   .desk .wx-temp .w-sub, .desk .rn-foot, .desk .ah-bars, .desk .ah-days, .desk .film-info > .w-sub:nth-child(4), .desk .wx-today .w-label { display: none; }
-  .desk-weather > #w-weather { flex: 1.6 1 0; }
   .desk #w-weather .w-big { font-size: 1.7rem; }
   .desk .wx-icon { width: 48px; height: 48px; }
   .desk #w-canvas .w-body > .w-row { display: none; }
@@ -1697,7 +1740,7 @@ body.minimal .tb-design { display: none; }
 .tall #w-letterboxd .lb-row { grid-auto-columns: minmax(84px, 140px); justify-content: start; }
 .tall .ep-covers { padding-bottom: 4px; }
 /* Agenda: begrensde hoogte, de rest scrollt binnen het vak */
-.tall .cal-list { max-height: 640px; overflow: auto; scrollbar-width: thin; }
+.tall .cal-list { --fit-h: 540px; }
 .tall-dots { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 2; display: flex; gap: 8px; }
 .tall-dots button { width: 9px; height: 9px; padding: 0; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .3); cursor: pointer; transition: width .3s, background .3s; }
 .tall-dots button[aria-current="true"] { width: 22px; border-radius: 99px; background: var(--accent); }

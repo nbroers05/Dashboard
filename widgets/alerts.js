@@ -58,9 +58,10 @@ DASH.widget('w-alerts', (card, body, guard) => {
     return list;
   }
 
-  // Breed scherm: alleen de laatste 3, de rest via een knop
+  // Staand nieuw ontwerp: de belangrijkste 3. Breed liggend: zoveel als er helemaal in het vak passen.
+  // De rest via de knop "Alle meldingen".
   const COMPACT = 3;
-  const compact = () => !!document.querySelector('.dashboard.desk, .dashboard.tall');
+  const compact = () => (document.querySelector('.dashboard.desk') ? 'desk' : document.querySelector('.dashboard.tall') ? 'tall' : null);
   let allPanel = null;
   function openAll() {
     if (!allPanel) {
@@ -93,18 +94,17 @@ DASH.widget('w-alerts', (card, body, guard) => {
       return;
     }
 
-    let list;
-    if (compact()) {
-      // Belangrijkste eerst (urgent, dan je telefoon, dan de rest), maximaal 3
-      const rows = [...alerts.filter((a) => a.level === 'urgent').map(alertRow), ...(phone || []).map((n) => phoneRow(n, true)), ...alerts.filter((a) => a.level !== 'urgent').map(alertRow)];
-      list = h('div', 'al-list');
-      list.append(...rows.slice(0, COMPACT));
-      if (rows.length > COMPACT) {
-        const more = h('button', 'w-btn ghost al-more', `Alle meldingen (${rows.length}) →`);
-        more.type = 'button';
-        more.onclick = openAll;
-        list.append(more);
-      }
+    let list, more = null, rows = null;
+    const mode = compact();
+    if (mode) {
+      // Belangrijkste eerst (urgent, dan je telefoon, dan de rest)
+      rows = [...alerts.filter((a) => a.level === 'urgent').map(alertRow), ...(phone || []).map((n) => phoneRow(n, true)), ...alerts.filter((a) => a.level !== 'urgent').map(alertRow)];
+      list = h('div', 'al-list al-fit');
+      list.append(...(mode === 'tall' ? rows.slice(0, COMPACT) : rows));
+      more = h('button', 'w-btn ghost al-more', `Alle meldingen (${rows.length}) →`);
+      more.type = 'button';
+      more.onclick = openAll;
+      more.hidden = mode === 'tall' ? rows.length <= COMPACT : true;
     } else {
       const phoneItems = (phone || []).slice(0, PHONE_SHOW);
       list = fullList(alerts, phoneItems, phone && phone.length > PHONE_SHOW ? phone.length - PHONE_SHOW : 0);
@@ -115,8 +115,27 @@ DASH.widget('w-alerts', (card, body, guard) => {
     big.append(h('small', null, total === 1 ? 'melding' : 'meldingen'));
     head.append(big);
     body.replaceChildren(head, list);
+    if (more) body.append(more);
     if (helperError) body.append(h('p', 'w-sub al-helper', helperError));
+    if (mode === 'desk') fitRows();
   }
+
+  // Breed liggend: kaartjes die niet helemaal passen weglaten (geen half afgesneden kaartjes)
+  function fitRows() {
+    const list = body.querySelector('.al-fit');
+    const more = body.querySelector('.al-more');
+    if (!list || !more) return;
+    const rows = [...list.children];
+    rows.forEach((r) => { r.hidden = false; });
+    more.hidden = true;
+    let shown = rows.length;
+    const overflowing = () => list.scrollHeight > list.clientHeight + 1;
+    if (overflowing()) {
+      more.hidden = false;   // de knop neemt zelf ook ruimte in
+      while (shown > 1 && overflowing()) rows[--shown].hidden = true;
+    }
+  }
+  new ResizeObserver(() => { if (compact() === 'desk') fitRows(); }).observe(card);
   window.addEventListener('dash:layout', () => render());
 
 

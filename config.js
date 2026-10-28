@@ -41,12 +41,12 @@ window.DASHBOARD_CONFIG = {
   // Standaard-snelkoppelingen in de topbalk. Je kunt ze ook op het dashboard zelf aanpassen (knop + naast de icoontjes);
   // dat wordt dan in die browser bewaard en gaat vóór deze lijst.
   // name = tekst bij het icoontje, url = waar hij heen gaat. Het icoontje is het logo van die site,
-  // tenzij je zelf een plaatje opgeeft met icon ({dag} wordt de datum van vandaag).
+  // tenzij je zelf een plaatje opgeeft met icon (een adres, of 'agenda' voor het ingebouwde agenda-icoon).
   snelkoppelingen: [
     { name: 'Canvas', url: 'https://canvas.instructure.com/' }, // TODO: vervang door de Canvas-link van je school
     { name: 'Letterboxd', url: 'https://letterboxd.com/nbroers05/' },
     { name: 'Gmail', url: 'https://mail.google.com/', icon: 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico' },
-    { name: 'Agenda', url: 'https://calendar.google.com/', icon: 'https://ssl.gstatic.com/calendar/images/dynamiclogo_2020q4/calendar_{dag}_2x.png' },
+    { name: 'Agenda', url: 'https://calendar.google.com/', icon: 'agenda' },
     { name: 'Spotify', url: 'https://open.spotify.com/' },
   ],
 };

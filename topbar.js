@@ -42,6 +42,12 @@
   // ---------- Snelkoppelingen ----------
   // Eigen lijst (aangepast op het dashboard, in localStorage) gaat vóór de standaardlijst uit config.js
   const LINKS_KEY = 'dash.links';
+  // Ingebouwd agenda-icoon zonder datum erin (het Google Agenda-logo toont altijd het cijfer van vandaag)
+  const AGENDA_ICON = `data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"><rect x="5" y="8" width="38" height="35" rx="6" fill="#fff"/><path d="M5 14a6 6 0 0 1 6-6h26a6 6 0 0 1 6 6v5H5z" fill="#4285f4"/><rect x="13" y="3" width="4" height="10" rx="2" fill="#1a73e8"/><rect x="31" y="3" width="4" height="10" rx="2" fill="#1a73e8"/><g fill="#4285f4"><rect x="11" y="24" width="7" height="6" rx="1.5"/><rect x="20.5" y="24" width="7" height="6" rx="1.5"/><rect x="30" y="24" width="7" height="6" rx="1.5"/><rect x="11" y="33" width="7" height="6" rx="1.5"/><rect x="20.5" y="33" width="7" height="6" rx="1.5"/></g></svg>')}`;
+  const iconSrc = (icon, host) => {
+    if (icon === 'agenda' || (icon && icon.includes('dynamiclogo'))) return AGENDA_ICON;
+    return icon || `https://www.google.com/s2/favicons?domain=${host}&sz=64`;
+  };
   const defaults = () => (window.DASHBOARD_CONFIG && DASHBOARD_CONFIG.snelkoppelingen) || [];
   const current = () => store.get(LINKS_KEY) || defaults();
 
@@ -55,8 +61,8 @@
       a.target = '_blank';
       a.rel = 'noopener';
       a.title = name;
-      const src = icon ? icon.replace('{dag}', new Date().getDate()) : `https://www.google.com/s2/favicons?domain=${host}&sz=64`;
-      a.append(DASH.img(src, 'tb-icon', (name || host)[0].toUpperCase()), h('span', 'tb-name', name || host));
+      // Alleen het logo zelf: geen reserveletter erachter (die schemerde door doorzichtige logo's heen)
+      a.append(DASH.img(iconSrc(icon, host), 'tb-icon', null), h('span', 'tb-name', name || host));
       links.append(a);
     }
     const edit = h('button', 'tb-link tb-edit');

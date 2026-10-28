@@ -16,13 +16,14 @@
   const REFETCH = 5 * 60 * 1000;     // afspraken opnieuw ophalen
   const SOON = 2 * 60 * 60 * 1000;   // "over 25 min" tonen binnen deze tijd
 
-  const KEY = { healthToken: 'google.healthToken', token: 'google.token', hint: 'google.hint', cache: 'google.events', view: 'calendar.view' };
+  const KEY = { healthToken: 'google.healthToken', token: 'google.token', hint: 'google.hint', cache: 'google.events', view: 'calendar.view', fit: 'calendar.fit' };
 
   const $ = (id) => document.getElementById(id);
   const card = $('calendar');
   const el = {
     today: $('cal-today'), list: $('cal-list'), updated: $('cal-updated'),
     reconnect: $('cal-reconnect'), refresh: $('cal-refresh'), logout: $('cal-logout'),
+    weekLabel: $('cal-week-label'), prev: $('cal-prev'), next: $('cal-next'), thisWeek: $('cal-this-week'),
     connect: $('cal-connect'), loginMsg: $('cal-login-msg'),
   };
 
@@ -201,8 +202,11 @@
       const d = new Date(today);
       const monday = addDays(today, -((d.getDay() + 6) % 7));
       // Ook 5 weken terug en 6 vooruit: daar staat altijd een "Salaris" voor de AH-periode
-      const from = Math.min(monday, new Date(d.getFullYear(), d.getMonth(), 1).getTime(), addDays(today, -35));
-      const to = Math.max(addDays(today, 42), addDays(monday, 7), new Date(d.getFullYear(), d.getMonth() + 1, 1).getTime());
+      // En de week die je bekijkt (vorige/volgende week)
+      const shown = viewWeekStart();
+      const from = Math.min(monday, new Date(d.getFullYear(), d.getMonth(), 1).getTime(), addDays(today, -35), shown);
+      const to = Math.max(addDays(today, 42), addDays(monday, 7), new Date(d.getFullYear(), d.getMonth() + 1, 1).getTime(), addDays(shown, 7));
+      loaded = [from, to];
       const qs = new URLSearchParams({
         timeMin: new Date(from).toISOString(),
         timeMax: new Date(to).toISOString(),
@@ -416,8 +420,28 @@
   // ---------- Weekweergave: 7 kolommen met tijdlijn ----------
   const HOUR_MS = 3600000;
 
+  // Week die je bekijkt: maandag t/m zondag, verschuift met vorige/volgende week
+  let weekOffset = 0;
+  let loaded = [0, 0];
+  const mondayOf = (ms) => addDays(startOfDay(ms), -((new Date(ms).getDay() + 6) % 7));
+  const viewWeekStart = () => addDays(mondayOf(Date.now()), 7 * weekOffset);
+  function isoWeek(ms) {
+    const d = new Date(ms);
+    const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    t.setUTCDate(t.getUTCDate() + 4 - (t.getUTCDay() || 7));
+    return Math.ceil(((t - Date.UTC(t.getUTCFullYear(), 0, 1)) / 86400000 + 1) / 7);
+  }
+
+  // Passend: 08–24 past in de hoogte van het vak. Scrollen: normale uurhoogte, het raster scrolt zelf.
+  let fitMode = store.get(KEY.fit) === 'scroll' ? 'scroll' : 'fit';
+  let scrollPending = true;   // na openen/wisselen: naar het eerstvolgende evenement (of het huidige uur) scrollen
+
   function renderWeek(now, today) {
-    const days = Array.from({ length: DAYS }, (_, i) => ({ start: addDays(today, i), end: addDays(today, i + 1), allDay: [], timed: [] }));
+    const weekStart = viewWeekStart();
+    const days = Array.from({ length: 7 }, (_, i) => ({ start: addDays(weekStart, i), end: addDays(weekStart, i + 1), allDay: [], timed: [] }));
+    const short = (ms) => new Date(ms).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' }).replace('.', '');
+    if (el.weekLabel) el.weekLabel.textContent = `week ${isoWeek(weekStart)} · ${short(weekStart)} – ${short(addDays(weekStart, 6))}`;
+    if (el.thisWeek) el.thisWeek.disabled = weekOffset === 0;
 
     for (const ev of events) {
       if (ev.hidden) continue;
@@ -428,30 +452,33 @@
       }
     }
 
-    // Uren die we tonen: 08–22, en de dag begint altijd minstens een uur vóór de vroegste afspraak
-    let first = 8, last = 22;
-    for (const day of days) {
-      for (const t of day.timed) {
-        first = Math.min(first, Math.floor((t.s - day.start) / HOUR_MS) - 1);
-        last = Math.max(last, Math.ceil((t.e - day.start) / HOUR_MS));
+    // Passend: precies 08–24. Een afspraak (deels) vóór 8 uur staat bovenaan vanaf 08:00 (echte tijd in de tooltip).
+    // Scrollen: de hele dag.
+    const first = fitMode === 'fit' ? 8 : 0;
+    const last = 24;
+    if (first) {
+      for (const day of days) {
+        const top = day.start + first * HOUR_MS;
+        for (const t of day.timed) {
+          if (t.e <= top) { t.s = top; t.e = top + HOUR_MS / 2; t.early = true; }
+          else if (t.s < top) t.s = top;
+        }
       }
     }
-    first = Math.max(0, first);
-    last = Math.min(24, last);
     // Posities in uren; CSS rekent ze om met --hour (px per uur), zodat we die later kunnen oprekken
     const at = (hours) => `calc(var(--hour) * ${hours})`;
     const hoursFrom = (ms) => ms / HOUR_MS - first;
 
     const oldBody = el.list.querySelector('.wk-body');
-    const scrollTop = oldBody ? oldBody.scrollTop : null;
+    const scrollTop = oldBody && !scrollPending ? oldBody.scrollTop : null;
 
-    const week = h('div', 'week');
+    const week = h('div', `week ${fitMode}`);
 
     const head = h('div', 'wk-row');
     head.append(h('div'));
-    days.forEach((day, i) => {
+    days.forEach((day) => {
       const d = new Date(day.start);
-      const cell = h('div', `wk-day${i === 0 ? ' today' : ''}`, d.toLocaleDateString('nl-NL', { weekday: 'short' }));
+      const cell = h('div', `wk-day${day.start === today ? ' today' : ''}`, d.toLocaleDateString('nl-NL', { weekday: 'short' }));
       cell.append(h('b', null, d.getDate()));
       head.append(cell);
     });
@@ -473,8 +500,9 @@
     for (let hr = first; hr < last; hr++) times.append(h('div', null, `${String(hr).padStart(2, '0')}:00`));
     body.append(times);
 
-    days.forEach((day, i) => {
-      const col = h('div', `wk-col${i === 0 ? ' today' : ''}`);
+    days.forEach((day) => {
+      const isToday = day.start === today;
+      const col = h('div', `wk-col${isToday ? ' today' : ''}`);
       col.style.height = at(last - first);
       for (const t of lanes(day.timed)) {
         const b = block(t.ev, 'wk-ev');
@@ -485,13 +513,13 @@
         if (t.lanes > 1) b.classList.add('narrow');
         b.dataset.dur = dur;
         b.style.top = at(hoursFrom(t.s - day.start));
-        b.style.height = `max(22px, calc(var(--hour) * ${dur} - 2px))`;
+        b.style.height = `max(16px, calc(var(--hour) * ${dur} - 2px))`;
         b.style.left = `${(t.lane / t.lanes) * 100}%`;
         b.style.width = `calc(${100 / t.lanes}% - 4px)`;
         if (t.ev.end <= now) b.classList.add('past');
         col.append(b);
       }
-      if (i === 0) {
+      if (isToday) {
         const line = h('div', 'wk-now');
         line.style.top = at(hoursFrom(now - day.start));
         col.append(line);
@@ -503,27 +531,70 @@
     el.list.replaceChildren(week);
     weekHours = last - first;
     fitWeek();
-    // Eerste keer: naar het huidige uur scrollen; daarna scrollpositie bewaren
-    const hourPx = parseFloat(el.list.style.getPropertyValue('--hour')) || 44;
-    body.scrollTop = scrollTop != null ? scrollTop : Math.max(0, (hoursFrom(now - today) - 1) * hourPx);
+
+    // Scrollen: na openen naar het eerstvolgende evenement van vandaag, anders het huidige uur; daarna de positie houden
+    if (fitMode === 'scroll') {
+      const hourPx = parseFloat(el.list.style.getPropertyValue('--hour')) || 44;
+      if (scrollTop != null) body.scrollTop = scrollTop;
+      else {
+        let target = 8;
+        const todayCol = days.find((d) => d.start === today);
+        if (todayCol) {
+          const nextEv = todayCol.timed.filter((t) => t.e > now).sort((a, b) => a.s - b.s)[0];
+          target = nextEv ? (nextEv.s - today) / HOUR_MS : (now - today) / HOUR_MS;
+        }
+        body.scrollTop = Math.max(0, (target - first - 0.5) * hourPx);
+      }
+    }
+    scrollPending = false;
   }
 
-  // Op het staande scherm (--fit) de uren zo hoog maken dat de hele dag past
+  // Hoogte van het raster: het vak zelf (brede indeling) of een vaste hoogte uit CSS (--fit-h).
+  // Passend: de uurrijen zo hoog dat alles in die hoogte past. Scrollen: normale uurhoogte, het raster scrolt.
   let weekHours = 0;
   function fitWeek() {
     const body = el.list.querySelector('.wk-body');
     if (!body) return;
     const cs = getComputedStyle(el.list);
-    const fit = cs.getPropertyValue('--fit').trim() === '1';
-    const hourPx = fit ? Math.max(30, Math.floor(body.clientHeight / weekHours)) : parseFloat(cs.getPropertyValue('--hour-base')) || 44;
+    let avail;
+    if (cs.getPropertyValue('--fit-source').trim() === 'box') {
+      avail = el.list.clientHeight - (body.getBoundingClientRect().top - el.list.getBoundingClientRect().top) - 2;
+    } else avail = parseFloat(cs.getPropertyValue('--fit-h')) || 600;
+    avail = Math.max(160, Math.floor(avail));
+    const hourPx = fitMode === 'fit' ? Math.max(14, Math.floor(avail / weekHours)) : parseFloat(cs.getPropertyValue('--hour-base')) || 44;
     el.list.style.setProperty('--hour', `${hourPx}px`);
+    body.style.height = fitMode === 'fit' ? '' : `${avail}px`;
     // Zoveel titelregels als er in het blok passen
     const lineH = parseFloat(getComputedStyle(body).fontSize) * 1.25 || 18;
     body.querySelectorAll('.wk-ev').forEach((b) => {
       const px = b.dataset.dur * hourPx - 10 - (b.classList.contains('narrow') || b.classList.contains('short') ? 0 : lineH);
       b.style.setProperty('--lines', Math.max(1, Math.floor(px / lineH)));
+      // Weinig ruimte: alleen de titel op één regel (afgekapt met puntjes, volledige titel bij hover)
+      b.classList.toggle('tight', b.dataset.dur * hourPx < 34);
     });
   }
+
+  // Vorige/volgende week en terug naar deze week; buiten wat er al opgehaald is: opnieuw ophalen
+  function goWeek(offset) {
+    weekOffset = offset;
+    scrollPending = true;
+    const ws = viewWeekStart();
+    if (!DEMO && token() && (ws < loaded[0] || addDays(ws, 7) > loaded[1])) load();
+    else if (card.dataset.state === 'main') render();
+  }
+  if (el.prev) el.prev.onclick = () => goWeek(weekOffset - 1);
+  if (el.next) el.next.onclick = () => goWeek(weekOffset + 1);
+  if (el.thisWeek) el.thisWeek.onclick = () => goWeek(0);
+  card.querySelectorAll('.seg-fit button').forEach((b) => {
+    b.onclick = () => {
+      fitMode = b.dataset.fit;
+      store.set(KEY.fit, fitMode);
+      scrollPending = true;
+      card.querySelectorAll('.seg-fit button').forEach((x) => x.setAttribute('aria-pressed', String(x.dataset.fit === fitMode)));
+      if (card.dataset.state === 'main') render();
+    };
+    b.setAttribute('aria-pressed', String(b.dataset.fit === fitMode));
+  });
 
   new ResizeObserver(() => { if (view === 'week') fitWeek(); }).observe(el.list);
 
@@ -622,13 +693,14 @@
 
   function setView(v) {
     view = v;
+    scrollPending = true;
     store.set(KEY.view, v);
-    card.querySelectorAll('.seg button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === v)));
+    card.querySelectorAll('.seg-view button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.view === v)));
     document.querySelector('.dashboard').classList.toggle('week-mode', v === 'week');
     if (card.dataset.state === 'main') render();
   }
 
-  card.querySelectorAll('.seg button').forEach((b) => { b.onclick = () => setView(b.dataset.view); });
+  card.querySelectorAll('.seg-view button').forEach((b) => { b.onclick = () => setView(b.dataset.view); });
 
   function eventRow(ev, dayStart, now, isNext) {
     const li = h('li');
