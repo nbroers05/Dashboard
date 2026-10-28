@@ -4,6 +4,18 @@
    "name": "NOS",
    "items": [
     {
+     "title": "Man aangehouden voor vliegen met drone boven Eemshaven",
+     "link": "https://nos.nl/l/2637079",
+     "time": "2026-10-28T19:56:20+01:00",
+     "img": "https://images.cdn.nos.nl/3/G/n/b/5/5/LaZLT5UhXX3UuHsfJFacE7gvBRHbFDokNjGE3Jo/0x180x1920x1080-1024x576.webp"
+    },
+    {
+     "title": "Gezin uit Olesjky moest kiezen tussen hongerdood of reis tussen mijnen en drones",
+     "link": "https://nos.nl/l/2637078",
+     "time": "2026-10-28T19:41:17+01:00",
+     "img": "https://images.cdn.nos.nl/8/B/A/Z/s/w/2RieAgFiRSiAKwF9U9zueoR1QKD6G2yrG3X7XpR/8x355x3984x2241-1024x576.webp"
+    },
+    {
      "title": "Nieuwe celstraf voor Iraanse filmmaker en dissident Jafar Panahi",
      "link": "https://nos.nl/l/2637069",
      "time": "2026-10-28T18:37:28+01:00",
@@ -73,25 +85,13 @@
      "title": "Minister: hogesnelheidstrein Spanje reed door rood sein op instructie verkeersleiding",
      "link": "https://nos.nl/l/2637042",
      "time": "2026-10-28T16:11:36+01:00",
-     "img": "https://images.cdn.nos.nl/2/8/c/y/j/n/gPrKEGrbWUMnh4g5bcJar6UGw4WAUrzNBUr7boG/416x427x3216x1809-1024x576.webp"
+     "img": "https://images.cdn.nos.nl/7/G/1/V/V/J/VzHRbGRtydPZHAxrzqtGah2dU2SJBCumFLGckPt/8x177x3984x2241-1024x576.webp"
     },
     {
      "title": "Taakstraffen geëist voor seance bij kindergraven op Amersfoortse begraafplaats",
      "link": "https://nos.nl/l/2637041",
      "time": "2026-10-28T16:10:55+01:00",
      "img": "https://images.cdn.nos.nl/5/5/6/Q/2/R/zCJfHLcarjzawChbAZz7xaZYGvMfHdbXA7fhn3R/8x4x1088x612-1024x576.webp"
-    },
-    {
-     "title": "Meesteronderhandelaar Netanyahu moet alle zeilen bijzetten om aan de macht te blijven",
-     "link": "https://nos.nl/l/2637040",
-     "time": "2026-10-28T16:10:17+01:00",
-     "img": "https://images.cdn.nos.nl/5/q/B/2/r/6/c79fvbqX2dKxpqDDRyjk4U2yMDmkoeqPRaS3uw/8x239x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Gasprijs stijgt door, boven de 100 euro per megawattuur",
-     "link": "https://nos.nl/l/2637039",
-     "time": "2026-10-28T16:08:02+01:00",
-     "img": "https://images.cdn.nos.nl/3/8/A/a/v/K/cVABhVEE9XaQE26mdbboteUkJQfsZ4McmzdUC29/0x214x4000x2250-1024x576.webp"
     }
    ]
   },
@@ -194,16 +194,34 @@
    "name": "NU.nl",
    "items": [
     {
+     "title": "Politie gaat deel van onbehandelde aangiften uit 2024 opnieuw beoordelen",
+     "link": "https://www.nu.nl/politiek/6414733/politie-gaat-deel-van-onbehandelde-aangiften-uit-2024-opnieuw-beoordelen.html",
+     "time": "2026-10-28T20:01:43+01:00",
+     "img": "https://images.nu.nl/m/i6ax3bga5z5o_sqr256/0/0/4651/4651/politie-gaat-deel-van-onbehandelde-aangiften-uit-2024-opnieuw-beoordelen.jpg"
+    },
+    {
+     "title": "Europa's tweede economie wankelt: 'Maar van Europese crisis nog geen sprake'",
+     "link": "https://www.nu.nl/buitenland/6414682/europas-tweede-economie-wankelt-maar-van-europese-crisis-nog-geen-sprake.html",
+     "time": "2026-10-28T20:00:40+01:00",
+     "img": "https://images.nu.nl/m/k3gxw3salx8z_sqr256/1132/491/4658/4658/europas-tweede-economie-wankelt-maar-van-europese-crisis-nog-geen-sprake.jpg"
+    },
+    {
+     "title": "Loterijwinnaar heeft zich na jaar nog niet gemeld en dreigt 40 miljoen mis te lopen",
+     "link": "https://www.nu.nl/opmerkelijk/6414728/loterijwinnaar-heeft-zich-na-jaar-nog-niet-gemeld-en-dreigt-40-miljoen-mis-te-lopen.html",
+     "time": "2026-10-28T19:31:22+01:00",
+     "img": "https://images.nu.nl/m/pwaxsr2an2cy_sqr256/728/0/3024/3024/loterijwinnaar-heeft-zich-na-jaar-nog-niet-gemeld-en-dreigt-40-miljoen-mis-te-lopen.jpg"
+    },
+    {
+     "title": "Video | Willem-Alexander verwelkomt Zelensky met omarming bij audiëntie",
+     "link": "https://www.nu.nl/331731/video/willem-alexander-verwelkomt-zelensky-met-omarming-bij-audientie.html",
+     "time": "2026-10-28T19:26:55+01:00",
+     "img": "https://images.nu.nl/m/qayx7dgaanl5_sqr256/458/2/1078/1078/willem-alexander-verwelkomt-zelensky-met-omarming-bij-audientie.jpg"
+    },
+    {
      "title": "Amsterdam verlengt fatbikeverbod in Vondelpark, maar breidt het niet uit",
      "link": "https://www.nu.nl/binnenland/6414725/amsterdam-verlengt-fatbikeverbod-in-vondelpark-maar-breidt-het-niet-uit.html",
      "time": "2026-10-28T19:19:31+01:00",
      "img": "https://images.nu.nl/m/006xubfa4ba1_sqr256/414/589/1637/1637/amsterdam-verlengt-fatbikeverbod-in-vondelpark-maar-breidt-het-niet-uit.jpg"
-    },
-    {
-     "title": "Video | Lagerhuis moet lachen als premier Harry Kane feliciteert",
-     "link": "https://www.nu.nl/331723/video/lagerhuis-moet-lachen-als-premier-harry-kane-feliciteert.html",
-     "time": "2026-10-28T18:51:43+01:00",
-     "img": "https://images.nu.nl/m/a8ux79ea8p4b_sqr256/339/0/1080/1080/lagerhuis-moet-lachen-als-premier-harry-kane-feliciteert.jpg"
     },
     {
      "title": "Overlevenden vertellen over treinramp Spanje: 'Spoor sneed als mes door trein'",
@@ -222,6 +240,12 @@
      "link": "https://www.nu.nl/blog/6414721/we-nodigen-jullie-graag-uit-voor-onze-nunl-bezoekersdag.html",
      "time": "2026-10-28T18:16:45+01:00",
      "img": "https://images.nu.nl/m/f5exhdmab5av_sqr256/1895/0/5501/5501/we-nodigen-jullie-graag-uit-voor-onze-nunl-bezoekersdag.jpg"
+    },
+    {
+     "title": "Live | KNVB-beker | Fortuna trekt met volley gelijk, zeven andere duels van start",
+     "link": "https://www.nu.nl/voetbal/6414709/knvb-beker-fortuna-trekt-met-volley-gelijk-zeven-andere-duels-van-start.html",
+     "time": "2026-10-28T18:01:54+01:00",
+     "img": "https://images.nu.nl/m/eyqxxwkae4vt_sqr256/1181/0/2363/2363/knvb-beker-fortuna-trekt-met-volley-gelijk-zeven-andere-duels-van-start.jpg"
     },
     {
      "title": "Werkgevers worstelen met thuiswerkbeleid: 'Meer bedrijven kunnen zaak starten'",
@@ -258,30 +282,6 @@
      "link": "https://www.nu.nl/film/6414704/van-verkrachting-verdachte-russell-brand-vond-geen-getuigen-voor-zijn-zaak.html",
      "time": "2026-10-28T16:03:52+01:00",
      "img": "https://images.nu.nl/m/0yox98qa4c80_sqr256/977/0/3196/3196/van-verkrachting-verdachte-russell-brand-vond-geen-getuigen-voor-zijn-zaak.jpg"
-    },
-    {
-     "title": "93-jarige vrouw breekt rug bij beroving in Amsterdam: 'Onbegrijpelijk laffe daad'",
-     "link": "https://www.nu.nl/binnenland/6414707/93-jarige-vrouw-breekt-rug-bij-beroving-in-amsterdam-onbegrijpelijk-laffe-daad.html",
-     "time": "2026-10-28T16:03:47+01:00",
-     "img": "https://images.nu.nl/m/vnmxq1raqh5s_sqr256/1399/0/3693/3693/93-jarige-vrouw-breekt-rug-bij-beroving-in-amsterdam-onbegrijpelijk-laffe-daad.jpg"
-    },
-    {
-     "title": "Jennifer Lawrence heeft borsten laten liften: 'Niets was meer in vorm'",
-     "link": "https://www.nu.nl/achterklap/6414703/jennifer-lawrence-heeft-borsten-laten-liften-niets-was-meer-in-vorm.html",
-     "time": "2026-10-28T15:33:55+01:00",
-     "img": "https://images.nu.nl/m/klnx7m3aaloz_sqr256/399/0/2143/2143/jennifer-lawrence-heeft-borsten-laten-liften-niets-was-meer-in-vorm.jpg"
-    },
-    {
-     "title": "Omstreden au-pairbureau Nina Care failliet verklaard",
-     "link": "https://www.nu.nl/economie/6414700/omstreden-au-pairbureau-nina-care-failliet-verklaard.html",
-     "time": "2026-10-28T15:10:31+01:00",
-     "img": "https://images.nu.nl/m/ak8xyuwaoz1g_sqr256/1952/7/4661/4661/omstreden-au-pairbureau-nina-care-failliet-verklaard.jpg"
-    },
-    {
-     "title": "Bolsonaro drie dagen na verkiezingsnederlaag in Brazilië aangekomen in VS",
-     "link": "https://www.nu.nl/buitenland/6414698/bolsonaro-drie-dagen-na-verkiezingsnederlaag-in-brazilie-aangekomen-in-vs.html",
-     "time": "2026-10-28T14:49:32+01:00",
-     "img": "https://images.nu.nl/m/25vxgewavs2z_sqr256/172/0/1830/1830/bolsonaro-drie-dagen-na-verkiezingsnederlaag-in-brazilie-aangekomen-in-vs.jpg"
     }
    ]
   }
