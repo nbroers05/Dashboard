@@ -4,6 +4,24 @@
    "name": "NOS",
    "items": [
     {
+     "title": "Slachtoffers over treinongeluk Spanje: 'Je leven flitst in een seconde voorbij'",
+     "link": "https://nos.nl/l/2637026",
+     "time": "2026-10-28T14:42:39+01:00",
+     "img": "https://images.cdn.nos.nl/3/9/D/X/T/K/WMMaxuFczeY3fKvE6XWkFbaguQvpHdrptbKtMAz/8x420x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Bescheiden begroting toont de beperkingen van de Britse regering",
+     "link": "https://nos.nl/l/2637022",
+     "time": "2026-10-28T14:27:28+01:00",
+     "img": "https://images.cdn.nos.nl/2/G/B/t/f/7/VxpfdeCLafqjLwWHmjefHpNtrrYCGDNfxeeLjfY/8x95x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Opnieuw dood dier bezorgd bij gemeentehuis Oldebroek",
+     "link": "https://nos.nl/l/2637012",
+     "time": "2026-10-28T13:45:46+01:00",
+     "img": "https://images.cdn.nos.nl/8/A/e/Z/Y/p/r2ksiuNjWQkBSR1g8W2EoCEkEg5ryoYo7T7UzuG/8x349x3984x2241-1024x576.webp"
+    },
+    {
      "title": "Rechter geeft Booking gelijk, personeel moet verplicht vaker naar kantoor",
      "link": "https://nos.nl/l/2637007",
      "time": "2026-10-28T13:09:16+01:00",
@@ -40,7 +58,7 @@
      "img": "https://images.cdn.nos.nl/7/A/3/W/R/e/qiCyFqwRkAFKi8MzmhwSF8MirQs2mQtrmdwKvgi/5x29x320x180-320x180.webp"
     },
     {
-     "title": "Twee passagierstreinen botsen in Spanje, tientallen doden",
+     "title": "Twee passagierstreinen botsten op elkaar in Spanje, dodental loopt op",
      "link": "https://nos.nl/l/2636985",
      "time": "2026-10-28T10:04:15+01:00",
      "img": "https://images.cdn.nos.nl/4/D/d/t/R/n/tyNervkjNBoneJvqGaojQuD1eVMwUkMFYkh2sBZ/0x152x1200x675-1024x576.webp"
@@ -74,24 +92,6 @@
      "link": "https://nos.nl/l/2636965",
      "time": "2026-10-28T07:31:14+01:00",
      "img": "https://images.cdn.nos.nl/3/B/N/t/B/P/yDLVopDzDdQ6DxC4rTsqJgpzMQswatajwTcuzmC/8x27x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Dierentuinbranche geschokt na dodelijke panteraanval in Beekse Bergen",
-     "link": "https://nos.nl/l/2636963",
-     "time": "2026-10-28T07:05:24+01:00",
-     "img": "https://images.cdn.nos.nl/2/G/h/6/R/Y/3Dr9tGNzNtTj2LYBYfUixcSQRrW3Bpmhr5AjxuS/8x111x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Blok rond premier Netanyahu aan kop in verkiezingen Israël",
-     "link": "https://nos.nl/l/2636962",
-     "time": "2026-10-28T06:45:30+01:00",
-     "img": "https://images.cdn.nos.nl/5/4/W/W/d/Z/wLePi4xejxJywyA75vik5JkMACCJz12JY7nBH1C/5x790x2144x1206-1024x576.webp"
-    },
-    {
-     "title": "Wekdienst 28/10: Kamer debatteert over infrastructuur • Rechtszaak over grafschennis in Utrecht",
-     "link": "https://nos.nl/l/2636961",
-     "time": "2026-10-28T06:38:19+01:00",
-     "img": "https://images.cdn.nos.nl/6/2/x/V/E/n/mkim7PvbQcEtHyJm9MBtFE81uE2MLmsmuPX99Sb/0x0x1920x1080-1024x576.webp"
     }
    ]
   },
@@ -191,10 +191,109 @@
    ]
   }
  ],
- "reddit": {
-  "error": "Nog geen subreddits ingevuld in config.js (subreddits).",
-  "subs": []
- },
+ "film": [
+  {
+   "name": "Letterboxd Journal",
+   "items": [
+    {
+     "title": "Best of the Fall Film Festivals 2026",
+     "link": "https://letterboxd.com/journal/best-of-the-fall-fests-2026/",
+     "time": "2026-10-29T02:41:14+13:00",
+     "img": "https://a.ltrbxd.com/resized/sm/upload/l4/w9/yf/x2/Header_FallFests_2%20(1)-0-960-0-540-crop-fill.png?k=4e0307075b",
+     "intro": "Our Letterboxd correspondents share highlights from the fall ﬁlm festival season: from destabilizing documentaries to romantic sagas, powerhouse thrillers and doppelgänger dramas.",
+     "category": "Festival Circuit"
+    },
+    {
+     "title": "The Bard’s Best: a starter pack of twenty essential modern Shakespeare adaptations",
+     "link": "https://letterboxd.com/journal/modern-shakespeare-starter-pack/",
+     "time": "2026-10-28T10:28:48+13:00",
+     "img": "https://a.ltrbxd.com/resized/sm/upload/et/cp/4v/ya/Journal%20header%203%20(2)-0-960-0-540-crop-fill.jpg?k=8520af05f0",
+     "intro": "From musical comedies to pitch-black tragedies, films adapting the work of William Shakespeare run the full gamut. Kristen Lopez counts off twenty of the best that set themselves in their modern day—from Baz Luhrmann’s…",
+     "category": "Cinemascope"
+    },
+    {
+     "title": "Shelter from the Storm: Jeff Nichols on the sincerity, anxiety and longevity of Take Shelter",
+     "link": "https://letterboxd.com/journal/take-shelter-jeff-nichols-anniversary-interview/",
+     "time": "2026-10-28T03:38:23+13:00",
+     "img": "https://a.ltrbxd.com/resized/sm/upload/yt/0u/d7/x8/take6-0-960-0-540-crop-fill.jpg?k=87ed5285be",
+     "intro": "Fifteen years after the release of Take Shelter, writer-director Jeff Nichols speaks with Mitchell Beaupre about the film’s complex and tender portrayal of marriage, its reckoning with economic anxieties, and why the…",
+     "category": "Deep Impact"
+    },
+    {
+     "title": "Down the Rabbit Hole: the cult-classic destiny of Donnie Darko at 25",
+     "link": "https://letterboxd.com/journal/donnie-darko-25th-anniversary-deep-impact/",
+     "time": "2026-10-27T03:36:27+13:00",
+     "img": "https://a.ltrbxd.com/resized/sm/upload/t4/bn/nq/is/3kr5LCFNvJe4qkXNQpIBm3J7v8L-0-960-0-540-crop-fill.jpg?k=fe271f4796",
+     "intro": "As Richard Kelly’s enigmatic cult gem Donnie Darko turns 25, Ariel LeBeau considers its haunting, unexpectedly prescient depiction of time-space wormholes and teenage apocalypse.",
+     "category": "Deep Impact"
+    },
+    {
+     "title": "Gray Areas: Paweł Pawlikowski on the rich history and simple storytelling of Fatherland",
+     "link": "https://letterboxd.com/journal/pawel-pawlikowski-fatherland-interview/",
+     "time": "2026-10-23T22:21:29+13:00",
+     "img": "https://a.ltrbxd.com/resized/sm/upload/ef/z9/0q/sb/zz0J14pzfXGcQRXG1VIfmhbtQgK-0-960-0-540-crop-fill.jpg?k=d1695d1304",
+     "intro": "With his Sandra Hüller-starring historical portrait out now, Polish auteur Paweł Pawlikowski tells Luke Hicks about the rich storytelling of his Cannes winner Fatherland.",
+     "category": "Interview"
+    },
+    {
+     "title": "Beauty Costs: John Turturro on The Only Living Pickpocket in New York and his storied career as a character actor",
+     "link": "https://letterboxd.com/journal/john-turturro-the-only-living-pickpocket-in-new-york-interview/",
+     "time": "2026-10-23T04:48:42+13:00",
+     "img": "https://a.ltrbxd.com/resized/sm/upload/iy/kp/5z/2c/Turturro%20header-0-960-0-540-crop-fill.jpg?k=1d8b2f89b2",
+     "intro": "As his tense, tender crime drama The Only Living Pickpocket in New York hits theaters, John Turturro tells Dan Mecca about improving with age, accepting radical change and doing it his way across his 46-year career.",
+     "category": "Interview"
+    },
+    {
+     "title": "Savior Sisters: twenty sisters in cinema who offer salvation to their siblings",
+     "link": "https://letterboxd.com/journal/savior-sisters-starter-pack-wildwood/",
+     "time": "2026-10-23T01:26:32+13:00",
+     "img": "https://a.ltrbxd.com/resized/sm/upload/2m/e6/8n/ot/Header_SisterSaviors-0-960-0-540-crop-fill.png?k=75d2e6fc0e",
+     "intro": "As 2026 continues to celebrate sisters who offer salvation to their siblings with Wildwood out now, Claira Curtis curates a starter pack of twenty films illustrating all the ways our sisters can save us.",
+     "category": "Cinemascope"
+    },
+    {
+     "title": "Watchlist This!: Our October 2026 picks of the best new bubbling-under films",
+     "link": "https://letterboxd.com/journal/watchlist-this-october-2026/",
+     "time": "2026-10-22T03:21:25+13:00",
+     "img": "https://a.ltrbxd.com/resized/sm/upload/yg/fm/uz/rd/Watchlist%20This!%20Oct.-0-960-0-540-crop-fill.jpg?k=5e45b5c514",
+     "intro": "Our picks of under-the-radar gems from this month’s new releases. This edition includes spine-tingling creature features, vital documentaries, satirical mockumentaries and heartrending dramas.",
+     "category": "Cinemascope"
+    },
+    {
+     "title": "Practical Magic: Christopher Nolan’s The Prestige and Neil Burger’s The Illusionist at 20",
+     "link": "https://letterboxd.com/journal/the-prestige-the-illusionist-2006-deep-impact/",
+     "time": "2026-10-21T06:03:12+13:00",
+     "img": "https://a.ltrbxd.com/resized/sm/upload/su/hx/nl/86/Prestige%20Illusionist%20(1)-0-960-0-540-crop-fill.jpg?k=4dd8b034dd",
+     "intro": "As competing movies about 19th-century stage magicians, released within months of each other, turn 20 this year, Brian Raftery considers the lasting spell of Christopher Nolan’s The Prestige and Neil Burger’s The…",
+     "category": "Deep Impact"
+    },
+    {
+     "title": "Beyond the Infinite: the Letterboxd community ranking of Stanley Kubrick’s films",
+     "link": "https://letterboxd.com/journal/stanley-kubrick-ranked-letterboxd/",
+     "time": "2026-10-20T04:01:42+13:00",
+     "img": "https://a.ltrbxd.com/resized/sm/upload/0k/4u/dn/g2/Journal%20header%203%20(1)-0-960-0-540-crop-fill.jpg?k=9996f91c98",
+     "intro": "As the Criterion Collection releases their massive The Complete Kubrick box set, we take a look at how the Letterboxd community ranks all thirteen features made by the legendary filmmaker.",
+     "category": "Community"
+    },
+    {
+     "title": "Dancing Through Life: Oscar winner Michelle Yeoh on her illustrious, action-packed career",
+     "link": "https://letterboxd.com/journal/michelle-yeoh-interview-busan-international-film-festival/",
+     "time": "2026-10-20T03:13:13+13:00",
+     "img": "https://a.ltrbxd.com/resized/sm/upload/r1/2a/g6/ty/Michelle%20Yeoh%20header-0-960-0-540-crop-fill.jpg?k=1e1b4ec25a",
+     "intro": "After receiving the Busan International Film Festival’s Asian Filmmaker of the Year prize in honor of her contributions to advancing Asian cinema, global acting icon Michelle Yeoh reflects on her process, influences and…",
+     "category": "Interview"
+    },
+    {
+     "title": "Behold the Holy Grail: the scandal, suppression and salvation of Ken Russell’s The Devils",
+     "link": "https://letterboxd.com/journal/ken-russell-the-devils-uncensored-4K-restoration/",
+     "time": "2026-10-17T04:35:54+13:00",
+     "img": "https://a.ltrbxd.com/resized/sm/upload/tp/dl/ph/al/The%20Devils%20head-0-960-0-540-crop-fill.jpg?k=cc3ddf4a90",
+     "intro": "As The Devils returns to theaters worldwide 55 years later with a newly restored, uncensored version, Isaac Feldberg explores the desecration and resurrection of Ken Russell’s maligned masterpiece.",
+     "category": "Deep Impact"
+    }
+   ]
+  }
+ ],
  "youtube": {
   "channels": [
    "Patrick (H) Willems"

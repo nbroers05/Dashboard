@@ -1,8 +1,8 @@
 'use strict';
 
-// Feeds: een eigen pagina (zelfde stijl, eigen raster) met nieuws, Reddit, YouTube en markten.
+// Feeds: een eigen pagina (zelfde stijl, eigen raster) met nieuws, filmnieuws, YouTube en markten.
 // Openen en sluiten met het krant-icoon in de topbalk, sluiten ook met Esc of de terug-knop (adres #feeds).
-// Nieuws, Reddit en YouTube komen uit data/feeds.json (GitHub Action, elk half uur: die bronnen mogen niet
+// Nieuws, filmnieuws en YouTube komen uit data/feeds.json (GitHub Action, elk half uur: die bronnen mogen niet
 // rechtstreeks vanuit de browser). Markten haalt de browser zelf: Twelve Data (key in localStorage) en CoinGecko.
 // Alleen weergave: geen adviezen of signalen.
 (() => {
@@ -53,7 +53,7 @@
   const note = (text) => h('p', 'w-note', text);
 
   const news = section('fd-news', 'Nieuws', '#ff6b2c');
-  const reddit = section('fd-reddit', 'Reddit', '#ff4500');
+  const film = section('fd-film', 'Filmnieuws', '#40bcf4');
   const yt = section('fd-yt', 'YouTube', '#ff3b3b');
   const mkt = section('fd-mkt', 'Markten', '#4fa8ff');
 
@@ -87,24 +87,24 @@
     news.body.replaceChildren(ul);
   }
 
-  // ---------- Reddit ----------
-  function renderReddit(r) {
-    if (!r || r.error) return reddit.body.replaceChildren(note((r && r.error) || 'Nog geen Reddit-data.'));
-    const ul = h('div', 'fd-list');
-    for (const s of r.subs) {
-      ul.append(h('p', 'fd-sub', `r/${s.name}${s.error ? ` · ${s.error}` : ''}`));
-      for (const p of s.posts) {
-        const a = link('fd-item fd-reddit-item', p.link);
-        const score = h('span', 'fd-score');
-        score.append(h('b', null, k(p.score)), h('small', null, '▲'));
-        const txt = h('span', 'fd-txt');
-        txt.append(h('b', null, p.title), h('span', 'w-sub', `${k(p.comments)} reacties · ${ago(p.time)} geleden`));
-        a.append(score, txt);
-        if (p.thumb) a.append(DASH.img(p.thumb, 'fd-thumb sq', ''));
-        ul.append(a);
-      }
+  // ---------- Filmnieuws (Letterboxd Journal): kopplaatje, titel, korte intro ----------
+  function renderFilm(list) {
+    const items = list.flatMap((src) => src.items.map((it) => ({ ...it, src: src.name })));
+    const errors = list.filter((src) => src.error);
+    if (!items.length) return film.body.replaceChildren(note(errors.length ? `${errors.map((e) => e.name).join(', ')}: feed niet bereikbaar.` : 'Nog geen filmnieuws: de GitHub Action vult dit elk half uur.'));
+    items.sort((a, b) => (b.time || '').localeCompare(a.time || ''));
+    const ul = h('div', 'fd-list fd-film-list');
+    for (const it of items) {
+      const a = link('fd-film-item', it.link);
+      if (it.img) a.append(DASH.img(it.img, 'fd-film-img', ''));
+      const txt = h('span', 'fd-txt');
+      txt.append(h('b', null, it.title));
+      if (it.intro) txt.append(h('span', 'fd-intro', it.intro));
+      txt.append(h('span', 'w-sub', [it.category, list.length > 1 ? it.src : null, it.time ? `${ago(it.time)} geleden` : null].filter(Boolean).join(' · ')));
+      a.append(txt);
+      ul.append(a);
     }
-    reddit.body.replaceChildren(ul);
+    film.body.replaceChildren(ul);
   }
 
   // ---------- YouTube ----------
@@ -125,12 +125,12 @@
   const loadFeeds = async () => {
     try {
       const data = await DASH.getJSON(`data/feeds.json?t=${Math.floor(Date.now() / 600000)}`);
-      for (const [fn, part, box] of [[renderNews, data.news || [], news], [renderReddit, data.reddit, reddit], [renderYT, data.youtube, yt]]) {
+      for (const [fn, part, box] of [[renderNews, data.news || [], news], [renderFilm, data.film || [], film], [renderYT, data.youtube, yt]]) {
         try { fn(part); } catch (e) { console.error('[feeds]', e); box.body.replaceChildren(note('Dit onderdeel kon niet laden.')); }
       }
     } catch (e) {
       console.warn('[feeds]', e);
-      for (const box of [news, reddit, yt]) box.body.replaceChildren(DASH.problem('Feeds konden niet laden. De GitHub Action maakt ze elk half uur aan.', 'Opnieuw proberen', loadFeeds));
+      for (const box of [news, film, yt]) box.body.replaceChildren(DASH.problem('Feeds konden niet laden. De GitHub Action maakt ze elk half uur aan.', 'Opnieuw proberen', loadFeeds));
     }
   };
 
@@ -239,7 +239,7 @@
     if (open) {
       if (Date.now() - loadedAt > 10 * 60000) {
         loadedAt = Date.now();
-        [news, reddit, yt, mkt].forEach((s) => { if (!s.body.children.length) s.body.append(note('Laden…')); });
+        [news, film, yt, mkt].forEach((s) => { if (!s.body.children.length) s.body.append(note('Laden…')); });
         loadFeeds();
         loadMarkets(false);
       }

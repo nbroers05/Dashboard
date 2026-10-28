@@ -1339,7 +1339,7 @@ body.feeds-open .dashboard > :not(.topbar), body.feeds-open .layout-bar { opacit
 body.feeds-open .tall-rot > .tile { visibility: hidden !important; }
 .feeds-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; max-width: 1800px; margin: 0 auto; }
 .fd-card { grid-column: span 6; min-height: 0; display: flex; flex-direction: column; }
-#fd-news, #fd-reddit { height: min(70dvh, 760px); }
+#fd-news, #fd-film { height: min(70dvh, 760px); }
 #fd-yt { grid-column: span 8; }
 #fd-mkt { grid-column: span 4; }
 .fd-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
@@ -1354,10 +1354,11 @@ body.feeds-open .tall-rot > .tile { visibility: hidden !important; }
 .fd-txt b { font-size: .95rem; line-height: 1.3; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 .fd-thumb { width: 96px; aspect-ratio: 16 / 9; flex: none; border-radius: 8px; }
 .fd-thumb.sq { width: 56px; aspect-ratio: 1; }
-.fd-sub { margin: 10px 8px 2px; font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--ct); }
-.fd-sub:first-child { margin-top: 0; }
-.fd-score { display: flex; flex-direction: column; align-items: center; width: 44px; flex: none; color: var(--ct); font-variant-numeric: tabular-nums; }
-.fd-score small { font-size: .65rem; opacity: .7; }
+.fd-film-list { gap: 10px; }
+.fd-film-item { display: flex; flex-direction: column; gap: 8px; padding: 8px; border-radius: 14px; color: inherit; text-decoration: none; }
+.fd-film-item:hover { background: var(--surface-hover); }
+.fd-film-img { width: 100%; aspect-ratio: 16 / 9; border-radius: 10px; }
+.fd-intro { font-size: .85rem; line-height: 1.4; color: color-mix(in srgb, var(--text) 80%, transparent); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
 .fd-yt-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
 .fd-yt-item { display: flex; flex-direction: column; gap: 6px; color: inherit; text-decoration: none; min-width: 0; }
 .fd-yt-thumb { width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; box-shadow: 0 8px 20px rgba(0, 0, 0, .35); transition: transform .2s; }
@@ -1382,7 +1383,7 @@ body.feeds-open .tall-rot > .tile { visibility: hidden !important; }
 html.desk-mode .feeds-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr); height: 100%; max-width: none; }
 html.desk-mode .feeds-page { padding-bottom: 12px; }
 html.desk-mode .feeds-grid > .fd-card, html.desk-mode #fd-yt, html.desk-mode #fd-mkt { grid-column: span 1; }
-html.desk-mode #fd-news, html.desk-mode #fd-reddit { height: auto; min-height: 0; }
+html.desk-mode #fd-news, html.desk-mode #fd-film { height: auto; min-height: 0; }
 html.desk-mode .fd-yt-grid { grid-template-columns: 1fr; }
 /* Staand: twee kolommen, YouTube en markten eronder */
 @media (max-width: 1279px), (orientation: portrait) {
@@ -1392,7 +1393,7 @@ html.desk-mode .fd-yt-grid { grid-template-columns: 1fr; }
 @media (max-width: 700px) {
   .feeds-grid { grid-template-columns: 1fr; gap: 12px; }
   .fd-card, #fd-yt, #fd-mkt { grid-column: auto !important; }
-  #fd-news, #fd-reddit { height: 70dvh; }
+  #fd-news, #fd-film { height: 70dvh; }
   .fd-thumb { width: 72px; }
   .fd-yt-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
   .fd-mkt-row { grid-template-columns: minmax(0, 1fr) 56px auto; }

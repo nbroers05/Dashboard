@@ -1,26 +1,24 @@
-"""Feeds voor de Feeds-pagina: nieuws (RSS), Reddit en YouTube. Schrijft data/feeds.json, elk half uur.
+"""Feeds voor de Feeds-pagina: nieuws, filmnieuws en YouTube (allemaal RSS). Schrijft data/feeds.json, elk half uur.
 
-Waarom via de Action: NOS-RSS en YouTube-RSS sturen geen CORS-kop mee (de browser mag ze niet lezen), en Reddit
-blokkeert ophalen zonder account. Reddit gaat daarom via de officiële API met een eigen Reddit-app
-(repository secrets REDDIT_CLIENT_ID en REDDIT_CLIENT_SECRET, "script"-app op reddit.com/prefs/apps).
-Zonder die secrets slaat dit Reddit over en zegt de pagina wat er ontbreekt.
+Waarom via de Action: deze RSS-feeds sturen geen CORS-kop mee, dus de browser mag ze niet zelf lezen.
+(Reddit zat hier eerst in, maar Reddit laat sinds 2025 geen nieuwe API-apps meer toe behalve voor moderatie,
+en blokkeert ophalen zonder account. Daarom is dat vak vervangen door filmnieuws.)
 
-Alleen openbare koppen, titels en links (geen hele artikelen). Wat er staat komt uit config.js:
-nieuwsFeeds, subreddits, youtubeKanalen. Geen tijdstempel van het ophalen zelf in het bestand.
+Alleen openbare koppen, een korte intro, plaatjes en links (geen hele artikelen). Wat er staat komt uit config.js:
+nieuwsFeeds, filmFeeds, youtubeKanalen. Geen tijdstempel van het ophalen zelf in het bestand.
 """
 
-import base64
 import email.utils
-import os
+import html
 import re
-import urllib.parse
 import xml.etree.ElementTree as ET
 
-from common import config_items, get, get_json, is_placeholder, log, read_json, write_json
+from common import config_items, get, is_placeholder, log, write_json
 
 NEWS_KEEP = 15
-REDDIT_KEEP = 10
+FILM_KEEP = 12
 YT_KEEP = 5
+INTRO_MAX = 220
 ATOM = {"a": "http://www.w3.org/2005/Atom", "media": "http://search.yahoo.com/mrss/", "yt": "http://www.youtube.com/xml/schemas/2015"}
 
 
@@ -31,67 +29,44 @@ def iso(rfc822):
         return None
 
 
-def news():
+def intro(desc):
+    """Eerste alinea uit de RSS-beschrijving, zonder HTML en ingekort."""
+    m = re.search(r"<p>(.*?)</p>", desc or "", re.S)
+    text = html.unescape(re.sub(r"<[^>]+>", "", m.group(1) if m else "")).strip()
+    return text if len(text) <= INTRO_MAX else text[:INTRO_MAX].rsplit(" ", 1)[0] + "…"
+
+
+def rss_feeds(key, keep, with_intro=False):
     out = []
-    for f in config_items("nieuwsFeeds"):
+    for f in config_items(key):
         name, url = f.get("name", ""), f.get("url", "")
         if is_placeholder(url) or not url.startswith("http"):
             continue
         try:
             root = ET.fromstring(get(url))
             items = []
-            for it in list(root.iter("item"))[:NEWS_KEEP]:
+            for it in list(root.iter("item"))[:keep]:
+                desc = it.findtext("description") or ""
                 enc = it.find("enclosure")
                 img = enc.get("url") if enc is not None and (enc.get("type") or "").startswith("image") else None
-                items.append({
-                    "title": (it.findtext("title") or "").strip(),
+                if not img:
+                    m = re.search(r'<img[^>]+src="([^"]+)"', desc)
+                    img = html.unescape(m.group(1)) if m else None
+                item = {
+                    "title": html.unescape((it.findtext("title") or "").strip()),
                     "link": (it.findtext("link") or "").strip(),
                     "time": iso(it.findtext("pubDate")),
                     "img": img,
-                })
+                }
+                if with_intro:
+                    item["intro"] = intro(desc)
+                    item["category"] = (it.findtext("category") or "").strip() or None
+                items.append(item)
             out.append({"name": name, "items": items})
         except Exception as e:
-            log(f"Nieuws {name} mislukt: {e}")
+            log(f"{key} {name} mislukt: {e}")
             out.append({"name": name, "error": "Feed niet bereikbaar", "items": []})
     return out
-
-
-def reddit(previous):
-    subs = [s.get("sub") or s.get("value") for s in config_items("subreddits")]
-    subs = [s for s in subs if s and not is_placeholder(s)]
-    cid, secret = os.environ.get("REDDIT_CLIENT_ID", "").strip(), os.environ.get("REDDIT_CLIENT_SECRET", "").strip()
-    if not subs:
-        return {"error": "Nog geen subreddits ingevuld in config.js (subreddits).", "subs": []}
-    if not cid or not secret:
-        return {"error": "Reddit staat nog uit: voeg de repository secrets REDDIT_CLIENT_ID en REDDIT_CLIENT_SECRET toe (zie CHANGELOG.md).", "subs": []}
-    ua = os.environ.get("REDDIT_USER_AGENT", "").strip() or "web:nbroers05-dashboard:1.0 (persoonlijk dashboard)"
-    try:
-        auth = base64.b64encode(f"{cid}:{secret}".encode()).decode()
-        token = get_json("https://www.reddit.com/api/v1/access_token", {"Authorization": f"Basic {auth}", "User-Agent": ua},
-                         urllib.parse.urlencode({"grant_type": "client_credentials"}).encode())["access_token"]
-    except Exception as e:
-        log(f"Reddit-token mislukt: {e}")
-        return {**(previous or {}), "error": "Reddit gaf geen toegang (klopt de app-ID en het geheim?)."}
-    out = []
-    for sub in subs:
-        try:
-            data = get_json(f"https://oauth.reddit.com/r/{urllib.parse.quote(sub)}/hot?limit={REDDIT_KEEP + 5}&raw_json=1",
-                            {"Authorization": f"Bearer {token}", "User-Agent": ua})
-            posts = []
-            for c in data["data"]["children"]:
-                p = c["data"]
-                if p.get("stickied") or p.get("over_18"):
-                    continue
-                thumb = p.get("thumbnail") if str(p.get("thumbnail", "")).startswith("http") else None
-                posts.append({
-                    "title": p["title"], "score": p["score"], "comments": p["num_comments"],
-                    "link": f"https://www.reddit.com{p['permalink']}", "thumb": thumb, "time": int(p["created_utc"]),
-                })
-            out.append({"name": sub, "posts": posts[:REDDIT_KEEP]})
-        except Exception as e:
-            log(f"Reddit r/{sub} mislukt: {e}")
-            out.append({"name": sub, "error": "Niet bereikbaar", "posts": []})
-    return {"subs": out}
 
 
 def youtube():
@@ -122,8 +97,7 @@ def youtube():
 
 
 def main():
-    previous = read_json("data/feeds.json") or {}
-    data = {"news": news(), "reddit": reddit(previous.get("reddit")), "youtube": youtube()}
+    data = {"news": rss_feeds("nieuwsFeeds", NEWS_KEEP), "film": rss_feeds("filmFeeds", FILM_KEEP, True), "youtube": youtube()}
     if write_json("data/feeds.json", data):
         log("feeds.json bijgewerkt")
 

@@ -7,9 +7,27 @@
   {
    "user": "Marrie01",
    "name": "Margriet"
+  },
+  {
+   "user": "marijn2005",
+   "name": "Marijn"
   }
  ],
  "logs": [
+  {
+   "title": "Poseidon",
+   "year": 2006,
+   "rating": 3.5,
+   "watched": "2026-10-11",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/marijn2005/film/poseidon/",
+   "slug": "poseidon",
+   "tmdbId": "503",
+   "poster": "https://a.ltrbxd.com/resized/film-poster/5/1/6/0/7/51607-poseidon-0-600-0-900-crop.jpg?v=4085bc62ac",
+   "user": "marijn2005",
+   "name": "Marijn"
+  },
   {
    "title": "Unabomber",
    "year": 2026,
@@ -179,6 +197,20 @@
    "name": "Loeka"
   },
   {
+   "title": "10 Cloverfield Lane",
+   "year": 2016,
+   "rating": 3.5,
+   "watched": "2026-08-28",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/marijn2005/film/10-cloverfield-lane/",
+   "slug": "10-cloverfield-lane",
+   "tmdbId": "333371",
+   "poster": "https://a.ltrbxd.com/resized/film-poster/2/6/1/8/9/1/261891-10-cloverfield-lane-0-600-0-900-crop.jpg?v=141f0c7c30",
+   "user": "marijn2005",
+   "name": "Marijn"
+  },
+  {
    "title": "Insidious: Out of the Further",
    "year": 2026,
    "rating": 2.5,
@@ -219,6 +251,76 @@
    "poster": "https://a.ltrbxd.com/resized/film-poster/1/4/8/5/8/0/4/1485804-a-child-of-my-own-0-600-0-900-crop.jpg?v=207d0acd7f",
    "user": "Marrie01",
    "name": "Margriet"
+  },
+  {
+   "title": "Hamnet",
+   "year": 2025,
+   "rating": 4.0,
+   "watched": "2026-08-12",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/marijn2005/film/hamnet/",
+   "slug": "hamnet",
+   "tmdbId": "858024",
+   "poster": "https://a.ltrbxd.com/resized/film-poster/7/7/2/2/3/2/772232-hamnet-0-600-0-900-crop.jpg?v=631489314d",
+   "user": "marijn2005",
+   "name": "Marijn"
+  },
+  {
+   "title": "Memories of Murder",
+   "year": 2003,
+   "rating": 3.5,
+   "watched": "2026-08-11",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/marijn2005/film/memories-of-murder/",
+   "slug": "memories-of-murder",
+   "tmdbId": "11423",
+   "poster": "https://a.ltrbxd.com/resized/sm/upload/84/xt/e8/mw/gawnVe9cFowdoDLo9Pok12NTw39-0-600-0-900-crop.jpg?v=7cad204593",
+   "user": "marijn2005",
+   "name": "Marijn"
+  },
+  {
+   "title": "Burn After Reading",
+   "year": 2008,
+   "rating": 3.5,
+   "watched": "2026-08-08",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/marijn2005/film/burn-after-reading/",
+   "slug": "burn-after-reading",
+   "tmdbId": "4944",
+   "poster": "https://a.ltrbxd.com/resized/film-poster/4/9/0/5/4/49054-burn-after-reading-0-600-0-900-crop.jpg?v=1a29d1c090",
+   "user": "marijn2005",
+   "name": "Marijn"
+  },
+  {
+   "title": "The Odyssey",
+   "year": 2026,
+   "rating": 4.5,
+   "watched": "2026-08-07",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/marijn2005/film/the-odyssey-2026/",
+   "slug": "the-odyssey-2026",
+   "tmdbId": "1368337",
+   "poster": "https://a.ltrbxd.com/resized/film-poster/1/2/5/5/3/9/4/1255394-the-odyssey-2026-0-600-0-900-crop.jpg?v=1eed046d0c",
+   "user": "marijn2005",
+   "name": "Marijn"
+  },
+  {
+   "title": "Anora",
+   "year": 2024,
+   "rating": 4.0,
+   "watched": "2026-08-07",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/marijn2005/film/anora/",
+   "slug": "anora",
+   "tmdbId": "1064213",
+   "poster": "https://a.ltrbxd.com/resized/film-poster/9/5/9/5/4/0/959540-anora-0-600-0-900-crop.jpg?v=6f92877033",
+   "user": "marijn2005",
+   "name": "Marijn"
   },
   {
    "title": "The Menu",
@@ -277,6 +379,20 @@
    "name": "Margriet"
   },
   {
+   "title": "The Creator",
+   "year": 2023,
+   "rating": 3.5,
+   "watched": "2026-07-25",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/marijn2005/film/the-creator-2023/",
+   "slug": "the-creator-2023",
+   "tmdbId": "670292",
+   "poster": "https://a.ltrbxd.com/resized/film-poster/5/9/5/0/2/9/595029-the-creator-0-600-0-900-crop.jpg?v=b921bf1d45",
+   "user": "marijn2005",
+   "name": "Marijn"
+  },
+  {
    "title": "Ready or Not 2: Here I Come",
    "year": 2026,
    "rating": 4.0,
@@ -289,6 +405,34 @@
    "poster": "https://a.ltrbxd.com/resized/film-poster/1/1/5/0/1/1/3/1150113-ready-or-not-2-here-i-come-0-600-0-900-crop.jpg?v=da35b35f85",
    "user": "Marrie01",
    "name": "Margriet"
+  },
+  {
+   "title": "Obsession",
+   "year": 2025,
+   "rating": 4.0,
+   "watched": "2026-06-06",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/marijn2005/film/obsession-2025/",
+   "slug": "obsession-2025",
+   "tmdbId": "1339713",
+   "poster": "https://a.ltrbxd.com/resized/film-poster/1/2/3/4/4/7/2/1234472-obsession-2025-2-0-600-0-900-crop.jpg?v=cff6fc00b6",
+   "user": "marijn2005",
+   "name": "Marijn"
+  },
+  {
+   "title": "The Grand Budapest Hotel",
+   "year": 2014,
+   "rating": 4.0,
+   "watched": "2026-06-05",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/marijn2005/film/the-grand-budapest-hotel/",
+   "slug": "the-grand-budapest-hotel",
+   "tmdbId": "120467",
+   "poster": "https://a.ltrbxd.com/resized/film-poster/9/5/1/1/3/95113-the-grand-budapest-hotel-0-600-0-900-crop.jpg?v=6ac71cf4ba",
+   "user": "marijn2005",
+   "name": "Marijn"
   }
  ]
 }

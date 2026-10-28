@@ -44,28 +44,26 @@ window.DASHBOARD_CONFIG = {
   vrienden: [
     { user: 'loekatheactor', name: 'Loeka' },
     { user: 'Marrie01', name: 'Margriet' },
-    { user: 'marijn2005', name: 'Marijn' }, // TODO: Marijns Letterboxd-gebruikersnaam (staat in de adresbalk van zijn profiel)
+    { user: 'marijn2005', name: 'Marijn' },
   ],
   // Focusmodus (knop met het klokje in de topbalk). playlist = het ID uit de Spotify-link van je studieplaylist:
   // open.spotify.com/playlist/<DIT DEEL>?si=... ntfy-onderwerp vul je op het dashboard zelf in (blijft in je browser).
   focus: {
     werkMinuten: 50,
     pauzeMinuten: 10,
-    playlist: '43DsRhxuUHK4mphwDGEs2L', // TODO: ID van je studieplaylist (22 tekens)
+    playlist: '43DsRhxuUHK4mphwDGEs2L', // studieplaylist
     ntfyServer: 'https://ntfy.sh',
   },
   // ---------- Feeds-pagina (icoon met de krant in de topbalk) ----------
-  // Nieuws, Reddit en YouTube haalt de GitHub Action elk half uur op (data/feeds.json); hou het formaat precies zo.
+  // Nieuws, filmnieuws en YouTube haalt de GitHub Action elk half uur op (data/feeds.json); hou het formaat precies zo.
   nieuwsFeeds: [
     { name: 'NOS', url: 'https://feeds.nos.nl/nosnieuwsalgemeen' },
     { name: 'NOS Sport', url: 'https://feeds.nos.nl/nossportalgemeen' },
     { name: 'Extra', url: 'EXTRA_RSS_URL' }, // TODO: RSS-adres van een extra nieuwsbron (of deze regel weghalen)
   ],
-  // Subreddits zonder "r/". Werkt pas als de Reddit-secrets in GitHub staan (zie CHANGELOG.md).
-  subreddits: [
-    { sub: 'ClashRoyale' }, // TODO: bijvoorbeeld 'movies'
-    { sub: 'formuladank' }, // TODO: bijvoorbeeld 'formula1'
-    { sub: 'okbuddybaka' }, // TODO: bijvoorbeeld 'Rotterdam'
+  // Filmnieuws (vervangt Reddit: Reddit laat geen nieuwe API-apps meer toe). Meer bronnen mag, zelfde formaat.
+  filmFeeds: [
+    { name: 'Letterboxd Journal', url: 'https://letterboxd.com/journal/rss/' },
   ],
   // YouTube-kanalen: id = kanaal-ID (begint met UC, 24 tekens; staat in de pagina-bron van het kanaal als "channelId")
   youtubeKanalen: [
