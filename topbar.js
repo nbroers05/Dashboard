@@ -51,8 +51,30 @@
   const defaults = () => (window.DASHBOARD_CONFIG && DASHBOARD_CONFIG.snelkoppelingen) || [];
   const current = () => store.get(LINKS_KEY) || defaults();
 
+  // Staand scherm: de links zitten ingeklapt achter één knopje en vouwen bij hover naar links uit (.tb-tray).
+  // Overal anders is de tray display: contents, dus gedragen de links zich zoals altijd.
+  const tray = h('div', 'tb-tray');
+  const handle = h('button', 'tb-link tb-handle');
+  handle.type = 'button';
+  handle.title = 'Snelkoppelingen';
+  handle.setAttribute('aria-label', 'Snelkoppelingen tonen');
+  handle.innerHTML = '<span class="tb-icon"><svg viewBox="0 0 24 24"><circle cx="5" cy="5" r="2.2"/><circle cx="12" cy="5" r="2.2"/><circle cx="19" cy="5" r="2.2"/><circle cx="5" cy="12" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="19" cy="12" r="2.2"/><circle cx="5" cy="19" r="2.2"/><circle cx="12" cy="19" r="2.2"/><circle cx="19" cy="19" r="2.2"/></svg></span>';
+  handle.onclick = () => links.classList.toggle('open');   // voor aanraken: tikken klapt open/dicht
+  links.append(handle, tray);
+
+  // Tekst links van de uitgevouwen links vervaagt aan de rand en verdwijnt eronder (masker op de klok/datum)
+  const clockEl = bar.querySelector('.tb-clock');
+  function fadeEdge() {
+    const x = tray.getBoundingClientRect().left - clockEl.getBoundingClientRect().left - 10;
+    bar.style.setProperty('--fade-x', `${Math.round(x)}px`);
+  }
+  links.addEventListener('mouseenter', fadeEdge);
+  links.addEventListener('focusin', fadeEdge);
+  handle.addEventListener('click', fadeEdge);
+  document.addEventListener('click', (e) => { if (!e.target.closest('.tb-links')) links.classList.remove('open'); });
+
   function renderLinks() {
-    links.replaceChildren();
+    tray.replaceChildren();
     for (const { name, url, icon } of current()) {
       let host = '';
       try { host = new URL(url).hostname; } catch { continue; }
@@ -63,14 +85,14 @@
       a.title = name;
       // Alleen het logo zelf: geen reserveletter erachter (die schemerde door doorzichtige logo's heen)
       a.append(DASH.img(iconSrc(icon, host), 'tb-icon', null), h('span', 'tb-name', name || host));
-      links.append(a);
+      tray.append(a);
     }
     const edit = h('button', 'tb-link tb-edit');
     edit.type = 'button';
     edit.title = 'Snelkoppelingen aanpassen';
     edit.append(h('span', 'tb-icon tb-plus', '+'), h('span', 'tb-name', 'Aanpassen'));
     edit.onclick = openEditor;
-    links.append(edit);
+    tray.append(edit);
     if (window.DASH_MAIL) mailBadge(window.DASH_MAIL.count);
   }
 

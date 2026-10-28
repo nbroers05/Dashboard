@@ -1306,6 +1306,43 @@ html.night body::after {
 .tb-name { display: none; }
 .tb-edit { border: 0; background: none; cursor: pointer; font: inherit; }
 .tb-plus { display: grid; place-items: center; border: 1px dashed rgba(255, 255, 255, .3); font-size: 1.2rem; color: var(--muted); }
+.tb-tray { display: contents; }
+.tb-handle { display: none; }
+
+/* Staand scherm: links ingeklapt achter één knopje, bij hover naar links uitvouwen over de datum heen.
+   De tekst eronder vervaagt aan de rand (masker op .tb-clock, --fade-x zet topbar.js). */
+@property --fade-on { syntax: '<number>'; inherits: true; initial-value: 0; }
+html.portrait-wide body:not(.minimal) .topbar { --fade-on: 0; transition: --fade-on .3s ease; }
+html.portrait-wide body:not(.minimal) .topbar:has(.tb-links:hover, .tb-links:focus-within, .tb-links.open) { --fade-on: 1; }
+html.portrait-wide body:not(.minimal) .tb-day { min-width: 0; overflow: hidden; }
+html.portrait-wide body:not(.minimal) .tb-dayline { max-width: none; }
+html.portrait-wide body:not(.minimal) .tb-clock {
+  flex: 0 1 auto;
+  min-width: 0;
+  -webkit-mask-image: linear-gradient(to right, #000 calc(var(--fade-x, 100vw) - 56px), rgba(0, 0, 0, calc(1 - var(--fade-on))) var(--fade-x, 100vw));
+  mask-image: linear-gradient(to right, #000 calc(var(--fade-x, 100vw) - 56px), rgba(0, 0, 0, calc(1 - var(--fade-on))) var(--fade-x, 100vw));
+}
+html.portrait-wide .tb-links { position: relative; }
+html.portrait-wide .tb-handle { display: flex; border: 0; background: none; cursor: pointer; font: inherit; transition: opacity .2s ease; }
+html.portrait-wide .tb-handle svg { width: 22px; height: 22px; margin: 3px; fill: var(--muted); }
+html.portrait-wide .tb-links:has(.tb-badge) .tb-handle .tb-icon { position: relative; }
+html.portrait-wide .tb-links:has(.tb-badge) .tb-handle .tb-icon::after {
+  content: ''; position: absolute; top: -1px; right: -1px; width: 9px; height: 9px; border-radius: 50%; background: #ea4335;
+}
+html.portrait-wide .tb-tray {
+  position: absolute; top: 50%; right: 0; z-index: 2;
+  display: flex; gap: 2px;
+  translate: 0 -50%;
+  clip-path: inset(-12px 0 -12px 100%);
+  visibility: hidden;
+  transition: clip-path .35s cubic-bezier(.2, .8, .2, 1), visibility 0s .35s;
+}
+html.portrait-wide .tb-links:is(:hover, :focus-within, .open) .tb-tray {
+  clip-path: inset(-12px 0 -12px 0);
+  visibility: visible;
+  transition: clip-path .35s cubic-bezier(.2, .8, .2, 1);
+}
+html.portrait-wide .tb-links:is(:hover, :focus-within, .open) .tb-handle { opacity: 0; }
 
 /* Snelkoppelingen aanpassen */
 .panel-dialog.links-dialog { height: fit-content; max-height: calc(100dvh - 24px); width: min(640px, calc(100vw - 24px)); }
