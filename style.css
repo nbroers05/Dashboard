@@ -1851,6 +1851,11 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk-tabbar button[aria-selected="true"] { background: rgba(255, 255, 255, .1); color: var(--text); }
 .desk-tabs > .tile { flex: 1 1 0; background: none; border: 0; border-radius: 0; padding-top: 8px; }
 .desk-tabs > .tile > .eyebrow { display: none; }
+/* Laatst gekeken / Vrienden in een tabje: posters schalen mee met de hoogte die er is (nooit half afgesneden) */
+.desk-tabs #w-letterboxd .w-body > .w-row, .desk-tabs #w-friends .w-body > .w-row { display: none; }
+.desk-tabs .lb-row { height: auto; flex: 1 1 0; min-height: 0; margin: 0; container-type: size; }
+.desk-tabs .lb-film { width: max(24px, min(72px, calc((100cqh - 18px) / 1.5))); }
+.desk-tabs .lb-date { display: none; }
 .desk .film { gap: 12px; }
 .desk #w-stars .w-body { flex-direction: row; align-items: stretch; gap: 12px; }
 .desk #w-stars .film { flex: 1; min-width: 0; }
@@ -1914,6 +1919,11 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
   .desk #w-canvas .w-body > .w-row { display: none; }
   .desk .cv-meta .cv-course { display: none; }
   .desk .f1-count { font-size: 2.1rem; }
+  /* Uitslag: kop op één regel, klassement top 3 */
+  .desk #w-f1 .f1-res > .w-row:first-child .w-sub { display: none; }
+  .desk #w-f1 .f1-res .f1-champ-row:nth-child(n+5) { display: none; }
+  .desk #w-f1 .f1-res .f1-pod { padding: 1px 6px; }
+  .desk #w-f1 .f1-res .f1-rest { gap: 1px 6px; }
   .desk #w-episodes .w-big { font-size: 1.4rem; }
   .desk #w-ah .w-big { font-size: 1.7rem; }
 }
