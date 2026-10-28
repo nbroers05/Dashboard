@@ -47,19 +47,18 @@ window.DASHBOARD_CONFIG = {
     { user: 'marijn2005', name: 'Marijn' },
   ],
   // Focusmodus (knop met het klokje in de topbalk). playlist = het ID uit de Spotify-link van je studieplaylist:
-  // open.spotify.com/playlist/<DIT DEEL>?si=... ntfy-onderwerp vul je op het dashboard zelf in (blijft in je browser).
+  // open.spotify.com/playlist/<DIT DEEL>?si=...
   focus: {
     werkMinuten: 50,
     pauzeMinuten: 10,
     playlist: '43DsRhxuUHK4mphwDGEs2L', // studieplaylist
-    ntfyServer: 'https://ntfy.sh',
   },
   // ---------- Feeds-pagina (icoon met de krant in de topbalk) ----------
   // Nieuws, filmnieuws en YouTube haalt de GitHub Action elk half uur op (data/feeds.json); hou het formaat precies zo.
   nieuwsFeeds: [
     { name: 'NOS', url: 'https://feeds.nos.nl/nosnieuwsalgemeen' },
     { name: 'NOS Sport', url: 'https://feeds.nos.nl/nossportalgemeen' },
-    { name: 'Extra', url: 'EXTRA_RSS_URL' }, // TODO: RSS-adres van een extra nieuwsbron (of deze regel weghalen)
+    { name: 'NU.nl', url: 'https://www.nu.nl/rss/Algemeen' },
   ],
   // Filmnieuws (vervangt Reddit: Reddit laat geen nieuwe API-apps meer toe). Meer bronnen mag, zelfde formaat.
   filmFeeds: [
@@ -68,16 +67,16 @@ window.DASHBOARD_CONFIG = {
   // YouTube-kanalen: id = kanaal-ID (begint met UC, 24 tekens; staat in de pagina-bron van het kanaal als "channelId")
   youtubeKanalen: [
     { name: 'Patrick (H) Willems', id: 'UCF1fG3gT44nGTPU2sVLoFWg' },
-    { name: 'Kanaal 2', id: 'KANAAL_ID_2' }, // TODO
-    { name: 'Kanaal 3', id: 'KANAAL_ID_3' }, // TODO
+    { name: 'The Yard', id: 'UCGbg3DjQdcqWwqOLHpYHXIg' },
+    { name: 'Ken', id: 'KANAAL_ID_KEN' }, // TODO: welk kanaal van Ken? (@ken is een leeg kanaal)
   ],
   // Markten: alleen koers, verandering vandaag en een lijntje van de afgelopen maand. Geen advies.
   // Aandelen/indexen via Twelve Data (gratis key, vul je op de Feeds-pagina zelf in; blijft in je browser).
   // Crypto via CoinGecko (geen key): zet coingecko: '<id>' erbij.
   markten: [
-    { symbol: 'AEX', name: 'AEX' },
-    { symbol: 'TICKER_1', name: 'Aandeel 1' }, // TODO: bijvoorbeeld 'ASML' of 'AAPL'
-    { symbol: 'TICKER_2', name: 'Aandeel 2' }, // TODO
+    // De AEX (en andere indexen) zit niet in het gratis plan van Twelve Data
+    { symbol: 'ASML', name: 'ASML' },
+    { symbol: 'AAPL', name: 'Apple' },
     { symbol: 'BTC', name: 'Bitcoin', coingecko: 'bitcoin' },
   ],
   // Gezondheid (Google Health): je dagelijkse stappendoel
@@ -90,7 +89,7 @@ window.DASHBOARD_CONFIG = {
   // name = tekst bij het icoontje, url = waar hij heen gaat. Het icoontje is het logo van die site,
   // tenzij je zelf een plaatje opgeeft met icon (een adres, of 'agenda' voor het ingebouwde agenda-icoon).
   snelkoppelingen: [
-    { name: 'Canvas', url: 'https://canvas.instructure.com/' }, // TODO: vervang door de Canvas-link van je school
+    { name: 'Canvas', url: 'https://canvas.eur.nl/' },
     { name: 'Letterboxd', url: 'https://letterboxd.com/nbroers05/' },
     { name: 'Gmail', url: 'https://mail.google.com/', icon: 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico' },
     { name: 'Agenda', url: 'https://calendar.google.com/', icon: 'agenda' },

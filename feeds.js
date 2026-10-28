@@ -177,7 +177,9 @@
 
   async function loadMarkets(force) {
     const cached = store.get(MKT_CACHE);
-    if (!force && cached && Date.now() - cached.at < 30 * 60000) return renderMarkets(cached.data);
+    // Cache alleen gebruiken als hij nog over dezelfde lijst gaat (na een wijziging in config.js opnieuw ophalen)
+    const same = cached && list.every((m) => cached.data && cached.data[m.symbol]);
+    if (!force && same && Date.now() - cached.at < 30 * 60000) return renderMarkets(cached.data);
     const key = store.get(TD_KEY);
     const data = {};
     const stocks = list.filter((m) => !m.coingecko);
@@ -203,8 +205,8 @@
       const name = h('span', 'fd-mkt-name');
       name.append(h('b', null, m.name || m.symbol), h('span', 'w-sub', m.symbol));
       row.append(name);
-      if (d.error) {
-        row.append(h('span', 'w-sub fd-mkt-err', d.error));
+      if (d.error || !Number.isFinite(d.price)) {
+        row.append(h('span', 'w-sub fd-mkt-err', d.error || 'geen data'));
       } else {
         const up = d.change >= 0;
         row.append(spark(d.series || [], up), h('span', 'fd-mkt-price', `${d.cur === 'EUR' ? '€ ' : d.cur === 'USD' ? '$ ' : ''}${nlNum(d.price, d.price > 1000 ? 0 : 2)}`),

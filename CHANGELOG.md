@@ -1,5 +1,13 @@
 # Wijzigingen
 
+## 0.35.1 (28 oktober 2026): ingevuld
+
+- Nieuws: **NU.nl** als tweede bron naast de NOS.
+- YouTube: **The Yard** erbij. Ken nog niet: `@ken` op YouTube is een leeg kanaal, dus welke Ken is nog de vraag.
+- Markten: **ASML** en **Apple**. De AEX is weggehaald: die zit niet in het gratis plan van Twelve Data.
+- Snelkoppeling **Canvas** wijst nu naar canvas.eur.nl.
+- Focusmodus: **ntfy weggehaald** (de Phone Link-meldingen zijn genoeg).
+
 ## 0.35.0 (28 oktober 2026): filmnieuws in plaats van Reddit
 
 Reddit laat geen nieuwe API-apps meer toe (alleen nog voor moderatie) en blokkeert ophalen zonder account. Daarom is het Reddit-vak op de Feeds-pagina vervangen door **Filmnieuws** uit de Letterboxd Journal: kopplaatje, titel, korte intro en categorie, klik opent het artikel. Meer filmbronnen toevoegen kan in `config.js` bij `filmFeeds`. Marijn (`marijn2005`) en je studieplaylist staan er nu ook in. De Reddit-app en -secrets zijn niet meer nodig; heb je al een app aangemaakt op reddit.com/prefs/apps, dan mag je die weggooien.
@@ -36,15 +44,11 @@ Eén Action ("Dashboard-data", bestand `.github/workflows/letterboxd.yml`) doet 
 
 | Waar | Wat |
 |---|---|
-| `nieuwsFeeds` → `EXTRA_RSS_URL` | RSS-adres van een extra nieuwsbron, of haal die regel weg |
-| `youtubeKanalen` → `KANAAL_ID_2`, `KANAAL_ID_3` | Kanaal-ID's (beginnen met `UC`, 24 tekens). Op het kanaal: rechtermuisknop → Paginabron bekijken → zoek op `channelId` |
-| `markten` → `TICKER_1`, `TICKER_2` | Aandelen, bijvoorbeeld `ASML` of `AAPL` |
+| `youtubeKanalen` → `KANAAL_ID_KEN` | Het kanaal-ID van Ken (begint met `UC`) |
 
 **Op het dashboard zelf** (blijft alleen in je eigen browser, staat nergens op GitHub):
 
 - **Twelve Data-key** (voor aandelen/indexen): maak gratis een account op twelvedata.com → Dashboard → API key kopiëren → Feeds-pagina → Markten → onderaan plakken → Opslaan.
-- **ntfy-onderwerp** (melding op je telefoon als de focustimer klaar is): installeer de ntfy-app, abonneer op een zelfbedacht, lastig te raden onderwerp (bijv. `noah-dash-8f3k2`), en vul precies hetzelfde in bij de focusknop.
-- **Spotify opnieuw inloggen**: voor het maandoverzicht is één extra toestemming nodig. Het vak toont een knop "Opnieuw inloggen bij Spotify".
 
 **Secrets in GitHub**: geen nieuwe nodig. `TMDB_API_KEY` staat er al.
 

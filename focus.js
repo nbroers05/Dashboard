@@ -3,7 +3,7 @@
 // Focusmodus: studietimer vanuit de topbalk (standaard 50 min werken, 10 min pauze, aanpasbaar).
 // Tijdens focus: resterende tijd naast de klok, de rest van het dashboard licht gedimd, meldingen in het
 // meldingenvak gedempt (widgets/alerts.js kijkt naar DASH.focus) en eventueel je studieplaylist aan via Spotify.
-// Klaar: melding in de browser en, als je een ntfy-onderwerp hebt ingevuld, ook op je telefoon via ntfy.
+// Klaar: korte melding op het dashboard en een browsermelding (geen ntfy: Noah gebruikt de Phone Link-meldingen).
 // Staat in localStorage, dus herladen of een nieuwe tab stopt de timer niet.
 (() => {
   const { h, store } = DASH;
@@ -13,7 +13,6 @@
   const CFG = (window.DASHBOARD_CONFIG || {}).focus || {};
   const STATE = 'focus.state';
   const SETTINGS = 'focus.settings';
-  const NTFY = 'focus.ntfy';   // je eigen ntfy-onderwerp: alleen in deze browser, nooit in de code
   const PLAYLIST = /^[A-Za-z0-9]{22}$/.test(CFG.playlist || '') ? CFG.playlist : null;
 
   const settings = () => ({ work: CFG.werkMinuten || 50, pause: CFG.pauzeMinuten || 10, rounds: 1, music: !!PLAYLIST, ...(store.get(SETTINGS) || {}) });
@@ -48,13 +47,6 @@
     try {
       if ('Notification' in window && Notification.permission === 'granted') new Notification(title, { body: text, icon: 'favicon-32.png', tag: 'dash-focus' });
     } catch {}
-    const topic = store.get(NTFY);
-    if (topic) {
-      // ntfy: alleen ASCII in de kop; de tekst zelf mag alles
-      fetch(`${(CFG.ntfyServer || 'https://ntfy.sh').replace(/\/$/, '')}/${encodeURIComponent(topic)}`, {
-        method: 'POST', body: text, headers: { Title: title.normalize('NFD').replace(/[^\x20-\x7e]/g, ''), Tags: 'hourglass' },
-      }).catch((e) => console.warn('[focus] ntfy', e));
-    }
   }
 
   // ---------- Timer ----------
@@ -182,23 +174,15 @@
     music.disabled = !PLAYLIST;
     const musicLabel = h('label', 'fc-check');
     musicLabel.append(music, h('span', null, PLAYLIST ? 'Studieplaylist aanzetten via Spotify' : 'Studieplaylist (nog geen playlist ingevuld in config.js → focus.playlist)'));
-    const topic = h('input');
-    topic.placeholder = 'bijv. noah-dash-8f3k2 (leeg = geen ntfy)';
-    topic.value = store.get(NTFY) || '';
-    topic.autocomplete = 'off';
     const go = h('button', 'w-btn', 'Start');
     go.type = 'submit';
     const form = h('form', 'fc-form');
     const row = h('div', 'fc-row');
     row.append(field('Werken (min)', work), field('Pauze (min)', pause), field('Rondes', rounds));
-    form.append(row, musicLabel,
-      field('ntfy-onderwerp', topic, 'Melding op je telefoon als de timer klaar is (ntfy-app, abonneer op hetzelfde onderwerp). Alleen in deze browser bewaard.'),
-      go);
+    form.append(row, musicLabel, go);
     form.onsubmit = (e) => {
       e.preventDefault();
       const clamp = (i, lo, hi, d) => Math.min(hi, Math.max(lo, Math.round(Number(i.value)) || d));
-      const t = topic.value.trim().replace(/[^\w-]/g, '');
-      store.set(NTFY, t || null);
       start({ work: clamp(work, 1, 240, 50), pause: clamp(pause, 0, 60, 10), rounds: clamp(rounds, 1, 8, 1), music: music.checked });
       panel.close();
     };
