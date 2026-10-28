@@ -44,14 +44,14 @@ window.DASHBOARD_CONFIG = {
   vrienden: [
     { user: 'loekatheactor', name: 'Loeka' },
     { user: 'Marrie01', name: 'Margriet' },
-    { user: 'MARIJN_GEBRUIKERSNAAM', name: 'Marijn' }, // TODO: Marijns Letterboxd-gebruikersnaam (staat in de adresbalk van zijn profiel)
+    { user: 'marijn2005', name: 'Marijn' }, // TODO: Marijns Letterboxd-gebruikersnaam (staat in de adresbalk van zijn profiel)
   ],
   // Focusmodus (knop met het klokje in de topbalk). playlist = het ID uit de Spotify-link van je studieplaylist:
   // open.spotify.com/playlist/<DIT DEEL>?si=... ntfy-onderwerp vul je op het dashboard zelf in (blijft in je browser).
   focus: {
     werkMinuten: 50,
     pauzeMinuten: 10,
-    playlist: 'STUDIE_PLAYLIST_ID', // TODO: ID van je studieplaylist (22 tekens)
+    playlist: '43DsRhxuUHK4mphwDGEs2L', // TODO: ID van je studieplaylist (22 tekens)
     ntfyServer: 'https://ntfy.sh',
   },
   // ---------- Feeds-pagina (icoon met de krant in de topbalk) ----------
@@ -63,9 +63,9 @@ window.DASHBOARD_CONFIG = {
   ],
   // Subreddits zonder "r/". Werkt pas als de Reddit-secrets in GitHub staan (zie CHANGELOG.md).
   subreddits: [
-    { sub: 'SUBREDDIT_1' }, // TODO: bijvoorbeeld 'movies'
-    { sub: 'SUBREDDIT_2' }, // TODO: bijvoorbeeld 'formula1'
-    { sub: 'SUBREDDIT_3' }, // TODO: bijvoorbeeld 'Rotterdam'
+    { sub: 'ClashRoyale' }, // TODO: bijvoorbeeld 'movies'
+    { sub: 'formuladank' }, // TODO: bijvoorbeeld 'formula1'
+    { sub: 'okbuddybaka' }, // TODO: bijvoorbeeld 'Rotterdam'
   ],
   // YouTube-kanalen: id = kanaal-ID (begint met UC, 24 tekens; staat in de pagina-bron van het kanaal als "channelId")
   youtubeKanalen: [
