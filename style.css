@@ -369,6 +369,7 @@ button { font: inherit; color: inherit; }
 #w-stars { --c: var(--c-film); }
 #w-todo { --c: #2ec4b6; }
 #w-letterboxd { --c: #40bcf4; }
+#w-friends { --c: #00e054; }
 #w-mail { --c: #ea4335; }
 #w-alerts { --c: #a78bfa; }
 #w-health { --c: #ff5f8f; }
@@ -464,6 +465,10 @@ button.al-item:hover { background: rgba(255, 255, 255, .1); }
 .lb-re { color: #40bcf4; }
 .lb-stars { font-size: .9rem; color: #00e054; letter-spacing: .02em; white-space: nowrap; }
 .lb-date { font-size: .72rem; color: var(--muted); }
+/* Vrienden op Letterboxd: naam linksboven op de poster, jouw verwachte cijfer rechtsonder als hij op je watchlist staat */
+.fr-name { position: absolute; top: 6px; left: 6px; z-index: 1; max-width: calc(100% - 12px); padding: 2px 7px; border-radius: 999px; background: rgba(0, 0, 0, .7); font-size: .7rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fr-mine.film-score { left: auto; right: 6px; bottom: 6px; padding: 2px 7px; border-radius: 9px; font-size: .85rem; --ct: var(--c-film); color: var(--c-film); }
+.fr-count { flex: none; align-self: flex-start; padding: 4px 10px; border-radius: 999px; background: color-mix(in srgb, var(--c-film) 22%, transparent); color: var(--c-film); font-size: .78rem; font-weight: 700; }
 
 .tile .eyebrow {
   font-size: .78rem;
@@ -1682,7 +1687,7 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
   border: 1px solid color-mix(in srgb, var(--c-film) 26%, transparent);
   background: linear-gradient(150deg, color-mix(in srgb, var(--c-film) 18%, #151518), #121214); }
 .desk-tabbar { display: flex; gap: 4px; padding: 8px 10px 0; }
-.desk-tabbar button { flex: 1; border: 0; border-radius: 12px; padding: 7px 10px; background: none; color: var(--muted); font: inherit; font-size: .78rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; cursor: pointer; }
+.desk-tabbar button { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border: 0; border-radius: 12px; padding: 7px 10px; background: none; color: var(--muted); font: inherit; font-size: .78rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; cursor: pointer; }
 .desk-tabbar button[aria-selected="true"] { background: rgba(255, 255, 255, .1); color: var(--text); }
 .desk-tabs > .tile { flex: 1 1 0; background: none; border: 0; border-radius: 0; padding-top: 8px; }
 .desk-tabs > .tile > .eyebrow { display: none; }
@@ -1697,6 +1702,9 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk .film-info .w-mid { font-size: 1.1rem; }
 .desk .film-actions .w-btn { padding: 7px 10px; font-size: .8rem; }
 .desk .lb-row { --lb-w: 52px; gap: 8px; }
+.desk .fr-name { font-size: .55rem; padding: 1px 4px; top: 3px; left: 3px; }
+.desk .fr-mine.film-score { font-size: .65rem; padding: 1px 4px; right: 3px; bottom: 3px; }
+.desk .fr-count { display: none; }
 .desk .lb-stars { font-size: .7rem; }
 
 /* Onderaan: Meer (mail, to-do, gezondheid), klapt naar boven uit over de onderste helft */
@@ -1805,7 +1813,7 @@ body.minimal .tb-design { display: none; }
 /* Allemaal in dezelfde cel; de hoogste bepaalt de hoogte, dus het vak verspringt niet bij het wisselen */
 .tall .tall-rot > .tile { grid-area: 1 / 1 !important; min-height: 280px; opacity: 0; visibility: hidden; transition: opacity .9s ease, visibility .9s; padding-bottom: 34px; }
 .tall .tall-rot > .tile.on { opacity: 1; visibility: visible; }
-.tall #w-letterboxd .lb-row { --lb-w: 128px; gap: 14px; }
+.tall #w-letterboxd .lb-row, .tall #w-friends .lb-row { --lb-w: 128px; gap: 14px; }
 /* Film van vanavond: top 3 naast elkaar */
 .film3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
 .film3-item { display: flex; gap: 14px; min-width: 0; color: inherit; text-decoration: none; }

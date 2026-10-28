@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400..800&display=swap">
   <!-- ?v=0.MINOR.PATCH: ophogen bij elke wijziging (zie CLAUDE.md); de rest krijgt hetzelfde nummer via dash.js -->
-  <link rel="stylesheet" href="style.css?v=0.27.1">
+  <link rel="stylesheet" href="style.css?v=0.28.0">
 </head>
 <body>
   <main class="dashboard">
@@ -177,6 +177,10 @@
         <p class="eyebrow">Laatst gekeken</p>
         <div class="w-body"><p class="w-note">Laden…</p></div>
       </section>
+      <section id="w-friends" class="card tile">
+        <p class="eyebrow">Vrienden op Letterboxd</p>
+        <div class="w-body"><p class="w-note">Laden…</p></div>
+      </section>
       <section id="w-todo" class="card tile">
         <p class="eyebrow">To-do</p>
         <div class="w-body"></div>
@@ -238,15 +242,15 @@
 
   <div id="toast" role="status"></div>
 
-  <script src="config.js?v=0.27.1"></script>
-  <script src="dash.js?v=0.27.1"></script>
-  <script src="topbar.js?v=0.27.1"></script>
+  <script src="config.js?v=0.28.0"></script>
+  <script src="dash.js?v=0.28.0"></script>
+  <script src="topbar.js?v=0.28.0"></script>
   <!-- De rest laadt dash.js in deze volgorde: meteen, of met ?mini=1 pas als je het volledige dashboard opent -->
   <script>
     DASH.boot([
       'layout.js', 'desk.js', 'motion.js', 'spotify.js', 'https://accounts.google.com/gsi/client', 'calendar.js',
       'widgets/media.js', 'widgets/lyrics.js', 'widgets/weather.js', 'widgets/f1.js', 'widgets/rain.js', 'widgets/ah.js',
-      'widgets/canvas.js', 'widgets/stars.js', 'widgets/episodes.js', 'widgets/letterboxd.js', 'widgets/todo.js',
+      'widgets/canvas.js', 'widgets/stars.js', 'widgets/episodes.js', 'widgets/letterboxd.js', 'widgets/friends.js', 'widgets/todo.js',
       'widgets/mail.js', 'widgets/health.js', 'widgets/alerts.js',
     ]);
   </script>

@@ -34,6 +34,31 @@ DASH.widget('w-stars', async (card, body, guard) => {
     return list.filter((f) => f.crowd != null).map((f) => ({ ...f, p: predict(f) })).sort((a, b) => b.p - a.p).slice(0, n);
   }
   const topFilm = () => topFilms(1)[0];
+
+  // Voor andere vakken (Vrienden, bioscoop): je verwachte cijfer voor een film op je watchlist, of null
+  const norm = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '');
+  function watchlist() {
+    const stored = store.get(KEY);
+    return (stored && stored.items) || globalThis.LBV_WATCHLIST || [];
+  }
+  function share() {
+    const list = watchlist().filter((f) => f.crowd != null);
+    const bySlug = new Map(list.map((f) => [f.slug, f]));
+    const byTitle = new Map();
+    for (const f of list) byTitle.set(norm(f.film), f);
+    const result = (f) => (f ? { film: f.film, year: f.jaar, slug: f.slug, value: predict(f) } : null);
+    window.DASH_FILM = {
+      // slug = Letterboxd-adres van de film; anders op titel (en jaar, als dat bekend is)
+      predict({ slug, title, year } = {}) {
+        if (slug && bySlug.has(slug)) return result(bySlug.get(slug));
+        const f = title && byTitle.get(norm(title));
+        if (f && (!year || !f.jaar || Math.abs(Number(f.jaar) - Number(year)) <= 1)) return result(f);
+        return null;
+      },
+      norm,
+    };
+    window.dispatchEvent(new CustomEvent('dash:watchlist'));
+  }
   // In het roterende vak (staand ontwerp) is er ruimte voor de top 3 naast elkaar
   const wide = () => !!card.closest('.tall-rot');
 
@@ -146,11 +171,13 @@ DASH.widget('w-stars', async (card, body, guard) => {
     const old = store.get(KEY);
     if (old && old.t === e.data.wl.t) return;
     store.set(KEY, e.data.wl);
+    share();
     render();
     const frame = pop && pop.body.querySelector('iframe');
     if (frame) frame.contentWindow.location.reload();
   }));
   window.postMessage({ type: 'sterrenvoorspeller:request' }, location.origin);
 
+  share();
   await render();
 });

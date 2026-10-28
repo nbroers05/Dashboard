@@ -39,6 +39,13 @@ window.DASHBOARD_CONFIG = {
     { name: 'Review-labels (Sheet)', url: 'https://docs.google.com/spreadsheets/d/1kf305bm5mv6RfPXRklkZ1Yd50Xdh_XcuwbrRiJPxFW4/edit' },
     { name: 'Sterrenvoorspeller', url: 'https://claude.ai/artifact/AUgYvmNHZW9xwNn7jGZVhP' },
   ],
+  // Letterboxd van vrienden: de GitHub Action leest deze lijst (user = gebruikersnaam op Letterboxd, name = hoe hij op het dashboard staat).
+  // Hou het formaat precies zo: { user: '...', name: '...' }, met enkele aanhalingstekens.
+  vrienden: [
+    { user: 'loekatheactor', name: 'Loeka' },
+    { user: 'Marrie01', name: 'Margriet' },
+    { user: 'MARIJN_GEBRUIKERSNAAM', name: 'Marijn' }, // TODO: Marijns Letterboxd-gebruikersnaam (staat in de adresbalk van zijn profiel)
+  ],
   // Gezondheid (Google Health): je dagelijkse stappendoel
   gezondheid: { stappenDoel: 10000 },
   // Voor filmposters (themoviedb.org → Instellingen → API → "API Key"). Leeg laten mag: dan een kleurvlak.

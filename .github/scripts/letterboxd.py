@@ -1,30 +1,25 @@
-"""Haalt de Letterboxd-RSS van nbroers05 op en schrijft data/letterboxd.json.
+"""Haalt de Letterboxd-RSS van nbroers05 en van vrienden op.
+
+- data/letterboxd.json: Noahs eigen logs (Laatst gekeken)
+- data/friends.json: de nieuwste logs van de vrienden uit config.js (`vrienden`), met de naam zoals Noah die wil zien
 
 Draait in de GitHub Action (.github/workflows/letterboxd.yml). Posters via TMDB met de
 API-key uit de omgevingsvariabele TMDB_API_KEY (een repository secret, nooit in de code).
 Zonder key of als TMDB faalt: de poster uit de RSS zelf.
-Het bestand bevat geen tijdstempel, zodat het alleen verandert als er echt iets nieuws is.
+De bestanden bevatten geen tijdstempel, zodat ze alleen veranderen als er echt iets nieuws is.
 """
 
-import json
 import os
 import re
-import sys
-import urllib.request
 import xml.etree.ElementTree as ET
 
+from common import config_items, get, is_placeholder, log, read_json, tmdb_poster, write_json
+
 USER = "nbroers05"
-RSS = f"https://letterboxd.com/{USER}/rss/"
-OUT = os.path.join(os.path.dirname(__file__), "..", "..", "data", "letterboxd.json")
 KEEP = 20
+FRIEND_KEEP = 10   # per vriend
+FRIENDS_TOTAL = 30
 NS = {"letterboxd": "https://letterboxd.com", "tmdb": "https://themoviedb.org"}
-UA = {"User-Agent": "Mozilla/5.0 (dashboard van nbroers05; GitHub Action)"}
-
-
-def get(url):
-    req = urllib.request.Request(url, headers=UA)
-    with urllib.request.urlopen(req, timeout=20) as res:
-        return res.read()
 
 
 def text(item, tag):
@@ -32,30 +27,9 @@ def text(item, tag):
     return el.text.strip() if el is not None and el.text else None
 
 
-def load_previous():
-    try:
-        with open(OUT, encoding="utf-8") as f:
-            return {x["link"]: x for x in json.load(f).get("logs", [])}
-    except (OSError, ValueError, KeyError):
-        return {}
-
-
-def tmdb_poster(key, kind, tmdb_id):
-    if not key or not tmdb_id:
-        return None
-    try:
-        data = json.loads(get(f"https://api.themoviedb.org/3/{kind}/{tmdb_id}?api_key={key}&language=nl-NL"))
-        path = data.get("poster_path")
-        return f"https://image.tmdb.org/t/p/w342{path}" if path else None
-    except Exception as e:  # TMDB even niet bereikbaar: dan de poster uit de RSS
-        print(f"TMDB {kind}/{tmdb_id} mislukt: {e}", file=sys.stderr)
-        return None
-
-
-def main():
-    key = os.environ.get("TMDB_API_KEY", "").strip()
-    previous = load_previous()
-    root = ET.fromstring(get(RSS))
+def parse(user, key, previous):
+    """Alle film-logs uit de RSS van één gebruiker."""
+    root = ET.fromstring(get(f"https://letterboxd.com/{user}/rss/"))
     logs = []
     for item in root.iter("item"):
         title = text(item, "letterboxd:filmTitle")
@@ -66,6 +40,7 @@ def main():
         kind, tmdb_id = ("movie", movie_id) if movie_id else ("tv", tv_id)
         rating = text(item, "letterboxd:memberRating")
         rss_poster = re.search(r'<img src="([^"]+)"', text(item, "description") or "")
+        slug = re.search(r"/film/([^/]+)/", link or "")
 
         # Poster van vorige keer hergebruiken, dan hoeft TMDB niet elk uur opnieuw
         old = previous.get(link) or {}
@@ -80,17 +55,47 @@ def main():
             "rewatch": text(item, "letterboxd:rewatch") == "Yes",
             "liked": text(item, "letterboxd:memberLike") == "Yes",
             "link": link,
+            "slug": slug.group(1) if slug else None,
             "tmdbId": tmdb_id,
             "poster": poster,
         })
-
     # Nieuwste eerst (op kijkdatum; de RSS staat op publicatiedatum)
     logs.sort(key=lambda x: x["watched"] or "", reverse=True)
-    os.makedirs(os.path.dirname(OUT), exist_ok=True)
-    with open(OUT, "w", encoding="utf-8") as f:
-        json.dump({"user": USER, "logs": logs[:KEEP]}, f, ensure_ascii=False, indent=1)
-        f.write("\n")
-    print(f"{len(logs[:KEEP])} logs geschreven")
+    return logs
+
+
+def previous_logs(rel):
+    data = read_json(rel) or {}
+    return {x["link"]: x for x in data.get("logs", []) if x.get("link")}
+
+
+def main():
+    key = os.environ.get("TMDB_API_KEY", "").strip()
+
+    own = parse(USER, key, previous_logs("data/letterboxd.json"))
+    for x in own:
+        x.pop("slug", None)  # niet nodig voor Laatst gekeken; zo blijft het bestand gelijk aan vroeger
+    if write_json("data/letterboxd.json", {"user": USER, "logs": own[:KEEP]}):
+        log(f"letterboxd.json: {len(own[:KEEP])} logs")
+
+    # Vrienden: één mislukte feed (typfout, privéprofiel) laat de rest gewoon doorgaan
+    previous = previous_logs("data/friends.json")
+    friends, logs = [], []
+    for f in config_items("vrienden"):
+        user, name = f.get("user", ""), f.get("name") or f.get("user", "")
+        if is_placeholder(user):
+            log(f"Vriend {name}: nog geen gebruikersnaam ingevuld, overgeslagen")
+            continue
+        try:
+            items = parse(user, key, previous)[:FRIEND_KEEP]
+        except Exception as e:
+            log(f"Vriend {name} ({user}) mislukt: {e}")
+            items = [x for x in previous.values() if x.get("user") == user]
+        friends.append({"user": user, "name": name})
+        logs += [{**x, "user": user, "name": name} for x in items]
+    logs.sort(key=lambda x: (x["watched"] or "", x["link"] or ""), reverse=True)
+    if write_json("data/friends.json", {"friends": friends, "logs": logs[:FRIENDS_TOTAL]}):
+        log(f"friends.json: {len(logs[:FRIENDS_TOTAL])} logs van {len(friends)} vrienden")
 
 
 if __name__ == "__main__":

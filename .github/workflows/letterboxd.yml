@@ -1,10 +1,14 @@
-# Elk uur de Letterboxd-RSS ophalen en data/letterboxd.json bijwerken.
-# Commit alleen als er iets veranderd is. TMDB-key staat als repository secret TMDB_API_KEY.
-name: Letterboxd
+# Data voor het dashboard ophalen en in data/ zetten. Eén Action voor alles:
+# - elk uur (:17): Letterboxd (eigen logs + vrienden), en één keer per dag de bioscopen
+# - elk half uur (:17 en :47): feeds (nieuws, Reddit, YouTube)
+# Commit alleen als er iets veranderd is. Alles wat hier wordt geschreven is openbaar (GitHub Pages):
+# alleen publieke data, nooit tokens of iets persoonlijks. Keys staan als repository secret.
+name: Dashboard-data
 
 on:
   schedule:
     - cron: '17 * * * *'
+    - cron: '47 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -17,23 +21,28 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v5
 
-      - name: RSS ophalen
+      # Elk onderdeel mag los mislukken: de rest gaat gewoon door
+      - name: Letterboxd (elk uur)
+        if: github.event.schedule != '47 * * * *'
+        continue-on-error: true
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
         run: python3 .github/scripts/letterboxd.py
 
       - name: Opslaan als er iets veranderd is
         run: |
-          if git diff --quiet -- data/letterboxd.json && git ls-files --error-unmatch data/letterboxd.json >/dev/null 2>&1; then
+          if [ -z "$(git status --porcelain -- data/)" ]; then
             echo "Niets nieuws"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
-          git add data/letterboxd.json
-          git commit -m "Letterboxd bijgewerkt"
+          git add data/
+          git commit -m "Dashboard-data bijgewerkt"
+          # Noah of Claude kan intussen gepusht hebben
+          git pull --rebase
           git push
