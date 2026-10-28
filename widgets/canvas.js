@@ -116,7 +116,7 @@ DASH.widget('w-canvas', (card, body, guard) => {
   // ---------- Het vak: alleen de 3 urgentste ----------
   function render() {
     if (!calendar) return;
-    if (!calendar.connected) return empty('Koppel je Google Agenda om je deadlines te zien.');
+    if (!calendar.connected) { DASH.alert('canvas', null); body.replaceChildren(DASH.problem('Koppel je Google Agenda om je deadlines te zien.', 'Agenda koppelen', DASH.connectGoogle)); return; }
     if (!calendar.events.some((e) => e.canvas)) return empty('Nog geen Canvas-agenda gevonden (zie README, stap 4).');
     const now = Date.now();
     const all = items();

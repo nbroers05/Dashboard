@@ -33,6 +33,12 @@ window.DASHBOARD_CONFIG = {
     vasteToeslagen: [],
     nettoVerhouding: 0.96, // netto ÷ bruto: 1.205,09 / 1.251,96 en 1.333,01 / 1.388,27; alleen voor de schatting
   },
+  // Letterboxd-onderzoek: vaste knop in de topbalk (los van je eigen snelkoppelingen)
+  onderzoek: [
+    { name: 'Paper', url: 'https://claude.ai/code/artifact/89ee7dac-4563-47d1-a358-3df7a9b0d813' },
+    { name: 'Review-labels (Sheet)', url: 'https://docs.google.com/spreadsheets/d/1kf305bm5mv6RfPXRklkZ1Yd50Xdh_XcuwbrRiJPxFW4/edit' },
+    { name: 'Sterrenvoorspeller', url: 'https://claude.ai/artifact/AUgYvmNHZW9xwNn7jGZVhP' },
+  ],
   // Gezondheid (Google Health): je dagelijkse stappendoel
   gezondheid: { stappenDoel: 10000 },
   // Voor filmposters (themoviedb.org → Instellingen → API → "API Key"). Leeg laten mag: dan een kleurvlak.

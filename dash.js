@@ -64,14 +64,30 @@ window.DASH = (() => {
     }
   }
 
+  // Melding in een vak met een knop (herladen, opnieuw inloggen, ...)
+  function problem(text, label, onClick) {
+    const box = h('div', 'w-empty w-problem');
+    box.append(h('p', null, text));
+    if (label) {
+      const b = h('button', 'w-btn', label);
+      b.type = 'button';
+      b.onclick = onClick;
+      box.append(b);
+    }
+    return box;
+  }
+  // Knop "Agenda koppelen" voor vakken die de Google Agenda nodig hebben
+  const connectGoogle = () => (window.DASH_GOOGLE ? window.DASH_GOOGLE.connect() : document.getElementById('cal-connect') && document.getElementById('cal-connect').click());
+
   // Start een vak. fn(card, body, guard) mag async zijn; guard(fn) beschermt latere callbacks (timers, events).
   function widget(id, fn) {
     const card = document.getElementById(id);
     if (!card) return;
     const body = card.querySelector('.w-body');
+    // Mislukt: korte melding met een knop, in plaats van een leeg vak
     const fail = (e) => {
       console.error(`[${id}]`, e);
-      body.replaceChildren(h('p', 'w-note', 'Dit vak kon niet laden. Het probeert het later opnieuw.'));
+      body.replaceChildren(problem('Dit vak kon niet laden. Het probeert het later opnieuw.', 'Nu herladen', () => location.reload()));
     };
     const guard = (f) => (...args) => {
       try {
@@ -281,5 +297,5 @@ window.DASH = (() => {
     return { dialog, head, body: content, open: () => dialog.showModal(), close: () => dialog.close() };
   }
 
-  return { VERSION, DEMO, MINI, boot, loadAll, coverTint, tint, tintFront, h, store, getJSON, widget, every, onCalendar, HOME, radar, RAIN_MIN, alert, allAlerts, isAH, startOfDay, addDays, startOfWeek, fmtTime, fmtWeekday, fmtDay, nl, img, panel };
+  return { VERSION, DEMO, MINI, boot, loadAll, problem, connectGoogle, coverTint, tint, tintFront, h, store, getJSON, widget, every, onCalendar, HOME, radar, RAIN_MIN, alert, allAlerts, isAH, startOfDay, addDays, startOfWeek, fmtTime, fmtWeekday, fmtDay, nl, img, panel };
 })();

@@ -5,11 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#121212">
   <title>Dashboard</title>
+  <!-- Eigen logo: het dashboard in het klein -->
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400..800&display=swap">
-  <!-- ?v=N: ophogen bij elke wijziging (style.css, config, dash, topbar); de rest krijgt hetzelfde nummer via dash.js -->
-  <link rel="stylesheet" href="style.css?v=26">
+  <!-- ?v=0.MINOR.PATCH: ophogen bij elke wijziging (zie CLAUDE.md); de rest krijgt hetzelfde nummer via dash.js -->
+  <link rel="stylesheet" href="style.css?v=0.27.0">
 </head>
 <body>
   <main class="dashboard">
@@ -18,7 +22,7 @@
     <header id="topbar" class="topbar">
       <div class="tb-clock">
         <time class="tb-time"></time>
-        <p class="tb-day"><span class="tb-date"></span> <span class="tb-week"></span></p>
+        <p class="tb-day"><span class="tb-date"></span> <span class="tb-week"></span><span class="tb-dayline" aria-live="polite"></span></p>
       </div>
       <nav class="tb-links" aria-label="Snelkoppelingen"></nav>
       <form class="tb-search" action="https://www.google.com/search" method="get" role="search">
@@ -29,6 +33,9 @@
       <div class="tb-actions">
         <button class="tb-btn tb-menu" aria-label="Snelkoppelingen" aria-expanded="false">
           <svg viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
+        </button>
+        <button class="tb-btn tb-night" aria-label="Nachtstand" aria-pressed="true" title="Nachtstand (23:00–07:00): aan">
+          <svg viewBox="0 0 24 24"><path d="M12.3 2a9 9 0 1 0 9.7 10.6A7 7 0 0 1 12.3 2z"/></svg>
         </button>
         <button class="tb-btn tb-design" aria-label="Ander ontwerp" title="Wissel tussen nieuw en oud ontwerp">
           <svg viewBox="0 0 24 24"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v5h-8V3zm2 2v1h4V5h-4zm-2 6h8v10h-8V11zm2 2v6h4v-6h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5z"/></svg>
@@ -231,9 +238,9 @@
 
   <div id="toast" role="status"></div>
 
-  <script src="config.js?v=26"></script>
-  <script src="dash.js?v=26"></script>
-  <script src="topbar.js?v=26"></script>
+  <script src="config.js?v=0.27.0"></script>
+  <script src="dash.js?v=0.27.0"></script>
+  <script src="topbar.js?v=0.27.0"></script>
   <!-- De rest laadt dash.js in deze volgorde: meteen, of met ?mini=1 pas als je het volledige dashboard opent -->
   <script>
     DASH.boot([

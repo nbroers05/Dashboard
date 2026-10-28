@@ -209,8 +209,7 @@ DASH.widget('w-ah', (card, body, guard) => {
   function render() {
     if (!calendar) return;
     if (!calendar.connected) {
-      body.replaceChildren(h('div', 'w-empty', null));
-      body.firstChild.append(h('p', null, 'Koppel je Google Agenda om je uren te tellen.'));
+      body.replaceChildren(DASH.problem('Koppel je Google Agenda om je uren te tellen.', 'Agenda koppelen', DASH.connectGoogle));
       return;
     }
     const now = Date.now();

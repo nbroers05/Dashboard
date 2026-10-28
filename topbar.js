@@ -191,6 +191,87 @@
   }
   window.addEventListener('dash:mail', (e) => mailBadge(e.detail && e.detail.count));
 
+  // ---------- Dagregel: één korte zin over vandaag (AH, regen, eerstvolgende Canvas-deadline) ----------
+  // Werkt ook in de minimale modus: dan uit de bewaarde agenda (localStorage), want de agenda zelf laadt pas bij uitklappen.
+  const dayLineEl = bar.querySelector('.tb-dayline');
+  let rain = null;
+  function dayLine() {
+    const now = Date.now();
+    const today = DASH.startOfDay(now);
+    const tomorrow = DASH.addDays(today, 1);
+    const cal = window.DASH_CALENDAR && window.DASH_CALENDAR.connected ? window.DASH_CALENDAR.events : ((store.get('google.events') || {}).events || []);
+    const parts = [];
+    const shift = cal.filter((e) => DASH.isAH(e) && e.end > now && e.start < tomorrow).sort((a, b) => a.start - b.start)[0];
+    if (shift) parts.push(shift.start <= now ? `AH tot ${DASH.fmtTime(shift.end)}` : `AH ${DASH.fmtTime(shift.start)}`);
+    if (rain && rain.slots.length) {
+      const wet = rain.slots.find((s) => s.end > now && s.mmh >= DASH.RAIN_MIN);
+      parts.push(!wet ? 'droog' : wet.start <= now ? 'regen' : `regen om ${DASH.fmtTime(wet.start)}`);
+    }
+    const done = new Set(store.get('canvas.done') || []);
+    const canvas = cal.filter((e) => e.canvas);
+    const pool = canvas.some((e) => e.assignment) ? canvas.filter((e) => e.assignment) : canvas;
+    const due = (e) => (e.allDay ? e.end - 1 : e.end);
+    const next = pool.filter((e) => !done.has(e.id) && due(e) > now && due(e) - now < 3 * 86400000).sort((a, b) => due(a) - due(b))[0];
+    if (next) {
+      const name = next.title.replace(/\s*\[[^\]]+\]\s*$/, '');
+      const days = Math.round((DASH.startOfDay(due(next)) - today) / 86400000);
+      parts.push(`${name} ${days === 0 ? `vandaag ${DASH.fmtTime(due(next))}` : days === 1 ? 'morgen' : `over ${days} dagen`}`);
+    }
+    const text = parts.join(' · ');
+    if (dayLineEl.textContent !== text) dayLineEl.textContent = text;
+    dayLineEl.hidden = !text;
+  }
+  const loadRain = () => DASH.radar().then((r) => { rain = r; dayLine(); }).catch(() => {});
+  window.addEventListener('dash:calendar', dayLine);
+  DASH.every(60 * 1000, dayLine);
+  DASH.every(5 * 60 * 1000, loadRain);
+  dayLine();
+  loadRain();
+
+  // ---------- Nachtstand: 23:00–07:00 wordt alles gedimd (minder fel en minder kleur), knop zet hem uit ----------
+  const NIGHT_KEY = 'dash.night';
+  const nightBtn = bar.querySelector('.tb-night');
+  function night() {
+    const on = store.get(NIGHT_KEY) !== 'off';
+    const hr = new Date().getHours();
+    document.documentElement.classList.toggle('night', on && (hr >= 23 || hr < 7));
+    nightBtn.setAttribute('aria-pressed', on);
+    nightBtn.title = on ? 'Nachtstand (23:00–07:00): aan' : 'Nachtstand: uit';
+  }
+  nightBtn.onclick = () => { store.set(NIGHT_KEY, store.get(NIGHT_KEY) === 'off' ? 'on' : 'off'); night(); };
+  DASH.every(60 * 1000, night);
+  night();
+
+  // ---------- Onderzoek: vaste knop met de links uit config.onderzoek ----------
+  const research = (window.DASHBOARD_CONFIG && DASHBOARD_CONFIG.onderzoek) || [];
+  if (research.length) {
+    const wrap = h('div', 'tb-research');
+    const btn = h('button', 'tb-link tb-research-btn');
+    btn.type = 'button';
+    btn.title = 'Letterboxd-onderzoek';
+    btn.setAttribute('aria-expanded', 'false');
+    btn.innerHTML = '<span class="tb-icon tb-research-icon"><svg viewBox="0 0 24 24"><path d="M6 2h9l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm8 1.5V8h4.5L14 3.5zM7 12v2h10v-2H7zm0 4v2h7v-2H7z"/></svg></span>';
+    btn.append(h('span', 'tb-name', 'Onderzoek'));
+    const menu = h('div', 'tb-research-menu');
+    menu.hidden = true;
+    menu.append(h('b', null, 'Letterboxd-onderzoek'));
+    for (const { name, url } of research) {
+      const a = h('a', null, name);
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      menu.append(a);
+    }
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      menu.hidden = !menu.hidden;
+      btn.setAttribute('aria-expanded', !menu.hidden);
+    };
+    document.addEventListener('click', (e) => { if (!menu.hidden && !e.target.closest('.tb-research')) { menu.hidden = true; btn.setAttribute('aria-expanded', 'false'); } });
+    wrap.append(btn, menu);
+    links.after(wrap);
+  }
+
   // ---------- Sneltoetsen ----------
   const typing = (el) => el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));
   document.addEventListener('keydown', (e) => {
@@ -199,6 +280,8 @@
       search.focus();
       search.select();
     } else if (e.key === 'Escape' && !document.querySelector('dialog[open]')) {
+      const rm = bar.querySelector('.tb-research-menu');
+      if (rm) rm.hidden = true;
       if (document.activeElement === search) search.blur();
       if (document.body.classList.contains('minimal')) setMinimal(false);
     }

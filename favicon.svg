@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Eigen logo: het dashboard in het klein (brede speler bovenaan, twee tegels eronder) -->
+  <defs>
+    <linearGradient id="bar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#a78bfa"/>
+      <stop offset="1" stop-color="#ff5fa2"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="#16161b"/>
+  <rect x="9" y="10" width="46" height="20" rx="6" fill="url(#bar)"/>
+  <rect x="9" y="34" width="21" height="20" rx="6" fill="#4fa8ff"/>
+  <rect x="34" y="34" width="21" height="20" rx="6" fill="#f5b02e"/>
+</svg>

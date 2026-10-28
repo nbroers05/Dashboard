@@ -28,10 +28,49 @@ DASH.widget('w-stars', async (card, body, guard) => {
     loeka: f.loeka, marijn: f.marijn == null ? null : f.marijn, regie: f.regisseur,
   }).value;
 
-  function topFilm() {
+  function topFilms(n) {
     const stored = store.get(KEY);
     const list = (stored && stored.items) || globalThis.LBV_WATCHLIST || [];
-    return list.filter((f) => f.crowd != null).map((f) => ({ ...f, p: predict(f) })).sort((a, b) => b.p - a.p)[0];
+    return list.filter((f) => f.crowd != null).map((f) => ({ ...f, p: predict(f) })).sort((a, b) => b.p - a.p).slice(0, n);
+  }
+  const topFilm = () => topFilms(1)[0];
+  // In het roterende vak (staand ontwerp) is er ruimte voor de top 3 naast elkaar
+  const wide = () => !!card.closest('.tall-rot');
+
+  function addPoster(f, pbox) {
+    poster(f).then((src) => {
+      if (!src) return;
+      const i = new Image();
+      i.alt = '';
+      i.onload = () => i.classList.add('loaded');
+      i.onerror = () => i.remove();
+      i.src = src;
+      pbox.append(i);
+    }).catch(() => {});
+  }
+
+  function renderTop3() {
+    const films = topFilms(3);
+    const row = h('div', 'film3');
+    films.forEach((f, k) => {
+      const a = h('a', 'film3-item');
+      a.href = `https://letterboxd.com/film/${f.slug}/`;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.title = `${f.film}${f.jaar ? ` (${f.jaar})` : ''} · verwacht ${nl(f.p, 2)}`;
+      const pbox = img(null, 'film-poster', f.film);
+      pbox.append(h('span', 'film-score', nl(f.p, 1)), h('span', 'film3-rank', String(k + 1)));
+      const txt = h('div', 'film3-txt');
+      txt.append(h('b', null, f.film), h('span', 'w-sub', [f.jaar, `verwacht ${nl(f.p, 2)}`].filter(Boolean).join(' · ')), h('span', 'film-stars', stars(f.p)));
+      a.append(pbox, txt);
+      row.append(a);
+      addPoster(f, pbox);
+    });
+    const actions = h('div', 'film-actions film3-actions');
+    const more = h('button', 'w-btn ghost', 'Voorspel een film');
+    more.onclick = openPanel;
+    actions.append(more);
+    body.replaceChildren(row, actions);
   }
 
   async function poster(f) {
@@ -68,6 +107,7 @@ DASH.widget('w-stars', async (card, body, guard) => {
   }
 
   async function render() {
+    if (wide() && topFilms(3).length) return renderTop3();
     const f = topFilm();
     if (!f) {
       body.replaceChildren(h('p', 'w-note', 'Geen films in je watchlist gevonden.'));
@@ -96,16 +136,10 @@ DASH.widget('w-stars', async (card, body, guard) => {
     body.replaceChildren(wrap, actions);
 
     // Poster erbij zodra die binnen is; lukt het niet, dan blijft het kleurvlak met de titel
-    poster(f).then((src) => {
-      if (!src) return;
-      const i = new Image();
-      i.alt = '';
-      i.onload = () => i.classList.add('loaded');
-      i.onerror = () => i.remove();
-      i.src = src;
-      pbox.append(i);
-    }).catch(() => {});
+    addPoster(f, pbox);
   }
+  // Andere indeling (staand/liggend): opnieuw tekenen, want het roterende vak toont de top 3
+  window.addEventListener('dash:layout', guard(() => render()));
 
   window.addEventListener('message', guard((e) => {
     if (e.source !== window || !e.data || e.data.source !== 'sterrenvoorspeller' || !e.data.wl) return;

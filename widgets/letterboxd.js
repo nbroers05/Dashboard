@@ -4,7 +4,7 @@
 // De data komt uit data/letterboxd.json, die een GitHub Action elk uur bijwerkt (Letterboxd zelf is niet vanuit de browser te lezen).
 DASH.widget('w-letterboxd', (card, body, guard) => {
   const { h } = DASH;
-  const SHOW = 5;
+  const SHOW = 20;   // zoveel als er zijn; de opmaak toont alleen wat op één rij past
 
   const stars = (r) => (r == null ? '' : '★'.repeat(Math.floor(r)) + (r % 1 ? '½' : ''));
   const date = (iso) => (iso ? new Date(`${iso}T12:00:00`).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' }).replace('.', '') : '');
@@ -48,7 +48,7 @@ DASH.widget('w-letterboxd', (card, body, guard) => {
       // Eén keer per kwartier een verse versie (de Action werkt het hooguit elk uur bij)
       render(await DASH.getJSON(`data/letterboxd.json?t=${Math.floor(Date.now() / 900000)}`));
     } catch (e) {
-      body.replaceChildren(h('p', 'w-note', 'Nog geen Letterboxd-data. De GitHub Action maakt die elk uur aan (zie README).'));
+      body.replaceChildren(DASH.problem('Letterboxd-data kon niet laden. De GitHub Action maakt die elk uur aan (zie README).', 'Opnieuw proberen', load));
       console.warn('[letterboxd]', e);
     }
   });

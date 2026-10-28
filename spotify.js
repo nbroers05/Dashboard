@@ -246,7 +246,7 @@
     el.artist.textContent = artists;
     el.dur.textContent = fmt(it.duration_ms);
     el.device.textContent = d.device ? `Op ${d.device.name}` : '';
-    document.title = `${it.name} · ${artists}`;
+    // Paginatitel blijft altijd "Dashboard" (ook als er muziek speelt)
 
     const images = isEpisode ? it.images : it.album && it.album.images;
     setCover(images && images[0] && images[0].url);
@@ -265,12 +265,14 @@
     el.shuffle.setAttribute('aria-pressed', String(!!d.shuffle_state));
     el.repeat.dataset.mode = d.repeat_state || 'off';
 
+    // Knoppen blijven altijd staan (geen verspringende layout); wat nu niet kan wordt gedimd, met uitleg bij hover
     const dis = (d.actions && d.actions.disallows) || {};
-    el.prev.disabled = !!dis.skipping_prev && !!dis.seeking;
-    el.next.disabled = !!dis.skipping_next;
-    el.play.disabled = d.is_playing ? !!dis.pausing : !!dis.resuming;
-    el.shuffle.disabled = !!dis.toggling_shuffle;
-    el.repeat.disabled = !!dis.toggling_repeat_context && !!dis.toggling_repeat_track;
+    setOff(el.prev, dis.skipping_prev && dis.seeking, 'Terug kan nu niet (Spotify staat het niet toe)');
+    setOff(el.next, dis.skipping_next, 'Overslaan kan nu niet (bijv. tijdens een advertentie)');
+    setOff(el.play, d.is_playing ? dis.pausing : dis.resuming, 'Spotify staat dit nu niet toe');
+    setOff(el.shuffle, dis.toggling_shuffle, 'Shuffle kan nu niet (bijv. bij een podcast of advertentie)');
+    setOff(el.repeat, dis.toggling_repeat_context && dis.toggling_repeat_track, 'Herhalen kan nu niet (bijv. bij een podcast of advertentie)');
+    setOff($('lyrics-btn'), isEpisode, 'Geen songtekst bij een podcast');
 
     if (!sameTrack) {
       currentTrackId = it.id;
@@ -406,12 +408,25 @@
   async function checkSaved(it) {
     try {
       const v = await libContains(it);
-      el.save.hidden = false;
+      setOff(el.save, false);
       if (currentTrackId === it.id) setSaved(v);
     } catch {
-      el.save.hidden = true;
+      setOff(el.save, true, 'Opslaan kan niet bij dit nummer (bijv. een podcast of lokaal bestand)');
     }
   }
+
+  // Gedimde knop: blijft op zijn plek, klikken doet niets, de tooltip zegt waarom
+  function setOff(btn, off, why) {
+    if (!btn) return;
+    btn.disabled = false;
+    btn.classList.toggle('off', !!off);
+    btn.setAttribute('aria-disabled', off ? 'true' : 'false');
+    if (off) btn.title = why;
+    else btn.removeAttribute('title');
+  }
+  card.addEventListener('click', (e) => {
+    if (e.target.closest('[aria-disabled="true"]')) { e.stopImmediatePropagation(); e.preventDefault(); }
+  }, true);
 
   // ---------- Bediening ----------
   async function action(fn, optimistic, refreshAfter = 700) {

@@ -66,7 +66,22 @@
     const play = btn('btn pill play-btn', 'Afspelen/pauzeren', ICON.play, 'playpause');
     const next = btn('btn', 'Volgende', ICON.next, 'next');
     main.append(prev, play, next);
-    controls.append(main);
+    // Zelfde knoppen rechts als bij Spotify, zodat de layout niet verspringt; hier gedimd met uitleg
+    const extra = h('div', 'group extra');
+    const why = 'Alleen bij Spotify: deze bron geeft dit niet door';
+    for (const [label, src] of [['Shuffle', 'shuffle'], ['Herhalen', 'repeat'], ['Songtekst', 'lyrics-btn'], ['Opslaan in bibliotheek', 'save']]) {
+      const b = h('button', 'btn small off');
+      b.type = 'button';
+      b.setAttribute('aria-label', label);
+      b.setAttribute('aria-disabled', 'true');
+      b.title = why;
+      // Hetzelfde icoon als op de Spotify-kaart (de eerste variant)
+      const svg = document.querySelector(`#${src} svg`);
+      if (svg) b.append(svg.cloneNode(true));
+      b.onclick = (e) => e.stopPropagation();
+      extra.append(b);
+    }
+    controls.append(main, extra);
     const meta = h('div', 'meta');
     const device = h('span', 'app-badge');
     meta.append(device);

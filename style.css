@@ -264,6 +264,10 @@ button { font: inherit; color: inherit; }
 .btn:hover { background: var(--surface-hover); }
 .btn:active { transform: scale(.94); }
 .btn:disabled { opacity: .35; cursor: default; transform: none; }
+/* Gedimd maar op zijn plek (kan nu niet bij deze bron); de tooltip zegt waarom */
+.btn.off { opacity: .3; cursor: not-allowed; }
+.btn.off:hover { background: transparent; }
+.btn.off:active { transform: none; }
 .btn svg { width: 28px; height: 28px; fill: currentColor; }
 .btn.small { width: 50px; height: 50px; background: transparent; }
 .btn.small:hover { background: var(--surface); }
@@ -448,9 +452,9 @@ button.al-item:hover { background: rgba(255, 255, 255, .1); }
 
 /* Laatst gekeken (Letterboxd) */
 .lb-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.lb-row { flex: 1; min-height: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(84px, 1fr); gap: 12px; overflow-x: auto; scrollbar-width: none; margin-top: 4px; }
-.lb-row::-webkit-scrollbar { display: none; }
-.lb-film { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 0; color: inherit; text-decoration: none; }
+/* Zoveel posters als er op één rij passen: de rest loopt door naar een volgende rij die buiten beeld valt */
+.lb-row { --lb-w: 104px; display: flex; flex-wrap: wrap; align-content: flex-start; gap: 12px; overflow: hidden; height: calc(var(--lb-w) * 1.5 + 44px); margin-top: 4px; }
+.lb-film { flex: none; width: var(--lb-w); display: flex; flex-direction: column; align-items: center; gap: 4px; color: inherit; text-decoration: none; }
 .lb-poster { width: 100%; aspect-ratio: 2 / 3; border-radius: 10px; box-shadow: 0 8px 20px rgba(0, 0, 0, .4); transition: transform .2s; }
 .lb-poster .fb { font-size: .75rem; line-height: 1.2; }
 .lb-film:hover .lb-poster { transform: translateY(-3px); }
@@ -1257,6 +1261,34 @@ a.event:hover { background: color-mix(in srgb, var(--c, #888) 24%, rgba(255, 255
 .tb-date { display: block; color: var(--text); font-weight: 600; }
 .tb-date::first-letter { text-transform: uppercase; }
 .tb-week { display: block; }
+/* Dagregel: één korte zin over vandaag */
+.tb-dayline { display: block; max-width: 34vw; overflow: hidden; text-overflow: ellipsis; color: color-mix(in srgb, var(--accent) 70%, white); font-size: .85em; font-weight: 600; }
+.tb-dayline[hidden] { display: none; }
+body.minimal .tb-dayline { max-width: none; margin-top: 6px; }
+/* Onderzoek: vaste knop met een klein menu */
+.tb-research { position: relative; display: flex; }
+.tb-research-btn { border: 0; background: none; cursor: pointer; font: inherit; }
+.tb-research-icon { display: grid; place-items: center; }
+.tb-research-icon svg { width: 22px; height: 22px; fill: #8fc1ff; }
+.tb-research-menu {
+  position: absolute; top: calc(100% + 6px); right: 0; z-index: 40;
+  display: flex; flex-direction: column; gap: 2px; min-width: 220px; padding: 8px;
+  border-radius: 16px; background: #222226; box-shadow: 0 20px 50px rgba(0, 0, 0, .5);
+}
+.tb-research-menu[hidden] { display: none; }
+.tb-research-menu b { padding: 4px 10px 6px; font-size: .75rem; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+.tb-research-menu a { padding: 8px 10px; border-radius: 10px; color: var(--text); text-decoration: none; }
+.tb-research-menu a:hover { background: var(--surface-hover); }
+body.minimal .tb-research { display: none; }
+/* Nachtstand-knop */
+.tb-night[aria-pressed="false"] { color: var(--muted); }
+/* Nachtstand: alles minder fel en minder kleur (ook het AH-blauw); pop-ups erboven blijven gewoon */
+html.night body::after {
+  content: ''; position: fixed; inset: 0; z-index: 200; pointer-events: none;
+  backdrop-filter: brightness(.62) saturate(.55); -webkit-backdrop-filter: brightness(.62) saturate(.55);
+}
+/* Foutmelding in een vak, met knop */
+.w-problem p { color: var(--muted); }
 
 .tb-links { display: flex; gap: 2px; margin-left: auto; }
 .tb-link {
@@ -1577,7 +1609,7 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk .agenda .title { font-size: 1.5rem; }
 
 /* Rechts: Canvas, F1, Episodes, film/laatst gekeken */
-.desk #w-canvas { flex: 1.45 1 0; }
+.desk #w-canvas { flex: 1.55 1 0; }
 .desk #w-canvas .w-big { font-size: 1.7rem; display: flex; align-items: baseline; gap: 8px; }
 .desk #w-canvas .w-big small { margin: 0; }
 .desk .cv-item.compact .cv-name { font-size: .88rem; }
@@ -1591,7 +1623,7 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk #w-f1 .f1-track svg { position: absolute; inset: 8px; width: calc(100% - 16px); height: calc(100% - 16px); max-height: none; }
 .desk #w-f1 .w-body > .w-row { grid-area: foot; align-self: end; flex-direction: column; align-items: flex-start; gap: 6px; }
 .desk #w-f1 .w-btn { padding: 5px 12px; font-size: .78rem; }
-.desk #w-episodes { flex: .9 1 0; }
+.desk #w-episodes { flex: 1.05 1 0; }
 .desk #w-episodes .w-big { font-size: 1.7rem; display: flex; align-items: baseline; gap: 8px; }
 .desk #w-episodes .w-big small { margin: 0; }
 .desk .cv-item { padding: 4px 10px 4px 8px; gap: 8px; }
@@ -1605,11 +1637,11 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk .f1-track { min-height: 0; flex: 1 1 0; }
 .desk .f1-track svg { max-height: 100%; }
 .desk .f1-count { font-size: 2.6rem; }
-.desk .ep-covers { padding: 2px 0 4px; flex: 1; min-height: 0; }
+.desk .ep-covers { padding: 2px 0 4px; flex: 1; min-height: 0; overflow: hidden; gap: 10px; }
 .desk .ep-cover { width: auto; height: 100%; display: flex; flex-direction: column; }
 .desk .ep-cover .img-box { width: auto; height: 100%; min-height: 0; flex: 1; }
 .desk .ep-name { display: none; }
-.desk-tabs { flex: 1.1 1 0; min-height: 0; display: flex; flex-direction: column; border-radius: 22px; overflow: hidden;
+.desk-tabs { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; border-radius: 22px; overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--c-film) 26%, transparent);
   background: linear-gradient(150deg, color-mix(in srgb, var(--c-film) 18%, #151518), #121214); }
 .desk-tabbar { display: flex; gap: 4px; padding: 8px 10px 0; }
@@ -1627,9 +1659,8 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk .film-info { gap: 2px; }
 .desk .film-info .w-mid { font-size: 1.1rem; }
 .desk .film-actions .w-btn { padding: 7px 10px; font-size: .8rem; }
-.desk .lb-row { gap: 8px; grid-auto-columns: minmax(60px, 1fr); }
-.desk .lb-poster { width: auto; height: 100%; max-width: 100%; min-height: 0; }
-.desk .lb-film { min-height: 0; }
+.desk .lb-row { --lb-w: 52px; gap: 8px; }
+.desk .lb-stars { font-size: .7rem; }
 
 /* Onderaan: Meer (mail, to-do, gezondheid), klapt naar boven uit over de onderste helft */
 .desk-more { grid-area: more; position: relative; z-index: 30; }
@@ -1737,7 +1768,22 @@ body.minimal .tb-design { display: none; }
 /* Allemaal in dezelfde cel; de hoogste bepaalt de hoogte, dus het vak verspringt niet bij het wisselen */
 .tall .tall-rot > .tile { grid-area: 1 / 1 !important; min-height: 280px; opacity: 0; visibility: hidden; transition: opacity .9s ease, visibility .9s; padding-bottom: 34px; }
 .tall .tall-rot > .tile.on { opacity: 1; visibility: visible; }
-.tall #w-letterboxd .lb-row { grid-auto-columns: minmax(84px, 140px); justify-content: start; }
+.tall #w-letterboxd .lb-row { --lb-w: 128px; gap: 14px; }
+/* Film van vanavond: top 3 naast elkaar */
+.film3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.film3-item { display: flex; gap: 14px; min-width: 0; color: inherit; text-decoration: none; }
+.film3-item .film-poster { width: 110px; flex: none; align-self: flex-start; }
+.film3-item:hover .film-poster { transform: translateY(-3px); }
+.film3-txt { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.film3-txt b { font-size: 1.05rem; line-height: 1.25; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+.film3-rank { position: absolute; top: 6px; left: 6px; z-index: 1; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(0, 0, 0, .7); font-size: .75rem; font-weight: 800; }
+.film3-actions { margin-top: 14px; grid-template-columns: auto; justify-content: start; }
+/* Episodes Left in het roterende vak: grote covers, zoveel als er op één rij passen */
+.tall .ep-covers { flex-wrap: wrap; overflow: hidden; height: 252px; align-content: flex-start; gap: 16px; padding-top: 6px; }
+.tall .ep-cover { width: 140px; }
+.tall .ep-cover .img-box { width: 140px; }
+.tall #w-episodes .w-big { font-size: 2.4rem; display: flex; align-items: baseline; gap: 10px; }
+.tall #w-episodes .w-big small { margin: 0; }
 .tall .ep-covers { padding-bottom: 4px; }
 /* Agenda: begrensde hoogte, de rest scrollt binnen het vak */
 .tall .cal-list { --fit-h: 540px; }
