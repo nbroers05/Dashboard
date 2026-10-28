@@ -1485,14 +1485,17 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
   background: linear-gradient(160deg, color-mix(in srgb, var(--c-sky) 22%, #151518), color-mix(in srgb, #5a9bd3 12%, #121214)); }
 .desk-weather > .tile { flex: none; background: none; border: 0; border-radius: 0; }
 .desk-weather > #w-weather { padding-bottom: 6px; }
-/* Buienalarm in het weervak: droog = één regel, regen in de komende 2 uur = de grafiek klapt uit (zoals staand) */
-.desk #w-rain { padding-top: 0; }
-.desk #w-rain > .eyebrow { display: none; }
-.desk #w-rain:not(.is-wet) .rn-flat, .desk #w-rain:not(.is-wet) .rn-foot { display: none; }
-.desk #w-rain:not(.is-wet) .rn-text { font-size: .85rem; font-weight: 600; color: var(--muted); }
-.desk #w-rain:not(.is-wet) .rn-text::before { content: '☂ '; }
-.desk #w-rain.is-wet { border-top: 1px solid rgba(255, 255, 255, .12); padding-top: 10px; }
-.desk #w-rain.is-wet .rn-chart { min-height: 56px; }
+/* Buienalarm onder het weer in hetzelfde vak, gescheiden door een dun lijntje; compact */
+.desk #w-rain { border-top: 1px solid rgba(255, 255, 255, .12); padding-top: 9px; }
+.desk #w-rain .rn-flat { min-height: 26px; }
+.desk #w-rain .rn-chart { min-height: 48px; }
+.desk #w-rain .rn-foot { font-size: .72rem; }
+/* Bron rechts naast de zin in plaats van eronder: scheelt een regel */
+.desk #w-rain .w-body, .tall #w-rain .w-body { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "head foot" "chart chart" "axis axis"; align-items: baseline; column-gap: 10px; }
+.desk #w-rain .rn-head, .tall #w-rain .rn-head { grid-area: head; min-width: 0; }
+.desk #w-rain .rn-foot, .tall #w-rain .rn-foot { grid-area: foot; text-align: right; white-space: nowrap; }
+.desk #w-rain .rn-flat, .desk #w-rain .rn-chart, .tall #w-rain .rn-flat, .tall #w-rain .rn-chart { grid-area: chart; }
+.desk #w-rain .rn-axis, .tall #w-rain .rn-axis { grid-area: axis; }
 .desk .wx-icon { width: 60px; height: 60px; margin: -6px -2px -6px -6px; }
 .desk #w-weather .w-big { font-size: 2rem; }
 .desk #w-weather .w-mid { font-size: .95rem; }
@@ -1723,14 +1726,11 @@ body.minimal .tb-design { display: none; }
   background: linear-gradient(150deg, color-mix(in srgb, var(--c-sky) 24%, #151518), color-mix(in srgb, #5a9bd3 10%, #121214)); }
 .tall .desk-weather > .tile { background: none; border: 0; border-radius: 0; min-height: 0; }
 .tall .desk-weather > #w-weather { flex: 1 1 auto; padding-bottom: 8px; }
-.tall .desk-weather > #w-rain { flex: none; padding-top: 0; }
-.tall #w-rain > .eyebrow { display: none; }
-.tall #w-rain:not(.is-wet) .rn-flat, .tall #w-rain:not(.is-wet) .rn-foot { display: none; }
-.tall #w-rain:not(.is-wet) .rn-text { font-size: .92rem; font-weight: 600; color: var(--muted); }
-.tall #w-rain:not(.is-wet) .rn-text::before { content: '☂ '; }
-.tall #w-rain.is-wet { border-top: 1px solid rgba(255, 255, 255, .12); padding-top: 12px; }
-.tall #w-rain.is-wet .rn-chart { min-height: 70px; }
-.tall #w-rain .w-body { gap: 4px; }
+.tall .desk-weather > #w-rain { flex: none; border-top: 1px solid rgba(255, 255, 255, .12); padding-top: 12px; }
+.tall #w-rain .rn-flat { min-height: 30px; }
+.tall #w-rain .rn-chart { min-height: 60px; }
+.tall #w-rain .rn-foot { font-size: .75rem; }
+.tall #w-rain .w-body { gap: 6px; }
 
 /* Roterend vak: één onderdeel tegelijk, rustige crossfade */
 .tall-rot { grid-column: 1 / -1; display: grid; position: relative; min-width: 0; }
