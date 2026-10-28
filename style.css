@@ -1474,8 +1474,11 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk .rn-chart { min-height: 40px; }
 .desk #w-alerts { flex: .95 1 0; }
 .desk #w-ah { flex: 1.1 1 0; }
-.desk .ah-bars { height: 40px; margin-top: 0; }
-.desk .ah-bar .v { display: none; }
+/* Staafjes vullen de vrije ruimte in het vak (minstens 48px), met de uren erboven */
+.desk .ah-bars { flex: 1 1 auto; height: auto; min-height: 20px; margin-top: 2px; }
+.desk #w-ah .w-sub { line-height: 1.25; }
+.desk #w-ah .w-label { line-height: 1.2; }
+.desk .ah-bar .v { font-size: .66rem; }
 .desk .ah-top { gap: 10px; }
 .desk #w-ah .w-big { font-size: 2rem; }
 .desk .ah-pay { margin-top: 4px; padding-top: 4px; }
