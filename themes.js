@@ -655,6 +655,12 @@ window.DASH_THEMES = (() => {
     }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
   }
 
+  // ---------- Tabje Thema in Instellingen (settings.js) ----------
+  function renderTab(el) {
+    el.append(h('p', 'w-note', 'De thema-instellingen komen hier.'));
+  }
+  if (window.DASH_SETTINGS) DASH_SETTINGS.add({ id: 'thema', label: 'Thema', order: 10, render: renderTab });
+
   return { add, kind, util: { isoDay, md, noon, addDays, easter, between, daysUntil, inDays, calEvents, rng, svgUrl },
     settings, set, viewDate, viewIso, today, describe, list: () => themes.slice(), refresh, placeDeco, DEFAULTS };
 })();
