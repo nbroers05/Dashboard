@@ -1,6 +1,6 @@
 'use strict';
 
-// Mijn verjaardag: paars/roze, groet met leeftijd, één keer confetti (zoals 0.42.0).
+// Mijn verjaardag: paars/roze, groet met leeftijd, één keer confetti (zoals 0.42.0), plus een slinger boven de topbalk.
 // Je eigen verjaardag staat NIET in de code (de repo is openbaar): één keer per browser ?mijnverjaardag=JJJJ-MM-DD
 // (themes.js bewaart hem als theme.birthday, met leeftijd). Zonder die instelling: de verjaardag-afspraak
 // "Gefeliciteerd met je verjaardag!" uit je agenda (zonder leeftijd).
@@ -18,6 +18,8 @@
       const o = own(day, data);
       return `Gefeliciteerd, Noah!${o && o.age ? ` ${o.age} vandaag` : ''} 🎉`;
     },
+    bg: 'radial-gradient(60% 50% at 100% 0%, rgba(180,140,255,.18), transparent 70%), radial-gradient(60% 50% at 0% 100%, rgba(255,122,168,.12), transparent 70%)',
+    topDeco: { type: 'garland', colors: ['#b48cff', '#ff7aa8', '#ffcf5c', '#7ad7ff', '#9cff8a'] },
     fx: 'confetti',
   });
 })();

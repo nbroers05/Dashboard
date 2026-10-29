@@ -75,6 +75,8 @@ window.DASH_THEMES = (() => {
     };
   }
   const svgUrl = (svg) => `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+  // Sneeuwkapje bovenop een vak (kerst, winter in december)
+  const snowCap = '<svg viewBox="0 0 200 14" preserveAspectRatio="none"><path d="M0 0H200V6Q195 12 188 8T172 9T156 7T140 10T124 8T108 10T92 7T76 9T60 8T44 10T28 7T12 9T0 7Z" fill="#f2f6ff" fill-opacity=".92"/></svg>';
 
   // ---------- Registratie ----------
   const themes = [], byId = {}, aliases = {}, kinds = {};
@@ -191,8 +193,10 @@ window.DASH_THEMES = (() => {
     dayEl.insertBefore(viewChip, greet);
   }
   // Lampjes, vlaggetjes of een slinger net boven de topbalk (in de ruimte erboven, nooit over tekst)
-  function garland(type, colors, width) {
-    const W = Math.max(200, Math.round(width)), H = 30, span = W > 900 ? 240 : 160;
+  // f < 1: kleiner getekend als er weinig ruimte boven de topbalk is (compacte liggende stand)
+  const GARLAND_BOTTOM = { lights: 24, flags: 26, garland: 22, stars: 17 };
+  function garland(type, colors, width, f = 1) {
+    const W = Math.max(200, Math.round(width / f)), H = 30, span = W > 900 ? 240 : 160;
     const n = Math.max(2, Math.round(W / span)), seg = W / n;
     let path = 'M0 4', items = '';
     for (let i = 0; i < n; i++) path += ` Q${(i + 0.5) * seg} 16 ${(i + 1) * seg} 4`;
@@ -207,7 +211,7 @@ window.DASH_THEMES = (() => {
       else if (type === 'stars') items += k % 3 ? `<circle cx="${x}" cy="${y + 4}" r="1.6" fill="${c}"/>` : `<path d="M${x} ${y - 1}l1.6 3.6 3.9.4-2.9 2.6.8 3.8-3.4-2-3.4 2 .8-3.8-2.9-2.6 3.9-.4z" fill="${c}"/>`;
     }
     const cord = type === 'stars' ? '' : `<path d="${path}" fill="none" stroke="${type === 'lights' ? '#3a3a3a' : 'rgba(255,255,255,.35)'}" stroke-width="1.5"/>`;
-    return `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true">${cord}${items}</svg>`;
+    return `<svg viewBox="0 0 ${W} ${H}" width="${Math.round(W * f)}" height="${Math.round(H * f)}" aria-hidden="true">${cord}${items}</svg>`;
   }
   function drops(width) {
     const r = rng('regen'), W = Math.round(width);
@@ -220,8 +224,14 @@ window.DASH_THEMES = (() => {
   }
   let topKey = '';
   function topDeco(spec, rain) {
-    const width = bar ? bar.getBoundingClientRect().width - 48 : 0;
-    const key = spec ? `${spec.type}|${spec.colors}|${Math.round(width / 40)}|${rain}` : `|${rain}|${Math.round(width / 40)}`;
+    const br = bar ? bar.getBoundingClientRect() : { width: 0 }, width = br.width - 48;
+    // Ruimte: van de bovenkant van de pagina tot de eerste tekst/knop in de topbalk
+    const parts = bar ? [...bar.querySelectorAll('.tb-clock, .tb-links, .tb-research, .tb-search, .tb-actions')].filter((e) => e.offsetParent) : [];
+    const contentTop = parts.length ? Math.min(...parts.map((e) => e.getBoundingClientRect().top)) - br.top : 14;
+    const above = br.top + scrollY;
+    const need = spec ? GARLAND_BOTTOM[spec.type] || 24 : 0;
+    const f = spec ? Math.max(0.4, Math.min(1, (above + contentTop - 3) / need)) : 1;
+    const key = `${spec ? `${spec.type}|${spec.colors}` : ''}|${Math.round(width / 40)}|${rain}|${f.toFixed(2)}|${Math.round(contentTop)}`;
     if (key === topKey) return;
     topKey = key;
     if (topEl) { topEl.remove(); topEl = null; }
@@ -229,12 +239,14 @@ window.DASH_THEMES = (() => {
     if (spec && width > 0) {
       topEl = h('div', `th-top th-top-${spec.type}`);
       topEl.setAttribute('aria-hidden', 'true');
-      topEl.innerHTML = garland(spec.type, spec.colors, width);
+      topEl.style.top = `${Math.round(contentTop - 3 - need * f)}px`;
+      topEl.innerHTML = garland(spec.type, spec.colors, width, f);
       bar.append(topEl);
     }
     if (rain && width > 0) {
       dropsEl = h('div', 'th-drops');
       dropsEl.setAttribute('aria-hidden', 'true');
+      dropsEl.style.top = `${Math.round(Math.max(-above, Math.min(-10, contentTop - 17)))}px`;
       dropsEl.innerHTML = drops(width);
       bar.append(dropsEl);
     }
@@ -427,7 +439,7 @@ window.DASH_THEMES = (() => {
     for (const spec of decoSpecs) {
       const pool = spec.card ? cards.filter((c) => c.id === spec.card) : cards;
       if (spec.type === 'edge') { for (const c of pool) plan.push({ card: c, spec, corner: 'all' }); continue; }
-      if (spec.type === 'cap') { for (const c of pool) if (free(c, rectFor(c, spec))) plan.push({ card: c, spec, corner: 'top' }); continue; }
+      if (spec.type === 'cap') { for (const c of pool) if (free(c, rectFor(c, spec))) plan.push({ card: c, spec, corner: 'band' }); continue; }
       const r = rng(`${decoSeed}|${spec.id}`);
       // Vakken die je nu ziet eerst (niet in de dichte Meer-lade, niet ver onder beeld)
       const seen = (c) => !c.closest('.desk-more:not(.open)') && c.getBoundingClientRect().top < innerHeight * 1.5;
@@ -472,7 +484,7 @@ window.DASH_THEMES = (() => {
   // Inhoud komt later binnen (agenda, posters): een paar keer opnieuw kijken, daarna elke minuut
   [2500, 6000, 12000, 25000].forEach((ms) => setTimeout(() => decoSpecs.length && placeDeco(), ms));
   DASH.every(60 * 1000, () => decoSpecs.length && placeDeco());
-  window.addEventListener('dash:layout', () => setTimeout(placeDeco, 400));
+  window.addEventListener('dash:layout', () => setTimeout(() => { topKey = ''; refresh(); placeDeco(); }, 400));
 
   // ---------- Eenmalige effecten (confetti, vuurwerk): ~4 s op een doek over de pagina, daarna weg ----------
   function effect(kindName) {
@@ -585,7 +597,8 @@ window.DASH_THEMES = (() => {
     if (on && s.deco && !phone && !minimal) {
       for (const t of top) {
         for (const spec of t.deco || []) {
-          if (spec.if && !spec.if(data, wx)) continue;
+          if (spec.if && !spec.if(data, wx, cur.day)) continue;
+          if (specs.some((x) => x.id === (spec.id || `${t.id}-${spec.type}`))) continue;   // bv. sneeuwkapjes van kerst én winter
           let max = spec.max ? Math.max(1, Math.round(spec.max * amount.deco)) : spec.max;
           if (t.tier === 'seizoen' && holiday && max) max = Math.max(1, Math.ceil(max / 2));
           specs.push({ ...spec, id: spec.id || `${t.id}-${spec.type}`, max });
@@ -636,14 +649,15 @@ window.DASH_THEMES = (() => {
   if (dayEl) {
     let left = FILES.length;
     const done = () => { if (--left === 0) { ready = true; refresh(); } };
-    for (const f of FILES) {
+    const load = (f, retry) => {
       const el = document.createElement('script');
       el.src = `themes/${f}.js?v=${DASH.VERSION}`;
       el.async = false;
       el.onload = done;
-      el.onerror = () => { console.warn('[thema] laden mislukt:', f); done(); };
+      el.onerror = () => { el.remove(); if (retry) load(f, false); else { console.warn('[thema] laden mislukt:', f); done(); } };   // één keer opnieuw
       document.head.append(el);
-    }
+    };
+    for (const f of FILES) load(f, true);
     DASH.every(60 * 1000, refresh);                        // om middernacht vanzelf om
     window.addEventListener('dash:calendar', refresh);     // verjaardag en tentamens uit de agenda komen later binnen
     phoneMq.addEventListener('change', refresh);
@@ -744,6 +758,6 @@ window.DASH_THEMES = (() => {
   }
   if (window.DASH_SETTINGS) DASH_SETTINGS.add({ id: 'thema', label: 'Thema', order: 10, render: renderTab });
 
-  return { add, kind, util: { isoDay, md, noon, addDays, easter, between, daysUntil, inDays, calEvents, rng, svgUrl },
+  return { add, kind, util: { isoDay, md, noon, addDays, easter, between, daysUntil, inDays, calEvents, rng, svgUrl, snowCap },
     settings, set, viewDate, viewIso, today, describe, list: () => themes.slice(), refresh, placeDeco, DEFAULTS };
 })();

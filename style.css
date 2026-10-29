@@ -1741,7 +1741,7 @@ html.th-icon .tb-dayline::before { content: var(--th-icon); }
 .th-mirror.th-tr > svg { transform: scaleX(-1) rotate(var(--rot, 0deg)); }
 .th-mirror.th-bl > svg { transform: scaleY(-1) rotate(var(--rot, 0deg)); }
 .th-mirror.th-br > svg { transform: scale(-1, -1) rotate(var(--rot, 0deg)); }
-.th-deco.th-top-band, .th-deco.th-cap { left: 0; right: 0; top: 0; }
+.th-deco.th-band { left: 0; right: 0; top: 0; }
 .th-deco.th-all { inset: 0; border-radius: inherit; }
 body.minimal .th-deco { display: none; }
 @media (max-width: 700px) { .th-top, .th-drops, .th-deco { display: none; } }

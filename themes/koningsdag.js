@@ -1,6 +1,6 @@
 'use strict';
 
-// Koningsdag (27 april, of 26 als de 27e op zondag valt): oranje.
+// Koningsdag (27 april, of 26 als de 27e op zondag valt): oranje, vlaggetjes langs de topbalk.
 DASH_THEMES.add({
   id: 'koningsdag', name: 'Koningsdag', icon: '👑', tier: 'feest', prio: 80, c1: '#ff8a1f', c2: '#ffb066', topbar: 'strong',
   when(day) {
@@ -9,4 +9,6 @@ DASH_THEMES.add({
     return DASH_THEMES.util.md(king) === DASH_THEMES.util.md(day);
   },
   greeting: () => 'Fijne Koningsdag 👑',
+  bg: 'radial-gradient(70% 50% at 50% 0%, rgba(255,138,31,.18), transparent 70%)',
+  topDeco: { type: 'flags', colors: ['#ff8a1f', '#ae1c28', '#ffffff', '#21468b', '#ff8a1f'] },
 });
