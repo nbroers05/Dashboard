@@ -2067,7 +2067,7 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk-more-list { color: var(--muted); }
 .desk-more-chev { color: var(--muted); transition: transform .3s; }
 .desk-more.open .desk-more-chev { transform: rotate(180deg); }
-.desk-more-bar .version { grid-column: auto; margin-left: auto; padding: 0; font-size: .72rem; }
+.desk-more-bar .version { grid-column: auto; margin-left: auto; padding: 0; font-size: .72rem; line-height: 1; align-self: center; }
 .desk-drawer {
   position: absolute; left: 0; right: 0; bottom: calc(100% + 10px);
   height: calc(50dvh - 40px);
@@ -2185,12 +2185,24 @@ body.minimal .tb-design { display: none; }
 .tall .ep-covers { padding-bottom: 4px; }
 /* Agenda: begrensde hoogte, de rest scrollt binnen het vak */
 .tall .cal-list { --fit-h: 540px; }
+.tall-arrow { position: absolute; top: 50%; z-index: 3; transform: translateY(-50%); width: 38px; height: 38px; display: grid; place-items: center; border: 0; border-radius: 50%;
+  background: rgba(0, 0, 0, .45); color: var(--text); font: inherit; font-size: 1.5rem; line-height: 1; cursor: pointer; opacity: .55; transition: opacity .2s, background .2s; }
+.tall-arrow.prev { left: 8px; }
+.tall-arrow.next { right: 8px; }
+.tall-rot:hover .tall-arrow, .tall-arrow:focus-visible { opacity: 1; }
+.tall-arrow:hover { background: rgba(0, 0, 0, .7); }
+.tall-arrow { display: none; }
+.tall .tall-arrow { display: grid; }
 .tall-dots { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); z-index: 2; display: flex; gap: 8px; }
 .tall-dots button { width: 9px; height: 9px; padding: 0; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .3); cursor: pointer; transition: width .3s, background .3s; }
 .tall-dots button[aria-current="true"] { width: 22px; border-radius: 99px; background: var(--accent); }
 
 /* Meer-balk (to-do) blijft onderaan in beeld */
 .tall .desk-more { grid-area: auto; grid-column: 1 / -1; position: sticky; bottom: 10px; z-index: 30; }
+/* Duidelijk los van de agenda die eronder doorloopt: bijna dicht, lichtere rand en schaduw */
+.tall .desk-more-bar { background: color-mix(in srgb, var(--tint) 22%, rgba(16, 16, 18, .97)); border-color: rgba(255, 255, 255, .18);
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, .55), 0 2px 10px rgba(0, 0, 0, .4); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+.tall .desk-more-bar:hover { background: color-mix(in srgb, var(--tint) 30%, rgba(28, 28, 32, .98)); }
 .tall .desk-drawer { height: min(55dvh, 560px); grid-template-columns: repeat(2, minmax(0, 480px)); justify-content: center; }
 
 /* ---------- Animaties: alleen als er iets gebeurt, nooit doorlopend ---------- */

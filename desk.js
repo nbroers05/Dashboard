@@ -73,7 +73,10 @@
   const hidden = h('div', 'tall-hidden');   // het mailvak blijft laden (voor het getal op het Gmail-icoon), maar zonder vak
   const rot = h('div', 'tall-rot');
   const dots = h('div', 'tall-dots');
-  rot.append(dots);
+  // Pijltjes links en rechts: zelf door de onderdelen klikken (daarna 30 s niet automatisch verder)
+  const arrow = (cls, label, text) => { const b = h('button', `tall-arrow ${cls}`, text); b.type = 'button'; b.setAttribute('aria-label', label); b.title = label; return b; };
+  const prevBtn = arrow('prev', 'Vorige', '‹'), nextBtn = arrow('next', 'Volgende', '›');
+  rot.append(dots, prevBtn, nextBtn);
   const ROT = ['w-letterboxd', 'w-friends', 'w-stars', 'w-sptop', 'w-episodes', 'w-health'];
   const ROT_MS = 12000;
   let rotIndex = 0, rotTimer = null, pausedUntil = 0, hover = false;
@@ -90,13 +93,15 @@
     });
     [...dots.children].forEach((d, k) => d.setAttribute('aria-current', k === rotIndex ? 'true' : 'false'));
   }
-  function next() {
+  function next(dir = 1) {
     const list = slides();
     for (let step = 1; step <= list.length; step++) {
-      const k = (rotIndex + step) % list.length;
+      const k = (rotIndex + dir * step + list.length * step) % list.length;
       if (hasData(list[k])) return show(k);
     }
   }
+  prevBtn.onclick = () => { next(-1); pausedUntil = Date.now() + 30000; };
+  nextBtn.onclick = () => { next(1); pausedUntil = Date.now() + 30000; };
   function buildDots() {
     dots.replaceChildren(...slides().map((el, k) => {
       const b = h('button');
@@ -151,7 +156,7 @@
     },
     tall: {
       enter() {
-        const ids = ['w-weather', 'w-rain', 'w-f1', 'w-ah', 'w-canvas', 'w-alerts', ...ROT, 'w-mail', 'w-todo', 'w-checkin'];
+        const ids = ['w-weather', 'w-rain', 'w-f1', 'w-ah', 'w-canvas', 'w-alerts', ...ROT, 'w-mail', 'w-todo', 'w-checkin', 'version'];
         remember(ids);
         put(weather, ['w-weather', 'w-rain']);
         put(row3, [weather, 'w-f1', 'w-ah']);
@@ -160,6 +165,7 @@
         put(hidden, ['w-mail']);
         put(drawer, ['w-checkin', 'w-todo']);
         moreList.textContent = 'Check-in · To-do';
+        if ($('version')) moreBar.append($('version'));   // versie rechts in de Meer-balk, net als in desk
         const before = $('calendar');
         [row3, row2, rot].forEach((el) => dash.insertBefore(el, before));
         dash.append(hidden, more);
