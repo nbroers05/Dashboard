@@ -2,7 +2,7 @@
 
 // Verbinding met de PRIVÉ repo met Noahs data-archief (config.dataRepo, standaard nbroers05/dashboard-data).
 // Gebruikt een fine-grained GitHub-token dat alleen in localStorage van deze browser staat (nooit in de code):
-// alleen toegang tot die ene repo, "Contents: Read and write". Wordt gebruikt door de check-in (schrijven) en het
+// alleen toegang tot die ene repo, "Contents: Read and write". Wordt gebruikt door de check-in en het Episodes Left-logboek (schrijven) en het
 // Data-overzicht (data/status.json lezen). Er gaat nooit iets naar de publieke dashboard-repo.
 window.DASH_DATA = (() => {
   const { store } = DASH;
@@ -57,21 +57,27 @@ window.DASH_DATA = (() => {
 
   // Rij toevoegen aan een maandbestand; bij een botsing (iemand anders schreef net) opnieuw proberen
   async function appendCsv(path, columns, row) {
+    return appendRows(path, columns, [row], `Check-in ${row.timestamp_utc || ''}`.trim());
+  }
+
+  // Meerdere rijen in één keer (één commit); rijen met een id die er al staat worden overgeslagen
+  async function appendRows(path, columns, rows, message) {
     for (let attempt = 0; attempt < 3; attempt++) {
       const cur = await read(path);
       let cols = columns, text;
       if (cur && cur.text.trim()) {
         cols = header(cur.text);
         for (const c of columns) if (!cols.includes(c)) cols.push(c);   // nieuwe kolom: komt achteraan (lib.py vult op)
-        if (row.id && cur.text.includes(`,${row.id},`)) return;          // al opgeslagen
+        const todo = rows.filter((r) => !(r.id && cur.text.includes(`,${r.id},`)));   // al opgeslagen
+        if (!todo.length) return;
         const head = cols.join(',');
         const body = cur.text.split(/\r?\n/).slice(1).filter(Boolean).join('\n');
-        text = `${head}\n${body ? `${body}\n` : ''}${cols.map((c) => esc(row[c])).join(',')}\n`;
+        text = `${head}\n${body ? `${body}\n` : ''}${todo.map((r) => cols.map((c) => esc(r[c])).join(',')).join('\n')}\n`;
       } else {
-        text = `${cols.join(',')}\n${cols.map((c) => esc(row[c])).join(',')}\n`;
+        text = `${cols.join(',')}\n${rows.map((r) => cols.map((c) => esc(r[c])).join(',')).join('\n')}\n`;
       }
       try {
-        await call(path, { method: 'PUT', body: JSON.stringify({ message: `Check-in ${row.timestamp_utc || ''}`.trim(), content: b64encode(text), ...(cur ? { sha: cur.sha } : {}) }) });
+        await call(path, { method: 'PUT', body: JSON.stringify({ message, content: b64encode(text), ...(cur ? { sha: cur.sha } : {}) }) });
         return;
       } catch (e) {
         if (e.status !== 409 && e.status !== 422) throw e;   // 409/422 = bestand intussen veranderd: opnieuw
@@ -93,5 +99,5 @@ window.DASH_DATA = (() => {
   }
   const utcIso = (date) => date.toISOString().replace(/\.\d{3}Z$/, 'Z');
 
-  return { REPO, token, setToken, read, appendCsv, localIso, utcIso, DataError };
+  return { REPO, token, setToken, read, appendCsv, appendRows, localIso, utcIso, DataError };
 })();
