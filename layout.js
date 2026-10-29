@@ -10,7 +10,7 @@
   const tiles = () => [...holder.querySelectorAll(':scope > .tile')];
 
   // Standaard: [breedte in kolommen (van 12), hoogte in rijen]
-  const ORDER = ['w-weather', 'w-f1', 'w-rain', 'w-alerts', 'w-ah', 'w-canvas', 'w-mail', 'w-health', 'w-episodes', 'w-stars', 'w-letterboxd', 'w-friends', 'w-sptop', 'w-checkin', 'w-todo'];
+  const ORDER = ['w-weather', 'w-f1', 'w-rain', 'w-alerts', 'w-ah', 'w-canvas', 'w-mail', 'w-health', 'w-episodes', 'w-stars', 'w-letterboxd', 'w-friends', 'w-sptop', 'w-checkin', 'w-todo', 'w-wishes'];
   // Vakken die vervangen zijn: het nieuwe vak neemt de plek en grootte van het oude over
   const RENAMED = { 'w-sun': 'w-rain' };
   const DEFAULT_WIDE = [4, 2];

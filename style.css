@@ -369,6 +369,15 @@ button { font: inherit; color: inherit; }
 #w-episodes { --c: var(--c-anime); }
 #w-stars { --c: var(--c-film); }
 #w-todo { --c: #2ec4b6; }
+#w-wishes { --c: #f5b02e; }
+.ws-head { margin: 4px 0 0; font-size: .75rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.ws-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; overflow-y: auto; max-height: 260px; scrollbar-width: thin; }
+.ws-list li { display: flex; align-items: baseline; gap: 8px; padding: 6px 10px; border-radius: 10px; background: rgba(255, 255, 255, .05); font-size: .9rem; line-height: 1.35; }
+.ws-text { flex: 1; min-width: 0; }
+.ws-tag { flex: none; font-size: .72rem; font-weight: 700; color: var(--muted); }
+.ws-you .ws-tag { color: var(--ct); }
+.ws-claude .ws-tag { color: #5bd38a; }
+.ws-foot { margin: 2px 0 0; }
 #w-letterboxd { --c: #40bcf4; }
 #w-friends { --c: #00e054; }
 #w-sptop { --c: #1ed760; }
@@ -2071,7 +2080,7 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk-drawer {
   position: absolute; left: 0; right: 0; bottom: calc(100% + 10px);
   height: calc(50dvh - 40px);
-  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px;
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 12px;   /* één kolom per zichtbaar vak */
   padding: 12px; border-radius: 24px;
   background: rgba(14, 14, 16, .92); border: 1px solid rgba(255, 255, 255, .1);
   box-shadow: 0 -20px 60px rgba(0, 0, 0, .55);
@@ -2203,7 +2212,7 @@ body.minimal .tb-design { display: none; }
 .tall .desk-more-bar { background: color-mix(in srgb, var(--tint) 22%, rgba(16, 16, 18, .97)); border-color: rgba(255, 255, 255, .18);
   box-shadow: 0 -10px 30px rgba(0, 0, 0, .55), 0 2px 10px rgba(0, 0, 0, .4); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
 .tall .desk-more-bar:hover { background: color-mix(in srgb, var(--tint) 30%, rgba(28, 28, 32, .98)); }
-.tall .desk-drawer { height: min(55dvh, 560px); grid-template-columns: repeat(2, minmax(0, 480px)); justify-content: center; }
+.tall .desk-drawer { height: min(55dvh, 560px); grid-template-columns: none; grid-auto-columns: minmax(0, 420px); justify-content: center; }
 
 /* ---------- Animaties: alleen als er iets gebeurt, nooit doorlopend ---------- */
 /* Vakken schuiven zacht in bij het laden (motion.js zet --i en de klasse .intro) */
