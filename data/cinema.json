@@ -1,5 +1,5 @@
 {
- "day": "2026-10-28",
+ "day": "2026-10-29",
  "sources": [
   "LantarenVenster"
  ],
@@ -128,6 +128,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/andiamo-a-bere-lultima/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Andiamo a bere l'ultima - Expat Cinema Rotterdam",
+   "key": "andiamoaberelultimaexpatcinemarotterdam",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/andiamo-a-bere-lultima-expat-cinema-rotterdam/",
      "day": null,
      "next": null,
      "until": null
@@ -541,20 +555,6 @@
    ]
   },
   {
-   "title": "Digger",
-   "key": "digger",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/digger/",
-     "day": null,
-     "next": null,
-     "until": "2026-10-28"
-    }
-   ]
-  },
-  {
    "title": "Donnie Darko (25th Anniversary)",
    "key": "donniedarko25thanniversary",
    "poster": null,
@@ -774,7 +774,7 @@
      "url": "https://www.lantarenvenster.nl/programma/het-geheim-van-hotel-new-york/",
      "day": null,
      "next": null,
-     "until": "2026-11-04"
+     "until": "2026-11-09"
     }
    ]
   },
@@ -870,6 +870,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/jacobs-ladder/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Jaleos - Flamenco Sketches",
+   "key": "jaleosflamencosketches",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/jaleos-flamenco-sketches/",
      "day": null,
      "next": null,
      "until": null
@@ -1013,20 +1027,6 @@
      "day": null,
      "next": null,
      "until": null
-    }
-   ]
-  },
-  {
-   "title": "Juste une illusion",
-   "key": "justeuneillusion",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/juste-une-illusion/",
-     "day": null,
-     "next": null,
-     "until": "2026-10-28"
     }
    ]
   },
@@ -1423,20 +1423,6 @@
    ]
   },
   {
-   "title": "Pressure",
-   "key": "pressure",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/pressure/",
-     "day": null,
-     "next": null,
-     "until": "2026-10-28"
-    }
-   ]
-  },
-  {
    "title": "Primetime",
    "key": "primetime",
    "poster": null,
@@ -1514,6 +1500,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/rembrandt-trio/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Rond de Zwarte Zee",
+   "key": "ronddezwartezee",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/rond-de-zwarte-zee/",
      "day": null,
      "next": null,
      "until": null

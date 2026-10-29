@@ -4,6 +4,18 @@
    "name": "NOS",
    "items": [
     {
+     "title": "Rechter Alvin Hellerstein (92) overleden, bekend van 9/11, Maduro en zwijggeld Trump",
+     "link": "https://nos.nl/l/2637104",
+     "time": "2026-10-29T00:59:26+01:00",
+     "img": "https://images.cdn.nos.nl/2/4/J/s/j/W/iPQBArVQDKZdBYN9K28DfAL25z8KmTCr2S53kGj/8x373x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Mogelijk flinke pensioenverhoging op komst bij ABP en PME door gestegen dekkingsgraad",
+     "link": "https://nos.nl/l/2637103",
+     "time": "2026-10-29T00:09:30+01:00",
+     "img": "https://images.cdn.nos.nl/7/A/4/U/N/n/Toe22T9bYDwmPiXWpvjHcdPW5XzeX6HrR1bZL7F/0x91x4000x2250-1024x576.webp"
+    },
+    {
      "title": "El Salvador stuurt militairen naar Haïti, maar missies hebben nog weinig effect",
      "link": "https://nos.nl/l/2637101",
      "time": "2026-10-28T23:45:23+01:00",
@@ -80,24 +92,18 @@
      "link": "https://nos.nl/l/2637060",
      "time": "2026-10-28T17:37:53+01:00",
      "img": "https://images.cdn.nos.nl/7/y/f/G/N/d/CHsDTQ6hsQUAVbu2YfPg5xKTJEtuAJ93a7APRD/0x417x4000x2250-1024x576.webp"
-    },
-    {
-     "title": "Podcast De Monarchie: hoe het koningshuis en defensie elkaar omarmen",
-     "link": "https://nos.nl/l/2637053",
-     "time": "2026-10-28T16:49:46+01:00",
-     "img": "https://images.cdn.nos.nl/8/2/2/R/6/H/UfAmqTgJ7LGT9u1ioFBhMmYdey5oUQBjpdexMTi/0x0x1920x1080-1024x576.webp"
-    },
-    {
-     "title": "'Wintersteunpakket' voor Oekraïne: Nederland geeft 500 miljoen voor luchtafweer",
-     "link": "https://nos.nl/l/2637052",
-     "time": "2026-10-28T16:48:15+01:00",
-     "img": "https://images.cdn.nos.nl/2/2/B/B/T/V/eQn9d3pPXA4xz9jxmaKuBfmZPcmoGJ2j3fv9sGc/3x82x3920x2205-1024x576.webp"
     }
    ]
   },
   {
    "name": "NOS Sport",
    "items": [
+    {
+     "title": "Liverpool verslaat Chelsea in League Cup, Emegha mist strafschop bij debuut",
+     "link": "https://nos.nl/l/2637102",
+     "time": "2026-10-29T00:06:20+01:00",
+     "img": "https://images.cdn.nos.nl/7/H/4/Z/t/y/2u5jVu5CSmWUAV65gB8ZnWTGLFgUXvfEPoqEYms/8x231x3984x2241-1024x576.webp"
+    },
     {
      "title": "Europese zege Slegers met Arsenal, Beerensteyn scoort ook in Champions League",
      "link": "https://nos.nl/l/2637099",
@@ -181,18 +187,30 @@
      "link": "https://nos.nl/l/2636960",
      "time": "2026-10-28T06:35:47+01:00",
      "img": "https://images.cdn.nos.nl/4/D/W/7/Z/E/5WuPb1AHd2z5d2KgxrFDpZ4mzB2FzHeavthSix/2x1x3600x2025-1024x576.webp"
-    },
-    {
-     "title": "Enorme stunt in Engelse beker: kampioen Arsenal eruit tegen League Two-club Fleetwood",
-     "link": "https://nos.nl/l/2636953",
-     "time": "2026-10-27T23:55:10+01:00",
-     "img": "https://images.cdn.nos.nl/8/E/T/3/5/x/We8cDCUvkpnVzHTpqPSunMWzCQKZi62PtFBQyri/181x332x3760x2115-1024x576.webp"
     }
    ]
   },
   {
    "name": "NU.nl",
    "items": [
+    {
+     "title": "Italië verhoogt belasting voor banken om lasten van middeninkomens te verlichten",
+     "link": "https://www.nu.nl/buitenland/6414746/italie-verhoogt-belasting-voor-banken-om-lasten-van-middeninkomens-te-verlichten.html",
+     "time": "2026-10-29T00:41:01+01:00",
+     "img": "https://images.nu.nl/m/4fdxp2fa85is_sqr256/517/0/2835/2835/italie-verhoogt-belasting-voor-banken-om-lasten-van-middeninkomens-te-verlichten.jpg"
+    },
+    {
+     "title": "Pensioenfondsen verdienen aan hogere rentes in aanloop naar nieuw stelsel",
+     "link": "https://www.nu.nl/economie/6414722/pensioenfondsen-verdienen-aan-hogere-rentes-in-aanloop-naar-nieuw-stelsel.html",
+     "time": "2026-10-29T00:00:19+01:00",
+     "img": "https://images.nu.nl/m/1hdxtw7av02j_sqr256/0/0/941/941/pensioenfondsen-verdienen-aan-hogere-rentes-in-aanloop-naar-nieuw-stelsel.jpg"
+    },
+    {
+     "title": "Dieselrijders brengen veel geld in het laatje van oliebedrijven sinds Iranoorlog",
+     "link": "https://www.nu.nl/economie/6414582/dieselrijders-brengen-veel-geld-in-het-laatje-van-oliebedrijven-sinds-iranoorlog.html",
+     "time": "2026-10-29T00:00:08+01:00",
+     "img": "https://images.nu.nl/m/uxrxu4ja64f0_sqr256/3352/0/4479/4479/dieselrijders-brengen-veel-geld-in-het-laatje-van-oliebedrijven-sinds-iranoorlog.jpg"
+    },
     {
      "title": "Canadees eist gewonnen jackpot van 40 miljoen vlak voordat prijs verloopt op",
      "link": "https://www.nu.nl/opmerkelijk/6414744/canadees-eist-gewonnen-jackpot-van-40-miljoen-vlak-voordat-prijs-verloopt-op.html",
@@ -260,28 +278,10 @@
      "img": "https://images.nu.nl/m/f5exhdmab5av_sqr256/1895/0/5501/5501/we-nodigen-jullie-graag-uit-voor-onze-nunl-bezoekersdag.jpg"
     },
     {
-     "title": "Live | KNVB-beker | Heerenveen viert zege op Excelsior Maassluis",
+     "title": "Teruglezen | KNVB-beker | Heerenveen viert zege op Excelsior Maassluis",
      "link": "https://www.nu.nl/voetbal/6414709/knvb-beker-heerenveen-viert-zege-op-excelsior-maassluis.html",
      "time": "2026-10-28T18:01:54+01:00",
      "img": "https://images.nu.nl/m/fe5xk00a4d89_sqr256/1125/0/4000/4000/knvb-beker-heerenveen-viert-zege-op-excelsior-maassluis.jpg"
-    },
-    {
-     "title": "Werkgevers worstelen met thuiswerkbeleid: 'Meer bedrijven kunnen zaak starten'",
-     "link": "https://www.nu.nl/economie/6414693/werkgevers-worstelen-met-thuiswerkbeleid-meer-bedrijven-kunnen-zaak-starten.html",
-     "time": "2026-10-28T18:00:28+01:00",
-     "img": "https://images.nu.nl/m/8dpxnw2aevcn_sqr256/2048/8/2952/2952/werkgevers-worstelen-met-thuiswerkbeleid-meer-bedrijven-kunnen-zaak-starten.jpg"
-    },
-    {
-     "title": "Diemenaar krijgt in hoger beroep veertien jaar cel voor 'abortusmoord'",
-     "link": "https://www.nu.nl/binnenland/6414702/diemenaar-krijgt-in-hoger-beroep-veertien-jaar-cel-voor-abortusmoord.html",
-     "time": "2026-10-28T17:57:21+01:00",
-     "img": "https://images.nu.nl/m/eykxrcxa5gem_sqr256/856/0/2362/2362/diemenaar-krijgt-in-hoger-beroep-veertien-jaar-cel-voor-abortusmoord.jpg"
-    },
-    {
-     "title": "Zelensky krijgt wat hij zoekt in Den Haag met oog op naderende winter",
-     "link": "https://www.nu.nl/politiek/6414715/zelensky-krijgt-wat-hij-zoekt-in-den-haag-met-oog-op-naderende-winter.html",
-     "time": "2026-10-28T17:35:13+01:00",
-     "img": "https://images.nu.nl/m/2lkxowga20el_sqr256/271/0/4559/4559/zelensky-krijgt-wat-hij-zoekt-in-den-haag-met-oog-op-naderende-winter.jpg"
     }
    ]
   }
@@ -390,7 +390,50 @@
   }
  ],
  "youtube": {
-  "channels": [],
-  "videos": []
+  "channels": [
+   "Patrick (H) Willems"
+  ],
+  "videos": [
+   {
+    "title": "Is This The Best Directed Movie Ever?",
+    "channel": "Patrick (H) Willems",
+    "link": "https://www.youtube.com/watch?v=_t76HmE8ib4",
+    "thumb": "https://i.ytimg.com/vi/_t76HmE8ib4/mqdefault.jpg",
+    "time": "2026-09-15T13:11:42+00:00",
+    "short": false
+   },
+   {
+    "title": "Come See My New Film In Theaters",
+    "channel": "Patrick (H) Willems",
+    "link": "https://www.youtube.com/watch?v=uuMbBWR-2Xg",
+    "thumb": "https://i.ytimg.com/vi/uuMbBWR-2Xg/mqdefault.jpg",
+    "time": "2026-09-04T22:53:08+00:00",
+    "short": false
+   },
+   {
+    "title": "We Need To Talk About How Weird HOOK Is",
+    "channel": "Patrick (H) Willems",
+    "link": "https://www.youtube.com/watch?v=hXAWl_Ar6xA",
+    "thumb": "https://i.ytimg.com/vi/hXAWl_Ar6xA/mqdefault.jpg",
+    "time": "2026-08-06T14:38:38+00:00",
+    "short": false
+   },
+   {
+    "title": "Can video games be cinema? #videogames #movie #thelastofus #deathstranding",
+    "channel": "Patrick (H) Willems",
+    "link": "https://www.youtube.com/shorts/-GWrCLXTuwM",
+    "thumb": "https://i.ytimg.com/vi/-GWrCLXTuwM/mqdefault.jpg",
+    "time": "2026-07-01T16:17:55+00:00",
+    "short": true
+   },
+   {
+    "title": "The Muppets and Tron transformed legacy sequels #movie #moviefacts #muppets #patrickhwillems",
+    "channel": "Patrick (H) Willems",
+    "link": "https://www.youtube.com/shorts/YxTEPXuVdPY",
+    "thumb": "https://i.ytimg.com/vi/YxTEPXuVdPY/mqdefault.jpg",
+    "time": "2026-06-24T16:02:36+00:00",
+    "short": true
+   }
+  ]
  }
 }
