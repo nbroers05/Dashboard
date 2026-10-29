@@ -1538,7 +1538,7 @@ line.md-grid { stroke: rgba(255, 255, 255, .07); stroke-width: 1; }
 .md-places-split { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
 @container (max-width: 620px) { .md-places-split { grid-template-columns: minmax(0, 1fr); } }
 .md-map { height: 340px; border-radius: 18px; overflow: hidden; background: #1b1b20; z-index: 0; }
-.md-map .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(.85) contrast(.9); }
+.md-map .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(.7) contrast(.9) saturate(.25); }   /* donker en grijzig: de vakjes vallen op */
 .md-map.leaflet-container { background: #1b1b20; font: inherit; }
 .md-map .leaflet-control-attribution { background: rgba(20, 20, 24, .75); color: var(--muted); font-size: 10px; }
 .md-map .leaflet-control-attribution a { color: var(--text); }

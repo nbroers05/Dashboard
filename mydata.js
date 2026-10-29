@@ -546,7 +546,7 @@
       }
       side.append(ol);
     } else side.append(note('–'));
-    side.append(sub('Vakjes van ~250 m, geen exacte routes. Plek-nummers blijven elke periode hetzelfde.'));
+    side.append(sub('Vakjes van ~250 m (geel = even, oranjerood = veel tijd), geen exacte routes. Plek-nummers blijven elke periode hetzelfde.'));
     // Kaart
     if (!cells.size) { mapBox.append(note('Geen plekken in deze periode.')); map = null; return; }
     mapBox.append(h('p', 'w-sub md-map-wait', 'Kaart laden…'));
@@ -559,10 +559,13 @@
       layer = L.layerGroup().addTo(map);
       const dLat = (P.grid_m || 250) / 111320, dLng = (P.grid_m || 250) / (111320 * Math.cos(52 * Math.PI / 180));
       const list = [...cells].map(([k, min]) => { const [lat, lng] = k.split(',').map(Number); return { lat, lng, min }; }).sort((a, c) => c.min - a.min);
-      const max = list[0].min;
-      const color = getComputedStyle(T.places.card).getPropertyValue('--ct').trim() || '#a78bfa';
+      // Logaritmisch: thuis is zoveel uur dat de rest anders bijna onzichtbaar wordt. Geel (weinig) → oranjerood (veel)
+      const max = Math.log1p(list[0].min);
+      const ramp = (f) => `rgb(255, ${Math.round(224 - 134 * f)}, ${Math.round(138 - 107 * f)})`;
       for (const c of list) {
-        L.rectangle([[c.lat - dLat / 2, c.lng - dLng / 2], [c.lat + dLat / 2, c.lng + dLng / 2]], { stroke: false, fillColor: color, fillOpacity: 0.15 + 0.7 * Math.sqrt(c.min / max) })
+        const f = Math.log1p(c.min) / max;
+        L.rectangle([[c.lat - dLat / 2, c.lng - dLng / 2], [c.lat + dLat / 2, c.lng + dLng / 2]],
+          { color: ramp(f), weight: 1, opacity: 0.9, fillColor: ramp(f), fillOpacity: 0.4 + 0.5 * f })
           .bindTooltip(fmtH(c.min)).addTo(layer);
       }
       // Inzoomen op de vakjes waar je 90% van de tijd was (een verre reis zoomt de kaart anders heel ver uit)
