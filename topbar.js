@@ -240,11 +240,14 @@
       parts.push(`${name} ${days === 0 ? `vandaag ${DASH.fmtTime(due(next))}` : days === 1 ? 'morgen' : `over ${days} dagen`}`);
     }
     // Verjaardagen (agenda-veld birthday, uit de verjaardagen-agenda van je contacten): komende 7 dagen
-    const bdays = cal.filter((e) => e.birthday && !/gefeliciteerd/i.test(e.birthday) && e.end > now && e.start < DASH.addDays(today, 8))
+    const bdays = cal.filter((e) => e.birthday && e.end > now && e.start < DASH.addDays(today, 8))
       .sort((a, b) => a.start - b.start).filter((e, i, arr) => arr.findIndex((x) => x.birthday === e.birthday) === i);
     let todayBday = null;
     for (const e of bdays.slice(0, 2)) {
       const days = Math.round((DASH.startOfDay(e.start) - today) / 86400000);
+      // Je eigen verjaardag ("Gefeliciteerd met je verjaardag!"): aftellen; op de dag zelf doet themes.js de felicitatie
+      const own = /gefeliciteerd/i.test(e.birthday);
+      if (own) { if (days > 0) parts.push(`🎂 nog ${days === 1 ? '1 dag' : `${days} dagen`} tot je verjaardag`); continue; }
       if (days <= 0) todayBday = `🎂 ${e.birthday} is vandaag jarig!`;
       else parts.push(`🎂 ${e.birthday} ${days === 1 ? 'morgen' : `over ${days} dagen`} jarig`);
     }
