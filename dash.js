@@ -12,6 +12,18 @@ window.DASH = (() => {
     if (el) el.textContent = `Dashboard versie ${VERSION}${DEMO ? ' · demo' : ''}`;
   });
 
+  // ?maat: laat zien hoe groot het venster echt is (zonder werkbalken), om op precies die maat te testen
+  if (new URLSearchParams(location.search).has('maat')) {
+    document.addEventListener('DOMContentLoaded', () => {
+      const tag = document.createElement('div');
+      tag.style.cssText = 'position:fixed;left:12px;bottom:12px;z-index:9999;padding:8px 14px;border-radius:12px;background:#f5b02e;color:#111;font:700 15px/1.3 system-ui;box-shadow:0 8px 24px rgba(0,0,0,.5)';
+      const show = () => { tag.textContent = `${innerWidth} × ${innerHeight} · schaal ${devicePixelRatio} · ${matchMedia('(orientation: portrait)').matches ? 'staand' : 'liggend'}`; };
+      addEventListener('resize', show);
+      show();
+      document.body.append(tag);
+    });
+  }
+
   // ---------- Laden ----------
   // ?mini=1 (nieuwe-tabpagina): alleen klok, datum en zoekbalk. De rest (Spotify, agenda, vakken) laadt pas
   // als je het volledige dashboard opent, zodat een nieuw tabblad meteen klaar is. Zonder ?mini=1 laadt alles meteen.
