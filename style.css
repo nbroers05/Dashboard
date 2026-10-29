@@ -1476,6 +1476,10 @@ body.mydata-open .tall-rot > .tile { visibility: hidden !important; }
 .md-tile { grid-column: span 6; grid-row: auto; min-height: 0; padding: 22px 24px; }
 .md-tile-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
 .md-tile-head .eyebrow { margin-bottom: 0; }
+.md-steps { display: flex; gap: 4px; }
+.md-steps button { width: 30px; height: 30px; border: 0; border-radius: 999px; background: rgba(255, 255, 255, .08); color: var(--text); font: inherit; font-size: 1.1rem; line-height: 1; cursor: pointer; }
+.md-steps button:hover:not(:disabled) { background: var(--surface-hover); }
+.md-steps button:disabled { opacity: .35; cursor: default; }
 .md-body { gap: 8px; container-type: inline-size; }
 #md-cov, #md-kpis, #md-overlap { grid-column: span 12; }
 #md-work, #md-money, #md-body { grid-column: span 4; }

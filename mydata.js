@@ -361,6 +361,32 @@
     const src = data.index.sources || {};
     const start = firstDay().slice(0, 7), months = monthsOf({ from: `${start}-01`, to: todayIso() });
     T.cov.head.querySelector('.eyebrow').textContent = `Dekking per bron, ${start.slice(0, 4)} tot nu`;
+    // Pijltjes: de gekozen periode een maand terug of vooruit (een hele maand blijft een hele maand)
+    T.cov.head.querySelector('.md-steps')?.remove();
+    const steps = h('div', 'md-steps');
+    const prev = h('button', null, '‹'), next = h('button', null, '›');
+    prev.type = next.type = 'button';
+    prev.title = 'Maand terug';
+    next.title = 'Maand vooruit';
+    prev.setAttribute('aria-label', prev.title);
+    next.setAttribute('aria-label', next.title);
+    next.disabled = r.to >= todayIso();
+    prev.disabled = period.mode === 'all';
+    const shift = (n) => {
+      const whole = r.from.slice(8) === '01' && (addDays(r.to, 1).slice(8) === '01' || r.to === todayIso()) && r.from.slice(0, 7) === r.to.slice(0, 7);
+      const mv = (d, k) => { const y = +d.slice(0, 4), m = +d.slice(5, 7) - 1 + k; const dt = new Date(Date.UTC(y, m, 1)); const last = new Date(Date.UTC(y, m + 1, 0)).getUTCDate(); return `${iso(+dt).slice(0, 8)}${pad(Math.min(+d.slice(8, 10), last))}`; };
+      let from, to;
+      if (whole) { from = mv(r.from, n); to = addDays(iso(Date.UTC(+from.slice(0, 4), +from.slice(5, 7), 1)), -1); }
+      else { from = mv(r.from, n); to = mv(r.to, n); }
+      if (to > todayIso()) to = todayIso();
+      period = { mode: 'custom', from, to };
+      store.set('mydata.period', period);
+      render();
+    };
+    prev.onclick = () => shift(-1);
+    next.onclick = () => shift(1);
+    steps.append(prev, next);
+    T.cov.head.append(steps);
     const rows = [], empty = [];
     for (const [label, list] of COVER) {
       const per = {};
