@@ -135,7 +135,7 @@ DASH.widget('w-f1', (card, body, guard) => {
   // Laatste sessie die al voorbij is: een race? Dan tonen we de uitslag in plaats van de aftelklok
   const lastRace = (now) => {
     const prev = sessions.filter((x) => x.end <= now).pop();
-    return prev && prev.name === 'Race' && now - prev.end < 10 * 86400000 ? prev : null;
+    return prev && prev.name === 'Race' && now - prev.end < 3 * 86400000 ? prev : null;   // uitslag 3 dagen, daarna aftellen
   };
   async function loadResults(race) {
     const cached = store.get(RKEY);
