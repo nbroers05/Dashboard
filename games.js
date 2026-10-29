@@ -216,39 +216,93 @@
   }
 
   // ---------- 2048 ----------
-  let g2 = store.get('games.2048.state') || null;
-  function new2048() { g2 = { cells: Array(16).fill(0), score: 0, over: false }; add2048(); add2048(); save2048(); render2048(); }
-  function add2048() {
-    const empty = g2.cells.map((v, i) => (v ? -1 : i)).filter((i) => i >= 0);
-    if (empty.length) g2.cells[pick(empty)] = Math.random() < 0.9 ? 2 : 4;
-  }
-  const save2048 = () => store.set('games.2048.state', g2);
-  function slide(row) {
-    const nums = row.filter(Boolean), out = [];
-    let gained = 0;
-    for (let i = 0; i < nums.length; i++) {
-      if (nums[i] === nums[i + 1]) { out.push(nums[i] * 2); gained += nums[i] * 2; i++; } else out.push(nums[i]);
-    }
-    while (out.length < 4) out.push(0);
-    return [out, gained];
-  }
-  function move(dir) {
-    if (!g2 || g2.over) return;
-    const idx = (r, c) => (dir === 'left' ? r * 4 + c : dir === 'right' ? r * 4 + 3 - c : dir === 'up' ? c * 4 + r : (3 - c) * 4 + r);
-    let moved = false;
-    for (let r = 0; r < 4; r++) {
-      const line = [0, 1, 2, 3].map((c) => g2.cells[idx(r, c)]);
-      const [res, gained] = slide(line);
-      res.forEach((v, c) => { if (g2.cells[idx(r, c)] !== v) moved = true; g2.cells[idx(r, c)] = v; });
-      g2.score += gained;
-    }
-    if (!moved) return;
-    add2048();
-    const canMove = g2.cells.some((v, i) => !v || (i % 4 < 3 && v === g2.cells[i + 1]) || (i < 12 && v === g2.cells[i + 4]));
-    if (!canMove) g2.over = true;
-    setBest('2048', g2.score);
+  // Tegels zijn losse blokjes met een vaste plek (rij, kolom); bij een zet schuiven ze met een CSS-overgang naar hun
+  // nieuwe plek, samengevoegde tegels "ploppen". Stand in games.2048.state (oude stand zonder tegels: nieuw spel).
+  let g2 = store.get('games.2048.state');
+  if (!g2 || !Array.isArray(g2.tiles)) g2 = null;
+  let tileId = g2 ? Math.max(0, ...g2.tiles.map((t) => t.id)) + 1 : 1;
+  let boardEl = null, scoreEl = null, msgEl = null;
+  const els = new Map();   // tegel-id -> element
+  function new2048() {
+    g2 = { tiles: [], score: 0, over: false };
+    els.clear();
+    add2048(); add2048();
     save2048();
     render2048();
+  }
+  function add2048() {
+    const used = new Set(g2.tiles.map((t) => t.r * 4 + t.c));
+    const free = [...Array(16).keys()].filter((i) => !used.has(i));
+    if (!free.length) return;
+    const i = pick(free);
+    g2.tiles.push({ id: tileId++, v: Math.random() < 0.9 ? 2 : 4, r: Math.floor(i / 4), c: i % 4, fresh: true });
+  }
+  const save2048 = () => store.set('games.2048.state', { ...g2, tiles: g2.tiles.map(({ id, v, r, c }) => ({ id, v, r, c })) });
+  function move(dir) {
+    if (!g2 || g2.over) return;
+    const grid = Array.from({ length: 4 }, () => Array(4).fill(null));
+    for (const t of g2.tiles) { t.fresh = false; t.merged = false; grid[t.r][t.c] = t; }
+    const vertical = dir === 'up' || dir === 'down', reverse = dir === 'right' || dir === 'down';
+    let moved = false;
+    const gone = [];
+    for (let line = 0; line < 4; line++) {
+      const cells = [0, 1, 2, 3].map((k) => (reverse ? 3 - k : k));
+      let target = 0, last = null;
+      for (const k of cells) {
+        const t = vertical ? grid[k][line] : grid[line][k];
+        if (!t) continue;
+        const pos = (n) => (reverse ? 3 - n : n);
+        if (last && last.v === t.v && !last.merged) {
+          // Samenvoegen: deze tegel schuift naar de plek van de vorige en verdwijnt daarna
+          t.r = last.r; t.c = last.c; gone.push(t);
+          last.merged = true; last.next = last.v * 2;   // de waarde verandert pas na het schuiven
+          g2.score += last.next;
+          moved = true;
+          continue;
+        }
+        const p = pos(target++);
+        const [nr, nc] = vertical ? [p, line] : [line, p];
+        if (t.r !== nr || t.c !== nc) moved = true;
+        t.r = nr; t.c = nc;
+        last = t;
+      }
+    }
+    if (!moved) return;
+    paint2048();                                    // eerst schuiven (ook de tegels die opgaan in een andere)
+    g2.tiles = g2.tiles.filter((t) => !gone.includes(t));
+    for (const t of g2.tiles) if (t.next) { t.v = t.next; delete t.next; }
+    add2048();
+    const at = new Map(g2.tiles.map((t) => [t.r * 4 + t.c, t.v]));
+    const canMove = at.size < 16 || [...at].some(([i, v]) => (i % 4 < 3 && at.get(i + 1) === v) || (i < 12 && at.get(i + 4) === v));
+    g2.over = !canMove;
+    setBest('2048', g2.score);
+    save2048();
+    setTimeout(paint2048, calm() ? 0 : 130);      // daarna samengevoegde weg, nieuwe tegel erbij
+  }
+  const calm = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function paint2048() {
+    if (!boardEl) return;
+    const alive = new Set();
+    for (const t of g2.tiles) {
+      alive.add(t.id);
+      let el = els.get(t.id);
+      if (!el) {
+        el = h('div', 'gm-tile');
+        if (t.fresh) el.classList.add('new');
+        els.set(t.id, el);
+        boardEl.append(el);
+      }
+      el.style.setProperty('--r', t.r);
+      el.style.setProperty('--c', t.c);
+      if (el.textContent !== String(t.v)) {
+        if (el.textContent && t.merged) { el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
+        el.textContent = String(t.v);
+        el.dataset.v = t.v > 2048 ? 'big' : t.v;
+      }
+    }
+    for (const [id, el] of els) if (!alive.has(id) && !g2.tiles.some((t) => t.id === id)) { el.remove(); els.delete(id); }
+    if (scoreEl) scoreEl.textContent = `score ${g2.score} · record ${best('2048')}`;
+    if (msgEl) msgEl.textContent = g2.over ? 'Geen zetten meer!' : 'Schuif met de pijltjes (of WASD), of veeg.';
   }
   function render2048() {
     if (!g2) return new2048();
@@ -256,24 +310,23 @@
     const again = h('button', 'w-btn ghost', 'Nieuw spel');
     again.type = 'button';
     again.onclick = new2048;
-    const sc = h('p', 'gm-score', `score ${g2.score} · record ${best('2048')}`);
-    top.append(h('p', 'gm-q', g2.over ? 'Geen zetten meer!' : 'Schuif met de pijltjes (of WASD), of veeg.'), sc, again);
-    const board = h('div', 'gm-2048');
-    for (const v of g2.cells) {
-      const c = h('div', 'gm-tile', v ? String(v) : '');
-      if (v) c.dataset.v = v > 2048 ? 'big' : v;
-      board.append(c);
-    }
+    msgEl = h('p', 'gm-q');
+    scoreEl = h('p', 'gm-score');
+    top.append(msgEl, scoreEl, again);
+    boardEl = h('div', 'gm-2048');
+    for (let i = 0; i < 16; i++) boardEl.append(h('div', 'gm-cell'));
+    els.clear();
     let sx = null, sy = null;
-    board.addEventListener('pointerdown', (e) => { sx = e.clientX; sy = e.clientY; board.setPointerCapture(e.pointerId); });
-    board.addEventListener('pointerup', (e) => {
+    boardEl.addEventListener('pointerdown', (e) => { sx = e.clientX; sy = e.clientY; boardEl.setPointerCapture(e.pointerId); });
+    boardEl.addEventListener('pointerup', (e) => {
       if (sx == null) return;
       const dx = e.clientX - sx, dy = e.clientY - sy;
       sx = null;
       if (Math.max(Math.abs(dx), Math.abs(dy)) < 30) return;
       move(Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up'));
     });
-    stage.replaceChildren(top, board);
+    stage.replaceChildren(top, boardEl);
+    paint2048();
   }
   document.addEventListener('keydown', (e) => {
     if (page.hidden || game !== '2048' || ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
