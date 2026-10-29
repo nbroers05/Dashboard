@@ -62,7 +62,7 @@
   }
   function range() {
     const t = todayIso();
-    if (period.mode === 'month') return { from: addDays(t, -29), to: t };
+    if (period.mode === 'month') return { from: `${t.slice(0, 7)}-01`, to: t };   // deze maand, vanaf de 1e
     if (period.mode === 'all') return { from: firstDay(), to: t };
     if (period.mode === 'custom' && period.from && period.to) return period.from <= period.to ? { from: period.from, to: period.to } : { from: period.to, to: period.from };
     return { from: addDays(t, -364), to: t };
@@ -303,7 +303,7 @@
   head.append(title, periodEl, custom, meta0);
   const grid = h('div', 'md-grid');
   page.append(head, grid);
-  for (const [mode, label] of [['month', 'Afgelopen maand'], ['year', 'Jaar'], ['all', 'Alles'], ['custom', 'Eigen periode']]) {
+  for (const [mode, label] of [['month', 'Deze maand'], ['year', 'Jaar'], ['all', 'Alles'], ['custom', 'Eigen periode']]) {
     const b = h('button', null, label);
     b.type = 'button';
     b.dataset.mode = mode;
