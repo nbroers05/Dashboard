@@ -265,20 +265,6 @@
   dayLine();
   loadRain();
 
-  // ---------- Nachtstand: 23:00–07:00 wordt alles gedimd (minder fel en minder kleur), knop zet hem uit ----------
-  const NIGHT_KEY = 'dash.night';
-  const nightBtn = bar.querySelector('.tb-night');
-  function night() {
-    const on = store.get(NIGHT_KEY) !== 'off';
-    const hr = new Date().getHours();
-    document.documentElement.classList.toggle('night', on && (hr >= 23 || hr < 7));
-    nightBtn.setAttribute('aria-pressed', on);
-    nightBtn.title = on ? 'Nachtstand (23:00–07:00): aan' : 'Nachtstand: uit';
-  }
-  nightBtn.onclick = () => { store.set(NIGHT_KEY, store.get(NIGHT_KEY) === 'off' ? 'on' : 'off'); night(); };
-  DASH.every(60 * 1000, night);
-  night();
-
   // ---------- Onderzoek: vaste knop met de links uit config.onderzoek ----------
   const research = (window.DASHBOARD_CONFIG && DASHBOARD_CONFIG.onderzoek) || [];
   if (research.length) {

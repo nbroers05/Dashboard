@@ -1376,8 +1376,6 @@ body.minimal .tb-dayline { max-width: none; margin-top: 6px; }
 .tb-research-menu a { padding: 8px 10px; border-radius: 10px; color: var(--text); text-decoration: none; }
 .tb-research-menu a:hover { background: var(--surface-hover); }
 body.minimal .tb-research { display: none; }
-/* Nachtstand-knop */
-.tb-night[aria-pressed="false"] { color: var(--muted); }
 /* Focusmodus: knop, resterende tijd naast de klok, dashboard licht gedimd */
 .tb-feeds[aria-pressed="true"] { color: var(--accent); background: var(--surface-hover); }
 body.minimal .tb-feeds { display: none; }
@@ -1614,11 +1612,6 @@ body.minimal .tb-focus { display: none; }
 .al-muted .al-check { background: rgba(255, 255, 255, .08); }
 /* Verjaardag in de dagregel; vandaag extra opvallend */
 .tb-bday-today { padding: 1px 8px; border-radius: 999px; background: linear-gradient(90deg, #ff5fa2, #f5b02e); color: #1a1a1a; font-weight: 800; }
-/* Nachtstand: alles minder fel en minder kleur (ook het AH-blauw); pop-ups erboven blijven gewoon */
-html.night body::after {
-  content: ''; position: fixed; inset: 0; z-index: 200; pointer-events: none;
-  backdrop-filter: brightness(.62) saturate(.55); -webkit-backdrop-filter: brightness(.62) saturate(.55);
-}
 /* Foutmelding in een vak, met knop */
 .w-problem p { color: var(--muted); }
 

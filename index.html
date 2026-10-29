@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400..800&display=swap">
   <!-- ?v=0.MINOR.PATCH: ophogen bij elke wijziging (zie CLAUDE.md); de rest krijgt hetzelfde nummer via dash.js -->
-  <link rel="stylesheet" href="style.css?v=0.40.2">
+  <link rel="stylesheet" href="style.css?v=0.40.3">
 </head>
 <body>
   <main class="dashboard">
@@ -42,9 +42,6 @@
         </button>
         <button class="tb-btn tb-focus" aria-label="Focusmodus" aria-pressed="false" title="Focusmodus starten">
           <svg viewBox="0 0 24 24"><path d="M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.03-6.61 1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42A8.96 8.96 0 0 0 12 4a9 9 0 1 0 9 9c0-2.12-.74-4.07-1.97-5.61zM12 20a7 7 0 1 1 0-14 7 7 0 0 1 0 14z"/></svg>
-        </button>
-        <button class="tb-btn tb-night" aria-label="Nachtstand" aria-pressed="true" title="Nachtstand (23:00–07:00): aan">
-          <svg viewBox="0 0 24 24"><path d="M12.3 2a9 9 0 1 0 9.7 10.6A7 7 0 0 1 12.3 2z"/></svg>
         </button>
         <button class="tb-btn tb-design" aria-label="Ander ontwerp" title="Wissel tussen nieuw en oud ontwerp">
           <svg viewBox="0 0 24 24"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v5h-8V3zm2 2v1h4V5h-4zm-2 6h8v10h-8V11zm2 2v6h4v-6h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5z"/></svg>
@@ -259,12 +256,12 @@
 
   <div id="toast" role="status"></div>
 
-  <script src="config.js?v=0.40.2"></script>
-  <script src="dash.js?v=0.40.2"></script>
-  <script src="topbar.js?v=0.40.2"></script>
-  <script src="focus.js?v=0.40.2"></script>
-  <script src="feeds.js?v=0.40.2"></script>
-  <script src="mydata.js?v=0.40.2"></script>
+  <script src="config.js?v=0.40.3"></script>
+  <script src="dash.js?v=0.40.3"></script>
+  <script src="topbar.js?v=0.40.3"></script>
+  <script src="focus.js?v=0.40.3"></script>
+  <script src="feeds.js?v=0.40.3"></script>
+  <script src="mydata.js?v=0.40.3"></script>
   <!-- De rest laadt dash.js in deze volgorde: meteen, of met ?mini=1 pas als je het volledige dashboard opent -->
   <script>
     DASH.boot([
