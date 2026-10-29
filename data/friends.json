@@ -15,6 +15,20 @@
  ],
  "logs": [
   {
+   "title": "Sinners",
+   "year": 2025,
+   "rating": 1.0,
+   "watched": "2026-10-29",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/marrie01/film/sinners-2025/",
+   "slug": "sinners-2025",
+   "tmdbId": "1233413",
+   "poster": "https://image.tmdb.org/t/p/w342/4QMNBQrqo2alrqf8OQxkstUXHEU.jpg",
+   "user": "Marrie01",
+   "name": "Margriet"
+  },
+  {
    "title": "Poseidon",
    "year": 2006,
    "rating": 3.5,
@@ -391,20 +405,6 @@
    "poster": "https://a.ltrbxd.com/resized/film-poster/5/9/5/0/2/9/595029-the-creator-0-600-0-900-crop.jpg?v=b921bf1d45",
    "user": "marijn2005",
    "name": "Marijn"
-  },
-  {
-   "title": "Ready or Not 2: Here I Come",
-   "year": 2026,
-   "rating": 4.0,
-   "watched": "2026-07-22",
-   "rewatch": false,
-   "liked": false,
-   "link": "https://letterboxd.com/marrie01/film/ready-or-not-2-here-i-come/",
-   "slug": "ready-or-not-2-here-i-come",
-   "tmdbId": "1266127",
-   "poster": "https://a.ltrbxd.com/resized/film-poster/1/1/5/0/1/1/3/1150113-ready-or-not-2-here-i-come-0-600-0-900-crop.jpg?v=da35b35f85",
-   "user": "Marrie01",
-   "name": "Margriet"
   },
   {
    "title": "Obsession",
