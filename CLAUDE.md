@@ -19,6 +19,17 @@ Statische site: vanilla HTML/CSS/JS, geen build-stap, geen server. Hangt altijd 
 
 **Versie (afspraak met Noah, vanaf 28 okt 2026):** `0.MINOR.PATCH`. Grote opdracht = MINOR omhoog (PATCH terug naar 0), kleine fix = PATCH omhoog. Het nummer staat als `?v=0.MINOR.PATCH` achter `style.css`, config, dash en topbar in `index.html` (alle andere scripts krijgen het via dash.js) en onderaan als "Dashboard versie …". Altijd ophogen bij een wijziging, anders mengt de browser oude en nieuwe bestanden. Huidige: 0.37.1.
 
+## Wensenlijst
+
+Kleine wensen schrijft Noah in `Documents/Claude eigen mapje/WENSEN.md` (buiten de repo's; die map is zijn Obsidian-vault). Kopjes: "Te doen", "Vragen", "Gedaan". Eén wens per regel met een streepje; screenshots staan in `wensen/` naast WENSEN.md en worden genoteerd als `![[naam.png]]` (zonder pad, zoals Obsidian dat doet), achter of onder de regel. Zoek ze op in `wensen/` (en bekijk ze).
+
+Als Noah **"doe de wensen"** zegt: werk "Te doen" van boven naar beneden af, zonder tussendoor te stoppen om te vragen.
+- Per wens: doen, PATCH-versie ophogen, committen (en pushen), en de regel mét plaatje verplaatsen naar "Gedaan" met datum en versie, bijv. `- de klok mag groter (29-10-2026, 0.37.2)`.
+- Onduidelijk of te groot (meer dan een kleine fix): verplaats de regel mét plaatje naar "Vragen" met je vraag eronder (`  - Vraag: …`) en ga door met de volgende.
+- Plaatjes van afgehandelde wensen verplaatsen naar `wensen/gedaan/` en de verwijzing aanpassen naar `![[gedaan/naam.png]]` zodat Obsidian ze nog vindt. Nooit weggooien. Plaatjes bij "Vragen" blijven in `wensen/`.
+- **Nooit** een plaatje uit `wensen/` in een repo zetten, en `.obsidian/` ook niet (staan in `.gitignore`; commit toch altijd met expliciete bestandsnamen).
+- Aan het eind: kort lijstje wat gedaan is (met versies) en wat er bij "Vragen" staat.
+
 ## Lokaal testen
 
 ```

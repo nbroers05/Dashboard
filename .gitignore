@@ -5,3 +5,7 @@ helper/tokens.json.tmp
 helper/google-client.json
 helper/client_secret*.json
 helper/meldingen-log.csv
+
+# Obsidian-vault en screenshots van de wensenlijst horen nooit in een repo
+.obsidian/
+wensen/
