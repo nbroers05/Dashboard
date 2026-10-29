@@ -343,9 +343,9 @@
     [/emilia|imola/i, 'Imola'], [/ital|monza/i, 'Monza'],
   ];
   const F1_SESSIONS = [
-    [/sprint\s*(qualifying|shootout|kwal)/i, 'Sprint-kwali'], [/qualifying|kwalificatie/i, 'Kwali'],
-    [/sprint/i, 'Sprint'], [/practice\s*1|fp1|vt1/i, 'VT1'], [/practice\s*2|fp2|vt2/i, 'VT2'],
-    [/practice\s*3|fp3|vt3/i, 'VT3'], [/race|grand prix|gran premio/i, 'Race'],
+    [/sprint\s*(qualifying|shootout|kwal)/i, 'Sprint-quali'], [/qualifying|kwalificatie/i, 'Quali'],
+    [/sprint/i, 'Sprint'], [/practice\s*1|fp1|vt1/i, 'FP1'], [/practice\s*2|fp2|vt2/i, 'FP2'],
+    [/practice\s*3|fp3|vt3/i, 'FP3'], [/race|grand prix|gran premio/i, 'Race'],
   ];
 
   function label(ev) {
