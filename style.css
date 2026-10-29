@@ -1609,6 +1609,11 @@ body.games-open .tall-rot > .tile { visibility: hidden !important; }
 .gm-head h2 { margin: 0; font-size: 1.15rem; font-weight: 750; }
 .gm-tabs button[aria-pressed="true"] { background: #b48cff; color: #141218; }
 .gm-stage { --c: #b48cff; border-radius: 28px; padding: 22px 24px; display: flex; flex-direction: column; gap: 14px; }
+.gm-stage { transition: box-shadow .25s; }
+.gm-stage.glow-good { animation: gm-glow-good 1.1s ease; }
+.gm-stage.glow-bad { animation: gm-glow-bad 1.4s ease; }
+@keyframes gm-glow-good { 0%, 60% { box-shadow: 0 0 0 3px #5bd38a, 0 0 40px 6px rgba(91, 211, 138, .55); } 100% { box-shadow: none; } }
+@keyframes gm-glow-bad { 0%, 60% { box-shadow: 0 0 0 3px #ff6b6b, 0 0 40px 6px rgba(255, 107, 107, .55); } 100% { box-shadow: none; } }
 .gm-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 16px; }
 .gm-q { margin: 0; flex: 1; min-width: 0; font-size: 1.05rem; color: var(--text); }
 .gm-score { margin: 0; color: #ffd27a; font-weight: 700; font-variant-numeric: tabular-nums; }

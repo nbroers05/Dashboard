@@ -136,6 +136,10 @@
     const ok = mine.rating >= other.rating;
     if (ok) { hl.streak++; setBest('hl', hl.streak); } else hl.streak = 0;
     renderHL(side);
+    // Groene of rode gloed om het hele vak
+    stage.classList.remove('glow-good', 'glow-bad');
+    void stage.offsetWidth;
+    stage.classList.add(ok ? 'glow-good' : 'glow-bad');
     setTimeout(() => {
       if (ok) { hl.a = hl.b; hl.b = nextB(hl.list, hl.a); } else { hl.a = pick(hl.list); hl.b = nextB(hl.list, hl.a); }
       hl.busy = false;
