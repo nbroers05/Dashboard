@@ -172,7 +172,7 @@
   }
   // items: [{label, short, value}], o: {fmt, height, color, max}
   function bars(box, items, o = {}) {
-    const W = Math.max(120, box.clientWidth || 300), H = o.height || 120, padT = 16, padB = 16;
+    const W = Math.max(120, box.clientWidth || 300), H = (o.height || 120) + (box._extra || 0), padT = 16, padB = 16;
     const vals = items.map((i) => i.value).filter((v) => v != null);
     const max = o.max ?? (Math.max(0, ...vals) || 1);
     const n = items.length || 1, bw = W / n, gap = bw > 6 ? 2 : bw > 3 ? 1 : 0, w = Math.max(1, bw - gap);
@@ -192,7 +192,7 @@
   }
   // Gestapelde staafjes: items [{label, short, parts: [..]}], names = namen van de delen
   function stacked(box, items, names, o = {}) {
-    const W = Math.max(120, box.clientWidth || 300), H = o.height || 130, padT = 16, padB = 16;
+    const W = Math.max(120, box.clientWidth || 300), H = (o.height || 130) + (box._extra || 0), padT = 16, padB = 16;
     const totals = items.map((i) => i.parts.reduce((a, b) => a + (b || 0), 0));
     const max = Math.max(0, ...totals) || 1;
     const n = items.length || 1, bw = W / n, gap = bw > 6 ? 2 : bw > 3 ? 1 : 0, w = Math.max(1, bw - gap);
@@ -217,7 +217,7 @@
   }
   // Lijnen op één as: xs [{label, short}], list [{name, color, values}], o {min, max, fmt}
   function lines(box, xs, list, o = {}) {
-    const W = Math.max(160, box.clientWidth || 300), H = o.height || 150, padT = 10, padB = 16, padL = 18;
+    const W = Math.max(160, box.clientWidth || 300), H = (o.height || 150) + (box._extra || 0), padT = 10, padB = 16, padL = 18;
     const all = list.flatMap((l) => l.values).filter((v) => v != null);
     const lo = o.min ?? Math.min(0, ...all), hi = o.max ?? (Math.max(...all, 1));
     const n = xs.length, step = n > 1 ? (W - padL - 6) / (n - 1) : 0;
@@ -239,7 +239,8 @@
     const cw = n > 1 ? step : W - padL;
     xs.forEach((x, i) => {
       const tip = `${x.label}: ${list.map((l) => `${l.name} ${l.values[i] == null ? '–' : (l.fmt || fmt)(l.values[i], i)}`).join(' · ')}`;
-      s += `<rect x="${X(i) - cw / 2}" y="0" width="${cw}" height="${H - padB}" class="md-hit md-col" ${tipAttr(tip)}/>`;
+      const x0 = Math.max(0, X(i) - cw / 2), x1 = Math.min(W, X(i) + cw / 2);   // niet buiten het vak
+      s += `<rect x="${x0}" y="0" width="${x1 - x0}" height="${H - padB}" class="md-hit md-col" ${tipAttr(tip)}/>`;
     });
     s += xLabels(xs, W, H, padL);
     return svgWrap(W, H, s);
@@ -286,7 +287,9 @@
   function chart(parent, draw, cls = '') {
     const box = h('div', `md-chart ${cls}`);
     parent.append(box);
-    charts.push(() => box.replaceChildren(draw(box)));
+    const f = () => box.replaceChildren(draw(box));
+    f.box = box;   // box._extra = extra hoogte die de masonry-indeling erbij geeft (zie layout())
+    charts.push(f);
     return box;
   }
   let charts = [];
@@ -639,7 +642,7 @@
     body.append(sum, mini(`In en uit per maand${monthNote(r)}`));
     chart(body, (box) => {
       // Twee staafjes per maand naast elkaar: in (1) en uit (2)
-      const W = Math.max(120, box.clientWidth), H = 110, padT = 16, padB = 16, base = H - padB;
+      const W = Math.max(120, box.clientWidth), H = 110 + (box._extra || 0), padT = 16, padB = 16, base = H - padB;
       const max = Math.max(1, ...months.flatMap((m) => [M.monthly[m].in, M.monthly[m].out]));
       const n = months.length, bw = W / n, w = Math.max(1, (bw - 4) / 2);
       let s = `<line x1="0" x2="${W}" y1="${base}" y2="${base}" class="md-base"/><text x="0" y="10" class="md-ax">max ${esc(eur(max))}</text>`;
@@ -958,15 +961,108 @@
       [renderWork, T.work], [renderMoney, T.money], [renderBody, T.body], [renderPc, T.pc], [renderOverlap, T.overlap]]) {
       try { f(r); } catch (e) { console.error(e); if (t) t.body.replaceChildren(note(`Dit vak kon niet tekenen: ${e.message}`)); }
     }
-    // Pas na het invoegen kennen de vakjes hun breedte
-    requestAnimationFrame(() => charts.forEach((f) => { try { f(); } catch (e) { console.error(e); } }));
+    // Pas na het invoegen kennen de vakjes hun breedte; layout() tekent de grafieken en zet de vakken neer
+    requestAnimationFrame(layout);
+  }
+
+  // ---------- Indeling: masonry ----------
+  // Kolommen naar de breedte (minstens 560px per kolom, hooguit 5; 2400 breed = 4, 1350 staand = 2, telefoon 1), Dekking en
+  // Overlap over de volle breedte. De vakken ertussen worden zo over de kolommen verdeeld dat de kolommen zo gelijk mogelijk
+  // eindigen (alle verdelingen geprobeerd, binnen een kolom in de vaste volgorde hieronder; bij gelijkspel de verdeling die
+  // het minst van die volgorde afwijkt). Wat er onderaan een kolom nog open blijft, krijgt het onderste vak erbij: de
+  // grafieken in dat vak worden hoger (box._extra).
+  // (Vakken over 2 kolommen kunnen niet: die laten aan één kant een gat dat geen vak kan opvullen.) Zo zijn er geen gaten tussen de vakken
+  // en geen lege stukken in een vak. Opnieuw na elke render() (periode, tabjes) en als de breedte verandert.
+  const ORDER = ['md-cov', 'md-kpis', 'md-watch', 'md-places', 'md-check', 'md-work', 'md-money', 'md-body', 'md-pc', 'md-overlap'];
+  const WIDE = new Set(['md-cov', 'md-overlap']);
+  const GAP = 16, COL_MIN = 560;
+  const redraw = (f) => { try { f(); } catch (e) { console.error(e); } };
+  // Beste verdeling van hoogtes hs over n kolommen: [kolom per vak]
+  function spread(hs, n) {
+    let best = null, bestMax = Infinity, bestInv = Infinity;
+    const pick = Array(hs.length).fill(0), sum = Array(n).fill(0);
+    const inversions = () => {
+      const y = Array(n).fill(0), pos = hs.map((hh, k) => { const c = pick[k], top = y[c]; y[c] += hh; return [Math.round(top / 60), c, k]; });
+      pos.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+      let inv = 0;
+      for (let i = 0; i < pos.length; i++) for (let j = i + 1; j < pos.length; j++) if (pos[i][2] > pos[j][2]) inv++;
+      return inv;
+    };
+    (function go(k, max) {
+      if (Math.floor(max / 8) > Math.floor(bestMax / 8)) return;
+      if (k === hs.length) {
+        const inv = Math.floor(max / 8) < Math.floor(bestMax / 8) ? -1 : inversions();
+        if (inv < 0 || inv < bestInv) { best = pick.slice(); bestMax = max; bestInv = inv < 0 ? inversions() : inv; }
+        return;
+      }
+      for (let c = 0; c < n; c++) {
+        if (sum[c] === 0 && sum.slice(0, c).some((v) => v === 0)) continue;   // lege kolommen zijn uitwisselbaar
+        pick[k] = c;
+        sum[c] += hs[k];
+        go(k + 1, Math.max(max, sum[c]));
+        sum[c] -= hs[k];
+      }
+    })(0, 0);
+    return best;
+  }
+  function layout() {
+    const W = grid.clientWidth;
+    if (grid.hidden || state !== 'ready' || !W) return;
+    const n = matchMedia('(max-width: 700px)').matches ? 1 : Math.max(1, Math.min(5, Math.floor((W + GAP) / (COL_MIN + GAP))));
+    const colW = (W - GAP * (n - 1)) / n;
+    const items = ORDER.map((id) => document.getElementById(id)).filter((el) => el && el.parentElement === grid && getComputedStyle(el).display !== 'none');
+    const span = (el) => (n === 1 || WIDE.has(el.id) ? n : 1);
+    grid.classList.add('md-masonry');
+    grid.classList.toggle('md-one', n === 1);
+    for (const el of items) { el.style.width = `${span(el) * colW + (span(el) - 1) * GAP}px`; el.style.minHeight = ''; }
+    for (const f of charts) { f.box._extra = 0; redraw(f); }
+    // 1. Verdelen: per vak de kolom; open ruimte onderaan een kolom onthouden bij het onderste vak
+    const at = new Map(), extra = new Map();
+    const give = (el, px) => { if (el && px >= 1) extra.set(el, Math.max(extra.get(el) || 0, px)); };
+    const colH = Array(n).fill(0), last = Array(n).fill(null);
+    const finish = () => { const bottom = Math.max(...colH); colH.forEach((hh, c) => give(last[c], bottom - hh)); colH.fill(bottom); };
+    let run = [];
+    const flush = () => {
+      if (!run.length) return;
+      const cols = spread(run.map((el) => el.offsetHeight + GAP), n);
+      run.forEach((el, k) => { const c = cols[k]; at.set(el, c); colH[c] += el.offsetHeight + GAP; last[c] = el; });
+      run = [];
+      finish();
+    };
+    for (const el of items) {
+      if (span(el) < n) { run.push(el); continue; }
+      flush();
+      at.set(el, 0);
+      colH.fill(colH[0] + el.offsetHeight + GAP);
+      last.fill(null);
+    }
+    flush();
+    // 2. Groeien: de grafieken in het vak krijgen de open ruimte erbij; zonder grafiek wordt het vak zelf hoger
+    for (const [el, px] of extra) {
+      const grow = charts.filter((f) => el.contains(f.box));
+      if (grow.length) grow.forEach((f, k) => { const share = Math.floor(px / grow.length); f.box._extra = k === grow.length - 1 ? px - share * (grow.length - 1) : share; redraw(f); });
+      else el.style.minHeight = `${el.offsetHeight + px}px`;
+    }
+    // 3. Neerzetten met dezelfde verdeling; een restje onderaan gaat in het onderste vak
+    colH.fill(0);
+    last.fill(null);
+    for (const el of items) {
+      const s = span(el), i = at.get(el), y = Math.max(...colH.slice(i, i + s));
+      for (let c = i; c < i + s; c++) { colH[c] = y + el.offsetHeight + GAP; last[c] = el; }
+      el.style.left = `${i * (colW + GAP)}px`;
+      el.style.top = `${y}px`;
+    }
+    const bottom = Math.max(...colH);
+    colH.forEach((hh, c) => { const l = last[c]; if (l && bottom - hh >= 1) l.style.minHeight = `${l.offsetHeight + bottom - hh}px`; });
+    grid.style.height = `${Math.max(0, bottom - GAP)}px`;
+    if (map) map.invalidateSize();
   }
   let lastW = 0, rt = 0;
   new ResizeObserver(() => {
     if (page.hidden || state !== 'ready' || Math.abs(grid.clientWidth - lastW) < 4) return;
     lastW = grid.clientWidth;
     clearTimeout(rt);
-    rt = setTimeout(() => { charts.forEach((f) => f()); if (map) map.invalidateSize(); }, 150);
+    rt = setTimeout(layout, 150);
   }).observe(grid);
 
   // ---------- Demo: duidelijk verzonnen cijfers ----------

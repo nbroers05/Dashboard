@@ -1476,6 +1476,7 @@ body.mydata-open { overflow: hidden; }
 body.mydata-open .dashboard > :not(.topbar), body.mydata-open .layout-bar { opacity: 0 !important; pointer-events: none; }
 body.mydata-open .tall-rot > .tile { visibility: hidden !important; }
 .md-page > * { max-width: 1800px; margin-left: auto; margin-right: auto; }
+.md-page > .md-head, .md-page > .md-grid { max-width: none; }
 .md-head { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 18px; padding: 14px 22px; border-radius: 24px; margin-bottom: 16px; }
 .md-head h2 { margin: 0; font-size: 1.15rem; font-weight: 750; }
 .md-period { display: flex; flex-wrap: wrap; gap: 4px; }
@@ -1490,6 +1491,10 @@ body.mydata-open .tall-rot > .tile { visibility: hidden !important; }
 .md-demo .md-meta { color: var(--c-film); font-weight: 650; }
 .md-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; align-items: start; }
 .md-grid[hidden] { display: none; }
+/* Masonry (layout() in mydata.js): vakken absoluut neergezet, kolommen naar de breedte */
+.md-grid.md-masonry { display: block; position: relative; }
+.md-masonry > * { position: absolute; left: 0; top: 0; margin: 0; }
+.md-masonry:not(.md-one) #md-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .md-tile { grid-column: span 6; grid-row: auto; min-height: 0; padding: 22px 24px; }
 .md-tile-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
 .md-tile-head .eyebrow { margin-bottom: 0; }
@@ -1501,9 +1506,6 @@ body.mydata-open .tall-rot > .tile { visibility: hidden !important; }
 #md-cov, #md-kpis, #md-overlap { grid-column: span 12; }
 #md-work, #md-money, #md-body { grid-column: span 4; }
 /* Staand: check-ins naast Computer (onder Werk/Geld/Lichaam); liggend: naast Plekken */
-#md-check { order: 1; }
-#md-overlap { order: 2; }
-html.desk-mode #md-check { order: 0; }
 .md-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
 .md-kpi { display: flex; flex-direction: column; gap: 4px; padding: 16px 22px; border-radius: 24px; }
 .md-kpi b { font-size: 2rem; font-weight: 750; letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1.05; }
@@ -1584,12 +1586,6 @@ line.md-grid { stroke: rgba(255, 255, 255, .07); stroke-width: 1; }
 .md-empty-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .md-token { margin-top: 0; }
 /* Liggend breed (desk): dekking + kerncijfers naast elkaar, drie vakken in een rij, dan vier */
-html.desk-mode #md-cov { grid-column: span 8; }
-html.desk-mode #md-kpis { grid-column: span 4; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-html.desk-mode #md-watch { grid-column: span 5; }
-html.desk-mode #md-places { grid-column: span 4; }
-html.desk-mode #md-check { grid-column: span 3; }
-html.desk-mode #md-work, html.desk-mode #md-money, html.desk-mode #md-body, html.desk-mode #md-pc { grid-column: span 3; }
 html.desk-mode .md-map { height: 300px; }
 @media (max-width: 700px) {
   .md-page { padding-bottom: 16px; }
