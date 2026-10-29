@@ -539,6 +539,14 @@ button.al-item:hover { background: rgba(255, 255, 255, .1); }
 .sp-txt b, .sp-txt .w-sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sp-txt b { font-size: .92rem; }
 @media (max-width: 420px) { .sp-grid { grid-template-columns: 1fr; } }
+.tall #w-sptop .sp-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); gap: 24px; }
+.tall #w-sptop .sp-img { width: 48px; height: 48px; }
+.tall #w-sptop .sp-col:last-child .sp-list { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.tall #w-sptop .sp-col:last-child .sp-item { position: relative; flex-direction: column; align-items: stretch; gap: 8px; padding: 6px; text-align: center; }
+.tall #w-sptop .sp-col:last-child .sp-img { width: 100%; height: auto; aspect-ratio: 1; box-shadow: 0 8px 20px rgba(0, 0, 0, .4); }
+.tall #w-sptop .sp-col:last-child .sp-rank { position: absolute; top: 4px; left: 4px; z-index: 1; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: rgba(0, 0, 0, .7); text-align: center; font-size: .8rem; }
+.tall #w-sptop .sp-col:last-child .sp-txt { align-items: center; }
+.tall #w-sptop .sp-col:last-child .sp-txt b { font-size: .95rem; max-width: 100%; }
 /* Vrienden op Letterboxd: naam linksboven op de poster, jouw verwachte cijfer rechtsonder als hij op je watchlist staat */
 .fr-name { position: absolute; top: 6px; left: 6px; z-index: 1; max-width: calc(100% - 12px); padding: 2px 7px; border-radius: 999px; background: rgba(0, 0, 0, .7); font-size: .7rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fr-mine.film-score { left: auto; right: 6px; bottom: 6px; padding: 2px 7px; border-radius: 9px; font-size: .85rem; --ct: var(--c-film); color: var(--c-film); }
@@ -1480,7 +1488,7 @@ body.mydata-open .tall-rot > .tile { visibility: hidden !important; }
 .md-custom .w-btn { padding: 6px 14px; }
 .md-meta { margin: 0 0 0 auto; text-align: right; }
 .md-demo .md-meta { color: var(--c-film); font-weight: 650; }
-.md-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; }
+.md-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; align-items: start; }
 .md-grid[hidden] { display: none; }
 .md-tile { grid-column: span 6; grid-row: auto; min-height: 0; padding: 22px 24px; }
 .md-tile-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
@@ -1601,7 +1609,7 @@ html.desk-mode .md-map { height: 300px; }
 body.minimal .tb-games { display: none; }
 .gm-page { position: fixed; left: 0; right: 0; bottom: 0; top: 120px; z-index: 4; overflow-y: auto; overscroll-behavior: contain; padding: 0 max(16px, env(safe-area-inset-right)) 24px max(16px, env(safe-area-inset-left)); animation: fd-in .35s ease; }
 .gm-page[hidden] { display: none; }
-.gm-page > * { max-width: 980px; margin-left: auto; margin-right: auto; }
+.gm-page > * { max-width: 1400px; margin-left: auto; margin-right: auto; }
 body.games-open { overflow: hidden; }
 body.games-open .dashboard > :not(.topbar), body.games-open .layout-bar { opacity: 0 !important; pointer-events: none; }
 body.games-open .tall-rot > .tile { visibility: hidden !important; }
@@ -1625,13 +1633,13 @@ body.games-open .tall-rot > .tile { visibility: hidden !important; }
 .gm-card.good { border-color: #5bd38a; }
 .gm-card.bad { border-color: #ff6b6b; }
 .gm-card.picked { box-shadow: 0 0 0 4px rgba(255, 255, 255, .08); }
-.gm-poster { position: relative; aspect-ratio: 2 / 3; width: min(100%, calc(min(52dvh, 480px) * 2 / 3)); margin: 0 auto; border-radius: 12px; overflow: hidden; background: linear-gradient(150deg, #3b2f52, #1c1a24); display: grid; place-items: center; }
+.gm-poster { position: relative; aspect-ratio: 2 / 3; width: min(100%, calc(min(62dvh, 960px) * 2 / 3)); margin: 0 auto; border-radius: 12px; overflow: hidden; background: linear-gradient(150deg, #3b2f52, #1c1a24); display: grid; place-items: center; }
 .gm-poster img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .gm-poster-fb { padding: 12px; text-align: center; color: var(--muted); font-size: .9rem; }
 .gm-title { font-size: 1rem; line-height: 1.3; }
 .gm-stars { color: #ffd27a; font-size: 1.05rem; letter-spacing: .05em; }
 .gm-hidden { color: var(--muted); font-size: .9rem; }
-.gm-guess-frame { position: relative; width: min(100%, 320px, calc(56dvh * 2 / 3)); aspect-ratio: 2 / 3; margin: 0 auto; border-radius: 16px; overflow: hidden; background: #1c1a24; }
+.gm-guess-frame { position: relative; width: min(100%, 560px, calc(62dvh * 2 / 3)); aspect-ratio: 2 / 3; margin: 0 auto; border-radius: 16px; overflow: hidden; background: #1c1a24; }
 .gm-guess-frame img { width: 100%; height: 100%; object-fit: cover; transition: filter .6s ease, transform .6s ease; }
 .gm-guess { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
 .gm-guess input { flex: 1 1 220px; max-width: 420px; padding: 9px 14px; border: 1px solid rgba(255, 255, 255, .14); border-radius: 999px; background: rgba(255, 255, 255, .06); color: var(--text); font: inherit; }
@@ -1640,7 +1648,7 @@ body.games-open .tall-rot > .tile { visibility: hidden !important; }
 .gm-msg.good { color: #5bd38a; }
 .gm-msg.bad { color: #ff8a5c; }
 .gm-2048 { --gap: 10px; position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(4, minmax(0, 1fr)); gap: var(--gap);
-  width: min(100%, 520px, 62dvh); aspect-ratio: 1; margin: 0 auto; padding: var(--gap); border-radius: 18px; background: rgba(0, 0, 0, .3); touch-action: none; user-select: none; }
+  width: min(100%, 720px, 66dvh); aspect-ratio: 1; margin: 0 auto; padding: var(--gap); border-radius: 18px; background: rgba(0, 0, 0, .3); touch-action: none; user-select: none; }
 .gm-cell { border-radius: 10px; background: rgba(255, 255, 255, .05); }
 /* Tegels liggen los boven het raster; --r/--c bepalen de plek, de overgang geeft het schuiven */
 .gm-tile { --size: calc((100% - 5 * var(--gap)) / 4); position: absolute; width: var(--size); height: var(--size);
@@ -2070,7 +2078,7 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk .agenda .title { font-size: 1.5rem; }
 
 /* Rechts: Canvas, F1, Episodes, film/laatst gekeken */
-.desk #w-canvas { flex: 1.55 1 0; }
+.desk #w-canvas { flex: 0 1 auto; }   /* zo hoog als de inhoud: geen leeg vak bij weinig deadlines */
 .desk #w-canvas .w-big { font-size: 1.7rem; display: flex; align-items: baseline; gap: 8px; }
 .desk #w-canvas .w-big small { margin: 0; }
 .desk .cv-item.compact .cv-name { font-size: .88rem; }
@@ -2117,6 +2125,7 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk .ep-cover { width: auto; height: 100%; display: flex; flex-direction: column; }
 .desk .ep-cover .img-box { width: auto; height: 100%; min-height: 0; flex: 1; }
 .desk .ep-name { display: none; }
+.desk .ep-covers:not(:has(.ep-cover:nth-child(5))) { justify-content: space-evenly; }
 .desk-tabs { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; border-radius: 22px; overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--c-film) 26%, transparent);
   background: linear-gradient(150deg, color-mix(in srgb, var(--c-film) 18%, #151518), #121214); }
@@ -2263,6 +2272,8 @@ body.minimal .tb-design { display: none; }
 .film3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
 .film3-item { display: flex; gap: 14px; min-width: 0; color: inherit; text-decoration: none; }
 .film3-item .film-poster { width: 110px; flex: none; align-self: flex-start; }
+.tall .film3-item .film-poster { width: 168px; }
+.tall .film3-txt b { font-size: 1.15rem; }
 .film3-item:hover .film-poster { transform: translateY(-3px); }
 .film3-txt { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
 .film3-txt b { font-size: 1.05rem; line-height: 1.25; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
@@ -2272,6 +2283,9 @@ body.minimal .tb-design { display: none; }
 .tall .ep-covers { flex-wrap: wrap; overflow: hidden; height: 252px; align-content: flex-start; gap: 16px; padding-top: 6px; }
 .tall .ep-cover { width: 140px; }
 .tall .ep-cover .img-box { width: 140px; }
+/* Weinig series (tot 4): grotere covers, verdeeld over de breedte */
+.tall .ep-covers:not(:has(.ep-cover:nth-child(5))) { justify-content: space-evenly; height: 300px; }
+.tall .ep-covers:not(:has(.ep-cover:nth-child(5))) .ep-cover, .tall .ep-covers:not(:has(.ep-cover:nth-child(5))) .ep-cover .img-box { width: 176px; }
 .tall #w-episodes .w-big { font-size: 2.4rem; display: flex; align-items: baseline; gap: 10px; }
 .tall #w-episodes .w-big small { margin: 0; }
 .tall .ep-covers { padding-bottom: 4px; }
