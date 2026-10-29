@@ -148,7 +148,14 @@
   })();
 
   // ---------- Volgorde ----------
-  const spotifyHasTrack = () => spotify.dataset.state === 'player';
+  // Als er niets speelt, geven Spotify en Windows soms heel even "niets" terug: dan verdween een kaart een halve
+  // seconde en kwam hij terug. Daarom telt een kaart pas als weg na een paar seconden zonder hem (GRACE).
+  const GRACE = 6000;
+  let spotifySeen = 0;
+  const spotifyHasTrack = () => {
+    if (spotify.dataset.state === 'player') { spotifySeen = Date.now(); return true; }
+    return Date.now() - spotifySeen < GRACE;
+  };
   const isPlaying = (id) => (id === 'spotify' ? spotify.classList.contains('playing') : !!(cards.get(id) && cards.get(id).data && cards.get(id).data.playing));
 
   function layout() {
@@ -228,6 +235,7 @@
   }
 
   let failures = 0;
+  const seen = new Map();   // sessie-id -> { s, at }: laatst gezien
   async function load() {
     if (DEMO) { sessions = demoSessions(); return layout(); }
     // Niet bereikbaar (telefoon, andere pc, hulpprogramma uit): steeds minder vaak proberen
@@ -237,12 +245,14 @@
       const timer = setTimeout(() => ctrl.abort(), 2500);
       const res = await fetch(`${HELPER}/media`, { signal: ctrl.signal, cache: 'no-store' }).finally(() => clearTimeout(timer));
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      sessions = (await res.json()).items || [];
+      const now = Date.now();
+      for (const s of (await res.json()).items || []) seen.set(s.id, { s, at: now });
       failures = 0;
     } catch {
-      sessions = [];
       failures++;
     }
+    for (const [id, v] of seen) if (Date.now() - v.at > GRACE) seen.delete(id);
+    sessions = [...seen.values()].map((v) => v.s);
     layout();
   }
 
