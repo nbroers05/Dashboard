@@ -1020,7 +1020,7 @@
     if (open) {
       window.dispatchEvent(new CustomEvent('dash:page', { detail: 'mydata' }));
       if (!fromHash && location.hash !== '#mydata') {
-        if (location.hash === '#feeds') history.replaceState(null, '', '#mydata');
+        if (location.hash === '#feeds' || location.hash === '#games') history.replaceState(null, '', '#mydata');
         else { history.pushState(null, '', '#mydata'); pushed = true; }
       }
       window.scrollTo(0, 0);

@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400..800&display=swap">
   <!-- ?v=0.MINOR.PATCH: ophogen bij elke wijziging (zie CLAUDE.md); de rest krijgt hetzelfde nummer via dash.js -->
-  <link rel="stylesheet" href="style.css?v=0.42.0">
+  <link rel="stylesheet" href="style.css?v=0.43.0">
 </head>
 <body>
   <main class="dashboard">
@@ -39,6 +39,9 @@
         </button>
         <button class="tb-btn tb-mydata" aria-label="Mijn data" aria-pressed="false" title="Mijn data">
           <svg viewBox="0 0 24 24"><path d="M4 20V10h3v10H4zm6.5 0V4h3v16h-3zM17 20v-7h3v7h-3z"/></svg>
+        </button>
+        <button class="tb-btn tb-games" aria-label="Spelletjes" aria-pressed="false" title="Spelletjes">
+          <svg viewBox="0 0 24 24"><path d="M7 7h10a5 5 0 0 1 4.9 6l-.8 4a2.5 2.5 0 0 1-4.3 1.2L14.5 16h-5l-2.3 2.2A2.5 2.5 0 0 1 2.9 17l-.8-4A5 5 0 0 1 7 7zm0 3v1.5H5.5v2H7V15h2v-1.5h1.5v-2H9V10H7zm9.25 1a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5zm-2.5 2.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5z"/></svg>
         </button>
         <button class="tb-btn tb-focus" aria-label="Focusmodus" aria-pressed="false" title="Focusmodus starten">
           <svg viewBox="0 0 24 24"><path d="M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.03-6.61 1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42A8.96 8.96 0 0 0 12 4a9 9 0 1 0 9 9c0-2.12-.74-4.07-1.97-5.61zM12 20a7 7 0 1 1 0-14 7 7 0 0 1 0 14z"/></svg>
@@ -262,13 +265,14 @@
 
   <div id="toast" role="status"></div>
 
-  <script src="config.js?v=0.42.0"></script>
-  <script src="dash.js?v=0.42.0"></script>
-  <script src="topbar.js?v=0.42.0"></script>
-  <script src="themes.js?v=0.42.0"></script>
-  <script src="focus.js?v=0.42.0"></script>
-  <script src="feeds.js?v=0.42.0"></script>
-  <script src="mydata.js?v=0.42.0"></script>
+  <script src="config.js?v=0.43.0"></script>
+  <script src="dash.js?v=0.43.0"></script>
+  <script src="topbar.js?v=0.43.0"></script>
+  <script src="themes.js?v=0.43.0"></script>
+  <script src="focus.js?v=0.43.0"></script>
+  <script src="feeds.js?v=0.43.0"></script>
+  <script src="mydata.js?v=0.43.0"></script>
+  <script src="games.js?v=0.43.0"></script>
   <!-- De rest laadt dash.js in deze volgorde: meteen, of met ?mini=1 pas als je het volledige dashboard opent -->
   <script>
     DASH.boot([

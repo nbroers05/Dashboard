@@ -247,7 +247,7 @@
         loadMarkets(false);
       }
       if (!fromHash && location.hash !== '#feeds') {
-        if (location.hash === '#mydata') history.replaceState(null, '', '#feeds');
+        if (location.hash === '#mydata' || location.hash === '#games') history.replaceState(null, '', '#feeds');
         else { history.pushState(null, '', '#feeds'); pushed = true; }
       }
       window.scrollTo(0, 0);
