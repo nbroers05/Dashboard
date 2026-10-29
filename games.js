@@ -4,8 +4,9 @@
 //   Hoger/lager    twee posters uit je Letterboxd: klik de film die jij een hoger cijfer gaf (gelijk = allebei goed)
 //   Raad de poster een poster van een film die je gelogd hebt, eerst wazig en ingezoomd, steeds duidelijker
 //   2048           voor tussendoor (pijltjes/WASD of vegen)
+// Hoger/lager kan ook op het gemiddelde van TMDB-gebruikers (games.hl.mode).
 // Films: met het data-token je hele lijst met cijfers (data/aggregates/films.json in de privé repo), anders de laatste
-// logs uit data/letterboxd.json. Posters via TMDB (config.tmdbApiKey, cache tmdb.games). Scores en records alleen in
+// logs uit data/letterboxd.json. Posters en gemiddelden via TMDB (config.tmdbApiKey, cache tmdb.games2). Scores en records alleen in
 // deze browser (localStorage games.*), niets naar het archief.
 (() => {
   const { h, store } = DASH;
@@ -62,25 +63,25 @@
     filmsSource = `${films.length} films uit je laatste logs${token ? '' : ' (koppel het data-archief voor al je films)'}`;
     return films;
   }
-  const PCACHE = 'tmdb.games';
-  async function poster(f) {
-    if (f.poster) return f.poster;
+  const PCACHE = 'tmdb.games2';   // { "titel|jaar": { url, avg, n } } (avg = TMDB-gemiddelde 0-10, n = aantal stemmen)
+  async function info(f) {
     const key = `${f.title}|${f.year}`;
     const cache = store.get(PCACHE) || {};
     if (key in cache) return cache[key];
-    if (!TMDB_KEY) return null;
-    let url = null;
+    if (!TMDB_KEY) return { url: f.poster || null, avg: null, n: 0 };
+    let out = { url: f.poster || null, avg: null, n: 0 };
     try {
       const j = f.tmdb
         ? await DASH.getJSON(`https://api.themoviedb.org/3/movie/${f.tmdb}?api_key=${TMDB_KEY}`)
         : ((await DASH.getJSON(`https://api.themoviedb.org/3/search/movie?${new URLSearchParams({ api_key: TMDB_KEY, query: f.title, ...(f.year ? { year: f.year } : {}) })}`)).results || [])[0];
-      if (j && j.poster_path) url = `https://image.tmdb.org/t/p/w500${j.poster_path}`;
-    } catch { return null; }   // netwerkfout: niet onthouden
+      if (j) out = { url: f.poster || (j.poster_path ? `https://image.tmdb.org/t/p/w500${j.poster_path}` : null), avg: j.vote_average ?? null, n: j.vote_count || 0 };
+    } catch { return out; }   // netwerkfout: niet onthouden
     const c2 = store.get(PCACHE) || {};
-    c2[key] = url;
+    c2[key] = out;
     store.set(PCACHE, c2);
-    return url;
+    return out;
   }
+  const poster = async (f) => (f.poster || (await info(f)).url);
   function posterBox(f, cls = '') {
     const box = h('div', `gm-poster ${cls}`);
     box.append(h('span', 'gm-poster-fb', f.title));
@@ -95,23 +96,51 @@
   }
 
   // ---------- Hoger/lager ----------
+  // Twee standen: "Mijn cijfer" (jouw Letterboxd-cijfer) en "Gemiddelde" (het gemiddelde van TMDB-gebruikers, op 5
+  // omgerekend; Letterboxd zelf heeft geen openbare API). Gelijk (binnen 0,05) telt allebei goed.
+  let hlMode = store.get('games.hl.mode') || 'mine';
   let hl = null;
+  const score = (f) => (hlMode === 'mine' ? f.rating : f.crowd);
+  const bestKey = () => (hlMode === 'mine' ? 'hl' : 'hlcrowd');
+  async function prepared(list, not) {
+    // Gemiddelde-stand: alleen films met genoeg stemmen op TMDB (minstens 50)
+    for (let i = 0; i < 12; i++) {
+      const f = pick(list);
+      if (f === not) continue;
+      if (hlMode === 'mine') { if (!not || f.rating !== not.rating || i > 6) return f; continue; }
+      const inf = await info(f);
+      if (inf.avg != null && inf.n >= 50) {
+        f.crowd = Math.round(inf.avg * 5) / 10;   // 0-10 → 0-5, op 0,1
+        if (!not || Math.abs(f.crowd - not.crowd) >= 0.05 || i > 8) return f;
+      }
+    }
+    return list.find((f) => f !== not && (hlMode === 'mine' || f.crowd != null)) || null;
+  }
   async function startHL() {
-    const list = (await loadFilms()).filter((f) => f.rating);
+    const all = await loadFilms();
+    const list = hlMode === 'mine' ? all.filter((f) => f.rating) : all;
     if (list.length < 2) return stage.replaceChildren(h('p', 'w-note', 'Nog te weinig films met een cijfer.'));
-    const a = pick(list);
-    hl = { list, a, b: nextB(list, a), streak: 0, busy: false };
+    stage.replaceChildren(h('p', 'w-note', 'Films zoeken…'));
+    const a = await prepared(list, null);
+    const b = a && await prepared(list, a);
+    if (!a || !b) return stage.replaceChildren(h('p', 'w-note', 'Kon geen films met een gemiddelde vinden (TMDB niet bereikbaar?).'));
+    hl = { list, a, b, streak: 0, busy: false, mode: hlMode };
     renderHL();
   }
-  function nextB(list, a) {
-    // Vaker een ander cijfer dan hetzelfde, anders is het te makkelijk "gelijk"
-    for (let i = 0; i < 8; i++) { const b = pick(list); if (b !== a && (b.rating !== a.rating || i > 5)) return b; }
-    return list.find((f) => f !== a);
-  }
+  const fmtScore = (f) => (hlMode === 'mine' ? stars(f.rating) : `★ ${f.crowd.toLocaleString('nl-NL', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} gemiddeld`);
   function renderHL(chosen) {
     const { a, b } = hl;
+    const modes = h('div', 'fd-tabs gm-modes');
+    for (const [m, label] of [['mine', 'Mijn cijfer'], ['crowd', 'Gemiddelde (TMDB)']]) {
+      const x = h('button', null, label);
+      x.type = 'button';
+      x.setAttribute('aria-pressed', hlMode === m);
+      x.onclick = () => { if (hlMode === m) return; hlMode = m; store.set('games.hl.mode', m); hl = null; startHL(); };
+      modes.append(x);
+    }
     const top = h('div', 'gm-row');
-    top.append(h('p', 'gm-q', 'Welke film gaf jij een hoger cijfer?'), h('p', 'gm-score', `reeks ${hl.streak} · record ${best('hl')}`));
+    top.append(h('p', 'gm-q', hlMode === 'mine' ? 'Welke film gaf jij een hoger cijfer?' : 'Welke film heeft een hoger gemiddelde?'), modes,
+      h('p', 'gm-score', `reeks ${hl.streak} · record ${best(bestKey())}`));
     const duel = h('div', 'gm-duel');
     const card = (f, side) => {
       const c = h('button', 'gm-card');
@@ -119,29 +148,35 @@
       const show = side === 'a' || chosen;
       if (chosen) {
         const other = side === 'a' ? b : a;
-        c.classList.add(f.rating >= other.rating ? 'good' : 'bad');
+        c.classList.add(score(f) >= score(other) - 0.04 ? 'good' : 'bad');
         if (chosen === side) c.classList.add('picked');
       }
-      c.append(posterBox(f), h('b', 'gm-title', `${f.title}${f.year ? ` (${f.year})` : ''}`), h('span', show ? 'gm-stars' : 'gm-hidden', show ? stars(f.rating) : '? klik de hoogste'));
+      const extra = hlMode === 'crowd' && show && f.rating ? ` · jij ${stars(f.rating)}` : '';
+      c.append(posterBox(f), h('b', 'gm-title', `${f.title}${f.year ? ` (${f.year})` : ''}`), h('span', show ? 'gm-stars' : 'gm-hidden', show ? `${fmtScore(f)}${extra}` : '? klik de hoogste'));
       c.onclick = () => choose(side);
       return c;
     };
     duel.append(card(a, 'a'), h('span', 'gm-vs', 'vs'), card(b, 'b'));
-    stage.replaceChildren(top, duel, h('p', 'w-sub gm-foot', `Gelijk cijfer telt allebei goed. ${filmsSource}. Records alleen in deze browser.`));
+    const note = hlMode === 'mine' ? `Gelijk cijfer telt allebei goed. ${filmsSource}.` : `Gemiddelde van TMDB-gebruikers (op 5 omgerekend), alleen films met minstens 50 stemmen. ${filmsSource}.`;
+    stage.replaceChildren(top, duel, h('p', 'w-sub gm-foot', `${note} Records alleen in deze browser.`));
   }
-  function choose(side) {
+  async function choose(side) {
     if (hl.busy) return;
     hl.busy = true;
     const mine = side === 'a' ? hl.a : hl.b, other = side === 'a' ? hl.b : hl.a;
-    const ok = mine.rating >= other.rating;
-    if (ok) { hl.streak++; setBest('hl', hl.streak); } else hl.streak = 0;
+    const ok = score(mine) >= score(other) - 0.04;
+    if (ok) { hl.streak++; setBest(bestKey(), hl.streak); } else hl.streak = 0;
     renderHL(side);
     // Groene of rode gloed om het hele vak
     stage.classList.remove('glow-good', 'glow-bad');
     void stage.offsetWidth;
     stage.classList.add(ok ? 'glow-good' : 'glow-bad');
+    const mode = hlMode;
+    const [na, nb] = ok ? [hl.b, null] : [await prepared(hl.list, null), null];
+    const nextB = await prepared(hl.list, na);
     setTimeout(() => {
-      if (ok) { hl.a = hl.b; hl.b = nextB(hl.list, hl.a); } else { hl.a = pick(hl.list); hl.b = nextB(hl.list, hl.a); }
+      if (mode !== hlMode || !hl) return;
+      hl.a = na; hl.b = nextB || nb;
       hl.busy = false;
       if (game === 'hl' && !page.hidden) renderHL();
     }, ok ? 1100 : 1800);
