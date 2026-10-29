@@ -10,6 +10,7 @@ Onder de lijst staat per ronde de uitgebreide toelichting zoals die toen geschre
 
 | Versie | Wat |
 |---|---|
+| 0.43.8 | Hoger/lager "Gemiddelde" gebruikt nu het echte Letterboxd-gemiddelde (1.859 films, uit het Sterrenvoorspeller-bestand in het privé archief), ook voor films van je watchlist; zonder token TMDB. |
 | 0.43.7 | Hoger/lager ook op het gemiddelde van TMDB-gebruikers (Letterboxd heeft geen openbare API), met eigen record. |
 | 0.43.6 | Check-in-vak telt uit het archief (alle apparaten, deze en vorige maand, elke 10 min) plus de wachtrij. |
 | 0.43.5 | Minder lege ruimte: Canvas op inhoudshoogte (liggend), grotere filmposters en artiesten als rij foto's in het roterende vak, weinig series = grotere covers, Mijn data-vakken op inhoudshoogte, Spelletjes breder met grotere posters. |

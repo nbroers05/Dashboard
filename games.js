@@ -4,7 +4,7 @@
 //   Hoger/lager    twee posters uit je Letterboxd: klik de film die jij een hoger cijfer gaf (gelijk = allebei goed)
 //   Raad de poster een poster van een film die je gelogd hebt, eerst wazig en ingezoomd, steeds duidelijker
 //   2048           voor tussendoor (pijltjes/WASD of vegen)
-// Hoger/lager kan ook op het gemiddelde van TMDB-gebruikers (games.hl.mode).
+// Hoger/lager kan ook op het Letterboxd-gemiddelde (uit het archief; zonder token TMDB) (games.hl.mode).
 // Films: met het data-token je hele lijst met cijfers (data/aggregates/films.json in de privé repo), anders de laatste
 // logs uit data/letterboxd.json. Posters en gemiddelden via TMDB (config.tmdbApiKey, cache tmdb.games2). Scores en records alleen in
 // deze browser (localStorage games.*), niets naar het archief.
@@ -50,8 +50,8 @@
           headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github.raw+json', 'X-GitHub-Api-Version': '2022-11-28' },
         });
         if (res.ok) {
-          films = (await res.json()).films.map(([title, year, rating, tmdb]) => ({ title, year, rating, tmdb }));
-          filmsSource = `${films.length} films uit je Letterboxd`;
+          films = (await res.json()).films.map(([title, year, rating, tmdb, lb, lbn]) => ({ title, year, rating, tmdb, lb, lbn }));
+          filmsSource = `${films.filter((f) => f.rating).length} films met jouw cijfer, ${films.filter((f) => f.lb != null).length} met een Letterboxd-gemiddelde`;
           return films;
         }
       } catch { /* val terug op de openbare lijst */ }
@@ -96,8 +96,9 @@
   }
 
   // ---------- Hoger/lager ----------
-  // Twee standen: "Mijn cijfer" (jouw Letterboxd-cijfer) en "Gemiddelde" (het gemiddelde van TMDB-gebruikers, op 5
-  // omgerekend; Letterboxd zelf heeft geen openbare API). Gelijk (binnen 0,05) telt allebei goed.
+  // Twee standen: "Mijn cijfer" (jouw Letterboxd-cijfer) en "Gemiddelde": het Letterboxd-gemiddelde uit het archief
+  // (letterboxd-films, uit de Sterrenvoorspeller). Zonder token valt het terug op het gemiddelde van TMDB-gebruikers
+  // (op 5 omgerekend). Gelijk (binnen 0,05) telt allebei goed.
   let hlMode = store.get('games.hl.mode') || 'mine';
   let hl = null;
   const score = (f) => (hlMode === 'mine' ? f.rating : f.crowd);
@@ -108,17 +109,26 @@
       const f = pick(list);
       if (f === not) continue;
       if (hlMode === 'mine') { if (!not || f.rating !== not.rating || i > 6) return f; continue; }
+      if (f.lb != null) {   // Letterboxd-gemiddelde uit het archief
+        f.crowd = f.lb;
+        f.crowdSrc = 'Letterboxd';
+        if (!not || Math.abs(f.crowd - not.crowd) >= 0.05 || i > 8) return f;
+        continue;
+      }
+      if (lbCount() > 50) continue;   // genoeg Letterboxd-films: alleen die gebruiken
       const inf = await info(f);
       if (inf.avg != null && inf.n >= 50) {
         f.crowd = Math.round(inf.avg * 5) / 10;   // 0-10 → 0-5, op 0,1
+        f.crowdSrc = 'TMDB';
         if (!not || Math.abs(f.crowd - not.crowd) >= 0.05 || i > 8) return f;
       }
     }
     return list.find((f) => f !== not && (hlMode === 'mine' || f.crowd != null)) || null;
   }
+  const lbCount = () => (films || []).filter((f) => f.lb != null).length;
   async function startHL() {
     const all = await loadFilms();
-    const list = hlMode === 'mine' ? all.filter((f) => f.rating) : all;
+    const list = hlMode === 'mine' ? all.filter((f) => f.rating) : lbCount() > 50 ? all.filter((f) => f.lb != null) : all;
     if (list.length < 2) return stage.replaceChildren(h('p', 'w-note', 'Nog te weinig films met een cijfer.'));
     stage.replaceChildren(h('p', 'w-note', 'Films zoeken…'));
     const a = await prepared(list, null);
@@ -127,11 +137,11 @@
     hl = { list, a, b, streak: 0, busy: false, mode: hlMode };
     renderHL();
   }
-  const fmtScore = (f) => (hlMode === 'mine' ? stars(f.rating) : `★ ${f.crowd.toLocaleString('nl-NL', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} gemiddeld`);
+  const fmtScore = (f) => (hlMode === 'mine' ? stars(f.rating) : `★ ${f.crowd.toLocaleString('nl-NL', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} gemiddeld`);
   function renderHL(chosen) {
     const { a, b } = hl;
     const modes = h('div', 'fd-tabs gm-modes');
-    for (const [m, label] of [['mine', 'Mijn cijfer'], ['crowd', 'Gemiddelde (TMDB)']]) {
+    for (const [m, label] of [['mine', 'Mijn cijfer'], ['crowd', `Gemiddelde (${lbCount() > 50 ? 'Letterboxd' : 'TMDB'})`]]) {
       const x = h('button', null, label);
       x.type = 'button';
       x.setAttribute('aria-pressed', hlMode === m);
@@ -157,7 +167,9 @@
       return c;
     };
     duel.append(card(a, 'a'), h('span', 'gm-vs', 'vs'), card(b, 'b'));
-    const note = hlMode === 'mine' ? `Gelijk cijfer telt allebei goed. ${filmsSource}.` : `Gemiddelde van TMDB-gebruikers (op 5 omgerekend), alleen films met minstens 50 stemmen. ${filmsSource}.`;
+    const note = hlMode === 'mine' ? `Gelijk cijfer telt allebei goed. ${filmsSource}.`
+      : lbCount() > 50 ? `Letterboxd-gemiddelde (uit de Sterrenvoorspeller, 19 okt 2026); ook films van je watchlist doen mee. ${filmsSource}.`
+        : `Gemiddelde van TMDB-gebruikers (op 5 omgerekend), alleen films met minstens 50 stemmen. Koppel het data-archief voor de Letterboxd-gemiddelden.`;
     stage.replaceChildren(top, duel, h('p', 'w-sub gm-foot', `${note} Records alleen in deze browser.`));
   }
   async function choose(side) {
