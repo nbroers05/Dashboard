@@ -4,6 +4,12 @@
    "name": "NOS",
    "items": [
     {
+     "title": "Activist en vakbondsleider Dolores Huerta (96) overleden, vrouw achter slogan Obama",
+     "link": "https://nos.nl/l/2637105",
+     "time": "2026-10-29T03:05:07+01:00",
+     "img": "https://images.cdn.nos.nl/8/A/f/J/U/x/HzSuvVgUYzpobQytUqEZsnytH9cBnT13JyRNXBJ/0x304x3600x2025-1024x576.webp"
+    },
+    {
      "title": "Rechter Alvin Hellerstein (92) overleden, bekend van 9/11, Maduro en zwijggeld Trump",
      "link": "https://nos.nl/l/2637104",
      "time": "2026-10-29T00:59:26+01:00",
@@ -86,12 +92,6 @@
      "link": "https://nos.nl/l/2637063",
      "time": "2026-10-28T17:57:09+01:00",
      "img": "https://images.cdn.nos.nl/5/E/D/t/1/E/Nwv7rYSL5NTNocANDuAtvKrpLMxz8KnSRP9CvEh/8x420x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Steun van Tweede Kamer voor begroting wegen, sluizen en bruggen",
-     "link": "https://nos.nl/l/2637060",
-     "time": "2026-10-28T17:37:53+01:00",
-     "img": "https://images.cdn.nos.nl/7/y/f/G/N/d/CHsDTQ6hsQUAVbu2YfPg5xKTJEtuAJ93a7APRD/0x417x4000x2250-1024x576.webp"
     }
    ]
   },
@@ -390,50 +390,7 @@
   }
  ],
  "youtube": {
-  "channels": [
-   "Patrick (H) Willems"
-  ],
-  "videos": [
-   {
-    "title": "Is This The Best Directed Movie Ever?",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=_t76HmE8ib4",
-    "thumb": "https://i.ytimg.com/vi/_t76HmE8ib4/mqdefault.jpg",
-    "time": "2026-09-15T13:11:42+00:00",
-    "short": false
-   },
-   {
-    "title": "Come See My New Film In Theaters",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=uuMbBWR-2Xg",
-    "thumb": "https://i.ytimg.com/vi/uuMbBWR-2Xg/mqdefault.jpg",
-    "time": "2026-09-04T22:53:08+00:00",
-    "short": false
-   },
-   {
-    "title": "We Need To Talk About How Weird HOOK Is",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=hXAWl_Ar6xA",
-    "thumb": "https://i.ytimg.com/vi/hXAWl_Ar6xA/mqdefault.jpg",
-    "time": "2026-08-06T14:38:38+00:00",
-    "short": false
-   },
-   {
-    "title": "Can video games be cinema? #videogames #movie #thelastofus #deathstranding",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/shorts/-GWrCLXTuwM",
-    "thumb": "https://i.ytimg.com/vi/-GWrCLXTuwM/mqdefault.jpg",
-    "time": "2026-07-01T16:17:55+00:00",
-    "short": true
-   },
-   {
-    "title": "The Muppets and Tron transformed legacy sequels #movie #moviefacts #muppets #patrickhwillems",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/shorts/YxTEPXuVdPY",
-    "thumb": "https://i.ytimg.com/vi/YxTEPXuVdPY/mqdefault.jpg",
-    "time": "2026-06-24T16:02:36+00:00",
-    "short": true
-   }
-  ]
+  "channels": [],
+  "videos": []
  }
 }
