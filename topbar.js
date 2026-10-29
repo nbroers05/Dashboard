@@ -240,7 +240,7 @@
       parts.push(`${name} ${days === 0 ? `vandaag ${DASH.fmtTime(due(next))}` : days === 1 ? 'morgen' : `over ${days} dagen`}`);
     }
     // Verjaardagen (agenda-veld birthday, uit de verjaardagen-agenda van je contacten): komende 7 dagen
-    const bdays = cal.filter((e) => e.birthday && e.end > now && e.start < DASH.addDays(today, 8))
+    const bdays = cal.filter((e) => e.birthday && !/gefeliciteerd/i.test(e.birthday) && e.end > now && e.start < DASH.addDays(today, 8))
       .sort((a, b) => a.start - b.start).filter((e, i, arr) => arr.findIndex((x) => x.birthday === e.birthday) === i);
     let todayBday = null;
     for (const e of bdays.slice(0, 2)) {
