@@ -656,8 +656,91 @@ window.DASH_THEMES = (() => {
   }
 
   // ---------- Tabje Thema in Instellingen (settings.js) ----------
+  const ORDER = ['herfst', 'winter', 'lente', 'zomer', 'halloween', 'sinterklaas', 'kerst', 'oudennieuw', 'koningsdag', 'verjaardag',
+    'valentijn', 'pasen', 'bevrijdingsdag', 'f1', 'tentamen', 'standaard'];
+  const SWITCHES = [
+    ['particles', 'Vallende deeltjes', 'sneeuw, blaadjes, bloesem, hartjes, confetti'],
+    ['deco', 'Versiering op de vakken', 'sneeuwkapjes, spinnenweb, blaadjes, bloesem'],
+    ['topbar', 'Topbalk-versiering', 'lampjes, vlaggetjes, slinger'],
+    ['bg', 'Achtergrond', 'thema-verloop, sterrenhemel bij Oud en Nieuw'],
+    ['weather', 'Echt weer meenemen', 'sneeuw, regen of zon van nu'],
+    ['fx', 'Eenmalige effecten', 'vuurwerk, confetti bij laden'],
+  ];
   function renderTab(el) {
-    el.append(h('p', 'w-note', 'De thema-instellingen komen hier.'));
+    const s = settings(), redraw = () => { el.replaceChildren(); renderTab(el); };
+    const change = (k, v) => { set(k, v); redraw(); };
+    const head = (text) => el.append(h('p', 'th-set-h', text));
+    const f = forced();
+
+    head('Kies thema');
+    const auto = h('button', 'th-auto');
+    auto.type = 'button';
+    auto.setAttribute('aria-pressed', String(s.choice === 'auto'));
+    auto.append(h('b', null, 'Automatisch'), h('span', null, `volgt datum en weer · ${describe()}`));
+    auto.onclick = () => change('choice', 'auto');
+    el.append(auto);
+    const grid = h('div', 'th-cards');
+    for (const id of ORDER.filter((x) => byId[x]).concat(themes.map((t) => t.id).filter((x) => !ORDER.includes(x)))) {
+      const t = byId[id], b = h('button', 'th-card');
+      b.type = 'button';
+      b.title = `${t.name} vastzetten`;
+      b.style.setProperty('--a', t.c1);
+      b.style.setProperty('--b', t.c2);
+      b.setAttribute('aria-pressed', String(s.choice === id));
+      b.append(h('span', 'th-card-icon', t.icon), h('span', 'th-card-name', t.name));
+      b.onclick = () => change('choice', id);
+      grid.append(b);
+    }
+    el.append(grid);
+    if (f) el.append(h('p', 'th-set-note', `Nu vastgezet via de link (${byId[f.id].name}); haal ?thema / ?${f.id} uit het adres om dit te gebruiken.`));
+
+    head('Effecten');
+    const row = (label, sub, checked, onChange, disabled) => {
+      const r = h('label', `th-sw${disabled ? ' off' : ''}`);
+      const txt = h('span', 'th-sw-txt');
+      txt.append(h('span', null, label));
+      if (sub) txt.append(h('small', null, sub));
+      const input = h('input');
+      input.type = 'checkbox';
+      input.setAttribute('role', 'switch');
+      input.checked = checked;
+      input.disabled = !!disabled;
+      input.onchange = () => onChange(input.checked);
+      r.append(txt, input);
+      el.append(r);
+    };
+    row('Alle effecten', 'hoofdschakelaar: alles in één keer uit', s.all, (v) => change('all', v));
+    for (const [k, label, sub] of SWITCHES) row(label, sub, s[k], (v) => change(k, v), !s.all);
+
+    const amount = h('div', 'th-sw th-amount');
+    const seg = h('div', 'seg');
+    for (const [k, label] of [['rustig', 'Rustig'], ['normaal', 'Normaal'], ['feestje', 'Feestje']]) {
+      const b = h('button', null, label);
+      b.type = 'button';
+      b.setAttribute('aria-pressed', String(s.amount === k));
+      b.onclick = () => change('amount', k);
+      seg.append(b);
+    }
+    amount.append(h('span', 'th-sw-txt', 'Hoeveelheid'), seg);
+    el.append(amount);
+
+    head('Bekijk als datum');
+    const dateRow = h('div', 'th-date');
+    const input = h('input');
+    input.type = 'date';
+    input.value = viewIso() || isoDay(new Date());
+    input.disabled = !!urlDay;
+    input.onchange = () => { if (input.value) { viewDate(input.value); redraw(); } };
+    const back = h('button', 'w-btn ghost', 'terug naar vandaag');
+    back.type = 'button';
+    back.disabled = !viewIso() || !!urlDay;
+    back.onclick = () => { viewDate(null); redraw(); };
+    dateRow.append(input, back);
+    el.append(dateRow);
+    el.append(h('p', 'th-set-note', urlDay ? 'De datum staat vast via ?datum= in het adres.'
+      : 'Zo zie je hoe een dag eruitziet bij Automatisch. Geldt alleen voor dit tabblad; het echte weer telt dan niet mee.'));
+    if (reduced.matches) el.append(h('p', 'th-set-note', 'Beweging beperken staat aan op deze computer: alleen stilstaande versiering.'));
+    el.append(h('p', 'th-set-note', 'Op de telefoon alleen topbalkkleur, groet en achtergrond; in de minimale modus geen vakversiering en geen deeltjes.'));
   }
   if (window.DASH_SETTINGS) DASH_SETTINGS.add({ id: 'thema', label: 'Thema', order: 10, render: renderTab });
 

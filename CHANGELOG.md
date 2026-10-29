@@ -10,6 +10,7 @@ Onder de lijst staat per ronde de uitgebreide toelichting zoals die toen geschre
 
 | Versie | Wat |
 |---|---|
+| 0.44.3 | Tabje Thema: Automatisch met "nu: …"-regel (wat het nu is en wat er daarna komt), alle thema's als kaartjes met voorvertoning (klik = vast), schakelaars voor deeltjes, vakversiering, topbalk-versiering, achtergrond, echt weer, eenmalige effecten en een hoofdschakelaar, Rustig/Normaal/Feestje, Bekijk als datum + terug naar vandaag. |
 | 0.44.2 | Instellingen: tandwiel in de topbalk (naast minimaliseren) opent een paneel met tabjes (settings.js; nu alleen Thema, later makkelijk meer); Esc of klik ernaast sluit, op de telefoon schermvullend. Versiering liever op vakken die je ziet (niet in de dichte Meer-lade). |
 | 0.44.1 | Halloween (24-31 okt) en Herfst helemaal af: spinnenweb in een hoek van een paar vakken, spinnetje dat één keer aan een draadje zakt, oranje/paarse lampjes boven de topbalk, pompoen in de dagregel, "Halloween over n dagen"; herfst: warme achtergrond, blaadje op een hoek van een paar vakken, af en toe een vallend blad (achter de vakken). Versiering komt alleen waar geen tekst, knop of plaatje staat. |
 | 0.44.0 | Nieuw themasysteem (stap 1): themes.js kiest het thema, elk thema een eigen bestand in themes/. Topbalkkleur, groeten, verjaardag (?mijnverjaardag) en confetti/vuurwerk werken zoals in 0.42.0, nu via het nieuwe systeem; ?datum=, ?thema= en ?<thema> blijven werken. |
