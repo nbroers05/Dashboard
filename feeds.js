@@ -239,13 +239,17 @@
     btn.setAttribute('aria-pressed', open);
     btn.title = open ? 'Terug naar het dashboard (Esc)' : 'Feeds';
     if (open) {
+      window.dispatchEvent(new CustomEvent('dash:page', { detail: 'feeds' }));
       if (Date.now() - loadedAt > 10 * 60000) {
         loadedAt = Date.now();
         [news, film, yt, mkt].forEach((s) => { if (!s.body.children.length) s.body.append(note('Laden…')); });
         loadFeeds();
         loadMarkets(false);
       }
-      if (!fromHash && location.hash !== '#feeds') { history.pushState(null, '', '#feeds'); pushed = true; }
+      if (!fromHash && location.hash !== '#feeds') {
+        if (location.hash === '#mydata') history.replaceState(null, '', '#feeds');
+        else { history.pushState(null, '', '#feeds'); pushed = true; }
+      }
       window.scrollTo(0, 0);
       place();
     } else if (!fromHash && location.hash === '#feeds') {
@@ -256,6 +260,8 @@
     }
   }
   btn.onclick = () => setOpen(page.hidden);
+  // Mijn data ligt op dezelfde plek: gaat die open, dan gaat Feeds dicht
+  window.addEventListener('dash:page', (e) => { if (e.detail !== 'feeds' && !page.hidden) setOpen(false, true); });
   window.addEventListener('popstate', () => setOpen(location.hash === '#feeds', true));
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !page.hidden && !document.querySelector('dialog[open]') && document.activeElement.tagName !== 'INPUT') setOpen(false);
