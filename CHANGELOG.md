@@ -1,5 +1,97 @@
 # Wijzigingen
 
+Alle versies van het dashboard, nieuwste bovenaan, met terugwerkende kracht aangevuld uit de git-geschiedenis (29 okt 2026).
+Tot en met versie 26 was het nummer één getal (`?v=26`); vanaf 0.27.0 is het `0.MINOR.PATCH` (grote opdracht = MINOR, kleine fix = PATCH).
+Daarom staan de oude nummers hier als 0.N.0. Nummer 19 en 24 zijn nooit uitgebracht (overgeslagen tijdens het werk).
+Onder de lijst staat per ronde de uitgebreide toelichting zoals die toen geschreven is.
+
+
+## 29 oktober 2026
+
+| Versie | Wat |
+|---|---|
+| 0.43.7 | Hoger/lager ook op het gemiddelde van TMDB-gebruikers (Letterboxd heeft geen openbare API), met eigen record. |
+| 0.43.6 | Check-in-vak telt uit het archief (alle apparaten, deze en vorige maand, elke 10 min) plus de wachtrij. |
+| 0.43.5 | Minder lege ruimte: Canvas op inhoudshoogte (liggend), grotere filmposters en artiesten als rij foto's in het roterende vak, weinig series = grotere covers, Mijn data-vakken op inhoudshoogte, Spelletjes breder met grotere posters. |
+| 0.43.4 | 2048 met vierkante vakjes en schuivende tegels (samenvoegen ploppen, nieuwe tegel groeit), uit bij beweging beperken. |
+| 0.43.3 | Hoger/lager: groene gloed om het vak bij goed, rode bij fout. |
+| 0.43.2 | Pijltjes van het roterende vak onderaan naast de bolletjes, niet meer over de inhoud. |
+| 0.43.1 | Aftellen naar je eigen verjaardag weer in de dagregel ('nog 6 dagen tot je verjaardag'). |
+| 0.43.0 | Spelletjes-pagina (icoon in de topbalk, #games): Hoger/lager met je Letterboxd-cijfers, Raad de poster, 2048; records alleen in de browser. |
+| 0.42.0 | Feestdagen- en verjaardagsversie van de topbalk (themakleur + groet, confetti op je verjaardag, vuurwerk op oudjaar, 1x per dag); testen met ?datum=JJJJ-MM-DD of ?<feestdag>; eigen verjaardag via ?mijnverjaardag= alleen in de browser. |
+| 0.41.0 | Vak Wensen (WENSEN.md als lijst, alleen lezen, alleen op de pc via het hulpprogramma /wensen); Meer-lade past zich aan het aantal vakken aan. |
+| 0.40.10 | ?maat toont de echte venstermaat (breedte × hoogte, schaal, staand/liggend) om op precies die maat te testen. |
+| 0.40.9 | Mediakaarten knipperen niet meer als er niets speelt (pas weg na 6 s zonder signaal van Spotify of Windows). |
+| 0.40.8 | Pijltjes links/rechts in het roterende vak; versie in de Meer-balk (verticaal gecentreerd) en Meer-balk met meer contrast boven de agenda. |
+| 0.40.7 | Pijltjes bij Dekking per bron om een maand terug of vooruit te gaan. |
+| 0.40.6 | Kaart zonder Leaflet-vlaggetje in de bronvermelding. |
+| 0.40.5 | Heatmap bij Plekken duidelijker (logaritmisch, geel naar oranjerood, kaart donkerder en grijzer). |
+| 0.40.4 | Mijn data: 'Deze maand' (vanaf de 1e) in plaats van 'Afgelopen maand'. |
+| 0.40.3 | Nachtstand (avondmodus) weggehaald. |
+| 0.40.2 | Agenda F1-sessies FP1-3 en Quali in plaats van VT en Kwali. |
+| 0.40.1 | F1-uitslag nog maar 3 dagen, daarna aftellen naar de volgende GP. |
+| 0.40.0 | Mijn data toont de nieuwe archiefbronnen (dekking, tabje Series, Firefox en opstarten bij Computer, kalender/maan/berichten in Overlap); lege dag = 0 alleen binnen de periode van die metriek. |
+| 0.39.0 | Episodes Left-logboek naar het privé archief (per serie nog open, uitgezonden via AniList, gekeken), max. elk half uur bij een verandering; DASH_DATA.appendRows. |
+| 0.38.0 | Pagina Mijn data (grafiek-icoon in de topbalk, #mydata): dekking per bron, periodefilter, kijken/luisteren, plekken (Leaflet + OSM), werk, geld, lichaam, computer, check-ins en overlap met correlatie. Data komt alleen uit de privé repo via het token; zonder token uitleg, ?demo = verzonnen cijfers. |
+| 0.37.1 | Hulpprogramma telt telefoonmeldingen (tijd + app, geen inhoud) voor het privé archief; docs. Wensenlijst-afspraak in CLAUDE.md; .obsidian en wensen/ in .gitignore. |
+| 0.37.0 | Data-overzicht (status van het privé archief, waarschuwing bij een stille bron). |
+| 0.36.0 | Check-in-vak (stemming, energie, focus, stress) dat opslaat in de privé data-repo. |
+
+## 28 oktober 2026
+
+| Versie | Wat |
+|---|---|
+| 0.35.2 | YouTube-kanaal van Ken (@kenforrest) op de Feeds-pagina. |
+| 0.35.1 | NU.nl, The Yard, ASML en Apple, Canvas-link EUR; ntfy uit de focusmodus. |
+| 0.35.0 | Filmnieuws (Letterboxd Journal) in plaats van Reddit op de Feeds-pagina. |
+| 0.34.0 | Opruimen en controleren (posters in liggende tabjes, F1-uitslag compact), CLAUDE.md en CHANGELOG.md. |
+| 0.33.0 | Feeds-pagina (nieuws, Reddit, YouTube via de Action; markten in de browser). |
+| 0.32.0 | Focusmodus (studietimer, playlist, meldingen gedempt, ntfy) en verjaardagen in de dagregel. |
+| 0.31.0 | Spotify-maandoverzicht (top 5 nummers en artiesten, scope user-top-read). |
+| 0.30.0 | F1-vak toont na de race de uitslag en het klassement tot de volgende sessie. |
+| 0.29.0 | Draait nu in de bios (LantarenVenster via de Action; Pathé en KINO overgeslagen, zie cinema.py). |
+| 0.28.0 | Letterboxd van vrienden (Action schrijft data/friends.json, vak Vrienden met je verwachte cijfer). |
+| 0.27.1 | Snelkoppelingen ingeklapt op het staande scherm, uitvouwen naar links bij hover. |
+| 0.27.0 | Eigen logo, vaste spelerknoppen, roterend vak voller, dagregel en nachtstand. |
+| 0.26.0 (toen `?v=26`) | Buienalarm in het weervak weer volledig, compacter met de bron naast de zin. |
+| 0.25.0 (toen `?v=25`) | Agenda ma-zo met weeknavigatie en Passend/Scrollen; snelkoppelingen zonder letters. |
+| 0.23.0 (toen `?v=23`) | Nieuw staand ontwerp (anderhalve schermhoogte), oud blijft via de knop. |
+| 0.22.0 (toen `?v=22`) | Brede indeling: AH-staafjes vullen de vrije ruimte, urengetallen terug. |
+| 0.21.0 (toen `?v=21`) | Brede indeling: F1-circuit past in het vak, filmposter vult de hoogte. |
+| 0.20.0 (toen `?v=20`) | Breed liggend scherm: alles in één scherm, drie kolommen. |
+| 0.18.0 (toen `?v=18`) | Mediastapel: ook terug naar Spotify door te klikken, eigen keuze blijft staan. |
+| 0.17.0 (toen `?v=17`) | Mediastapel: alles wat afspeelt, in Now Bar-stijl. |
+| 0.16.0 (toen `?v=16`) | ?mini=1 voor de nieuwe-tabpagina: minimaal, autofocus, zware vakken pas bij uitklappen. |
+
+## 27 oktober 2026
+
+| Versie | Wat |
+|---|---|
+| 0.15.0 (toen `?v=15`) | Google-tokens via het hulpprogramma: geen Vernieuwen meer op de pc. Privacyverklaring voor het Google-inlogscherm. Google Search Console-verificatie voor het OAuth-inlogscherm. |
+| 0.14.0 (toen `?v=14`) | Google Health: eigen token zonder agenda/Gmail-scopes, volledige foutmelding. |
+| 0.13.0 (toen `?v=13`) | Fase 8: gezondheid via de Google Health API. |
+| 0.12.0 (toen `?v=12`) | Versienummer onderaan het dashboard. |
+| 0.11.0 (toen `?v=11`) | AH-loon: tweede loonstrook, zondag/feestdag-toeslag, WUK. |
+| 0.10.0 (toen `?v=10`) | AH-loon: getallen van de loonstrook, vakantietoeslag en uitbetaalde uren per periode. |
+| 0.9.0 (toen `?v=9`) | Fase 7: AH-loon met toeslagen per tijdvak en netto-schatting. |
+| 0.8.0 (toen `?v=8`) | Fase 6: meldingenvak, telefoonmeldingen via hulpprogramma, Gmail. |
+| 0.7.0 (toen `?v=7`) | Fase 5: Laatst gekeken via Letterboxd-Action. Letterboxd-Action: checkout@v5 (Node 24). |
+| 0.6.0 (toen `?v=6`) | Fase 4: Canvas-deadlines op urgentie met eigen pagina. |
+| 0.5.0 (toen `?v=5`) | Bewegende weericonen terug, animaties wat langzamer. |
+| 0.4.0 (toen `?v=4`) | Fase 3: subtiele animaties, stilstaande weericonen. |
+| 0.3.0 (toen `?v=3`) | Versienummer achter scripts en stylesheet tegen oude bestanden uit de cache. |
+
+## Vóór het versienummer (27 oktober 2026)
+
+- Add CLAUDE.md with project overview for new sessions.
+- Fase 1: topbalk met klok, snelkoppelingen, zoekbalk en minimale modus.
+- Fase 2: weer-popup, buienalarm via Buienradar, eigen snelkoppelingen.
+- Eerste bestanden met de hand geüpload naar GitHub.
+
+---
+
+# Toelichting per ronde
+
 ## 0.36.0 – 0.37.1 (29 oktober 2026): privé data-archief
 
 - **0.36.0 Check-in-vak**: in een paar tikken stemming, energie, focus en stress (1–5) en een notitie. Wordt opgeslagen in de privé repo `dashboard-data` (niet in deze publieke repo). Een link `#checkin` opent het invulvak direct (zo werken de 3 meldingen per dag).
