@@ -14,8 +14,8 @@
   const CFG = window.DASHBOARD_CONFIG || {};
   const REPO = CFG.dataRepo || 'nbroers05/dashboard-data';
   const API = `https://api.github.com/repos/${REPO}/contents/data/aggregates/`;
-  const GROUPS = ['youtube', 'spotify', 'letterboxd', 'places', 'work', 'money', 'body', 'computer', 'checkins', 'weather'];
-  const GROUP_LABEL = { youtube: 'YouTube', spotify: 'Spotify', letterboxd: 'Letterboxd', places: 'Plekken', work: 'Werk en studie', money: 'Geld', body: 'Lichaam', computer: 'Computer', checkins: 'Check-ins', weather: 'Weer' };
+  const GROUPS = ['youtube', 'spotify', 'letterboxd', 'series', 'places', 'work', 'money', 'body', 'computer', 'social', 'checkins', 'weather', 'context'];
+  const GROUP_LABEL = { youtube: 'YouTube', spotify: 'Spotify', letterboxd: 'Letterboxd', series: 'Series', places: 'Plekken', work: 'Werk en studie', money: 'Geld', body: 'Lichaam', computer: 'Computer', social: 'Berichten en zoeken', checkins: 'Check-ins', weather: 'Weer', context: 'Kalender en maan' };
   // Kleuren voor grafieken met meerdere reeksen (vaste volgorde, kleurenblind-veilig op donker)
   const SERIES = ['#3987e5', '#d95926', '#199e70', '#c98500'];
 
@@ -90,24 +90,22 @@
   const G = (name) => data?.groups?.[name] || null;
   const meta = (g, m) => G(g)?.metrics?.[m] || {};
   const spanCache = new Map();
-  function span(g) {
-    // Tellingen: binnen de periode waarin de groep data heeft telt een lege dag als 0
-    if (spanCache.has(g)) return spanCache.get(g);
+  function span(g, m) {
+    // Tellingen: binnen de periode waarin deze metriek data heeft (eerste t/m laatste dag) telt een lege dag als 0
+    const key = `${g}.${m}`;
+    if (spanCache.has(key)) return spanCache.get(key);
+    const days = Object.keys(G(g)?.daily?.[m] || {});
     let lo = null, hi = null;
-    const grp = G(g);
-    for (const [m, dict] of Object.entries(grp?.daily || {})) {
-      if ((grp.metrics?.[m]?.kind || 'count') !== 'count') continue;
-      for (const d of Object.keys(dict)) { if (!lo || d < lo) lo = d; if (!hi || d > hi) hi = d; }
-    }
+    for (const d of days) { if (!lo || d < lo) lo = d; if (!hi || d > hi) hi = d; }
     const s = lo ? { lo, hi } : null;
-    spanCache.set(g, s);
+    spanCache.set(key, s);
     return s;
   }
   function daily(g, m, r) {
     // Map dag -> waarde of null (onbekend), voor elke dag in de periode
     const dict = G(g)?.daily?.[m] || {};
     const isCount = (meta(g, m).kind || 'count') === 'count';
-    const sp = span(g);
+    const sp = span(g, m);
     const out = [];
     for (let d = r.from; d <= r.to; d = addDays(d, 1)) {
       let v = dict[d];
@@ -355,6 +353,9 @@
     ['Agenda', ['calendar']], ['Maps', ['maps-timeline']], ['Bank', ['bank']], ['Gezondheid', ['fit-daily', 'health-daily', 'health-sleep', 'health-heartrate']],
     ['Check-ins', ['self-report']], ['Pc', ['pc-window', 'pc-web', 'pc-sessions', 'pc-afk']], ['Telefoon', ['activitywatch-android']],
     ['Meldingen', ['notifications']], ['Steam', ['steam']], ['Weer', ['weather', 'weather-daily']],
+    ['Pc aan/uit', ['pc-power']], ['Firefox', ['firefox-history']], ['Series', ['episodes-left']], ["Foto's", ['photos']],
+    ['Zoeken', ['google-search']], ['OV', ['ov-trips']], ['Claude', ['claude-conversations']], ['Berichten', ['messages-daily']],
+    ['Kalender', ['day-context']], ['Maan', ['moon']],
   ];
   function renderCoverage(r) {
     const src = data.index.sources || {};
@@ -424,7 +425,7 @@
   let watchTab = store.get('mydata.watchTab') || 'youtube';
   function renderWatch(r) {
     const tabs = h('div', 'fd-tabs md-tabs');
-    for (const [k, label] of [['youtube', 'YouTube'], ['spotify', 'Spotify'], ['letterboxd', 'Letterboxd']]) {
+    for (const [k, label] of [['youtube', 'YouTube'], ['spotify', 'Spotify'], ['letterboxd', 'Letterboxd'], ['series', 'Series']]) {
       const b = h('button', null, label);
       b.type = 'button';
       b.setAttribute('aria-pressed', watchTab === k);
@@ -464,6 +465,13 @@
       body.append(row, mini(`Luistertijd ${per}`));
       chart(body, (box) => bars(box, series('spotify', 'minutes', r, b), { fmt: fmtH, maxLabel: (m) => `max ${fmtH(m)}` }));
       if (G('spotify')?.note && !(data.index.sources['spotify-history']?.rows)) body.append(sub('Nog zonder de volledige Spotify-geschiedenis: alleen sinds de koppeling (elk uur de laatste 50 nummers), als lengte van het nummer.'));
+    } else if (watchTab === 'series') {
+      if (!hasData('series', 'episodes')) return body.append(note('Nog geen series. Het dashboard op de pc bewaart elk half uur wat Episodes Left doorgeeft; na twee momentopnames zie je hier welke afleveringen je keek.'));
+      body.append(mini(`Afleveringen ${per}`));
+      chart(body, (box) => bars(box, series('series', 'episodes', r, b), { fmt: (v) => `${nl(v)} afleveringen` }));
+      const top = mergeTop('series', 'series', r);
+      body.append(mini('Meest gekeken series'), top.length ? topList(top, (v) => `${nl(v)} afl.`) : note('Geen afleveringen in deze periode.'));
+      body.append(sub('Uit Episodes Left: gekeken = uitgezonden (AniList) min nog open, per momentopname.'));
     } else {
       if (!hasData('letterboxd', 'films')) return body.append(note('Nog geen Letterboxd-data.'));
       body.append(mini(`Films ${per}`));
@@ -690,6 +698,16 @@
       body.append(mini(`Schermtijd telefoon ${per}`));
       chart(body, (box) => bars(box, series('computer', 'phone_min', r, b), { fmt: fmtH, height: 70 }));
     }
+    if (C && anyIn('computer', 'ff_visits', r)) {
+      body.append(mini(`Firefox-bezoeken ${per}`));
+      chart(body, (box) => bars(box, series('computer', 'ff_visits', r, b), { fmt: (v) => `${nl(v)} bezoeken`, height: 70 }));
+      const wdh = sumWdh('computer', r, 'ff_wdh');
+      if (wdh) body.append(mini(`Wanneer je surft${monthNote(r)}`), heat(wdh, (v) => `${nl(v)} bezoeken`));
+      if (!hasPc) body.append(mini('Meest bezochte sites'), topList(mergeTop('computer', 'ff_sites', r, 6), (v) => `${nl(v)}×`));
+    }
+    const boots = total('computer', 'boots', r), chats = total('computer', 'claude_chats', r);
+    const facts = [boots ? `${nl(boots)}× opgestart` : '', chats ? `${nl(chats)} Claude-gesprekken` : ''].filter(Boolean);
+    if (facts.length) body.append(sub(facts.join(' · ')));
   }
 
   // ---------- Check-ins ----------
