@@ -429,7 +429,9 @@ window.DASH_THEMES = (() => {
       if (spec.type === 'edge') { for (const c of pool) plan.push({ card: c, spec, corner: 'all' }); continue; }
       if (spec.type === 'cap') { for (const c of pool) if (free(c, rectFor(c, spec))) plan.push({ card: c, spec, corner: 'top' }); continue; }
       const r = rng(`${decoSeed}|${spec.id}`);
-      const order = pool.map((c) => [r(), c]).sort((a, b) => a[0] - b[0]).map((x) => x[1]);
+      // Vakken die je nu ziet eerst (niet in de dichte Meer-lade, niet ver onder beeld)
+      const seen = (c) => !c.closest('.desk-more:not(.open)') && c.getBoundingClientRect().top < innerHeight * 1.5;
+      const order = pool.map((c) => [r() + (seen(c) ? 0 : 1), c]).sort((a, b) => a[0] - b[0]).map((x) => x[1]);
       let n = spec.max || 1;
       for (const card of order) {
         if (n <= 0) break;
