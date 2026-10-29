@@ -79,6 +79,8 @@ window.DASHBOARD_CONFIG = {
     { symbol: 'AAPL', name: 'Apple' },
     { symbol: 'BTC', name: 'Bitcoin', coingecko: 'bitcoin' },
   ],
+  // Privé data-archief (check-ins en het Data-overzicht). Het token staat alleen in je browser, nooit hier.
+  dataRepo: 'nbroers05/dashboard-data',
   // Gezondheid (Google Health): je dagelijkse stappendoel
   gezondheid: { stappenDoel: 10000 },
   // Voor filmposters (themoviedb.org → Instellingen → API → "API Key"). Leeg laten mag: dan een kleurvlak.

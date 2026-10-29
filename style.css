@@ -26,6 +26,7 @@
   --c-study: #2fbf71;
   --c-anime: #ff5fa2;
   --c-film: #f5b02e;
+  --c-checkin: #ff7eb6;
   --c-sky: #4fa8ff;
   --c-rain: #7f93b0;
   --c-sunny: #f5c542;
@@ -371,6 +372,40 @@ button { font: inherit; color: inherit; }
 #w-letterboxd { --c: #40bcf4; }
 #w-friends { --c: #00e054; }
 #w-sptop { --c: #1ed760; }
+#w-checkin { --c: var(--c-checkin); }
+/* Check-in: vak en invulvak */
+#w-checkin .w-row { align-items: center; }
+.ci-last { display: flex; flex-wrap: wrap; gap: 6px; }
+.ci-chip { padding: 3px 9px; border-radius: 999px; background: rgba(255, 255, 255, .07); font-size: .8rem; }
+.ci-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-top: auto; font-size: .82rem; }
+.ci-err { color: #ff8a8a; }
+/* Breed liggend: compact in de linkerkolom (meldingen houden de ruimte) */
+.desk #w-checkin { flex: none; }
+.desk #w-checkin { padding-top: 8px; padding-bottom: 8px; }
+.desk #w-checkin > .eyebrow { display: none; }
+.desk #w-checkin .w-body { flex-direction: row; align-items: center; gap: 10px; }
+.desk #w-checkin .w-row { flex: 1; min-width: 0; gap: 10px; }
+.desk #w-checkin .w-big { font-size: 1.3rem; }
+.desk #w-checkin .ci-last, .desk #w-checkin .w-body > .w-sub { display: none; }
+.desk #w-checkin .ci-foot { margin: 0; flex: none; font-size: .75rem; }
+.desk #w-checkin .ci-foot .w-sub { display: none; }
+.desk #w-checkin .w-btn { padding: 5px 12px; font-size: .8rem; }
+.panel-dialog.checkin-dialog { height: fit-content; max-height: calc(100dvh - 24px); width: min(480px, calc(100vw - 24px)); }
+.checkin-dialog .panel-body { height: auto; padding: 14px 18px 18px; }
+.checkin-dialog .w-btn:not(.ghost) { --c: var(--c-checkin); }
+.ci-form { display: flex; flex-direction: column; gap: 12px; }
+.ci-prompt { margin: 0; }
+.ci-row { display: flex; flex-direction: column; gap: 6px; }
+.ci-label { font-size: .78rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.ci-btns { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.ci-btn { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 0 6px; border: 1px solid rgba(255, 255, 255, .1); border-radius: 14px; background: rgba(255, 255, 255, .05); color: var(--text); font: inherit; cursor: pointer; transition: transform .15s, background .15s; }
+.ci-btn:hover { background: var(--surface-hover); }
+.ci-btn[aria-checked="true"] { background: color-mix(in srgb, var(--c-checkin) 35%, transparent); border-color: var(--c-checkin); transform: scale(1.04); }
+.ci-face { font-size: 1.5rem; line-height: 1; }
+.ci-num { font-size: .72rem; color: var(--muted); }
+.ci-note, .ci-token { width: 100%; padding: 9px 12px; border: 1px solid rgba(255, 255, 255, .12); border-radius: 12px; background: rgba(255, 255, 255, .06); color: var(--text); font: inherit; font-size: .95rem; resize: vertical; }
+.ci-note:focus, .ci-token:focus { outline: none; border-color: var(--c-checkin); }
+.ci-form .w-btn[disabled] { opacity: .45; cursor: not-allowed; }
 #w-mail { --c: #ea4335; }
 #w-alerts { --c: #a78bfa; }
 #w-health { --c: #ff5f8f; }
@@ -2010,7 +2045,7 @@ body.minimal .tb-design { display: none; }
 
 /* Meer-balk (to-do) blijft onderaan in beeld */
 .tall .desk-more { grid-area: auto; grid-column: 1 / -1; position: sticky; bottom: 10px; z-index: 30; }
-.tall .desk-drawer { height: min(55dvh, 560px); grid-template-columns: minmax(0, 560px); justify-content: center; }
+.tall .desk-drawer { height: min(55dvh, 560px); grid-template-columns: repeat(2, minmax(0, 480px)); justify-content: center; }
 
 /* ---------- Animaties: alleen als er iets gebeurt, nooit doorlopend ---------- */
 /* Vakken schuiven zacht in bij het laden (motion.js zet --i en de klasse .intro) */
