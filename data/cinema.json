@@ -1,5 +1,5 @@
 {
- "day": "2026-10-29",
+ "day": "2026-10-30",
  "sources": [
   "LantarenVenster"
  ],
@@ -60,7 +60,7 @@
      "url": "https://www.lantarenvenster.nl/programma/all-of-a-sudden/",
      "day": null,
      "next": null,
-     "until": null
+     "until": "2026-11-03"
     }
    ]
   },
@@ -130,7 +130,7 @@
      "url": "https://www.lantarenvenster.nl/programma/andiamo-a-bere-lultima/",
      "day": null,
      "next": null,
-     "until": null
+     "until": "2026-11-04"
     }
    ]
   },
@@ -324,20 +324,6 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/carel-kraayenhof-matangi-quartet/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
-   "title": "Chico Pinheiro Quartet",
-   "key": "chicopinheiroquartet",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/chico-pinheiro-quartet/",
      "day": null,
      "next": null,
      "until": null
@@ -681,6 +667,20 @@
    ]
   },
   {
+   "title": "Fatherland - Expat Cinema Rotterdam",
+   "key": "fatherlandexpatcinemarotterdam",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/fatherland-expat-cinema-rotterdam/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "Filmcollege: Mindfuck Films + Donnie Darko (2001)",
    "key": "filmcollegemindfuckfilmsdonniedarko2001",
    "poster": null,
@@ -733,6 +733,20 @@
      "day": null,
      "next": null,
      "until": "2026-12-03"
+    }
+   ]
+  },
+  {
+   "title": "Flamenco Sketches",
+   "key": "flamencosketches",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/jaleos-flamenco-sketches/",
+     "day": null,
+     "next": null,
+     "until": null
     }
    ]
   },
@@ -877,20 +891,6 @@
    ]
   },
   {
-   "title": "Jaleos - Flamenco Sketches",
-   "key": "jaleosflamencosketches",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/jaleos-flamenco-sketches/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
    "title": "Jasper Høiby's 3Elements",
    "key": "jasperhibys3elements",
    "poster": null,
@@ -940,6 +940,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/jelle-x-tarang-x-tiigri/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Jeremy Ledbetter Trio",
+   "key": "jeremyledbettertrio",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/jeremy-ledbetter-trio/",
      "day": null,
      "next": null,
      "until": null
@@ -1068,7 +1082,7 @@
      "url": "https://www.lantarenvenster.nl/programma/klara-and-the-sun/",
      "day": null,
      "next": null,
-     "until": null
+     "until": "2026-11-04"
     }
    ]
   },
@@ -1222,7 +1236,7 @@
      "url": "https://www.lantarenvenster.nl/programma/maspalomas/",
      "day": null,
      "next": null,
-     "until": null
+     "until": "2026-11-04"
     }
    ]
   },

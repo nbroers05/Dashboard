@@ -4,6 +4,18 @@
    "name": "NOS",
    "items": [
     {
+     "title": "Gitaar George Michael uit Faith-clip levert 215.000 euro op",
+     "link": "https://nos.nl/l/2637238",
+     "time": "2026-10-30T00:11:07+01:00",
+     "img": "https://images.cdn.nos.nl/1/B/H/U/W/q/jo7t1zuwh6SwYEQaca9Jg5kAxCWwp6m395s685j/8x272x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Zware gevechten in Jemen, Houthi's beschuldigd van veroorzaken hongersnood",
+     "link": "https://nos.nl/l/2637233",
+     "time": "2026-10-29T23:13:14+01:00",
+     "img": "https://images.cdn.nos.nl/4/5/1/Z/v/X/gpDt3ugfDjphPxEZkWBE53QbMjBtBATiDzviGEb/8x242x3984x2241-1024x576.webp"
+    },
+    {
      "title": "In Mali gevonden meteoriet blijkt 4,1 miljard jaar oud",
      "link": "https://nos.nl/l/2637228",
      "time": "2026-10-29T22:33:04+01:00",
@@ -80,24 +92,30 @@
      "link": "https://nos.nl/l/2637199",
      "time": "2026-10-29T18:56:29+01:00",
      "img": "https://images.cdn.nos.nl/2/3/E/s/d/A/W2Q9yg4uJq5qgFAhbgKAD16y8vGkx9sZs56GZmV/0x49x1104x621-1024x576.webp"
-    },
-    {
-     "title": "Japan en Duitsland worden ‘premium partners’, maar botsen over bescherming auto’s",
-     "link": "https://nos.nl/l/2637198",
-     "time": "2026-10-29T18:55:25+01:00",
-     "img": "https://images.cdn.nos.nl/3/F/9/w/3/D/hyzLxTzmgin1uv1f6MBxVd8A1B2hdSx46Jj9fXs/8x185x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Italië laat gepersonaliseerde kentekenplaten toe, plan wordt bespot",
-     "link": "https://nos.nl/l/2637192",
-     "time": "2026-10-29T18:17:26+01:00",
-     "img": "https://images.cdn.nos.nl/2/A/p/2/E/V/DK8aQLxxzH6PAokBMXPeJzwdcUJ1pLGaBjVDtc2/6x3x3536x1989-1024x576.webp"
     }
    ]
   },
   {
    "name": "NOS Sport",
    "items": [
+    {
+     "title": "Nageeye voorspelt Zweedse aardverschuiving in New York: 'Die Almgren is niet normaal'",
+     "link": "https://nos.nl/l/2637239",
+     "time": "2026-10-30T00:11:16+01:00",
+     "img": "https://images.cdn.nos.nl/5/6/A/H/s/P/Wm72A9fpc3kpMqSRWjjMVz8fx1TJDECBoiGGN5B/2x165x1568x882-1024x576.webp"
+    },
+    {
+     "title": "Parawielrenner Bangma snelt in Apeldoorn naar derde wereldtitel op achtervolging",
+     "link": "https://nos.nl/l/2637236",
+     "time": "2026-10-30T00:03:15+01:00",
+     "img": "https://images.cdn.nos.nl/3/6/2/h/2/v/vtuZGMC1r19fsAeS9VSiwytvXMnNMJ4AWx85uK5/3x2x1264x711-1024x576.webp"
+    },
+    {
+     "title": "Voetbalsters Manchester City in Champions League ook tegen PSG gelijk",
+     "link": "https://nos.nl/l/2637234",
+     "time": "2026-10-29T23:21:08+01:00",
+     "img": "https://images.cdn.nos.nl/4/B/V/L/S/D/gN5vA471d2wkN1oaGQJUvFz2u2ikQkLQv4DmCbb/4x2x2448x1377-1024x576.webp"
+    },
     {
      "title": "Trainer Theo Janssen leidt amateurs De Treffers naar verrassende bekerzege op Heracles",
      "link": "https://nos.nl/l/2637224",
@@ -108,10 +126,10 @@
      "title": "Ronaldo nadert duizend doelpunten met hattrick, ook Reijnders maakt drie goals",
      "link": "https://nos.nl/l/2637219",
      "time": "2026-10-29T21:18:40+01:00",
-     "img": "https://images.cdn.nos.nl/2/F/7/g/L/j/iauvk52YGcT5cxaERrvrgeAeEKK1EG9TecghqvR/599x128x944x531-944x531.webp"
+     "img": "https://images.cdn.nos.nl/6/8/w/2/N/E/qdDqxcgiYuByZE6z3xq3RQQV3kthEQPyaiiR2vE/0x0x1040x585-1024x576.webp"
     },
     {
-     "title": "FC Utrecht bekert verder na zege bij Kozakken Boys, ongeregeldheden na afloop",
+     "title": "Ongeregeldheden bij bekerzege FC Utrecht, Emmen verrast tegen Groningen",
      "link": "https://nos.nl/l/2637210",
      "time": "2026-10-29T20:44:19+01:00",
      "img": "https://images.cdn.nos.nl/8/A/e/Z/s/R/udnUKc8aNHpMBJVVS924o2wXKipykFUvyJoYNTA/696x188x2960x1665-1024x576.webp"
@@ -120,7 +138,7 @@
      "title": "Griekspoor verliest in hoogstaand duel van nieuwe nummer één van de wereld Zverev",
      "link": "https://nos.nl/l/2637209",
      "time": "2026-10-29T20:35:08+01:00",
-     "img": "https://images.cdn.nos.nl/1/F/a/9/d/i/bg5JrUsmWHMAMdcijydv4qR5xeVKPGF8uzcUchy/2x160x2384x1341-1024x576.webp"
+     "img": "https://images.cdn.nos.nl/6/E/q/h/Q/P/DYKkH96ZoKShZuyoiPce2fdHWtmM3YKRWJfxtDL/1x0x2384x1341-1024x576.webp"
     },
     {
      "title": "Basketbalfans vroeg op voor Atlanta Dream, dat beslissend duel in WNBA-finale afdwingt",
@@ -169,24 +187,6 @@
      "link": "https://nos.nl/l/2637132",
      "time": "2026-10-29T10:19:13+01:00",
      "img": "https://images.cdn.nos.nl/2/H/G/H/e/h/u32dvGU7wJrSkC2eHV3ikR5iLaE2XgCNbbsP1ne/0x88x1920x1080-1024x576.webp"
-    },
-    {
-     "title": "Miljoenenaankoop Ouaissa nog maanden niet inzetbaar voor PSV door nieuwe blessure",
-     "link": "https://nos.nl/l/2637126",
-     "time": "2026-10-29T09:46:58+01:00",
-     "img": "https://images.cdn.nos.nl/4/A/w/k/E/r/bqZfJxPz7eJ1qYRCtbHKi6qfFLnU8KhpjYw2wGr/3x253x3536x1989-1024x576.webp"
-    },
-    {
-     "title": "Honkballers Milwaukee Brewers winnen na 57 jaar eindelijk de World Series",
-     "link": "https://nos.nl/l/2637109",
-     "time": "2026-10-29T07:23:19+01:00",
-     "img": "https://images.cdn.nos.nl/2/2/C/X/A/p/QTEvDJWy8kc8DrTm5RiCJvmxE7Un8jyBLyY54ke/0x0x4000x2250-1024x576.webp"
-    },
-    {
-     "title": "Liverpool verslaat Chelsea in League Cup, Emegha mist strafschop bij debuut",
-     "link": "https://nos.nl/l/2637102",
-     "time": "2026-10-29T00:06:20+01:00",
-     "img": "https://images.cdn.nos.nl/7/H/4/Z/t/y/2u5jVu5CSmWUAV65gB8ZnWTGLFgUXvfEPoqEYms/8x231x3984x2241-1024x576.webp"
     }
    ]
   },
@@ -200,10 +200,10 @@
      "img": "https://images.nu.nl/m/becx8laamujr_sqr256/234/0/682/682/frankrijk-trommelt-weer-tienduizenden-agenten-op-voor-geplande-protestdag.jpg"
     },
     {
-     "title": "Code geel in groot deel van land vanwege dichte mist: 'Kan zeer verraderlijk zijn'",
-     "link": "https://www.nu.nl/binnenland/6414868/code-geel-in-groot-deel-van-land-vanwege-dichte-mist-kan-zeer-verraderlijk-zijn.html",
+     "title": "Code geel in hele land vanwege dichte mist: 'Kan zeer verraderlijk zijn'",
+     "link": "https://www.nu.nl/binnenland/6414868/code-geel-in-hele-land-vanwege-dichte-mist-kan-zeer-verraderlijk-zijn.html",
      "time": "2026-10-29T21:55:32+01:00",
-     "img": "https://images.nu.nl/m/vroxsssa68gd_sqr256/550/0/3283/3283/code-geel-in-groot-deel-van-land-vanwege-dichte-mist-kan-zeer-verraderlijk-zijn.jpg"
+     "img": "https://images.nu.nl/m/vroxsssa68gd_sqr256/550/0/3283/3283/code-geel-in-hele-land-vanwege-dichte-mist-kan-zeer-verraderlijk-zijn.jpg"
     },
     {
      "title": "Theo Janssen verrast weer met De Treffers door bekerzege op Heracles Almelo",
@@ -242,10 +242,10 @@
      "img": "https://images.nu.nl/m/qhpxmqmam03p_sqr256/190/0/2800/2800/medewerker-van-trump-regelde-privejet-waarmee-bolsonaro-naar-vs-vloog.jpg"
     },
     {
-     "title": "Meloni wil dat Italianen hun kentekenplaat personaliseren: 'Leef je uit'",
-     "link": "https://www.nu.nl/opmerkelijk/6414855/meloni-wil-dat-italianen-hun-kentekenplaat-personaliseren-leef-je-uit.html",
+     "title": "Meloni laat Italianen kentekenplaat personaliseren om staatskas te spekken",
+     "link": "https://www.nu.nl/opmerkelijk/6414855/meloni-laat-italianen-kentekenplaat-personaliseren-om-staatskas-te-spekken.html",
      "time": "2026-10-29T19:52:57+01:00",
-     "img": "https://images.nu.nl/m/mspxshtarsvr_sqr256/403/0/3178/3178/meloni-wil-dat-italianen-hun-kentekenplaat-personaliseren-leef-je-uit.jpg"
+     "img": "https://images.nu.nl/m/mspxshtarsvr_sqr256/403/0/3178/3178/meloni-laat-italianen-kentekenplaat-personaliseren-om-staatskas-te-spekken.jpg"
     },
     {
      "title": "Duitse vrouw bekent dat ze condooms doorprikte om zwanger te worden",
@@ -278,10 +278,10 @@
      "img": "https://images.nu.nl/m/gdnxvkja0m8a_sqr256/133/25/826/826/rol-witkoff-en-kushner-bij-vredesgesprekken-draait-om-binnenharken-van-geld.jpg"
     },
     {
-     "title": "Live | KNVB-beker | FC Groningen in de problemen tegen FC Emmen",
-     "link": "https://www.nu.nl/voetbal/6414841/knvb-beker-fc-groningen-in-de-problemen-tegen-fc-emmen.html",
+     "title": "Teruglezen | KNVB-beker | Fluitconcert in Groningen na nederlaag tegen FC Emmen",
+     "link": "https://www.nu.nl/voetbal/6414841/knvb-beker-fluitconcert-in-groningen-na-nederlaag-tegen-fc-emmen.html",
      "time": "2026-10-29T18:16:38+01:00",
-     "img": "https://images.nu.nl/m/2hrx559amj3d_sqr256/291/0/1881/1881/knvb-beker-fc-groningen-in-de-problemen-tegen-fc-emmen.jpg"
+     "img": "https://images.nu.nl/m/ytfxpmyadtxq_sqr256/982/0/2666/2666/knvb-beker-fluitconcert-in-groningen-na-nederlaag-tegen-fc-emmen.jpg"
     }
    ]
   }
@@ -390,132 +390,7 @@
   }
  ],
  "youtube": {
-  "channels": [
-   "Patrick (H) Willems",
-   "The Yard",
-   "Ken"
-  ],
-  "videos": [
-   {
-    "title": "Halloween, But We're All Ludwig | The Yard",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/watch?v=9mFou52l7sw",
-    "thumb": "https://i.ytimg.com/vi/9mFou52l7sw/mqdefault.jpg",
-    "time": "2026-10-29T17:09:18+00:00",
-    "short": false
-   },
-   {
-    "title": "the last hope",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=O1AwQYzztPA",
-    "thumb": "https://i.ytimg.com/vi/O1AwQYzztPA/mqdefault.jpg",
-    "time": "2026-10-29T11:48:15+00:00",
-    "short": false
-   },
-   {
-    "title": "20 win challenge (day 3)",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=18dNbPMGz2M",
-    "thumb": "https://i.ytimg.com/vi/18dNbPMGz2M/mqdefault.jpg",
-    "time": "2026-10-29T10:48:39+00:00",
-    "short": false
-   },
-   {
-    "title": "THAT WAS MY SPEECH!! #podcast #theyard #comedy",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/shorts/tr3Zow_Q8aQ",
-    "thumb": "https://i.ytimg.com/vi/tr3Zow_Q8aQ/mqdefault.jpg",
-    "time": "2026-10-28T20:04:12+00:00",
-    "short": true
-   },
-   {
-    "title": "2.1 autism cycle",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=4hcxyCR3gng",
-    "thumb": "https://i.ytimg.com/vi/4hcxyCR3gng/mqdefault.jpg",
-    "time": "2026-10-28T12:00:14+00:00",
-    "short": false
-   },
-   {
-    "title": "20 win challenge (day 2)",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=dla0WPMI1lI",
-    "thumb": "https://i.ytimg.com/vi/dla0WPMI1lI/mqdefault.jpg",
-    "time": "2026-10-28T11:59:47+00:00",
-    "short": false
-   },
-   {
-    "title": "Killing my friends because I have to | Yard D&D | S1E65",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/watch?v=U0W6YEky_jk",
-    "thumb": "https://i.ytimg.com/vi/U0W6YEky_jk/mqdefault.jpg",
-    "time": "2026-10-27T23:44:27+00:00",
-    "short": false
-   },
-   {
-    "title": "I don't care",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=ScNtqik22iA",
-    "thumb": "https://i.ytimg.com/vi/ScNtqik22iA/mqdefault.jpg",
-    "time": "2026-10-27T12:00:12+00:00",
-    "short": false
-   },
-   {
-    "title": "Aiden somehow wins?! #podcast #theyard #comedy",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/shorts/D5OG9wbJAD8",
-    "thumb": "https://i.ytimg.com/vi/D5OG9wbJAD8/mqdefault.jpg",
-    "time": "2026-10-25T14:42:51+00:00",
-    "short": true
-   },
-   {
-    "title": "We Finally Did It | The Yard",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/watch?v=G_a5C_smasw",
-    "thumb": "https://i.ytimg.com/vi/G_a5C_smasw/mqdefault.jpg",
-    "time": "2026-10-22T18:12:23+00:00",
-    "short": false
-   },
-   {
-    "title": "Is This The Best Directed Movie Ever?",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=_t76HmE8ib4",
-    "thumb": "https://i.ytimg.com/vi/_t76HmE8ib4/mqdefault.jpg",
-    "time": "2026-09-15T13:11:42+00:00",
-    "short": false
-   },
-   {
-    "title": "Come See My New Film In Theaters",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=uuMbBWR-2Xg",
-    "thumb": "https://i.ytimg.com/vi/uuMbBWR-2Xg/mqdefault.jpg",
-    "time": "2026-09-04T22:53:08+00:00",
-    "short": false
-   },
-   {
-    "title": "We Need To Talk About How Weird HOOK Is",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=hXAWl_Ar6xA",
-    "thumb": "https://i.ytimg.com/vi/hXAWl_Ar6xA/mqdefault.jpg",
-    "time": "2026-08-06T14:38:38+00:00",
-    "short": false
-   },
-   {
-    "title": "Can video games be cinema? #videogames #movie #thelastofus #deathstranding",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/shorts/-GWrCLXTuwM",
-    "thumb": "https://i.ytimg.com/vi/-GWrCLXTuwM/mqdefault.jpg",
-    "time": "2026-07-01T16:17:55+00:00",
-    "short": true
-   },
-   {
-    "title": "The Muppets and Tron transformed legacy sequels #movie #moviefacts #muppets #patrickhwillems",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/shorts/YxTEPXuVdPY",
-    "thumb": "https://i.ytimg.com/vi/YxTEPXuVdPY/mqdefault.jpg",
-    "time": "2026-06-24T16:02:36+00:00",
-    "short": true
-   }
-  ]
+  "channels": [],
+  "videos": []
  }
 }
