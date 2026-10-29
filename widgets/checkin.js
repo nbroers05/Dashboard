@@ -5,11 +5,13 @@
 // geen token), dan blijft de check-in in een wachtrij in deze browser en gaat hij later alsnog.
 // 3x per dag stuurt de Action in de privé repo een ntfy-melding met een link naar #checkin-<unix>: dan gaat het
 // invulvak meteen open en wordt de check-in aan die melding gekoppeld. "Nu invullen" kan altijd.
+// Telling en "Laatste" komen uit het archief zelf (deze en vorige maand, elke 10 min), zodat check-ins van je
+// telefoon en pc overal meetellen; wat nog in de wachtrij staat telt er ook bij.
 DASH.widget('w-checkin', (card, body, guard) => {
   const { h, store } = DASH;
   const D = window.DASH_DATA;
   const QUEUE = 'checkin.queue';
-  const LOG = 'checkin.log';   // eigen check-ins van de laatste dagen (voor "vandaag 2 van 3")
+  const LOG = 'checkin.log';   // check-ins van de laatste dagen (uit het archief + wachtrij), voor de telling
   const COLS = ['timestamp_utc', 'timestamp_local', 'source', 'collected_at', 'id', 'mood', 'energy', 'focus', 'stress', 'note', 'trigger', 'prompt_utc', 'delay_min', 'device'];
   const SCALES = [
     ['mood', 'Stemming', ['😞', '🙁', '😐', '🙂', '😄']],
@@ -21,6 +23,47 @@ DASH.widget('w-checkin', (card, body, guard) => {
   const queue = () => store.get(QUEUE) || [];
   const recent = () => (store.get(LOG) || []).filter((x) => Date.now() - x.t < 3 * 86400000);
   const today = () => recent().filter((x) => DASH.startOfDay(x.t) === DASH.startOfDay(Date.now()));
+
+  // ---------- Uit het archief: alle check-ins van de laatste dagen (ook van andere apparaten) ----------
+  function parseCsv(text) {
+    const rows = [];
+    let row = [], cell = '', q = false;
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if (q) {
+        if (ch === '"' && text[i + 1] === '"') { cell += '"'; i++; } else if (ch === '"') q = false; else cell += ch;
+      } else if (ch === '"') q = true;
+      else if (ch === ',') { row.push(cell); cell = ''; }
+      else if (ch === '\n' || ch === '\r') { if (ch === '\r' && text[i + 1] === '\n') i++; row.push(cell); rows.push(row); row = []; cell = ''; }
+      else cell += ch;
+    }
+    if (cell || row.length) { row.push(cell); rows.push(row); }
+    const head = rows.shift() || [];
+    return rows.filter((r) => r.length > 1).map((r) => Object.fromEntries(head.map((k, i) => [k, r[i] ?? ''])));
+  }
+  let pulling = false;
+  async function pull() {
+    if (pulling || !D.token()) return;
+    pulling = true;
+    try {
+      const now = new Date();
+      const month = D.localIso(now).slice(0, 7);
+      const prev = D.localIso(new Date(now.getFullYear(), now.getMonth(), 0)).slice(0, 7);
+      const files = await Promise.all([...new Set([prev, month])].map((m) => D.read(`data/self-report/${m}.csv`).catch(() => null)));
+      const remote = files.filter(Boolean).flatMap((f) => parseCsv(f.text)).map((r) => ({
+        t: Date.parse(r.timestamp_utc), id: r.id, ...Object.fromEntries(SCALES.map(([k]) => [k, r[k] ? Number(r[k]) : undefined])),
+      })).filter((x) => Number.isFinite(x.t) && Date.now() - x.t < 3 * 86400000);
+      const ids = new Set(remote.map((x) => x.id));
+      // Nog niet opgeslagen (wachtrij) telt ook mee
+      const waiting = queue().filter((r) => !ids.has(r.id)).map((r) => ({ t: Date.parse(r.timestamp_utc), id: r.id, ...Object.fromEntries(SCALES.map(([k]) => [k, r[k]])) }));
+      store.set(LOG, [...remote, ...waiting].sort((a, b) => a.t - b.t));
+      render();
+    } catch (e) {
+      console.warn('[check-in] ophalen', e);
+    } finally {
+      pulling = false;
+    }
+  }
 
   // ---------- Opslaan ----------
   let flushing = false, lastError = null;
@@ -55,9 +98,9 @@ DASH.widget('w-checkin', (card, body, guard) => {
       device: window.matchMedia('(max-width: 700px)').matches ? 'phone' : 'pc',
     };
     store.set(QUEUE, [...queue(), r]);
-    store.set(LOG, [...recent(), { t: now.getTime(), ...values }]);
+    store.set(LOG, [...recent(), { t: now.getTime(), id: r.id, ...values }]);
     render();
-    flush();
+    flush().then(pull);
   }
 
   // ---------- Invulvak ----------
@@ -192,10 +235,12 @@ DASH.widget('w-checkin', (card, body, guard) => {
   }
   window.addEventListener('hashchange', guard(fromHash));
   window.addEventListener('online', guard(flush));
-  window.addEventListener('dash:data-token', guard(render));
+  window.addEventListener('dash:data-token', guard(() => { render(); pull(); }));
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) pull(); });
   window.addEventListener('dash:data-status', guard(render));
   DASH.every(5 * 60 * 1000, guard(flush));
+  DASH.every(10 * 60 * 1000, guard(pull));
   render();
-  flush();
+  flush().then(pull);
   fromHash();
 });
