@@ -1,5 +1,12 @@
 # Wijzigingen
 
+## 0.36.0 – 0.37.1 (29 oktober 2026): privé data-archief
+
+- **0.36.0 Check-in-vak**: in een paar tikken stemming, energie, focus en stress (1–5) en een notitie. Wordt opgeslagen in de privé repo `dashboard-data` (niet in deze publieke repo). Een link `#checkin` opent het invulvak direct (zo werken de 3 meldingen per dag).
+- **0.37.0 Data-overzicht**: knop "Data" in het check-in-vak met per bron wanneer hij laatst iets ophaalde, hoeveel rijen er zijn en een waarschuwing als een bron 2 dagen stil ligt (ook in het meldingenvak).
+- **0.37.1 Hulpprogramma**: telt telefoonmeldingen (alleen tijd en app, geen inhoud) in `helper/meldingen-log.csv` voor het archief. Start het hulpprogramma opnieuw (`helper/start.bat`).
+- Alles over het archief zelf (installatie, secrets, exports): README.md in de repo `dashboard-data`.
+
 ## 0.35.1 (28 oktober 2026): ingevuld
 
 - Nieuws: **NU.nl** als tweede bron naast de NOS.

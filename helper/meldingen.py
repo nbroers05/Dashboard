@@ -4,10 +4,15 @@ Draait op je eigen pc en luistert alleen op 127.0.0.1 (niet bereikbaar vanaf and
 Alleen het dashboard (github.io en de lokale testversie) mag de meldingen lezen.
 Geeft het dashboard ook nieuwe Google-tokens (google_token.py), zodat "Vernieuwen" niet meer nodig is.
 Starten: dubbelklik op start.bat in deze map. Zie README, stap 9.
+
+Houdt ook een logboek bij (meldingen-log.csv, alleen op deze pc): per nieuwe melding de tijd en de app, ZONDER inhoud.
+De dagelijkse taak van de privé repo dashboard-data telt daaruit het aantal meldingen per app per uur.
 """
 
 import asyncio
+import csv
 import html
+import os
 import json
 import sys
 import threading
@@ -66,6 +71,60 @@ async def lees():
         })
     items.sort(key=lambda x: x["time"], reverse=True)
     return items[:MAX]
+
+
+# ---------- Logboek: alleen tijd en app per melding, geen inhoud ----------
+LOG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "meldingen-log.csv")
+LOG_ELKE = 30          # seconden
+gezien = set()         # (tijd, app) die al in het logboek staan, zodat een melding maar één keer telt (ook na herstarten)
+
+
+async def voor_log():
+    if listener.get_access_status() != UserNotificationListenerAccessStatus.ALLOWED:
+        return []
+    out = []
+    for n in await listener.get_notifications_async(NotificationKinds.TOAST):
+        try:
+            win_app = n.app_info.display_info.display_name
+        except Exception:
+            win_app = "Onbekend"
+        app = win_app
+        if win_app in TELEFOON_APPS:
+            # Bij Phone Link is de eerste regel de naam van de app op de telefoon (bijv. "WhatsApp"); de rest is inhoud en wordt niet bewaard
+            binding = n.notification.visual.get_binding(KnownNotificationBindings.toast_generic)
+            teksten = [t.text for t in binding.get_text_elements()] if binding else []
+            app = (teksten[0].strip() if teksten and teksten[0].strip() else win_app)[:60]
+        out.append((n.id, int(n.creation_time.timestamp() * 1000), win_app, app))
+    return out
+
+
+def log_lus():
+    nieuw_bestand = not os.path.exists(LOG_FILE)
+    if not nieuw_bestand:
+        with open(LOG_FILE, encoding="utf-8", newline="") as f:
+            for r in list(csv.DictReader(f))[-5000:]:
+                gezien.add((int(r["time_ms"]), r["app"]))
+    while True:
+        try:
+            with lock:
+                items = asyncio.run(voor_log())
+            nieuw = [x for x in items if (x[1], x[3]) not in gezien]
+            if nieuw:
+                with open(LOG_FILE, "a", encoding="utf-8", newline="") as f:
+                    w = csv.writer(f)
+                    if nieuw_bestand:
+                        w.writerow(["time_ms", "windows_app", "app"])
+                        nieuw_bestand = False
+                    for nid, t, win_app, app in nieuw:
+                        w.writerow([t, win_app, app])
+                        gezien.add((t, app))
+            if len(gezien) > 20000:
+                houden = sorted(gezien)[-10000:]   # alleen de nieuwste onthouden (oude staan niet meer in het meldingencentrum)
+                gezien.clear()
+                gezien.update(houden)
+        except Exception as e:
+            print(f"Logboek meldingen: {e}", file=sys.stderr)
+        time.sleep(LOG_ELKE)
 
 
 def weg(nid):
@@ -213,6 +272,7 @@ def main():
     except OSError:
         print(f"Poort {PORT} is al in gebruik: draait het hulpprogramma al?", file=sys.stderr)
         return
+    threading.Thread(target=log_lus, daemon=True).start()
     print(f"Meldingen: http://127.0.0.1:{PORT}/meldingen · Google koppelen: http://127.0.0.1:{PORT}/koppel (Ctrl+C om te stoppen)")
     server.serve_forever()
 
