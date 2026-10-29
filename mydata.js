@@ -556,6 +556,7 @@
       const L = window.L;
       map = L.map(mapBox, { zoomControl: true, attributionControl: true, scrollWheelZoom: false });
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' }).addTo(map);
+      map.attributionControl.setPrefix('<a href="https://leafletjs.com">Leaflet</a>');   // zonder het vlaggetje van Leaflet 1.9
       layer = L.layerGroup().addTo(map);
       const dLat = (P.grid_m || 250) / 111320, dLng = (P.grid_m || 250) / (111320 * Math.cos(52 * Math.PI / 180));
       const list = [...cells].map(([k, min]) => { const [lat, lng] = k.split(',').map(Number); return { lat, lng, min }; }).sort((a, c) => c.min - a.min);
