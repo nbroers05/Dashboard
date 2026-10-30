@@ -3,7 +3,7 @@
 // De drie indelingen. De vakken zelf blijven hetzelfde; dit script verplaatst ze alleen, en zet ze precies terug als
 // een andere indeling geldt. ("Indelen" met layout.js bestaat niet meer sinds 0.45.0.)
 //
-// desk: breed liggend scherm (vanaf 1280px, liggend). Alles in één scherm zonder scrollen: topbalk, drie kolommen
+// desk: breed liggend scherm (vanaf 1280px, liggend), met de zijbalk uit rail.js. Alles in één scherm: topbalk, drie kolommen
 //       (links weer+buienalarm, meldingen, AH; midden speler en agenda; rechts Canvas, F1, Episodes, film/laatst
 //       gekeken/vrienden met tabjes) en onderaan een "Meer"-balk met mail, to-do, gezondheid en Spotify-maandoverzicht die naar boven uitklapt.
 // tall: staand scherm (breder dan 700px, niet desk), het "nieuwe" staande ontwerp: speler, rij weer/F1/AH (buienalarm
@@ -149,8 +149,10 @@
         setTab(store.get(TAB_KEY) || 'w-stars');
         // Songtekst is hier een pop-up: niet meteen openen bij het laden
         if ($('lyrics') && !$('lyrics').hidden) $('lyrics-close').click();
+        if (window.DASH_RAIL) DASH_RAIL.enter(dash);   // zijbalk links (rail.js)
       },
       leave() {
+        if (window.DASH_RAIL) DASH_RAIL.leave();      // eerst: zet de agenda terug als die schermvullend open stond
         TABS.forEach(([id]) => { if ($(id)) $(id).hidden = false; });
         [left, mid, right].forEach((el) => el.remove());
       },

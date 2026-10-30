@@ -125,7 +125,9 @@ DASH.widget('w-alerts', (card, body, guard) => {
     big.append(h('small', null, total === 1 ? 'melding' : 'meldingen'));
     head.append(big);
     body.replaceChildren(head, list);
-    if (more) body.append(more);
+    // Breed liggend: knop rechts naast het getal, zodat hij nooit onder het vak uitsteekt als het krap is
+    if (more && mode === 'desk') head.append(more);
+    else if (more) body.append(more);
     if (helperError) body.append(h('p', 'w-sub al-helper', helperError));
     if (mode === 'desk') fitRows();
   }
