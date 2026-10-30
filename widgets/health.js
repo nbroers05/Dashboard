@@ -6,7 +6,9 @@ DASH.widget('w-health', (card, body, guard) => {
   const { h, fmtTime, startOfDay, addDays, DEMO } = DASH;
   const API = 'https://health.googleapis.com/v4/users/me/dataTypes';
   const G = window.DASH_GOOGLE;
-  const GOAL = Number(((window.DASHBOARD_CONFIG || {}).gezondheid || {}).stappenDoel) || 10000;
+  // Dagdoel: eigen keuze (klik op "doel …" in het vak, bewaard in health.goal), anders config, anders 10.000
+  const DEF_GOAL = Number(((window.DASHBOARD_CONFIG || {}).gezondheid || {}).stappenDoel) || 10000;
+  const goal = () => Number(DASH.store.get('health.goal')) || DEF_GOAL;
   const DAYS = ['zo', 'ma', 'di', 'wo', 'do', 'vr', 'za'];
 
   // ---------- Ophalen ----------
@@ -89,18 +91,36 @@ DASH.widget('w-health', (card, body, guard) => {
   const STAGE = { DEEP: ['Diep', '#5b6cff'], LIGHT: ['Licht', '#8fb4ff'], REM: ['REM', '#c58bff'], AWAKE: ['Wakker', '#ff9e7a'], ASLEEP: ['Slaap', '#8fb4ff'], RESTLESS: ['Onrustig', '#ffc27a'] };
   const dur = (min) => `${Math.floor(min / 60)}u ${String(Math.round(min % 60)).padStart(2, '0')}m`;
 
+  let last = null;
   function render(d) {
+    last = d;
+    const GOAL = goal();
     const today = startOfDay(Date.now());
     const todaySteps = (d.steps.find((x) => x.day === today) || {}).count;
+    const asleep = d.sleep ? (d.sleep.asleep != null ? d.sleep.asleep : (d.sleep.end - d.sleep.start) / 60000) : null;
 
-    // Stappen: groot getal, ring naar je doel, staafjes voor de week
+    // Ring = % van het dagdoel (SVG, ronde kop); stappen en slaap ernaast
     const stepsBox = h('div', 'hl-steps');
+    const p = Math.min(1, (todaySteps || 0) / GOAL);
     const ring = h('div', 'hl-ring');
-    ring.style.setProperty('--p', Math.min(1, (todaySteps || 0) / GOAL));
-    ring.append(h('span', null, todaySteps != null ? `${Math.round(((todaySteps || 0) / GOAL) * 100)}%` : '–'));
-    const big = h('div', 'w-big', todaySteps != null ? todaySteps.toLocaleString('nl-NL') : '–');
-    big.append(h('small', null, `stappen vandaag · doel ${GOAL.toLocaleString('nl-NL')}`));
-    stepsBox.append(ring, big);
+    ring.innerHTML = `<svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="42" class="hl-ring-bg"/>${p > 0 ? `<circle cx="50" cy="50" r="42" class="hl-ring-fg" pathLength="100" stroke-dasharray="${(p * 100).toFixed(1)} 100"/>` : ''}</svg>`;
+    ring.append(h('span', 'hl-num', todaySteps != null ? `${Math.round(((todaySteps || 0) / GOAL) * 100)}%` : '–'));
+    ring.title = `${Math.round(p * 100)}% van je dagdoel`;
+
+    const side = h('div', 'hl-side');
+    const stepsCell = h('div', 'hl-stat');
+    const goalBtn = h('button', 'hl-goal', `doel ${GOAL.toLocaleString('nl-NL')}`);
+    goalBtn.type = 'button';
+    goalBtn.title = 'Dagdoel wijzigen';
+    goalBtn.onclick = () => editGoal(goalBtn);
+    const stepsSub = h('span', 'w-sub', 'stappen · ');
+    stepsSub.append(goalBtn);
+    stepsCell.append(h('b', 'hl-num', todaySteps != null ? todaySteps.toLocaleString('nl-NL') : '–'), stepsSub);
+    const sleepCell = h('div', 'hl-stat');
+    sleepCell.append(h('b', 'hl-num', asleep != null ? `${Math.floor(asleep / 60)}u ${String(Math.round(asleep % 60)).padStart(2, '0')}` : '–'),
+      h('span', 'w-sub', d.sleep ? `slaap · ${fmtTime(d.sleep.start)}–${fmtTime(d.sleep.end)}` : 'slaap · niets gevonden'));
+    side.append(stepsCell, sleepCell);
+    stepsBox.append(ring, side);
 
     const bars = h('div', 'hl-bars');
     const max = Math.max(GOAL, ...d.steps.map((x) => x.count || 0));
@@ -118,24 +138,23 @@ DASH.widget('w-health', (card, body, guard) => {
     // Slaap en hartslag
     const row = h('div', 'hl-row');
     const sleepBox = h('div', 'hl-cell');
-    sleepBox.append(h('span', 'w-label', '😴 Slaap'));
-    if (d.sleep) {
-      const asleep = d.sleep.asleep != null ? d.sleep.asleep : (d.sleep.end - d.sleep.start) / 60000;
-      sleepBox.append(h('b', null, dur(asleep)), h('span', 'w-sub', `${fmtTime(d.sleep.start)}–${fmtTime(d.sleep.end)}`));
-      const total = d.sleep.stages.reduce((t, s) => t + s.minutes, 0);
-      if (total) {
-        const st = h('div', 'hl-stages');
-        for (const s of d.sleep.stages) {
-          const [name, color] = STAGE[s.type] || [s.type, '#888'];
-          const seg = h('i');
-          seg.style.flex = String(s.minutes);
-          seg.style.background = color;
-          seg.title = `${name}: ${dur(s.minutes)}`;
-          st.append(seg);
-        }
-        sleepBox.append(st);
+    sleepBox.append(h('span', 'w-label', '😴 Slaapfases'));
+    const total = d.sleep ? d.sleep.stages.reduce((t, s) => t + s.minutes, 0) : 0;
+    if (total) {
+      const st = h('div', 'hl-stages');
+      const legend = h('span', 'w-sub');
+      for (const s of d.sleep.stages) {
+        const [name, color] = STAGE[s.type] || [s.type, '#888'];
+        const seg = h('i');
+        seg.style.flex = String(s.minutes);
+        seg.style.background = color;
+        seg.title = `${name}: ${dur(s.minutes)}`;
+        st.append(seg);
       }
-    } else sleepBox.append(h('b', null, '–'), h('span', 'w-sub', 'geen slaap gevonden'));
+      const deep = d.sleep.stages.find((s) => s.type === 'DEEP');
+      legend.textContent = deep ? `diep ${dur(deep.minutes)}` : `${d.sleep.stages.length} fases`;
+      sleepBox.append(st, legend);
+    } else sleepBox.append(h('span', 'w-sub', d.sleep ? 'geen fases' : '–'));
 
     const hrBox = h('div', 'hl-cell');
     hrBox.append(h('span', 'w-label', '❤️ Hartslag'));
@@ -145,6 +164,30 @@ DASH.widget('w-health', (card, body, guard) => {
     row.append(sleepBox, hrBox);
 
     body.replaceChildren(stepsBox, bars, row);
+  }
+
+  // Doel aanpassen in het vak zelf: knopje wordt een getalveld (Enter/klik ernaast = opslaan, Esc = laten)
+  function editGoal(btn) {
+    const input = h('input', 'hl-goal-in');
+    input.type = 'number';
+    input.min = 1000;
+    input.max = 50000;
+    input.step = 500;
+    input.value = goal();
+    input.setAttribute('aria-label', 'Dagdoel stappen');
+    let done = false;
+    const finish = (ok) => {
+      if (done) return;
+      done = true;
+      const v = Math.round(Number(input.value));
+      if (ok && v >= 500 && v <= 100000) DASH.store.set('health.goal', v);
+      if (last) render(last);
+    };
+    input.onkeydown = (e) => { if (e.key === 'Enter') finish(true); if (e.key === 'Escape') { e.stopPropagation(); finish(false); } };
+    input.onblur = () => finish(true);
+    btn.replaceWith(input);
+    input.focus();
+    input.select();
   }
 
   function message(text, button, onClick) {

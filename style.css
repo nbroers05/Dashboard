@@ -436,22 +436,21 @@ button { font: inherit; color: inherit; }
 #w-health { --c: #ff5f8f; }
 
 /* Gezondheid */
-.hl-steps { display: flex; align-items: center; gap: 14px; }
-.hl-ring {
-  --p: 0;
-  flex: none; width: 64px; height: 64px; border-radius: 50%;
-  display: grid; place-items: center;
-  position: relative;
-}
-/* De ring zelf als laag eronder, zodat het masker het percentage niet wegknipt */
-.hl-ring::before {
-  content: ''; position: absolute; inset: 0; border-radius: 50%;
-  background: conic-gradient(var(--ct) calc(var(--p) * 360deg), rgba(255, 255, 255, .1) 0);
-  -webkit-mask: radial-gradient(farthest-side, transparent 72%, #000 73%);
-  mask: radial-gradient(farthest-side, transparent 72%, #000 73%);
-}
-.hl-ring span { position: absolute; font-size: .78rem; font-weight: 750; color: var(--ct); }
-.hl-steps .w-big { font-size: 2.8rem; }
+.hl-steps { display: flex; align-items: center; gap: 18px; }
+/* Ring naar het dagdoel (SVG): achtergrondring in de vakkleur, voortgang met ronde kop, % in het midden */
+.hl-ring { flex: none; width: 96px; height: 96px; display: grid; place-items: center; position: relative; }
+.hl-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.hl-ring circle { fill: none; stroke-width: 10; }
+.hl-ring-bg { stroke: color-mix(in srgb, var(--ct) 22%, transparent); }
+.hl-ring-fg { stroke: var(--ct); stroke-linecap: round; }
+.hl-ring .hl-num { position: relative; font-size: 1.45rem; font-weight: 750; color: var(--text); }
+.hl-side { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.hl-stat { display: flex; flex-direction: column; min-width: 0; }
+.hl-stat b { font-size: 1.9rem; font-weight: 750; line-height: 1.05; letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: var(--ct); white-space: nowrap; }
+.hl-stat .w-sub { font-size: .8rem; line-height: 1.3; }
+.hl-goal { padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; text-decoration: underline dotted; text-underline-offset: 3px; }
+.hl-goal:hover { color: var(--text); }
+.hl-goal-in { width: 7ch; padding: 1px 4px; border: 1px solid var(--ct); border-radius: 6px; background: rgba(255, 255, 255, .06); color: var(--text); font: inherit; }
 .hl-bars { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; height: 74px; margin-top: 2px; }
 .hl-bar { display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 3px; min-height: 0; }
 .hl-bar i { width: 100%; border-radius: 5px; background: color-mix(in srgb, var(--ct) 45%, transparent); }
