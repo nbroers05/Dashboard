@@ -2312,11 +2312,6 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk #lyrics .ly-line { font-size: 1.5rem; }
 
 /* ---------- Staand scherm, nieuw ontwerp (desk.js zet .tall) ---------- */
-/* Knop in de topbalk om te wisselen tussen nieuw en oud; alleen op staande/middelgrote schermen */
-.tb-design { display: none; }
-html.portrait-wide .tb-design { display: grid; }
-body.minimal .tb-design { display: none; }
-.tb-design[aria-pressed="true"] { color: var(--muted); }
 /* Rood getal op het Gmail-icoon */
 .tb-link { position: relative; }
 .tb-badge {

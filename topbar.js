@@ -186,21 +186,6 @@
   if (DASH.MINI) setTimeout(() => search.focus(), 0);
   minBtn.onclick = () => setMinimal(!document.body.classList.contains('minimal'));
 
-  // ---------- Ontwerp wisselen (alleen op staande/middelgrote schermen, desk.js doet het werk) ----------
-  const DESIGN_KEY = 'dash.design';
-  const designBtn = bar.querySelector('.tb-design');
-  function designLabel() {
-    const old = store.get(DESIGN_KEY) === 'old';
-    designBtn.setAttribute('aria-pressed', old);
-    designBtn.title = old ? 'Oud ontwerp (klik voor het nieuwe)' : 'Nieuw ontwerp (klik voor het oude)';
-  }
-  designBtn.onclick = () => {
-    store.set(DESIGN_KEY, store.get(DESIGN_KEY) === 'old' ? 'new' : 'old');
-    designLabel();
-    window.dispatchEvent(new Event('dash:design'));
-  };
-  designLabel();
-
   // ---------- Ongelezen mail als rood getal op het Gmail-icoon ----------
   function mailBadge(count) {
     for (const a of links.querySelectorAll('.tb-link[href*="mail.google.com"]')) {

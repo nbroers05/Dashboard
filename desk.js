@@ -8,15 +8,14 @@
 //       gekeken/vrienden met tabjes) en onderaan een "Meer"-balk met mail, to-do, gezondheid en Spotify-maandoverzicht die naar boven uitklapt.
 // tall: staand scherm (breder dan 700px, niet desk), het "nieuwe" staande ontwerp: speler, rij weer/F1/AH (buienalarm
 //       zit in het weervak), rij Canvas/meldingen, één roterend vak (laatst gekeken, film, Episodes, gezondheid),
-//       agenda, en een "Meer"-balk met to-do. Met de knop in de topbalk wissel je naar het oude ontwerp (dash.design).
-// Telefoon (tot 700px) en het oude staande ontwerp: geen van beide, gewoon layout.js.
+//       agenda, en een "Meer"-balk met to-do. (Het oude staande ontwerp en de wisselknop zijn weg sinds 0.44.11.)
+// Telefoon (tot 700px): geen van beide, gewoon layout.js.
 (() => {
   const { h, store } = DASH;
   const dash = document.querySelector('.dashboard');
   if (!dash) return;
   const deskMq = window.matchMedia('(min-width: 1280px) and (orientation: landscape)');
   const wideMq = window.matchMedia('(min-width: 701px)');
-  const DESIGN_KEY = 'dash.design';
   const $ = (id) => document.getElementById(id);
 
   // ---------- Gedeelde bouwstenen ----------
@@ -218,8 +217,7 @@
   function apply() {
     const portrait = wideMq.matches && !deskMq.matches;
     document.documentElement.classList.toggle('portrait-wide', portrait);
-    const design = store.get(DESIGN_KEY) === 'old' ? 'old' : 'new';
-    setMode(deskMq.matches ? 'desk' : portrait && design === 'new' ? 'tall' : null);
+    setMode(deskMq.matches ? 'desk' : portrait ? 'tall' : null);
   }
 
   // ---------- Sluiten met Esc en klikken ernaast ----------
@@ -236,6 +234,5 @@
 
   deskMq.addEventListener('change', apply);
   wideMq.addEventListener('change', apply);
-  window.addEventListener('dash:design', apply);
   apply();
 })();
