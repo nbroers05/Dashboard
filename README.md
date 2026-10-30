@@ -170,7 +170,23 @@ Je stappendoel staat in `config.js` bij `gezondheid: { stappenDoel: 10000 }`.
 
 Gaat er iets mis, dan laat het vak de foutmelding van Google zien. Die kun je naar Claude sturen.
 
-## 11. Lokaal testen (optioneel)
+## 11. Als app op je telefoon (Firefox op Android)
+
+Het dashboard kan als app op je beginscherm, met een eigen icoon en zonder adresbalk.
+
+1. Open `https://nbroers05.github.io/Dashboard/` in **Firefox** op je telefoon.
+2. Tik rechtsboven (of onderin) op **⋮** (de drie puntjes).
+3. Kies **Installeren** of **Toevoegen aan startscherm** (de naam verschilt per Firefox-versie).
+4. Bevestig met **Toevoegen**. Het icoon "Dashboard" staat nu op je beginscherm.
+5. Open de app en log één keer in bij Spotify en Google (de app heeft zijn eigen opslag, net als een nieuw tabblad soms). Ook het archief-token voor check-ins moet er één keer in (Instellingen › Data).
+
+Goed om te weten:
+- De app haalt altijd eerst de nieuwste versie van internet. Alleen zonder internet zie je de laatst geladen versie, met bovenaan het balkje "Offline".
+- Lang drukken op het icoon kan snelkoppelingen tonen voor **Check-in** en **Agenda**. Firefox laat die soms niet zien; dat is niet erg.
+- Gaat inloggen bij Spotify of Google mis in de app (blijf je hangen op een inlogpagina, of kom je in gewone Firefox terecht)? Log dan in via Firefox zelf en open daarna de app, en laat het Claude weten.
+- Weghalen: lang drukken op het icoon › Verwijderen.
+
+## 12. Lokaal testen (optioneel)
 
 In deze map:
 

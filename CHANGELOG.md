@@ -10,6 +10,7 @@ Onder de lijst staat per ronde de uitgebreide toelichting zoals die toen geschre
 
 | Versie | Wat |
 |---|---|
+| 0.46.3 | Installeerbaar als app op je telefoon (Firefox › ⋮ › Installeren): eigen icoon, opent op Vandaag, snelkoppelingen Check-in en Agenda. Haalt altijd eerst de nieuwste versie; zonder internet de laatst geladen versie met een balkje 'Offline'. Uitleg in README stap 11. Op de pc verandert er niets. |
 | 0.46.2 | Zijbalk (alleen liggend): Spelletjes en Focusmodus erbij, de minimaliseerknop is uit de topbalk; klik op het logo linksboven om te minimaliseren (terug via de knop rechtsboven of Esc). |
 | 0.46.1 | Minimale modus werkte niet meer op de pc (sinds 0.45.0 werd elk vak een schermvullende laag): bij het weghalen van Indelen was de regel die de vakken verbergt half meegeschrapt. Hersteld; de rest van die wijziging nagelopen, verder niets kapot. |
 | 0.46.0 | Groot idee: zijbalk op de pc (alleen liggend scherm). Smalle balk links met logo, Overzicht, Agenda, Mijn data, Feeds en onderaan Instellingen; naam bij hover, actief item met een licht vlakje, rood puntje bij Feeds als er nieuws is sinds je Feeds voor het laatst opende. Agenda opent schermvullend als eigen pagina (#agenda, Esc of terug = dashboard). Feeds, Mijn data en het tandwiel zijn uit de topbalk (in liggend). Meldingen: de knop 'Alle meldingen' staat nu naast het getal en steekt niet meer onder het vak uit. Staand en telefoon ongewijzigd. |

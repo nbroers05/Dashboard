@@ -24,6 +24,27 @@ window.DASH = (() => {
     });
   }
 
+  // ---------- Als app op de telefoon (sinds 0.46.3) ----------
+  // Service worker (sw.js): altijd eerst het netwerk, alleen offline uit de cache. Per versie een nieuwe (sw.js?v=…).
+  // Offline: balkje bovenaan, zodat je weet dat je de laatst geladen versie ziet en vakken niet verversen.
+  if ('serviceWorker' in navigator && location.protocol !== 'file:' && VERSION !== '?') {
+    addEventListener('load', () => navigator.serviceWorker.register(`sw.js?v=${VERSION}`).catch((e) => console.warn('[app] service worker', e)));
+  }
+  function offlineNote() {
+    let el = document.getElementById('offline-note');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'offline-note';
+      el.setAttribute('role', 'status');
+      el.textContent = 'Offline: je ziet de laatst geladen versie';
+      document.body.append(el);
+    }
+    el.hidden = navigator.onLine;
+  }
+  addEventListener('online', offlineNote);
+  addEventListener('offline', offlineNote);
+  document.addEventListener('DOMContentLoaded', () => { if (!navigator.onLine) offlineNote(); });
+
   // ---------- Laden ----------
   // ?mini=1 (nieuwe-tabpagina): alleen klok, datum en zoekbalk. De rest (Spotify, agenda, vakken) laadt pas
   // als je het volledige dashboard opent, zodat een nieuw tabblad meteen klaar is. Zonder ?mini=1 laadt alles meteen.

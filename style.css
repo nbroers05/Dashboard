@@ -2600,6 +2600,10 @@ html.desk-mode body:not(.minimal) .topbar :is(.tb-feeds, .tb-mydata, .tb-setting
 body.agenda-open .dashboard > :not(.topbar, .ag-layer) { opacity: 0 !important; pointer-events: none; }
 body.agenda-open .tall-rot > .tile { visibility: hidden !important; }
 
+/* Offline (dash.js): klein balkje bovenaan */
+#offline-note { position: fixed; top: max(8px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); z-index: 60; padding: 6px 14px; border-radius: 99px; background: #e0a53a; color: #1d1405; font-size: .82rem; font-weight: 700; box-shadow: 0 8px 24px rgba(0, 0, 0, .4); }
+#offline-note[hidden] { display: none; }
+
 /* Beweging beperken (instelling van het apparaat): alles uit */
 @media (prefers-reduced-motion: reduce) {
   :root { transition: none; }
