@@ -145,16 +145,20 @@
   // ---------- Web API ----------
   let backoffUntil = 0;
 
+  let lastTiming = null;          // { sent, got } van het laatste GET /me/player: de positie hoort bij het midden daarvan
   async function api(method, path, body, retry = true) {
     if (DEMO) return demoApi(method, path);
+    const token = await accessToken();
+    const sent = Date.now();
     const res = await fetch(API + path, {
       method,
       headers: {
-        Authorization: `Bearer ${await accessToken()}`,
+        Authorization: `Bearer ${token}`,
         ...(body ? { 'Content-Type': 'application/json' } : {}),
       },
       body: body ? JSON.stringify(body) : undefined,
     });
+    if (method === 'GET' && path.startsWith('/me/player')) lastTiming = { sent, got: Date.now() };
     if (res.status === 401 && retry) {
       await refreshTokens();
       return api(method, path, body, false);
@@ -181,6 +185,7 @@
   let saved = false;
   let libMode = null;            // 'new' (/me/library) of 'old' (/me/tracks)
   let pollTimer = null;
+  let resync = 0;                // aantal snelle controles na een nieuw nummer of na starten
   let endPollFired = false;
   let lastSec = -1;
   let dragging = false;
@@ -211,6 +216,7 @@
   function nextDelay() {
     if (!playback || !playback.item) return POLL_IDLE;
     if (!base.playing) return POLL_PAUSED;
+    if (resync > 0) { resync--; return 2000; }   // net een nieuw nummer of net gestart: snel nog eens kijken
     const left = base.duration - position();
     return Math.max(1500, Math.min(POLL_PLAYING, left + 700));
   }
@@ -253,11 +259,18 @@
     const images = isEpisode ? it.images : it.album && it.album.images;
     setCover(images && images[0] && images[0].url);
 
-    // Kleine afwijkingen negeren, anders springt de balk heen en weer
+    // De positie die Spotify geeft hoort bij het moment dat Spotify het verzoek kreeg, niet bij het moment dat het antwoord
+    // binnenkwam: het eerste verzoek (koude verbinding) kan seconden duren, en dan liep de songtekst het hele eerste nummer achter.
+    const t = lastTiming;
+    const at = t && t.got - t.sent < 10000 ? Math.round((t.sent + t.got) / 2) : Date.now();
+    const remote = (d.progress_ms || 0) + (d.is_playing ? Date.now() - at : 0);
+    // Kleine afwijkingen negeren, anders springt de balk heen en weer (vlak na een nieuw nummer of start strenger)
     const sameTrack = it.id === currentTrackId;
-    const drift = Math.abs(position() - d.progress_ms);
-    if (!sameTrack || drift > 1200 || base.playing !== d.is_playing) {
-      base = { progress: d.progress_ms || 0, at: Date.now(), duration: it.duration_ms, playing: d.is_playing };
+    const started = base.playing !== d.is_playing;
+    const drift = Math.abs(position() - remote);
+    if (!sameTrack || started) resync = 2;
+    if (!sameTrack || started || drift > (resync > 0 ? 300 : 1200)) {
+      base = { progress: d.progress_ms || 0, at: d.is_playing ? at : Date.now(), duration: it.duration_ms, playing: d.is_playing };
     }
     base.duration = it.duration_ms;
     endPollFired = false;
