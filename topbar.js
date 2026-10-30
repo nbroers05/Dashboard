@@ -184,6 +184,21 @@
   }
   setMinimal(DASH.MINI || store.get(KEY) === true, false);
   if (DASH.MINI) setTimeout(() => search.focus(), 0);
+
+  // ---------- Zoekbalk: een link of webadres gaat meteen naar die pagina (geen Google-zoekopdracht) ----------
+  function asUrl(q) {
+    if (/\s/.test(q)) return null;
+    if (/^https?:\/\/\S+$/i.test(q)) return q;
+    // nu.nl, www.example.com/pad, github.com/x?y=1 (domein met een extensie van minstens 2 letters)
+    if (/^([\w-]+\.)+[a-z]{2,}(:\d+)?([/?#]\S*)?$/i.test(q)) return `https://${q}`;
+    return null;
+  }
+  bar.querySelector('.tb-search').addEventListener('submit', (e) => {
+    const url = asUrl(search.value.trim());
+    if (!url) return;
+    e.preventDefault();
+    location.href = url;
+  });
   minBtn.onclick = () => setMinimal(!document.body.classList.contains('minimal'));
 
   // ---------- Ongelezen mail als rood getal op het Gmail-icoon ----------
