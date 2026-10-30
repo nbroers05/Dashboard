@@ -1,7 +1,8 @@
 'use strict';
 
 // Zijbalk op de pc (alleen in desk, sinds 0.46.0): smalle icoonbalk links met logo, Overzicht, Agenda, Mijn data,
-// Feeds en onderaan Instellingen. De tegenhanger van de tabbalk op de telefoon (phone.js). desk.js zet hem aan en uit.
+// Feeds, Spelletjes, Focus (0.46.2) en onderaan Instellingen. Het logo zet de minimale modus aan (de minimaliseerknop
+// staat in desk niet meer in de topbalk; in de minimale modus zelf wel, om terug te gaan). De tegenhanger van de tabbalk op de telefoon (phone.js). desk.js zet hem aan en uit.
 // - Overzicht = het dashboard: sluit de open pagina (via zijn eigen knop, zodat het adres en de terug-knop kloppen).
 // - Mijn data en Feeds = de bestaande pagina's (knoppen .tb-mydata/.tb-feeds staan in desk verborgen in de topbalk).
 // - Agenda = de gewone agenda (#calendar) schermvullend in een eigen laag, zelfde stijl als Feeds/Mijn data, adres
@@ -35,13 +36,18 @@ window.DASH_RAIL = (() => {
   }
   const logo = h('button', 'rail-logo');
   logo.type = 'button';
-  logo.title = 'Overzicht';
-  logo.setAttribute('aria-label', 'Overzicht');
+  logo.title = 'Minimaliseren';
+  logo.setAttribute('aria-label', 'Minimale modus');
   logo.innerHTML = '<img src="favicon.svg" alt="">';
-  logo.onclick = () => go('overview');
+  logo.onclick = () => { const m = $('.tb-min'); if (m) m.click(); };
+  // Spelletjes en Focus: zelfde icoon als hun (in desk verborgen) topbalkknop
+  const copyIcon = (sel) => { const b = $(sel); const svg = b && b.querySelector('svg'); return svg ? svg.outerHTML : ''; };
+  ICON.games = copyIcon('.tb-games');
+  ICON.focus = copyIcon('.tb-focus');
   const top = h('div', 'rail-top');
   top.append(logo, item('overview', 'Overzicht', () => go('overview')), item('agenda', 'Agenda', () => go('agenda')),
-    item('mydata', 'Mijn data', () => go('mydata')), item('feeds', 'Feeds', () => go('feeds')));
+    item('mydata', 'Mijn data', () => go('mydata')), item('feeds', 'Feeds', () => go('feeds')),
+    item('games', 'Spelletjes', () => go('games')), item('focus', 'Focusmodus', () => { const f = $('.tb-focus'); if (f) f.click(); }));
   const dot = h('i', 'rail-dot');
   dot.hidden = true;
   btns.feeds.append(dot);
@@ -56,9 +62,12 @@ window.DASH_RAIL = (() => {
   }
   function mark() {
     const cur = current();
-    for (const [id, b] of Object.entries(btns)) if (id !== 'settings') b.setAttribute('aria-current', id === cur ? 'page' : 'false');
-    const s = $('.tb-settings');
-    btns.settings.setAttribute('aria-pressed', s ? s.getAttribute('aria-pressed') || 'false' : 'false');
+    for (const [id, b] of Object.entries(btns)) if (id !== 'settings' && id !== 'focus') b.setAttribute('aria-current', id === cur ? 'page' : 'false');
+    // Instellingen open / focus loopt: zelfde stand als hun topbalkknop
+    for (const [id, sel] of [['settings', '.tb-settings'], ['focus', '.tb-focus']]) {
+      const s = $(sel);
+      btns[id].setAttribute('aria-pressed', s ? s.getAttribute('aria-pressed') || 'false' : 'false');
+    }
     if (cur === 'feeds') seen();
   }
   function go(id) {
@@ -151,8 +160,10 @@ window.DASH_RAIL = (() => {
     document.body.append(rail);
     dash.append(layer);
     watch.observe(document.body, { attributes: true, attributeFilter: ['class'] });
-    const s = $('.tb-settings');
-    if (s) watch.observe(s, { attributes: true, attributeFilter: ['aria-pressed'] });
+    for (const sel of ['.tb-settings', '.tb-focus']) {
+      const s = $(sel);
+      if (s) watch.observe(s, { attributes: true, attributeFilter: ['aria-pressed'] });
+    }
     if (location.hash === '#agenda') setAgenda(true, true);
     mark();
     checkFeeds();
