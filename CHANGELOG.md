@@ -10,6 +10,7 @@ Onder de lijst staat per ronde de uitgebreide toelichting zoals die toen geschre
 
 | Versie | Wat |
 |---|---|
+| 0.44.16 | Schreefcijfers: de grote hoofdgetallen (temperatuur, AH-uren en salaris, stappen/slaap, F1-aftelklok, filmcijfers, tellers) in Source Serif 4 met rechte cijfers; labels blijven schreefloos. Schakelaar in Instellingen › Thema › Lettertype, standaard aan. |
 | 0.44.15 | Gezondheid: stappen als grote ring rond het percentage van je dagdoel (vakkleur), met stappen en slaap ernaast. Klik op 'doel 10.000' om het doel te wijzigen (bewaard in deze browser); slaapfases en hartslag eronder. |
 | 0.44.14 | Zoekbalk: een link of webadres (https://…, nu.nl, github.com/…) gaat bij Enter meteen naar die pagina in plaats van een Google-zoekopdracht. |
 | 0.44.13 | Knop voor het oude staande ontwerp weggehaald; staand is altijd het nieuwe ontwerp (ook als je eerder "oud" had gekozen). |

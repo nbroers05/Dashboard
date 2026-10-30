@@ -571,6 +571,14 @@ button.al-item:hover { background: rgba(255, 255, 255, .1); }
   color: var(--ct);
 }
 .w-big small { display: block; margin-top: 6px; font-size: .9rem; font-weight: 600; letter-spacing: 0; line-height: 1.2; color: var(--muted); }
+/* Schreefcijfers (Instellingen › Thema, standaard aan): alleen de grote hoofdgetallen, labels/tekst blijven schreefloos */
+.serif-nums :is(.w-big, .f1-count, .film-score, .cine-score, .hl-num, .hl-stat b, .ah-month b, .ah-pay b) {
+  font-family: 'Source Serif 4', Georgia, 'Noto Serif', serif;
+  font-weight: 600;
+  font-variant-numeric: lining-nums tabular-nums;
+  letter-spacing: -.02em;
+}
+.serif-nums :is(.w-big, .f1-count, .hl-stat) :is(small, .w-sub) { font-family: 'Roboto Flex', Roboto, system-ui, -apple-system, 'Segoe UI', sans-serif; }
 .w-mid { font-size: 1.3rem; font-weight: 650; line-height: 1.2; }
 .w-sub { color: var(--muted); font-size: .92rem; line-height: 1.4; }
 .w-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }

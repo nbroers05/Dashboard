@@ -92,15 +92,19 @@ window.DASH_THEMES = (() => {
   const kind = (name, def) => { kinds[name] = def; };
 
   // ---------- Instellingen ----------
-  const DEFAULTS = { choice: 'auto', all: true, particles: true, deco: true, topbar: true, bg: true, weather: true, fx: true, amount: 'normaal' };
+  const DEFAULTS = { choice: 'auto', all: true, particles: true, deco: true, topbar: true, bg: true, weather: true, fx: true, amount: 'normaal', serif: true };
   const AMOUNT = { rustig: { parts: 10, deco: 0.5 }, normaal: { parts: 30, deco: 1 }, feestje: { parts: 60, deco: 1.6 } };
   const settings = () => ({ ...DEFAULTS, ...(store.get('theme.settings') || {}) });
   function set(key, value) {
     const s = settings();
     s[key] = value;
     store.set('theme.settings', s);
+    serif();
     refresh();
   }
+  // Schreefcijfers (grote hoofdgetallen in een schreefletter, html.serif-nums): los van "Alle effecten", meteen bij laden
+  const serif = () => root.classList.toggle('serif-nums', settings().serif !== false);
+  serif();
   const session = {
     get(k) { try { return sessionStorage.getItem(k); } catch { return null; } },
     set(k, v) { try { if (v == null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch {} },
@@ -738,6 +742,9 @@ window.DASH_THEMES = (() => {
     }
     amount.append(h('span', 'th-sw-txt', 'Hoeveelheid'), seg);
     el.append(amount);
+
+    head('Lettertype');
+    row('Schreefcijfers', 'grote getallen in de vakken met schreef (Source Serif); labels blijven zoals ze zijn', s.serif, (v) => change('serif', v));
 
     head('Bekijk als datum');
     const dateRow = h('div', 'th-date');
