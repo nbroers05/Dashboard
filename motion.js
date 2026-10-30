@@ -8,7 +8,7 @@
   if (!dash) return;
 
   // ---------- Inschuiven ----------
-  // Volgorde zoals je ze ziet (na de indeling uit layout.js), daarna één voor één met een klein verschil
+  // Volgorde zoals je ze ziet (na de indeling uit desk.js), daarna één voor één met een klein verschil
   const cards = [...dash.querySelectorAll(':scope > .card, :scope > .media-stack, .widgets > .tile, .desk-col > *, .desk-more, .tall-row > *, .tall-rot')]
     .filter((c) => c.offsetParent !== null)
     .map((c) => ({ c, r: c.getBoundingClientRect() }))
