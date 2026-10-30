@@ -11,7 +11,7 @@ window.DASH_DATA_STATUS = (() => {
   const NAMES = {
     spotify: 'Spotify', calendar: 'Agenda', canvas: 'Canvas', weather: 'Weer', letterboxd: 'Letterboxd',
     health: 'Gezondheid', steam: 'Steam', esm: 'Check-in-meldingen', 'self-report': 'Check-ins',
-    notifications: 'Telefoonmeldingen', 'pc-window': 'Pc: apps', 'pc-afk': 'Pc: actief/afk', 'pc-web': 'Pc: websites', 'pc-sessions': 'Pc: aan/uit',
+    notifications: 'Telefoonmeldingen', 'pc-window': 'Pc: apps', 'pc-afk': 'Pc: actief/afk', 'pc-web': 'Pc: websites', 'pc-sessions': 'Pc: sessies', 'pc-power': 'Pc: aan/uit', 'firefox-history': 'Firefox-geschiedenis',
   };
   const WHERE = { cloud: 'cloud', dashboard: 'dashboard', pc: 'pc' };
   let status = store.get(CACHE), error = null, pop = null;
