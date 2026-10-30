@@ -10,6 +10,7 @@ Onder de lijst staat per ronde de uitgebreide toelichting zoals die toen geschre
 
 | Versie | Wat |
 |---|---|
+| 0.44.8 | Seizoenseffecten ook in de minimale modus (nieuwe tab): vallende sneeuw, blaadjes enz.; de topbalk is daar dan doorzichtiger zodat je ze ziet. |
 | 0.44.7 | Tentamenweek herkent ook Engelse namen in je agenda (exam, resit, retake, midterm, finals); het archief heeft nu een eigen soort 'tentamen' en Tentamens bij Mijn data. |
 
 ## 29 oktober 2026

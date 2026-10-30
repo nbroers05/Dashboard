@@ -8,7 +8,7 @@
 //   - versiering op de vakken (.th-deco): alleen in een hoek of rand waar geen tekst, knop of plaatje zit (free())
 //   - eenmalige effecten (confetti, vuurwerk) één keer per dag per browser (theme.fx), op een doek over de pagina
 // Automatisch: een feestdag gaat boven het seizoen, het echte weer (Open-Meteo, 20 min cache) komt erbovenop.
-// Telefoon (≤ 700px): alleen topbalkkleur, groet en achtergrond. Minimale modus: geen deeltjes en geen vakversiering.
+// Telefoon (≤ 700px): alleen topbalkkleur, groet en achtergrond. Minimale modus: alles behalve vakversiering (er zijn geen vakken).
 // Beweging beperken: alleen stilstaand (geen deeltjes, geen effecten, niets knippert). Tentamenweek: ook alles stil.
 // Instellingen (tabje Thema in settings.js) staan in localStorage theme.settings; "Bekijk als datum" in sessionStorage.
 //
@@ -319,6 +319,7 @@ window.DASH_THEMES = (() => {
     P.key = key;
     P.mix = mix.filter((m) => kinds[m.kind]);
     P.target = P.mix.length ? target : 0;
+    root.classList.toggle('th-falling', P.target > 0);   // minimale modus: topbalk doorzichtiger, zodat je ze ziet
     if (!P.target) {
       if (P.raf) cancelAnimationFrame(P.raf);
       P.raf = 0;
@@ -614,9 +615,9 @@ window.DASH_THEMES = (() => {
       placeDeco();
     }
 
-    // Deeltjes (niet op de telefoon, niet minimaal, niet bij beweging beperken of tentamenweek)
+    // Deeltjes (ook in de minimale modus; niet op de telefoon, niet bij beweging beperken of tentamenweek)
     const mix = [];
-    if (on && s.particles && !phone && !minimal && !still) {
+    if (on && s.particles && !phone && !still) {
       for (const t of layers) for (const p of t.particles || []) mix.push({ kind: p.kind, weight: p.density });
       if (wx && wx.kind === 'sneeuw') mix.push({ kind: 'sneeuw', weight: 0.8 });
       if (wx && wx.kind === 'regen') mix.push({ kind: 'regen', weight: 0.6 });
@@ -754,7 +755,7 @@ window.DASH_THEMES = (() => {
     el.append(h('p', 'th-set-note', urlDay ? 'De datum staat vast via ?datum= in het adres.'
       : 'Zo zie je hoe een dag eruitziet bij Automatisch. Geldt alleen voor dit tabblad; het echte weer telt dan niet mee.'));
     if (reduced.matches) el.append(h('p', 'th-set-note', 'Beweging beperken staat aan op deze computer: alleen stilstaande versiering.'));
-    el.append(h('p', 'th-set-note', 'Op de telefoon alleen topbalkkleur, groet en achtergrond; in de minimale modus geen vakversiering en geen deeltjes.'));
+    el.append(h('p', 'th-set-note', 'Op de telefoon alleen topbalkkleur, groet en achtergrond.'));
   }
   if (window.DASH_SETTINGS) DASH_SETTINGS.add({ id: 'thema', label: 'Thema', order: 10, render: renderTab });
 

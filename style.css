@@ -1740,6 +1740,11 @@ html.th-icon .tb-dayline::before { content: var(--th-icon); }
 .th-deco.th-band { left: 0; right: 0; top: 0; }
 .th-deco.th-all { inset: 0; border-radius: inherit; }
 body.minimal .th-deco { display: none; }
+/* Minimale modus vult het scherm met de topbalk: als er deeltjes vallen een doorzichtigere achtergrond, anders zie je ze niet */
+html.th-falling body.minimal .topbar { background: color-mix(in srgb, var(--tint) 25%, rgba(22, 22, 24, .4)); }
+html.th-falling[data-theme]:not([data-theme-soft]) body.minimal .topbar {
+  background: linear-gradient(120deg, color-mix(in srgb, var(--th1) 20%, rgba(22, 22, 24, .42)), color-mix(in srgb, var(--th2) 10%, rgba(22, 22, 24, .42)) 70%);
+}
 @media (max-width: 700px) { .th-top, .th-drops, .th-deco { display: none; } }
 html.th-still .th-bulb, html.th-still .th-deco, html.th-still .th-deco * { animation: none !important; }
 @media (prefers-reduced-motion: reduce) { .th-bulb, .th-deco, .th-deco * { animation: none !important; } }
