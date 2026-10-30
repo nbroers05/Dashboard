@@ -10,6 +10,7 @@ Onder de lijst staat per ronde de uitgebreide toelichting zoals die toen geschre
 
 | Versie | Wat |
 |---|---|
+| 0.44.11 | Songtekst: de laatste letter van een lange regel valt niet meer weg (de huidige regel wordt 4% groter; daar is nu ruimte voor). |
 | 0.44.10 | Instellingen › Data: overzicht van de bronnen van het data-archief (zat alleen nog in het check-in-vak, dat in de Meer-lade verstopt zit) plus alle koppelingen en sleutels op één plek. |
 | 0.44.9 | Songtekst loopt niet meer achter bij het eerste nummer: de Spotify-positie wordt gerekend vanaf het moment dat Spotify hem gaf (midden van het verzoek) en na een nieuw nummer of start twee keer snel bijgesteld. |
 | 0.44.8 | Seizoenseffecten ook in de minimale modus (nieuwe tab): vallende sneeuw, blaadjes enz.; de topbalk is daar dan doorzichtiger zodat je ze ziet. |

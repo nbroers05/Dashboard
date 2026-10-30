@@ -798,6 +798,7 @@ button.al-item:hover { background: rgba(255, 255, 255, .1); }
   cursor: pointer;
   transition: color .35s, transform .35s;
   transform-origin: left center;
+  padding-right: 4%;   /* ruimte voor scale(1.04) van de huidige regel, anders valt de laatste letter van een lange regel weg */
 }
 .ly-line.past { color: rgba(255, 255, 255, .5); }
 .ly-line.now { color: #fff; transform: scale(1.04); text-shadow: 0 0 18px color-mix(in srgb, var(--c) 60%, transparent); }
