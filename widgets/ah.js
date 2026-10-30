@@ -20,12 +20,20 @@ DASH.widget('w-ah', (card, body, guard) => {
   const fmtH = (v) => nl(v, v % 1 ? 1 : 0);
   const euro = (v, d = 0) => v.toLocaleString('nl-NL', { style: 'currency', currency: 'EUR', minimumFractionDigits: d, maximumFractionDigits: d });
 
-  // ---------- Loon (alle getallen uit config.ahLoon) ----------
-  const CFG = (() => {
-    const c = window.DASHBOARD_CONFIG || {};
-    const l = c.ahLoon || {};
+  // ---------- Loon ----------
+  // Sinds 0.44.18 staan uurloon en percentages niet meer in de publieke repo maar in config.json → ahLoon van het
+  // privé data-archief, gelezen met het archief-token (datarepo.js). Laatst gelezen versie in ah.loon (alleen deze
+  // browser), zodat het vak meteen klopt. Zonder token: uren wel, bedragen niet. Demo: verzonnen ronde getallen.
+  const DEMO_LOON = {
+    brutoUurloon: 12, toeslagen: [{ naam: 'Zondag', dagen: ['zo'], van: '00:00', tot: '24:00', procent: 50 }],
+    uitbetaaldeUren: [{ naam: 'Vakantie-uren', procent: 10 }], vakantiegeldProcent: 8, vakantiegeldPerPeriode: true, nettoVerhouding: 0.95,
+  };
+  let loonState = DASH.DEMO ? 'demo' : 'laden';   // demo | laden | ok | geen-token | fout
+  let CFG = parseLoon(DASH.DEMO ? DEMO_LOON : DASH.store.get('ah.loon') || {});
+  if (!DASH.DEMO && DASH.store.get('ah.loon')) loonState = 'ok';
+  function parseLoon(l) {
     return {
-      wage: Number(l.brutoUurloon ?? c.ahUurloon) || 0,
+      wage: Number(l.brutoUurloon) || 0,
       rules: (l.toeslagen || []).filter((r) => r && r.procent != null && r.van && r.tot).map((r) => ({
         ...r, from: toMin(r.van), to: toMin(r.tot), days: new Set(r.dagen || []),
       })),
@@ -40,7 +48,26 @@ DASH.widget('w-ah', (card, body, guard) => {
       fixed: (l.vasteToeslagen || []).filter((f) => f && f.bedrag != null),
       ratio: l.nettoVerhouding,
     };
-  })();
+  }
+  async function loadLoon() {
+    const D = window.DASH_DATA;
+    if (DASH.DEMO) return;
+    // datarepo.js laadt na dit vak: even wachten in plaats van "geen token" te melden
+    if (!D) { if ((loadLoon.tries = (loadLoon.tries || 0) + 1) < 40) setTimeout(guard(loadLoon), 250); return; }
+    if (!D.token()) { DASH.store.set('ah.loon', null); CFG = parseLoon({}); loonState = 'geen-token'; return render(); }
+    try {
+      const f = await D.read('config.json');
+      const l = f ? JSON.parse(f.text).ahLoon : null;
+      if (!l) throw new Error('geen ahLoon in config.json');
+      DASH.store.set('ah.loon', l);
+      CFG = parseLoon(l);
+      loonState = 'ok';
+    } catch (e) {
+      console.warn('[ah] loon', e);
+      if (loonState !== 'ok') loonState = 'fout';    // eerder gelezen loon blijft dan gewoon staan
+    }
+    render();
+  }
   function toMin(hhmm) { const [hh, mm] = String(hhmm).split(':').map(Number); return hh * 60 + (mm || 0); }
 
   // Nederlandse feestdagen (Pasen via de Gregoriaanse rekenregel)
@@ -117,7 +144,7 @@ DASH.widget('w-ah', (card, body, guard) => {
     return { ...p, fixed, extras, holidayPay, profit, gross, net: CFG.ratio != null ? gross * CFG.ratio : null };
   }
 
-  // Wat er nog in config.js moet (getallen van je loonstrook)
+  // Wat er nog in het archief moet (config.json → ahLoon, getallen van je loonstrook)
   function missing() {
     const m = [];
     if (!(CFG.wage > 0)) m.push('bruto uurloon');
@@ -145,7 +172,7 @@ DASH.widget('w-ah', (card, body, guard) => {
     sum.append(
       cell('Deze week', euro(wkPay.gross, 2), `${fmtH(wkPay.hours)} u betaald`),
       cell('Periode bruto', euro(p.gross, 2), `${fmtH(p.hours)} u gewerkt${p.extras.length || p.fixed || CFG.holidayInPeriod ? ' + extra’s, zie hieronder' : ''}`),
-      cell('Netto (schatting)', p.net != null ? euro(p.net, 2) : '–', p.net != null ? `× ${nl(CFG.ratio, 2)} uit config` : 'vul nettoVerhouding in'),
+      cell('Netto (schatting)', p.net != null ? euro(p.net, 2) : '–', p.net != null ? `× ${nl(CFG.ratio, 2)} uit het archief` : 'vul nettoVerhouding in'),
     );
     inner.append(sum);
 
@@ -179,7 +206,7 @@ DASH.widget('w-ah', (card, body, guard) => {
     extra.append(h('li', null, `Uurloon ${euro(CFG.wage, 2)} · ${CFG.rules.length ? CFG.rules.map((r) => `${r.naam} +${nl(r.procent, r.procent % 1 ? 1 : 0)}% (${r.van}–${r.tot})`).join(', ') : 'nog geen toeslagen ingevuld'} · bij overlap ${CFG.stack ? 'opgeteld' : 'de hoogste'}`));
     if (CFG.breaks.length) extra.append(h('li', null, `Onbetaalde pauze: ${CFG.breaks.map((b) => `${b.minuten} min bij meer dan ${nl(b.langerDanUren, 1)} u`).join(', ')}`));
     const miss = missing();
-    if (miss.length) extra.append(h('li', 'ahp-miss', `Nog niet ingevuld in config.js: ${miss.join(', ')}. Tot die er staan, tellen ze niet mee.`));
+    if (miss.length) extra.append(h('li', 'ahp-miss', `Nog niet ingevuld in het data-archief (config.json → ahLoon): ${miss.join(', ')}. Tot die er staan, tellen ze niet mee.`));
     inner.append(extra, h('p', 'w-note', 'Grijze regels zijn ingepland (nog niet gewerkt). Dit is een berekening op basis van je agenda, geen loonstrook.'));
     panel.body.replaceChildren(inner);
     panel.open();
@@ -248,7 +275,14 @@ DASH.widget('w-ah', (card, body, guard) => {
         box.append(h('div', 'w-sub', `bruto · ${per.exact ? '' : '± '}${fmtDay(per.payday)}`));
         if (p.net != null) box.append(h('div', 'w-sub ah-net', `netto ≈ ${euro(p.net)} (schatting)`));
       } else {
-        box.append(h('div', 'w-sub', `Salaris ${per.exact ? '' : '± '}${fmtDay(per.payday)}`), h('div', 'w-sub', 'uurloon in config.js voor €'));
+        box.append(h('div', 'w-sub', `Salaris ${per.exact ? '' : '± '}${fmtDay(per.payday)}`));
+        if (loonState === 'geen-token' || loonState === 'fout') {
+          const b = h('button', 'text-btn ah-link', loonState === 'fout' ? 'loon niet gelezen' : 'archief koppelen voor €');
+          b.type = 'button';
+          b.title = loonState === 'fout' ? 'Het loon kon niet uit het data-archief komen (config.json → ahLoon). Opnieuw proberen' : 'Je loon staat in het privé data-archief. Koppel het in Instellingen › Data';
+          b.onclick = (e) => { e.stopPropagation(); if (loonState === 'fout') loadLoon(); else if (window.DASH_SETTINGS) DASH_SETTINGS.open('data'); };
+          box.append(b);
+        } else if (loonState === 'laden') box.append(h('div', 'w-sub', 'loon laden…'));
       }
       right.append(box);
     }
@@ -282,4 +316,7 @@ DASH.widget('w-ah', (card, body, guard) => {
   }
 
   DASH.onCalendar(guard((detail) => { calendar = detail; render(); }));
+  window.addEventListener('dash:data-token', guard(loadLoon));
+  DASH.every(60 * 60 * 1000, guard(loadLoon));
+  loadLoon();
 });

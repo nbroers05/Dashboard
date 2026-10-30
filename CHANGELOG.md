@@ -10,6 +10,7 @@ Onder de lijst staat per ronde de uitgebreide toelichting zoals die toen geschre
 
 | Versie | Wat |
 |---|---|
+| 0.44.18 | Persoonlijke gegevens uit de publieke repo: AH-loon (uurloon, toeslagen, percentages) staat nu in het privé data-archief en het AH-vak leest het met het archief-token. Zonder token zie je wel je uren, en bij het salaris een knop 'archief koppelen voor €'. CLAUDE.md zonder loon, loonstrookbedragen, leeftijd, contracturen en aantal banktransacties (die staan in de CLAUDE.md van het archief). |
 | 0.44.17 | Check-invak (pc, staand, liggend, telefoon) is alleen nog om in te vullen: geen laatste waarden of Data-knop meer, alleen hoeveel check-ins je vandaag hebt gedaan. De browser bewaart ook alleen nog tijd en id. |
 | 0.44.16 | Schreefcijfers: de grote hoofdgetallen (temperatuur, AH-uren en salaris, stappen/slaap, F1-aftelklok, filmcijfers, tellers) in Source Serif 4 met rechte cijfers; labels blijven schreefloos. Schakelaar in Instellingen › Thema › Lettertype, standaard aan. |
 | 0.44.15 | Gezondheid: stappen als grote ring rond het percentage van je dagdoel (vakkleur), met stappen en slaap ernaast. Klik op 'doel 10.000' om het doel te wijzigen (bewaard in deze browser); slaapfases en hartslag eronder. |
