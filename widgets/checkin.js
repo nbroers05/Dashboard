@@ -5,13 +5,15 @@
 // geen token), dan blijft de check-in in een wachtrij in deze browser en gaat hij later alsnog.
 // 3x per dag stuurt de Action in de privé repo een ntfy-melding met een link naar #checkin-<unix>: dan gaat het
 // invulvak meteen open en wordt de check-in aan die melding gekoppeld. "Nu invullen" kan altijd.
-// Telling en "Laatste" komen uit het archief zelf (deze en vorige maand, elke 10 min), zodat check-ins van je
-// telefoon en pc overal meetellen; wat nog in de wachtrij staat telt er ook bij.
+// Het vak toont alleen hoeveel check-ins je vandaag hebt ingevuld (uit het archief, deze en vorige maand, elke 10 min,
+// zodat telefoon en pc samen tellen; plus de wachtrij). Bewust géén waarden of andere cijfers uit het archief (sinds
+// 0.44.17): Noah schrijft eerst zijn hypotheses op voordat hij naar de check-in-data kijkt. Ook in de browser
+// bewaren we alleen tijd en id.
 DASH.widget('w-checkin', (card, body, guard) => {
   const { h, store } = DASH;
   const D = window.DASH_DATA;
   const QUEUE = 'checkin.queue';
-  const LOG = 'checkin.log';   // check-ins van de laatste dagen (uit het archief + wachtrij), voor de telling
+  const LOG = 'checkin.log';   // alleen { t, id } van de laatste dagen (uit het archief + wachtrij), voor de telling
   const COLS = ['timestamp_utc', 'timestamp_local', 'source', 'collected_at', 'id', 'mood', 'energy', 'focus', 'stress', 'note', 'trigger', 'prompt_utc', 'delay_min', 'device'];
   const SCALES = [
     ['mood', 'Stemming', ['😞', '🙁', '😐', '🙂', '😄']],
@@ -50,12 +52,11 @@ DASH.widget('w-checkin', (card, body, guard) => {
       const month = D.localIso(now).slice(0, 7);
       const prev = D.localIso(new Date(now.getFullYear(), now.getMonth(), 0)).slice(0, 7);
       const files = await Promise.all([...new Set([prev, month])].map((m) => D.read(`data/self-report/${m}.csv`).catch(() => null)));
-      const remote = files.filter(Boolean).flatMap((f) => parseCsv(f.text)).map((r) => ({
-        t: Date.parse(r.timestamp_utc), id: r.id, ...Object.fromEntries(SCALES.map(([k]) => [k, r[k] ? Number(r[k]) : undefined])),
-      })).filter((x) => Number.isFinite(x.t) && Date.now() - x.t < 3 * 86400000);
+      const remote = files.filter(Boolean).flatMap((f) => parseCsv(f.text)).map((r) => ({ t: Date.parse(r.timestamp_utc), id: r.id }))
+        .filter((x) => Number.isFinite(x.t) && Date.now() - x.t < 3 * 86400000);
       const ids = new Set(remote.map((x) => x.id));
       // Nog niet opgeslagen (wachtrij) telt ook mee
-      const waiting = queue().filter((r) => !ids.has(r.id)).map((r) => ({ t: Date.parse(r.timestamp_utc), id: r.id, ...Object.fromEntries(SCALES.map(([k]) => [k, r[k]])) }));
+      const waiting = queue().filter((r) => !ids.has(r.id)).map((r) => ({ t: Date.parse(r.timestamp_utc), id: r.id }));
       store.set(LOG, [...remote, ...waiting].sort((a, b) => a.t - b.t));
       render();
     } catch (e) {
@@ -98,7 +99,7 @@ DASH.widget('w-checkin', (card, body, guard) => {
       device: window.matchMedia('(max-width: 700px)').matches ? 'phone' : 'pc',
     };
     store.set(QUEUE, [...queue(), r]);
-    store.set(LOG, [...recent(), { t: now.getTime(), id: r.id, ...values }]);
+    store.set(LOG, [...recent(), { t: now.getTime(), id: r.id }]);
     render();
     flush().then(pull);
   }
@@ -194,12 +195,6 @@ DASH.widget('w-checkin', (card, body, guard) => {
     btn.onclick = () => open(null);
     head.append(btn);
     const parts = [head];
-    const last = recent().at(-1);
-    if (last) {
-      const chips = h('div', 'ci-last');
-      for (const [key, label, faces] of SCALES) if (last[key]) chips.append(h('span', 'ci-chip', `${faces[last[key] - 1]} ${label.toLowerCase()} ${last[key]}`));
-      parts.push(h('p', 'w-sub', `Laatste: ${DASH.fmtDay(last.t)} ${DASH.fmtTime(last.t)}`), chips);
-    }
     const waiting = queue().length;
     const foot = h('div', 'ci-foot');
     if (!D.token()) {
@@ -221,7 +216,6 @@ DASH.widget('w-checkin', (card, body, guard) => {
       settings.onclick = openSetup;
       foot.append(settings);
     }
-    if (window.DASH_DATA_STATUS) foot.append(window.DASH_DATA_STATUS.button());
     parts.push(foot);
     body.replaceChildren(...parts);
   }
