@@ -1,7 +1,7 @@
 'use strict';
 
-// Indelingen naast de gewone (die van layout.js, met "Indelen"). De vakken zelf blijven hetzelfde; dit script
-// verplaatst ze alleen, en zet ze precies terug als een andere indeling geldt.
+// De drie indelingen. De vakken zelf blijven hetzelfde; dit script verplaatst ze alleen, en zet ze precies terug als
+// een andere indeling geldt. ("Indelen" met layout.js bestaat niet meer sinds 0.45.0.)
 //
 // desk: breed liggend scherm (vanaf 1280px, liggend). Alles in één scherm zonder scrollen: topbalk, drie kolommen
 //       (links weer+buienalarm, meldingen, AH; midden speler en agenda; rechts Canvas, F1, Episodes, film/laatst
@@ -9,7 +9,7 @@
 // tall: staand scherm (breder dan 700px, niet desk), het "nieuwe" staande ontwerp: speler, rij weer/F1/AH (buienalarm
 //       zit in het weervak), rij Canvas/meldingen, één roterend vak (laatst gekeken, film, Episodes, gezondheid),
 //       agenda, en een "Meer"-balk met to-do. (Het oude staande ontwerp en de wisselknop zijn weg sinds 0.44.11.)
-// Telefoon (tot 700px): geen van beide, gewoon layout.js.
+// phone: telefoon (tot 700px), tabbalk met Vandaag/Agenda/Media/Data; het meeste staat in phone.js (DASH_PHONE).
 (() => {
   const { h, store } = DASH;
   const dash = document.querySelector('.dashboard');
@@ -181,6 +181,10 @@
         [row3, row2, rot, hidden].forEach((el) => el.remove());
       },
     },
+    phone: {
+      enter() { window.DASH_PHONE.enter({ remember, put, dash }); },
+      leave() { window.DASH_PHONE.leave(); },
+    },
   };
 
   let current = null;
@@ -202,7 +206,6 @@
       [weather, more].forEach((el) => el.remove());
       dash.classList.remove(current);
       document.documentElement.classList.remove(`${current}-mode`);
-      if (!mode && DASH.layoutApply) DASH.layoutApply();   // je eigen indeling ("Indelen") weer toepassen
     }
     current = mode;
     if (mode) {
@@ -213,12 +216,15 @@
     window.dispatchEvent(new CustomEvent('dash:layout', { detail: { mode } }));
   }
 
-  // Welke indeling: breed liggend = desk; staand/middelgroot = nieuw of oud (knop in de topbalk); telefoon = gewoon
+  // Welke indeling: breed liggend = desk; staand/middelgroot = tall; telefoon = phone
   function apply() {
     const portrait = wideMq.matches && !deskMq.matches;
     document.documentElement.classList.toggle('portrait-wide', portrait);
-    setMode(deskMq.matches ? 'desk' : portrait ? 'tall' : null);
+    setMode(deskMq.matches ? 'desk' : portrait ? 'tall' : 'phone');
   }
+
+  // Opgeslagen indelingen van het oude "Indelen" opruimen
+  try { ['dash.layout.v2.wide', 'dash.layout.v2.phone', 'dash.layout.wide', 'dash.layout.phone', 'dash.layout'].forEach((k) => localStorage.removeItem(k)); } catch {}
 
   // ---------- Sluiten met Esc en klikken ernaast ----------
   document.addEventListener('keydown', (e) => {

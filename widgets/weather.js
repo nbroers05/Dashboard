@@ -388,11 +388,15 @@ DASH.widget('w-weather', (card, body, guard) => {
   card.setAttribute('role', 'button');
   card.setAttribute('aria-haspopup', 'dialog');
   card.setAttribute('aria-label', 'Weer, klik voor de verwachting');
-  card.addEventListener('click', (e) => { if (!e.target.closest('.tile-move, .tile-resize') && !card.closest('.editing')) openPopup(); });
+  card.addEventListener('click', () => openPopup());
   card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPopup(); } });
 
   const load = guard(async () => {
     wx = await DASH.getJSON(URL_);
+    // Voor de telefoon (phone.js): weer van nu en per uur
+    window.DASH_WEATHER = wx;
+    window.DASH_WEATHER_INFO = { code, iconImg, rainBetween };
+    window.dispatchEvent(new CustomEvent('dash:weather'));
     render();
     // Open popup bijwerken met de nieuwe verwachting (niet elke minuut, dan springt de lijst per uur terug)
     if (popup && popup.dialog.open) fillPopup();

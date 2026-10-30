@@ -112,6 +112,12 @@ DASH.widget('w-checkin', (card, body, guard) => {
       pop = DASH.panel('Check-in', 'var(--c-checkin)');
       pop.dialog.classList.add('checkin-dialog');
     }
+    pop.body.replaceChildren(buildForm(promptAt, () => pop.close()));
+    pop.open();
+  }
+
+  // Het formulier zelf: in de pop-up, en op de telefoon ook los in het tabblad Data (phone.js)
+  function buildForm(promptAt, done) {
     const chosen = {};
     const form = h('form', 'ci-form');
     if (promptAt) form.append(h('p', 'w-sub ci-prompt', `Melding van ${DASH.fmtTime(promptAt)}`));
@@ -149,11 +155,11 @@ DASH.widget('w-checkin', (card, body, guard) => {
       e.preventDefault();
       if (go.disabled) return;
       save({ ...chosen }, note.value, promptAt);
-      pop.close();
+      done();
     };
-    pop.body.replaceChildren(form);
-    pop.open();
+    return form;
   }
+  window.DASH_CHECKIN = { open: () => open(null), form: (done) => buildForm(null, done), today: () => today().length };
 
   // ---------- Token instellen ----------
   let setup = null;
@@ -218,6 +224,7 @@ DASH.widget('w-checkin', (card, body, guard) => {
     }
     parts.push(foot);
     body.replaceChildren(...parts);
+    window.dispatchEvent(new CustomEvent('dash:checkin'));
   }
 
   // #checkin of #checkin-<unix> (uit de ntfy-melding): meteen het invulvak

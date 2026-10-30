@@ -94,6 +94,9 @@ DASH.widget('w-health', (card, body, guard) => {
   let last = null;
   function render(d) {
     last = d;
+    // Voor de telefoon (phone.js): stappen vandaag en laatste slaap
+    window.DASH_HEALTH = d;
+    window.dispatchEvent(new CustomEvent('dash:health'));
     const GOAL = goal();
     const today = startOfDay(Date.now());
     const todaySteps = (d.steps.find((x) => x.day === today) || {}).count;

@@ -215,7 +215,7 @@ DASH.widget('w-ah', (card, body, guard) => {
   card.tabIndex = 0;
   card.setAttribute('role', 'button');
   card.setAttribute('aria-label', 'AH-uren, klik voor de loonberekening');
-  card.addEventListener('click', (e) => { if (!card.closest('.editing')) openDetails(); });
+  card.addEventListener('click', () => openDetails());
   card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDetails(); } });
 
   // Een AH-periode duurt 4 weken (ma t/m zo). Daarna zit er een week tussen, en in de week erna komt het salaris.

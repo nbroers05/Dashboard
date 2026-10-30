@@ -223,11 +223,14 @@
     const tomorrow = DASH.addDays(today, 1);
     const cal = window.DASH_CALENDAR && window.DASH_CALENDAR.connected ? window.DASH_CALENDAR.events : ((store.get('google.events') || {}).events || []);
     const parts = [];
+    // Zelfde onderdelen als losse stukjes voor de telefoon (phone.js maakt er chips van): { k: soort, t: tekst }
+    const items = [];
+    const add = (k, t) => { parts.push(t); items.push({ k, t }); };
     const shift = cal.filter((e) => DASH.isAH(e) && e.end > now && e.start < tomorrow).sort((a, b) => a.start - b.start)[0];
-    if (shift) parts.push(shift.start <= now ? `AH tot ${DASH.fmtTime(shift.end)}` : `AH ${DASH.fmtTime(shift.start)}`);
+    if (shift) add('ah', shift.start <= now ? `AH tot ${DASH.fmtTime(shift.end)}` : `AH ${DASH.fmtTime(shift.start)}`);
     if (rain && rain.slots.length) {
       const wet = rain.slots.find((s) => s.end > now && s.mmh >= DASH.RAIN_MIN);
-      parts.push(!wet ? 'droog' : wet.start <= now ? 'regen' : `regen om ${DASH.fmtTime(wet.start)}`);
+      add('rain', !wet ? 'droog' : wet.start <= now ? 'regen' : `regen om ${DASH.fmtTime(wet.start)}`);
     }
     const done = new Set(store.get('canvas.done') || []);
     const canvas = cal.filter((e) => e.canvas);
@@ -237,7 +240,7 @@
     if (next) {
       const name = next.title.replace(/\s*\[[^\]]+\]\s*$/, '');
       const days = Math.round((DASH.startOfDay(due(next)) - today) / 86400000);
-      parts.push(`${name} ${days === 0 ? `vandaag ${DASH.fmtTime(due(next))}` : days === 1 ? 'morgen' : `over ${days} dagen`}`);
+      add('canvas', `${name} ${days === 0 ? `vandaag ${DASH.fmtTime(due(next))}` : days === 1 ? 'morgen' : `over ${days} dagen`}`);
     }
     // Verjaardagen (agenda-veld birthday, uit de verjaardagen-agenda van je contacten): komende 7 dagen
     const bdays = cal.filter((e) => e.birthday && e.end > now && e.start < DASH.addDays(today, 8))
@@ -247,11 +250,13 @@
       const days = Math.round((DASH.startOfDay(e.start) - today) / 86400000);
       // Je eigen verjaardag ("Gefeliciteerd met je verjaardag!"): aftellen; op de dag zelf doet themes.js de felicitatie
       const own = /gefeliciteerd/i.test(e.birthday);
-      if (own) { if (days > 0) parts.push(`🎂 nog ${days === 1 ? '1 dag' : `${days} dagen`} tot je verjaardag`); continue; }
+      if (own) { if (days > 0) add('bday', `🎂 nog ${days === 1 ? '1 dag' : `${days} dagen`} tot je verjaardag`); continue; }
       if (days <= 0) todayBday = `🎂 ${e.birthday} is vandaag jarig!`;
-      else parts.push(`🎂 ${e.birthday} ${days === 1 ? 'morgen' : `over ${days} dagen`} jarig`);
+      else add('bday', `🎂 ${e.birthday} ${days === 1 ? 'morgen' : `over ${days} dagen`} jarig`);
     }
     const text = parts.join(' · ');
+    window.DASH_DAYLINE = { items: todayBday ? [{ k: 'bday', t: todayBday, today: true }, ...items] : items, rain };
+    window.dispatchEvent(new CustomEvent('dash:dayline'));
     const key = `${todayBday || ''}|${text}`;
     if (dayLineEl.dataset.key !== key) {
       dayLineEl.dataset.key = key;

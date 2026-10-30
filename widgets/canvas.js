@@ -116,6 +116,7 @@ DASH.widget('w-canvas', (card, body, guard) => {
   // ---------- Het vak: alleen de 3 urgentste ----------
   function render() {
     if (!calendar) return;
+    queueMicrotask(() => window.dispatchEvent(new CustomEvent('dash:canvas')));
     if (!calendar.connected) { DASH.alert('canvas', null); body.replaceChildren(DASH.problem('Koppel je Google Agenda om je deadlines te zien.', 'Agenda koppelen', DASH.connectGoogle)); return; }
     if (!calendar.events.some((e) => e.canvas)) return empty('Nog geen Canvas-agenda gevonden (zie README, stap 4).');
     const now = Date.now();
@@ -187,6 +188,9 @@ DASH.widget('w-canvas', (card, body, guard) => {
     page.body.replaceChildren(inner);
     page.body.scrollTop = scroll;
   }
+
+  // Voor de telefoon (phone.js): open deadlines (null = geen agenda), tekst als "4 dagen te laat", en de pagina
+  window.DASH_CANVAS = { items: () => (calendar && calendar.connected ? items() : null), when, openPage: () => openPage() };
 
   function openPage() {
     if (!calendar || !calendar.connected) return;
