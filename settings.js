@@ -68,5 +68,15 @@ window.DASH_SETTINGS = (() => {
   btn.onclick = () => (dlg && dlg.open ? dlg.close() : open());
   if (actions) actions.insertBefore(btn, actions.querySelector('.tb-min'));
 
+  // Tabje Data: de inhoud komt uit datastatus.js (die laadt pas met het volledige dashboard, dus niet meteen met ?mini=1)
+  add({ id: 'data', label: 'Data', order: 20, render(el) {
+    if (window.DASH_DATA_STATUS) return window.DASH_DATA_STATUS.settingsTab(el);
+    el.append(h('p', 'w-note', 'Het data-overzicht laadt met het volledige dashboard.'));
+    const b = h('button', 'w-btn', 'Volledig dashboard openen');
+    b.type = 'button';
+    b.onclick = () => { dlg.close(); document.querySelector('#topbar .tb-min')?.click(); };
+    el.append(b);
+  } });
+
   return { add, open };
 })();

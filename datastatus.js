@@ -3,6 +3,7 @@
 // Data-overzicht: per bron van het privé archief wanneer hij laatst iets ophaalde, hoeveel rijen er zijn en of hij
 // stil ligt (> 2 dagen). Leest alleen data/status.json uit de privé repo (de Action maakt dat elk uur), nooit de
 // ruwe data. Knop "Data" in het check-in-vak opent het overzicht; een stille bron komt ook in het meldingenvak.
+// Sinds 0.44.10 staat het overzicht ook in Instellingen › Data, met alle koppelingen en sleutels (settingsTab).
 window.DASH_DATA_STATUS = (() => {
   const { h, store } = DASH;
   const D = window.DASH_DATA;
@@ -47,7 +48,8 @@ window.DASH_DATA_STATUS = (() => {
     if (pop && pop.dialog.open) fill();
   }
 
-  function fill() {
+  function fill() { pop.body.replaceChildren(listEl()); }
+  function listEl() {
     const list = h('div', 'ds-list');
     if (error) list.append(h('p', 'w-sub ci-err', error));
     if (!status) {
@@ -70,7 +72,85 @@ window.DASH_DATA_STATUS = (() => {
       }
       list.append(h('p', 'w-sub ds-foot', `Status van ${ago(status.generated_at)} · ${D.REPO}`));
     }
-    pop.body.replaceChildren(list);
+    return list;
+  }
+
+  // ---------- Instellingen › Data: bronnen + alle koppelingen en sleutels ----------
+  // Sleutels typt Noah zelf; ze blijven alleen in localStorage van deze browser (nooit in de code of de repo).
+  const lsSet = (k, v) => { try { if (v) localStorage.setItem(k, JSON.stringify(v)); else localStorage.removeItem(k); } catch {} };
+  function settingsTab(el) {
+    const redraw = () => { el.replaceChildren(); settingsTab(el); };
+    const head = (t) => el.append(h('p', 'th-set-h', t));
+    const row = (label, sub, state, ...controls) => {
+      const r = h('div', 'st-row');
+      const txt = h('div', 'th-sw-txt');
+      txt.append(h('span', null, label));
+      if (sub) txt.append(h('small', null, sub));
+      const right = h('div', 'st-ctl');
+      if (state) right.append(h('span', `st-state ${state[1]}`, state[0]));
+      right.append(...controls);
+      r.append(txt, right);
+      el.append(r);
+      return r;
+    };
+    const btn = (label, fn, ghost = true) => { const b = h('button', `w-btn${ghost ? ' ghost' : ''}`, label); b.type = 'button'; b.onclick = fn; return b; };
+    const keyForm = (placeholder, onSave) => {
+      const f = h('form', 'st-key');
+      const i = h('input');
+      i.type = 'password';
+      i.autocomplete = 'off';
+      i.placeholder = placeholder;
+      f.append(i, h('button', 'w-btn ghost', 'Opslaan'));
+      f.onsubmit = (e) => { e.preventDefault(); onSave(i.value.trim()); redraw(); };
+      return f;
+    };
+
+    head('Bronnen van het data-archief');
+    const n = problems().length;
+    el.append(listEl());
+    const acts = h('div', 'st-actions');
+    acts.append(btn('Opnieuw laden', async () => { await load(); redraw(); }), h('span', 'w-sub', n ? `${n} bron(nen) liggen stil of gaven een fout` : ''));
+    el.append(acts);
+
+    head('Koppelingen en sleutels');
+    const tok = D && D.token();
+    row('Data-archief (privé repo)', `Fine-grained GitHub-token, alleen ${D ? D.REPO : 'de data-repo'}, Contents: Read and write`,
+      tok ? ['gekoppeld', 'ok'] : ['niet gekoppeld', 'bad'],
+      keyForm(tok ? 'Token opgeslagen (leeg = wissen)' : 'github_pat_…', (v) => D.setToken(v || null)));
+    const S = window.DASH_SPOTIFY;
+    const sp = S && S.connected(), spTop = S && S.hasScope('user-top-read');
+    row('Spotify', 'Speler, opslaan, maandoverzicht', sp ? (spTop === false ? ['opnieuw inloggen nodig', 'warn'] : ['ingelogd', 'ok']) : ['niet ingelogd', 'bad'],
+      ...(S && (!sp || spTop === false) ? [btn(sp ? 'Opnieuw inloggen' : 'Inloggen', () => S.login(), false)] : []));
+    const G = window.DASH_GOOGLE;
+    const gOk = G && G.token();
+    row('Google Agenda en Gmail', 'Agenda, AH-uren, Canvas, mail (token 1 uur geldig; het hulpprogramma vernieuwt stil)',
+      gOk ? [G.gmail() ? 'gekoppeld (met Gmail)' : 'gekoppeld (zonder Gmail)', 'ok'] : G && G.connected() ? ['verlopen', 'warn'] : ['niet gekoppeld', 'bad'],
+      ...(G ? [btn(gOk ? 'Opnieuw' : 'Koppelen', () => G.connect(), !!gOk)] : []));
+    const hOk = G && G.healthToken();
+    row('Google Gezondheid', 'Stappen, slaap, hartslag (eigen token)', hOk ? ['gekoppeld', 'ok'] : G && G.healthEverGranted() ? ['verlopen', 'warn'] : ['niet gekoppeld', 'bad'],
+      ...(G ? [btn(hOk ? 'Opnieuw' : 'Koppelen', () => G.connectHealth(), !!hOk)] : []));
+    const td = store.get('feeds.twelvedata');
+    row('Twelve Data', 'Koersen bij Feeds › Markten (gratis key van twelvedata.com)', td ? ['ingesteld', 'ok'] : ['geen key', 'off'],
+      keyForm(td ? 'Key opgeslagen (leeg = wissen)' : 'API-key', (v) => lsSet('feeds.twelvedata', v)));
+    const helper = row('Hulpprogramma op deze pc', 'Telefoonmeldingen, media, Google-tokens, wensen (helper/start.bat)', ['kijken…', 'off']);
+    const ctl = new AbortController();
+    setTimeout(() => ctl.abort(), 2500);
+    fetch('http://127.0.0.1:8765/meldingen', { signal: ctl.signal }).then((r) => r.ok, () => false).then((ok) => {
+      const st = helper.querySelector('.st-state');
+      st.textContent = ok ? 'draait' : 'niet bereikbaar';
+      st.className = `st-state ${ok ? 'ok' : 'off'}`;
+    });
+    const bday = h('input');
+    bday.type = 'date';
+    bday.value = store.get('theme.birthday') || '';
+    bday.onchange = () => { lsSet('theme.birthday', bday.value || null); if (window.DASH_THEMES) DASH_THEMES.refresh(); };
+    row('Mijn verjaardag', 'Voor het verjaardagsthema met leeftijd; alleen in deze browser', null, bday);
+    const C = window.DASHBOARD_CONFIG || {};
+    const pub = (v) => (v && !/^[A-Z_]+$|PLAK/.test(v) ? ['in config.js', 'ok'] : ['niet ingevuld', 'bad']);
+    row('Spotify client-ID', 'Openbaar, staat in config.js', pub(C.spotifyClientId));
+    row('Google client-ID', 'Openbaar, staat in config.js', pub(C.googleClientId));
+    row('TMDB-key', 'Filmposters (alleen-lezen), staat in config.js', pub(C.tmdbApiKey));
+    el.append(h('p', 'th-set-note', 'Sleutels die je hier opslaat blijven alleen in deze browser. Op een andere computer moet je ze opnieuw invullen.'));
   }
 
   function open() {
@@ -96,5 +176,5 @@ window.DASH_DATA_STATUS = (() => {
   window.addEventListener('dash:data-token', load);
   DASH.every(30 * 60 * 1000, load);
   setTimeout(load, 1500);   // na het laden van de rest
-  return { button, open, load };
+  return { button, open, load, settingsTab };
 })();
