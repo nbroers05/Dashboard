@@ -17,7 +17,7 @@ Statische site: vanilla HTML/CSS/JS, geen build-stap, geen server. Hangt altijd 
 
 **Nieuwe-tabpagina:** Noah gebruikt `https://nbroers05.github.io/Dashboard/?mini=1` in Firefox (New Tab Override). `?mini=1` start altijd minimaal, schrijft `dash.minimal` niet weg (uitklappen/terug alleen voor dat tabblad), zet focus op de zoekbalk en laadt Spotify/agenda/vakken pas bij uitklappen (`DASH.loadAll`). Tijdens het laden staat `body.booting` (vakken onzichtbaar) tot motion.js de inschuif-animatie start. Spotify-redirect is `origin + pathname` (zonder query), Google gaat via pop-up/hulpprogramma: geen van beide raakt de parameter.
 
-**Versie (afspraak met Noah, vanaf 28 okt 2026):** `0.MINOR.PATCH`. Grote opdracht = MINOR omhoog (PATCH terug naar 0), kleine fix = PATCH omhoog. Het nummer staat als `?v=0.MINOR.PATCH` achter `style.css`, config, dash en topbar in `index.html` (alle andere scripts krijgen het via dash.js) en onderaan als "Dashboard versie …". Altijd ophogen bij een wijziging, anders mengt de browser oude en nieuwe bestanden. Huidige: 0.44.6. Elke versie staat in `CHANGELOG.md` (nieuwste bovenaan, per dag een tabel; bij elke nieuwe versie een regel toevoegen).
+**Versie (afspraak met Noah, vanaf 28 okt 2026):** `0.MINOR.PATCH`. Grote opdracht = MINOR omhoog (PATCH terug naar 0), kleine fix = PATCH omhoog. Het nummer staat als `?v=0.MINOR.PATCH` achter `style.css`, config, dash en topbar in `index.html` (alle andere scripts krijgen het via dash.js) en onderaan als "Dashboard versie …". Altijd ophogen bij een wijziging, anders mengt de browser oude en nieuwe bestanden. Huidige: 0.44.7. Elke versie staat in `CHANGELOG.md` (nieuwste bovenaan, per dag een tabel; bij elke nieuwe versie een regel toevoegen).
 
 ## Wensenlijst
 
