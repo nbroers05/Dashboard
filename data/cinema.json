@@ -1,5 +1,5 @@
 {
- "day": "2026-10-31",
+ "day": "2026-11-01",
  "sources": [
   "LantarenVenster"
  ],
@@ -88,7 +88,7 @@
      "url": "https://www.lantarenvenster.nl/programma/amarga-navidad/",
      "day": null,
      "next": null,
-     "until": null
+     "until": "2026-11-01"
     }
    ]
   },
@@ -254,20 +254,6 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/bettie-serveert/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
-   "title": "Bill Stewart Trio",
-   "key": "billstewarttrio",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/bill-stewart-trio-26/",
      "day": null,
      "next": null,
      "until": null
@@ -481,20 +467,6 @@
      "day": null,
      "next": null,
      "until": null
-    }
-   ]
-  },
-  {
-   "title": "De Gaulle: Liberté",
-   "key": "degaulleliberte",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/de-gaulle-liberte/",
-     "day": null,
-     "next": null,
-     "until": "2026-10-31"
     }
    ]
   },
@@ -793,6 +765,20 @@
    ]
   },
   {
+   "title": "Hoelang nog",
+   "key": "hoelangnog",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/hoelang-nog/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "Holy Motors (2012)",
    "key": "holymotors2012",
    "poster": null,
@@ -1038,6 +1024,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/joyce-moreno-2026/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Just Look Up",
+   "key": "justlookup",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/just-look-up/",
      "day": null,
      "next": null,
      "until": null
@@ -1507,6 +1507,20 @@
    ]
   },
   {
+   "title": "Rehearsals for a Revolution",
+   "key": "rehearsalsforarevolution",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/rehearsals-for-a-revolution/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "Rembrandt Trio",
    "key": "rembrandttrio",
    "poster": null,
@@ -1759,6 +1773,34 @@
    ]
   },
   {
+   "title": "The Blood of the Covenant",
+   "key": "thebloodofthecovenant",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/the-blood-of-the-covenant/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "The Clearing",
+   "key": "theclearing",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/the-clearing/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "The Cycle of Love",
    "key": "thecycleoflove",
    "poster": null,
@@ -1801,6 +1843,20 @@
    ]
   },
   {
+   "title": "The Illusion of an Everlasting Summer",
+   "key": "theillusionofaneverlastingsummer",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/the-illusion-of-an-everlasting-summer/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "The Preacher Men",
    "key": "thepreachermen",
    "poster": null,
@@ -1829,16 +1885,16 @@
    ]
   },
   {
-   "title": "The Rocky Horror Picture Show (1975)",
-   "key": "therockyhorrorpictureshow1975",
+   "title": "The Siege of Paradise - Expat Cinema Rotterdam",
+   "key": "thesiegeofparadiseexpatcinemarotterdam",
    "poster": null,
    "shows": [
     {
      "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/the-rocky-horror-picture-show-1975/",
+     "url": "https://www.lantarenvenster.nl/programma/the-siege-of-paradise-expat-cinema-rotterdam/",
      "day": null,
      "next": null,
-     "until": "2026-10-31"
+     "until": null
     }
    ]
   },
@@ -1913,6 +1969,20 @@
    ]
   },
   {
+   "title": "Tristan Forever",
+   "key": "tristanforever",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/tristan-forever/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "True Loves",
    "key": "trueloves",
    "poster": null,
@@ -1934,6 +2004,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/vanwyck/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "We Had a Plan",
+   "key": "wehadaplan",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/we-had-a-plan/",
      "day": null,
      "next": null,
      "until": null
@@ -1993,20 +2077,6 @@
      "day": null,
      "next": null,
      "until": "2026-11-01"
-    }
-   ]
-  },
-  {
-   "title": "Yellow Letters",
-   "key": "yellowletters",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/yellow-letters/",
-     "day": null,
-     "next": null,
-     "until": "2026-10-31"
     }
    ]
   },
