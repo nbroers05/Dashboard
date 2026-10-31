@@ -27,18 +27,44 @@ DASH.widget('w-health', (card, body, guard) => {
     return json;
   }
 
-  const civil = (ms, end) => {
-    const d = new Date(ms);
-    return { date: { year: d.getFullYear(), month: d.getMonth() + 1, day: d.getDate() }, time: end ? { hours: 23, minutes: 59, seconds: 59 } : { hours: 0, minutes: 0, seconds: 0 } };
-  };
   const fromCivil = (c) => new Date(c.date.year, c.date.month - 1, c.date.day).getTime();
   const iso = (ms) => { const d = new Date(ms); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+
+  // Stappen per dag, per bron geteld; de hoogste bron telt (sinds 0.52.2). Niet dailyRollUp: sinds 28 okt 2026 komen
+  // dezelfde stappen via drie bronnen binnen (Google Health-app/Fitbit "MobileTrack", Samsung Health en de telefoonsensor
+  // via Health Connect) en Google's optelsom telde die deels dubbel (30 okt: 24.494 in plaats van 13.701).
+  // Zelfde regel als scripts/collectors/health.py in het archief. ~250 punten per dag, dus 2 pagina's voor 7 dagen.
+  async function stepsPerDay(from, to) {
+    const per = new Map();   // dag -> Map(bron -> stappen)
+    let pageToken = null;
+    for (let i = 0; i < 10; i++) {
+      const q = { pageSize: 1000, filter: `steps.interval.civil_start_time >= "${iso(from)}" AND steps.interval.civil_start_time < "${iso(addDays(to, 1))}"` };
+      if (pageToken) q.pageToken = pageToken;
+      const r = await call(`steps/dataPoints?${new URLSearchParams(q)}`);
+      for (const p of r.dataPoints || []) {
+        const st = p.steps || {};
+        const c = st.interval && st.interval.civilStartTime;
+        if (!c) continue;
+        const day = fromCivil(c);
+        const ds = p.dataSource || {};
+        const src = `${ds.platform}|${(ds.application && ds.application.packageName) || (ds.device && ds.device.displayName) || ''}`;
+        if (!per.has(day)) per.set(day, new Map());
+        const m = per.get(day);
+        m.set(src, (m.get(src) || 0) + (Number(st.count) || 0));
+      }
+      pageToken = r.nextPageToken;
+      if (!pageToken) break;
+    }
+    const out = [];
+    for (let d = from; d <= to; d = addDays(d, 1)) out.push({ day: d, count: per.has(d) ? Math.max(...per.get(d).values()) : null });
+    return out;
+  }
 
   async function fetchAll() {
     const today = startOfDay(Date.now());
     // Losse delen mogen mislukken (bijv. nog geen hartslag): dan ontbreekt alleen dat stukje
     const [steps, sleep, hr, rest] = await Promise.allSettled([
-      call('steps/dataPoints:dailyRollUp', { method: 'POST', body: JSON.stringify({ range: { start: civil(addDays(today, -6)), end: civil(today, true) }, windowSizeDays: 1 }) }),
+      stepsPerDay(addDays(today, -6), today),
       call(`sleep/dataPoints?${new URLSearchParams({ pageSize: 5, filter: `sleep.interval.civil_end_time >= "${iso(addDays(today, -1))}"` })}`),
       call(`heart-rate/dataPoints?${new URLSearchParams({ pageSize: 1 })}`),
       call(`daily-resting-heart-rate/dataPoints?${new URLSearchParams({ pageSize: 7 })}`),
@@ -49,7 +75,7 @@ DASH.widget('w-health', (card, body, guard) => {
 
     const out = { steps: [], sleep: null, hr: null, rest: null };
     if (steps.status === 'fulfilled') {
-      out.steps = (steps.value.rollupDataPoints || []).map((p) => ({ day: fromCivil(p.civilStartTime), count: p.steps && p.steps.countSum != null ? Number(p.steps.countSum) : null }));
+      out.steps = steps.value;
     }
     if (sleep.status === 'fulfilled') {
       const s = (sleep.value.dataPoints || []).map((p) => p.sleep).filter(Boolean)
