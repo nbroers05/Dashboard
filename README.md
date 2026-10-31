@@ -84,10 +84,10 @@ Wil je je vernieuwde watchlist op het dashboard:
 Een website kan niet zelf in een extensie kijken. Daarom stuurt Episodes Left je lijst door naar het dashboard, alleen op je dashboard-pagina.
 Sinds versie 0.2.0 (31 okt 2026) haalt de extensie My List zelf op bij LiveChart (elk half uur en als het dashboard opent). Je hoeft LiveChart dus niet meer open te hebben.
 
-1. Zip de **inhoud** van de map `Episodes Left/episodes-left` (niet de map zelf). Voor 0.2.0 staat hij al klaar: `Episodes Left/episodes-left-0.2.0.zip`.
+1. Zip de **inhoud** van de map `Episodes Left/episodes-left` (niet de map zelf). Voor 0.2.1 staat hij al klaar: `Episodes Left/episodes-left-0.2.1.zip`.
 2. Onderteken hem op addons.mozilla.org als "unlisted", net als eerder, en installeer de nieuwe versie in Firefox.
    Snel testen kan ook: `about:debugging` → Deze Firefox → Tijdelijke add-on laden → `manifest.json`.
-3. Open je dashboard. In de popup van de extensie zie je wanneer hij voor het laatst heeft opgehaald (of wat er misging) en kun je je LiveChart-gebruikersnaam aanpassen.
+3. Open je dashboard. In de popup van de extensie zie je je series met het aantal afleveringen, wanneer hij voor het laatst heeft opgehaald (of wat er misging), en schakelaars voor "alleen dit seizoen" en planning (die gelden ook voor het dashboard). Het getal op het icoon is je totaal.
 
 Op je telefoon is er geen extensie: daar blijft dit vak leeg.
 
