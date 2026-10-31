@@ -4,6 +4,12 @@
    "name": "NOS",
    "items": [
     {
+     "title": "Call of Duty verwijdert echte beelden van Koreaanse ramp uit game",
+     "link": "https://nos.nl/l/2637395",
+     "time": "2026-10-31T00:29:44+01:00",
+     "img": "https://images.cdn.nos.nl/5/B/2/W/U/u/142Jh5igb4mpqQ9Sy3T2GKutghVA8zMv8Fv318s/0x0x4000x2250-1024x576.webp"
+    },
+    {
      "title": "Leo XIV eerste paus die stemt in Amerikaanse verkiezingen",
      "link": "https://nos.nl/l/2637393",
      "time": "2026-10-30T23:54:20+01:00",
@@ -86,18 +92,18 @@
      "link": "https://nos.nl/l/2637347",
      "time": "2026-10-30T18:41:04+01:00",
      "img": "https://images.cdn.nos.nl/3/F/9/j/J/Y/G1aFogan5rBmtxzP81q447SQX8aTLayQ4ucQYFW/8x47x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Man rent op koning af bij werkbezoek in Ursem, beveiligers grijpen in",
-     "link": "https://nos.nl/l/2637344",
-     "time": "2026-10-30T18:32:28+01:00",
-     "img": "https://images.cdn.nos.nl/6/t/K/7/L/U/QMNB21J5oEP1NJFnT2cmPjuo28ot5bDzNcqrkf/4x320x2928x1647-1024x576.webp"
     }
    ]
   },
   {
    "name": "NOS Sport",
    "items": [
+    {
+     "title": "Verstappen en Lawson botsen in vrije training: 'Hij reed vol tegen me aan'",
+     "link": "https://nos.nl/l/2637394",
+     "time": "2026-10-31T00:08:19+01:00",
+     "img": "https://images.cdn.nos.nl/4/9/L/X/n/x/S8XTmUbD9GidG8gu71DrweZTT6SAFAbEmGf4e1C/8x231x3984x2241-1024x576.webp"
+    },
     {
      "title": "Almere City en Roda JC handhaven zich in top, foutloze thuisreeks Volendam doorbroken",
      "link": "https://nos.nl/l/2637379",
@@ -181,18 +187,24 @@
      "link": "https://nos.nl/l/2637275",
      "time": "2026-10-30T10:27:07+01:00",
      "img": "https://images.cdn.nos.nl/2/8/f/u/d/m/pnT4sDwXugD1wNTgs5gpnFoYpFbL4rGfTWRUHmE/3x86x3520x1980-1024x576.webp"
-    },
-    {
-     "title": "Ontwerp onthuld van nieuw stadion Milan en Inter, moet San Siro vervangen",
-     "link": "https://nos.nl/l/2637261",
-     "time": "2026-10-30T08:48:38+01:00",
-     "img": "https://images.cdn.nos.nl/1/D/y/T/g/L/DjihHy5Bmd3efHJSXVkQHzJQWPVAHyefuppqszQ/4x440x1072x603-1024x576.webp"
     }
    ]
   },
   {
    "name": "NU.nl",
    "items": [
+    {
+     "title": "Zeldzame vondst in Pompeï: 2.000 jaar oude kast vol persoonlijke bezittingen",
+     "link": "https://www.nu.nl/buitenland/6415002/zeldzame-vondst-in-pompei-2000-jaar-oude-kast-vol-persoonlijke-bezittingen.html",
+     "time": "2026-10-31T00:17:12+01:00",
+     "img": "https://images.nu.nl/m/4m1xifsa9ra9_sqr256/0/0/1125/1125/zeldzame-vondst-in-pompei-2000-jaar-oude-kast-vol-persoonlijke-bezittingen.jpg"
+    },
+    {
+     "title": "Verstappen klokt vijfde tijd na opmerkelijk incident met Lawson in tweede training",
+     "link": "https://www.nu.nl/formule-1/6415006/verstappen-klokt-vijfde-tijd-na-opmerkelijk-incident-met-lawson-in-tweede-training.html",
+     "time": "2026-10-31T00:02:12+01:00",
+     "img": "https://images.nu.nl/m/ndhxp8cao53z_sqr256/542/0/4000/4000/verstappen-klokt-vijfde-tijd-na-opmerkelijk-incident-met-lawson-in-tweede-training.jpg"
+    },
     {
      "title": "Politieke onrust in Polen: president annuleert reis na schorsing hofvoorzitter",
      "link": "https://www.nu.nl/buitenland/6415005/politieke-onrust-in-polen-president-annuleert-reis-na-schorsing-hofvoorzitter.html",
@@ -270,18 +282,6 @@
      "link": "https://www.nu.nl/muziek/6414980/gerard-joling-wijt-toppers-vertrek-aan-manager-en-biedt-jan-smit-excuses-aan.html",
      "time": "2026-10-30T18:29:51+01:00",
      "img": "https://images.nu.nl/m/kqoxcb7asm1i_sqr256/1663/416/4354/4354/gerard-joling-wijt-toppers-vertrek-aan-manager-en-biedt-jan-smit-excuses-aan.jpg"
-    },
-    {
-     "title": "Tienduizenden huishoudens per brief gewaarschuwd voor tijgermug in de buurt",
-     "link": "https://www.nu.nl/binnenland/6414851/tienduizenden-huishoudens-per-brief-gewaarschuwd-voor-tijgermug-in-de-buurt.html",
-     "time": "2026-10-30T18:11:16+01:00",
-     "img": "https://images.nu.nl/m/0bdxhbrakblc_sqr256/742/1/1079/1079/tienduizenden-huishoudens-per-brief-gewaarschuwd-voor-tijgermug-in-de-buurt.jpg"
-    },
-    {
-     "title": "Kabinet kiest niet tussen links en rechts en vestigt hoop op nieuwe gesprekken",
-     "link": "https://www.nu.nl/politiek/6414976/kabinet-kiest-niet-tussen-links-en-rechts-en-vestigt-hoop-op-nieuwe-gesprekken.html",
-     "time": "2026-10-30T17:36:03+01:00",
-     "img": "https://images.nu.nl/m/o16xh8ea0ly2_sqr256/2202/156/2465/2465/kabinet-kiest-niet-tussen-links-en-rechts-en-vestigt-hoop-op-nieuwe-gesprekken.jpg"
     }
    ]
   }
@@ -390,132 +390,7 @@
   }
  ],
  "youtube": {
-  "channels": [
-   "Patrick (H) Willems",
-   "The Yard",
-   "Ken"
-  ],
-  "videos": [
-   {
-    "title": "20 win challenge (day 4)",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=XEWpfLVNBHU",
-    "thumb": "https://i.ytimg.com/vi/XEWpfLVNBHU/mqdefault.jpg",
-    "time": "2026-10-30T15:38:25+00:00",
-    "short": false
-   },
-   {
-    "title": "chaos mega draft, but I pick win conditions",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=BOLEIbXcOOM",
-    "thumb": "https://i.ytimg.com/vi/BOLEIbXcOOM/mqdefault.jpg",
-    "time": "2026-10-30T15:30:24+00:00",
-    "short": false
-   },
-   {
-    "title": "20 win challenge (day 4)",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=sFOTrmpM_E4",
-    "thumb": "https://i.ytimg.com/vi/sFOTrmpM_E4/mqdefault.jpg",
-    "time": "2026-10-30T15:22:59+00:00",
-    "short": false
-   },
-   {
-    "title": "Halloween, But We're All Ludwig | The Yard",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/watch?v=9mFou52l7sw",
-    "thumb": "https://i.ytimg.com/vi/9mFou52l7sw/mqdefault.jpg",
-    "time": "2026-10-29T17:09:18+00:00",
-    "short": false
-   },
-   {
-    "title": "the last hope",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=O1AwQYzztPA",
-    "thumb": "https://i.ytimg.com/vi/O1AwQYzztPA/mqdefault.jpg",
-    "time": "2026-10-29T11:48:15+00:00",
-    "short": false
-   },
-   {
-    "title": "20 win challenge (day 3)",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=18dNbPMGz2M",
-    "thumb": "https://i.ytimg.com/vi/18dNbPMGz2M/mqdefault.jpg",
-    "time": "2026-10-29T10:48:39+00:00",
-    "short": false
-   },
-   {
-    "title": "THAT WAS MY SPEECH!! #podcast #theyard #comedy",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/shorts/tr3Zow_Q8aQ",
-    "thumb": "https://i.ytimg.com/vi/tr3Zow_Q8aQ/mqdefault.jpg",
-    "time": "2026-10-28T20:04:12+00:00",
-    "short": true
-   },
-   {
-    "title": "Killing my friends because I have to | Yard D&D | S1E65",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/watch?v=U0W6YEky_jk",
-    "thumb": "https://i.ytimg.com/vi/U0W6YEky_jk/mqdefault.jpg",
-    "time": "2026-10-27T23:44:27+00:00",
-    "short": false
-   },
-   {
-    "title": "Aiden somehow wins?! #podcast #theyard #comedy",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/shorts/D5OG9wbJAD8",
-    "thumb": "https://i.ytimg.com/vi/D5OG9wbJAD8/mqdefault.jpg",
-    "time": "2026-10-25T14:42:51+00:00",
-    "short": true
-   },
-   {
-    "title": "We Finally Did It | The Yard",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/watch?v=G_a5C_smasw",
-    "thumb": "https://i.ytimg.com/vi/G_a5C_smasw/mqdefault.jpg",
-    "time": "2026-10-22T18:12:23+00:00",
-    "short": false
-   },
-   {
-    "title": "Is This The Best Directed Movie Ever?",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=_t76HmE8ib4",
-    "thumb": "https://i.ytimg.com/vi/_t76HmE8ib4/mqdefault.jpg",
-    "time": "2026-09-15T13:11:42+00:00",
-    "short": false
-   },
-   {
-    "title": "Come See My New Film In Theaters",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=uuMbBWR-2Xg",
-    "thumb": "https://i.ytimg.com/vi/uuMbBWR-2Xg/mqdefault.jpg",
-    "time": "2026-09-04T22:53:08+00:00",
-    "short": false
-   },
-   {
-    "title": "We Need To Talk About How Weird HOOK Is",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=hXAWl_Ar6xA",
-    "thumb": "https://i.ytimg.com/vi/hXAWl_Ar6xA/mqdefault.jpg",
-    "time": "2026-08-06T14:38:38+00:00",
-    "short": false
-   },
-   {
-    "title": "Can video games be cinema? #videogames #movie #thelastofus #deathstranding",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/shorts/-GWrCLXTuwM",
-    "thumb": "https://i.ytimg.com/vi/-GWrCLXTuwM/mqdefault.jpg",
-    "time": "2026-07-01T16:17:55+00:00",
-    "short": true
-   },
-   {
-    "title": "The Muppets and Tron transformed legacy sequels #movie #moviefacts #muppets #patrickhwillems",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/shorts/YxTEPXuVdPY",
-    "thumb": "https://i.ytimg.com/vi/YxTEPXuVdPY/mqdefault.jpg",
-    "time": "2026-06-24T16:02:36+00:00",
-    "short": true
-   }
-  ]
+  "channels": [],
+  "videos": []
  }
 }
