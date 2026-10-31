@@ -144,7 +144,7 @@ window.DASH_DATA_STATUS = (() => {
     bday.type = 'date';
     bday.value = store.get('theme.birthday') || '';
     bday.onchange = () => { lsSet('theme.birthday', bday.value || null); if (window.DASH_THEMES) DASH_THEMES.refresh(); };
-    row('Mijn verjaardag', 'Voor het verjaardagsthema met leeftijd; alleen in deze browser', null, bday);
+    row('Mijn verjaardag', 'Voor het verjaardagsthema met leeftijd; komt uit het archief (config.json → persoonlijk), hier alleen voor deze browser aan te passen', null, bday);
     const C = window.DASHBOARD_CONFIG || {};
     const pub = (v) => (v && !/^[A-Z_]+$|PLAK/.test(v) ? ['in config.js', 'ok'] : ['niet ingevuld', 'bad']);
     row('Spotify client-ID', 'Openbaar, staat in config.js', pub(C.spotifyClientId));

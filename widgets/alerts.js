@@ -161,10 +161,12 @@ DASH.widget('w-alerts', (card, body, guard) => {
       if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
       phone = data.items || [];
       helperError = null;
+      DASH.store.set('helper.seen', true);
     } catch (e) {
       phone = null;
-      // Op de telefoon of een andere pc is er geen hulpprogramma: daar niets over zeggen
-      helperError = window.matchMedia('(max-width: 700px)').matches || DASH.DEMO ? null
+      // Op de telefoon of een andere pc (laptop na inloggen met de bundel) is er geen hulpprogramma: daar niets over
+      // zeggen. Alleen waar het eerder wél draaide (helper.seen) is "start het hulpprogramma" nuttig.
+      helperError = window.matchMedia('(max-width: 700px)').matches || DASH.DEMO || !DASH.store.get('helper.seen') ? null
         : e.name === 'AbortError' || e instanceof TypeError ? 'Telefoonmeldingen: start het hulpprogramma op deze pc (README, stap 9).' : e.message;
     }
     render();

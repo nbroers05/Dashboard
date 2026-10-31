@@ -30,6 +30,21 @@ window.DASH_THEMES = (() => {
   const FILES = ['standaard', 'herfst', 'winter', 'lente', 'zomer', 'halloween', 'sinterklaas', 'kerst', 'oudennieuw',
     'valentijn', 'pasen', 'koningsdag', 'bevrijdingsdag', 'verjaardag', 'f1', 'tentamen'];
 
+  // ---------- Eigen verjaardag uit het privé archief (config.json → persoonlijk.verjaardag, sinds 0.49.0) ----------
+  // Met het archief-token (ook na inloggen met de bundel, vault.js) klopt hij zo op elke computer. datarepo.js laadt
+  // pas met het volledige dashboard: daarom bij dash:data-token en een paar seconden na het laden.
+  async function personal() {
+    const D = window.DASH_DATA;
+    if (DASH.DEMO || !D || !D.token()) return;
+    try {
+      const f = await D.read('config.json');
+      const b = f && (JSON.parse(f.text).persoonlijk || {}).verjaardag;
+      if (b && /^\d{4}-\d{2}-\d{2}$/.test(b) && b !== store.get('theme.birthday')) { store.set('theme.birthday', b); refresh(); }
+    } catch (e) { console.warn('[themes] verjaardag uit archief', e); }
+  }
+  window.addEventListener('dash:data-token', personal);
+  window.addEventListener('load', () => setTimeout(personal, 4000));
+
   // ---------- Eigen verjaardag eenmalig instellen via de link (staat niet in de code: de repo is openbaar) ----------
   const setB = params.get('mijnverjaardag');
   if (setB && /^\d{4}-\d{2}-\d{2}$/.test(setB)) {
