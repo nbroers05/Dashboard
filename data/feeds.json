@@ -4,6 +4,24 @@
    "name": "NOS",
    "items": [
     {
+     "title": "Premier Abiy van Ethiopië stuurt ministers naar militaire training",
+     "link": "https://nos.nl/l/2637522",
+     "time": "2026-10-31T22:14:40+01:00",
+     "img": "https://images.cdn.nos.nl/6/7/J/s/1/2/8SqnTgQhEnizZvceSKDxi3cyXkqyFFC6dQLTQWU/890x1333x2192x1233-1024x576.webp"
+    },
+    {
+     "title": "Sovjet Ereveld in Leusden opnieuw beklad, leuzen tegen communisten",
+     "link": "https://nos.nl/l/2637514",
+     "time": "2026-10-31T21:33:34+01:00",
+     "img": "https://images.cdn.nos.nl/6/6/m/7/S/y/8kvgryJmfgCpkJVwdxTDMfpmDjtCbzifzzgGWQi/0x96x1024x576-1024x576.webp"
+    },
+    {
+     "title": "Vooral minderjarigen aangehouden in Den Haag, grote incidenten uitgebleven",
+     "link": "https://nos.nl/l/2637512",
+     "time": "2026-10-31T21:27:31+01:00",
+     "img": "https://images.cdn.nos.nl/4/G/K/7/5/6/SFHFC3xTAV94WgfFbLE5yuVkupKLS6a1gfNAsGr/3x541x3728x2097-1024x576.webp"
+    },
+    {
      "title": "Rood of toch blauw? Republikeinen doen aan koorddansen om kiezers te behouden",
      "link": "https://nos.nl/l/2637494",
      "time": "2026-10-31T20:00:01+01:00",
@@ -46,7 +64,7 @@
      "img": "https://images.cdn.nos.nl/3/7/e/Y/V/v/tb93ZrR4QcHRp88PaHSUgXCD7cpHog2DLFv2UfW/8x76x3984x2241-1024x576.webp"
     },
     {
-     "title": "Tien aanhoudingen in Den Haag, maar geen grote demonstraties in steden",
+     "title": "Tientallen aanhoudingen in Den Haag, geen grote demonstraties in Nederland",
      "link": "https://nos.nl/l/2637449",
      "time": "2026-10-31T15:43:07+01:00",
      "img": "https://images.cdn.nos.nl/5/5/d/g/e/H/krkMit6NB1zs4fr3nKMdg6gYsVUgvNqTFPcb5fR/279x611x3008x1692-1024x576.webp"
@@ -58,7 +76,7 @@
      "img": "https://images.cdn.nos.nl/7/C/D/k/V/D/VM7cpNjztsgpMcNZ7mVRPXqXnZcxr2LV99BazJh/8x212x3984x2241-1024x576.webp"
     },
     {
-     "title": "Ongekende situatie Polen: president duwt zichzelf naar binnen bij Constitutioneel Hof",
+     "title": "Vreemde situatie in Polen: president duwt zichzelf naar binnen bij Constitutioneel Hof",
      "link": "https://nos.nl/l/2637433",
      "time": "2026-10-31T14:02:30+01:00",
      "img": "https://images.cdn.nos.nl/5/A/z/F/x/M/WAapJYKkJdwCwgiP5dTWjNRM5svdqksgu6iDVoR/0x0x1920x1080-1024x576.webp"
@@ -74,24 +92,6 @@
      "link": "https://nos.nl/l/2637427",
      "time": "2026-10-31T12:47:15+01:00",
      "img": "https://images.cdn.nos.nl/5/9/u/H/2/4/UYACFT1Cfejd9G3HB6LBVa3PfDa8jWnjWkJiUcD/8x212x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Verstandelijk beperkte man ontvoerd en mishandeld na afspraak op datingapp",
-     "link": "https://nos.nl/l/2637423",
-     "time": "2026-10-31T12:00:20+01:00",
-     "img": "https://images.cdn.nos.nl/1/5/N/5/G/v/iV6Cx8MDeSj65Dr4jBz4886PfzpiXeopEuWCDZ3/0x0x1280x720-1024x576.webp"
-    },
-    {
-     "title": "Politie veegt centrum Zoetermeer schoon, tien mensen opgepakt",
-     "link": "https://nos.nl/l/2637421",
-     "time": "2026-10-31T11:53:34+01:00",
-     "img": "https://images.cdn.nos.nl/8/8/W/s/Q/1/QmWEKHp619DJ9LX9NhActLpHARBYSnbXqzAsST5/8x212x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Geëvacueerde Oekraïners uit Olesjky via omweg weer terug in Oekraïne",
-     "link": "https://nos.nl/l/2637420",
-     "time": "2026-10-31T11:39:30+01:00",
-     "img": "https://images.cdn.nos.nl/4/4/y/y/F/6/TW8JQN6CpSrhpqteAnmmoBwhy3AVma35cDFHPir/8x59x3984x2241-1024x576.webp"
     }
    ]
   },
@@ -99,10 +99,52 @@
    "name": "NOS Sport",
    "items": [
     {
+     "title": "Cambuur-Go Ahead bij 4-0 gestaakt na vuurwerk, duel wordt niet uitgespeeld",
+     "link": "https://nos.nl/l/2637536",
+     "time": "2026-10-31T23:48:55+01:00",
+     "img": "https://images.cdn.nos.nl/1/8/b/3/F/8/QUjVrQw7LN9H2gwHoYp6L71jnRvNWMBvr6BoFdn/1161x909x2688x1512-1024x576.webp"
+    },
+    {
+     "title": "Hamilton pakt in Mexico eerste pole voor Ferrari, Antonelli vijfde",
+     "link": "https://nos.nl/l/2637533",
+     "time": "2026-10-31T23:36:18+01:00",
+     "img": "https://images.cdn.nos.nl/1/F/1/y/A/y/sS5xQwUKqz1z6zwqZBpDZtDQpy7CGtieawLRRGX/3x224x3504x1971-1024x576.webp"
+    },
+    {
+     "title": "Barcelona wint, met eerste basisplaats De Jong sinds februari, dik van Álaves",
+     "link": "https://nos.nl/l/2637528",
+     "time": "2026-10-31T23:07:49+01:00",
+     "img": "https://images.cdn.nos.nl/2/4/K/A/q/C/m9ZfSxsqs1FKEML5JVZ8YXmoim5NMEVouYjiH8s/769x116x1584x891-1024x576.webp"
+    },
+    {
+     "title": "Ajax verlost zich van AZ-syndroom dankzij vroege treffer Arokodare",
+     "link": "https://nos.nl/l/2637526",
+     "time": "2026-10-31T22:59:06+01:00",
+     "img": "https://images.cdn.nos.nl/6/C/A/P/j/a/GRXRD3w3wJ57ryiDz34CLutmrzNayUkCoZPagM4/1044x185x2016x1134-1024x576.webp"
+    },
+    {
+     "title": "Malen weer trefzeker voor Roma, niemand scoorde in 2026 zo vaak in de grote competities",
+     "link": "https://nos.nl/l/2637525",
+     "time": "2026-10-31T22:46:19+01:00",
+     "img": "https://images.cdn.nos.nl/8/5/o/R/F/o/DTRuJ1Xy66qjghxxB3siC4Vn62GR6ju3qLZXt5B/1x114x2784x1566-1024x576.webp"
+    },
+    {
+     "title": "Zilver voor BMX'ster Laura Smulders bij wereldbeker in Florida",
+     "link": "https://nos.nl/l/2637520",
+     "time": "2026-10-31T22:00:25+01:00",
+     "img": "https://images.cdn.nos.nl/8/V/G/X/G/Z/TJQpbtv6fmDspgnsc9ShNCm4N53tAmsfEUtFKf/84x128x3120x1755-1024x576.webp"
+    },
+    {
+     "title": "Klassieker tussen Bayern en Dortmund eindigt gelijk, goudenbalwinnaar Kane mist penalty",
+     "link": "https://nos.nl/l/2637510",
+     "time": "2026-10-31T21:14:35+01:00",
+     "img": "https://images.cdn.nos.nl/3/G/H/2/A/k/BzxS12XAnAC5GYrLH7pQR4HhGdGrKoYrPTFAbiZ/503x96x2144x1206-1024x576.webp"
+    },
+    {
      "title": "Heerenveen heeft aan één treffer genoeg om NEC te kloppen",
      "link": "https://nos.nl/l/2637507",
      "time": "2026-10-31T20:57:59+01:00",
-     "img": null
+     "img": "https://images.cdn.nos.nl/6/D/B/c/D/F/TUSTa9hD2vG54fuAwadnWeEWW2WWkrYVyweTjvo/4x2x3488x1962-1024x576.webp"
     },
     {
      "title": "Parabaanwielrenner Buur pakt tweede goud op WK in Apeldoorn",
@@ -117,7 +159,7 @@
      "img": "https://images.cdn.nos.nl/2/4/r/t/B/v/C1Yya4tbRocVup4oN4ZJsmibDzi4Z22FVE2ENW2/765x149x2512x1413-1024x576.webp"
     },
     {
-     "title": "Van 't Wout rijdt Boer onderuit in finale, Velzeboer verrassend uitgeschakeld",
+     "title": "Van 't Wout rijdt Boer onderuit in finale, maar herstelt zich later met goud in Canada",
      "link": "https://nos.nl/l/2637495",
      "time": "2026-10-31T20:01:52+01:00",
      "img": "https://images.cdn.nos.nl/4/D/4/p/h/S/9Ta3JA8WhkbsD2fkKQ4vKXPrjQJav2GZMK6b3N7/198x82x3552x1998-1024x576.webp"
@@ -145,54 +187,54 @@
      "link": "https://nos.nl/l/2637460",
      "time": "2026-10-31T16:35:36+01:00",
      "img": "https://images.cdn.nos.nl/3/2/n/5/j/b/hb7XEohka3uVT6gq7XLc77nNZY5KYyx5BNAsj3Q/651x480x3344x1881-1024x576.webp"
-    },
-    {
-     "title": "Pogacar brak niet één, maar drie wervels bij val in Ronde van Spanje",
-     "link": "https://nos.nl/l/2637458",
-     "time": "2026-10-31T16:26:31+01:00",
-     "img": "https://images.cdn.nos.nl/7/F/y/9/Z/K/MiAMnVAqK3BcuKsbDSdXWQYRz2AbJLom35BE56E/4x305x3536x1989-1024x576.webp"
-    },
-    {
-     "title": "Geen Ocon in restant GP Mexico-Stad bij F1-team Haas, Hirakawa zijn vervanger",
-     "link": "https://nos.nl/l/2637455",
-     "time": "2026-10-31T16:07:39+01:00",
-     "img": "https://images.cdn.nos.nl/1/b/z/w/j/5/QWEE4mEPxEsQ7k18GtH44q7Qc32omyR6FWdvGK/1623x239x1728x972-1024x576.webp"
-    },
-    {
-     "title": "Manchester United verliest ook van Chelsea, City voor tweede keer op rij onderuit",
-     "link": "https://nos.nl/l/2637443",
-     "time": "2026-10-31T15:30:14+01:00",
-     "img": "https://images.cdn.nos.nl/8/A/6/R/F/P/HKoL7Qq6cqBwYy8AqPZyFW9yFM1ehrJRXaUvj19/133x1x1712x963-1024x576.webp"
-    },
-    {
-     "title": "Groenewoud wint 3.000 meter vol goede tijden, Kok begint seizoen met snelste tijd 500 meter",
-     "link": "https://nos.nl/l/2637440",
-     "time": "2026-10-31T15:11:16+01:00",
-     "img": "https://images.cdn.nos.nl/1/G/c/p/z/h/mMpExSyXQbTUjauYnQe5EGnXZogr6PWadRnNeRB/0x0x1280x720-1024x576.webp"
-    },
-    {
-     "title": "MotoGP-coureur Martín mist ook GP Maleisië: 'Wereldtitel is voor mij verloren'",
-     "link": "https://nos.nl/l/2637416",
-     "time": "2026-10-31T11:09:34+01:00",
-     "img": "https://images.cdn.nos.nl/4/8/k/M/4/W/fh7azHtfiTAM62JbQEgHTt41JWyFPBWy3PXiVQN/8x284x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Seedorf pakt eerste zege met Corinthians en doet goede zaken in strijd tegen degradatie",
-     "link": "https://nos.nl/l/2637413",
-     "time": "2026-10-31T10:26:37+01:00",
-     "img": "https://images.cdn.nos.nl/2/9/g/s/o/Y/QbPTj89DovoZCmcXMNtt4SrP9GdAJzv3FaCsEsr/563x166x2432x1368-1024x576.webp"
-    },
-    {
-     "title": "Amrabat hoopt 'grote broer' te zijn voor ploeggenoten bij Ajax: 'Ik wil kampioen worden'",
-     "link": "https://nos.nl/l/2637400",
-     "time": "2026-10-31T06:00:02+01:00",
-     "img": "https://images.cdn.nos.nl/4/F/C/n/a/b/aC38csYUZfLSGVSws8AVJnseK3JWoBhRToJAJV9/1183x4x2352x1323-1024x576.webp"
     }
    ]
   },
   {
    "name": "NU.nl",
    "items": [
+    {
+     "title": "Premier Ethiopië laat ministers militaire training volgen: 'Fysiek fit, moreel sterk'",
+     "link": "https://www.nu.nl/buitenland/6415083/premier-ethiopie-laat-ministers-militaire-training-volgen-fysiek-fit-moreel-sterk.html",
+     "time": "2026-10-31T23:36:44+01:00",
+     "img": "https://images.nu.nl/m/rmhxn67a2qw4_sqr256/384/0/3072/3072/premier-ethiopie-laat-ministers-militaire-training-volgen-fysiek-fit-moreel-sterk.jpg"
+    },
+    {
+     "title": "Cambuur-Go Ahead gestaakt na vuurwerkincidenten, spelers willen verder",
+     "link": "https://www.nu.nl/voetbal/6415087/cambuur-go-ahead-gestaakt-na-vuurwerkincidenten-spelers-willen-verder.html",
+     "time": "2026-10-31T23:22:32+01:00",
+     "img": "https://images.nu.nl/m/kfbxyb4awhk7_sqr256/2033/1134/2749/2749/cambuur-go-ahead-gestaakt-na-vuurwerkincidenten-spelers-willen-verder.jpg"
+    },
+    {
+     "title": "Verstappen start GP Mexico als vijfde na straf, Antonelli begint titelrace als vierde",
+     "link": "https://www.nu.nl/formule-1/6415086/verstappen-start-gp-mexico-als-vijfde-na-straf-antonelli-begint-titelrace-als-vierde.html",
+     "time": "2026-10-31T23:12:01+01:00",
+     "img": "https://images.nu.nl/m/wi9xpo8apwzb_sqr256/805/0/3937/3937/verstappen-start-gp-mexico-als-vijfde-na-straf-antonelli-begint-titelrace-als-vierde.jpg"
+    },
+    {
+     "title": "Ajax wint na ruim vier jaar weer van AZ en doet goede zaken in Eredivisie",
+     "link": "https://www.nu.nl/voetbal/6415078/ajax-wint-na-ruim-vier-jaar-weer-van-az-en-doet-goede-zaken-in-eredivisie.html",
+     "time": "2026-10-31T22:55:55+01:00",
+     "img": "https://images.nu.nl/m/8hlxo7ma464s_sqr256/535/0/2854/2854/ajax-wint-na-ruim-vier-jaar-weer-van-az-en-doet-goede-zaken-in-eredivisie.jpg"
+    },
+    {
+     "title": "Ambassade VS waarschuwt Rusland voor terroristische aanslag op Moskou",
+     "link": "https://www.nu.nl/buitenland/6415080/ambassade-vs-waarschuwt-rusland-voor-terroristische-aanslag-op-moskou.html",
+     "time": "2026-10-31T22:37:04+01:00",
+     "img": "https://images.nu.nl/m/94ixbnzak4zg_sqr256/736/0/1890/1890/ambassade-vs-waarschuwt-rusland-voor-terroristische-aanslag-op-moskou.jpg"
+    },
+    {
+     "title": "Sovjet-ereveld in Leusden opnieuw beklad met leuzen over communisten",
+     "link": "https://www.nu.nl/binnenland/6415076/sovjet-ereveld-in-leusden-opnieuw-beklad-met-leuzen-over-communisten.html",
+     "time": "2026-10-31T21:35:44+01:00",
+     "img": "https://images.nu.nl/m/qmlxqnkagf9c_sqr256/2/257/1198/1198/sovjet-ereveld-in-leusden-opnieuw-beklad-met-leuzen-over-communisten.jpg"
+    },
+    {
+     "title": "Tientallen aanhoudingen verricht bij onrust in Den Haag, merendeel minderjarig",
+     "link": "https://www.nu.nl/binnenland/6415079/tientallen-aanhoudingen-verricht-bij-onrust-in-den-haag-merendeel-minderjarig.html",
+     "time": "2026-10-31T21:13:08+01:00",
+     "img": "https://images.nu.nl/m/tw5xmlra7iir_sqr256/2630/702/4714/4714/tientallen-aanhoudingen-verricht-bij-onrust-in-den-haag-merendeel-minderjarig.jpg"
+    },
     {
      "title": "PSV scoort zeven keer tegen Willem II en profiteert van misstap Feyenoord",
      "link": "https://www.nu.nl/voetbal/6415075/psv-scoort-zeven-keer-tegen-willem-ii-en-profiteert-van-misstap-feyenoord.html",
@@ -240,48 +282,6 @@
      "link": "https://www.nu.nl/voetbal/6415053/koploper-feyenoord-geeft-zege-op-stug-fortuna-sittard-in-slotfase-uit-handen.html",
      "time": "2026-10-31T18:28:02+01:00",
      "img": "https://images.nu.nl/m/zgnxchxa81fj_sqr256/1003/251/3629/3629/koploper-feyenoord-geeft-zege-op-stug-fortuna-sittard-in-slotfase-uit-handen.jpg"
-    },
-    {
-     "title": "Klaver (PRO): 'Politieke wil bij kabinet om met ons samen te werken ontbreekt'",
-     "link": "https://www.nu.nl/politiek/6415056/klaver-pro-politieke-wil-bij-kabinet-om-met-ons-samen-te-werken-ontbreekt.html",
-     "time": "2026-10-31T17:52:27+01:00",
-     "img": "https://images.nu.nl/m/ilsx77yaa266_sqr256/1053/0/4000/4000/klaver-pro-politieke-wil-bij-kabinet-om-met-ons-samen-te-werken-ontbreekt.jpg"
-    },
-    {
-     "title": "Live F1 | Verstappen zet vijfde tijd neer in laatste training GP Mexico",
-     "link": "https://www.nu.nl/formule-1/6415057/verstappen-zet-vijfde-tijd-neer-in-laatste-training-gp-mexico.html",
-     "time": "2026-10-31T17:52:22+01:00",
-     "img": "https://images.nu.nl/m/jo8xoxja2vq9_sqr256/563/8/4272/4272/verstappen-zet-vijfde-tijd-neer-in-laatste-training-gp-mexico.jpg"
-    },
-    {
-     "title": "Bijzondere halfaap waarvan uitsterven werd vermoed, blijkt toch nog te bestaan",
-     "link": "https://www.nu.nl/dieren/6415055/bijzondere-halfaap-waarvan-uitsterven-werd-vermoed-blijkt-toch-nog-te-bestaan.html",
-     "time": "2026-10-31T17:45:01+01:00",
-     "img": "https://images.nu.nl/m/2dhxkmtau0qy_sqr256/237/0/3456/3456/bijzondere-halfaap-waarvan-uitsterven-werd-vermoed-blijkt-toch-nog-te-bestaan.jpg"
-    },
-    {
-     "title": "Formule 1-coureur Ocon wordt nog tijdens GP Mexico vervangen door Haas",
-     "link": "https://www.nu.nl/formule-1/6415050/formule-1-coureur-ocon-wordt-nog-tijdens-gp-mexico-vervangen-door-haas.html",
-     "time": "2026-10-31T16:22:14+01:00",
-     "img": "https://images.nu.nl/m/tqxxbsnay4jl_sqr256/1306/0/3799/3799/formule-1-coureur-ocon-wordt-nog-tijdens-gp-mexico-vervangen-door-haas.jpg"
-    },
-    {
-     "title": "Live Eredivisie | Kraker Ajax-AZ, PSV loopt na monsterzege in op koploper Feyenoord",
-     "link": "https://www.nu.nl/voetbal/6415047/kraker-ajax-az-psv-loopt-na-monsterzege-in-op-koploper-feyenoord.html",
-     "time": "2026-10-31T15:55:44+01:00",
-     "img": "https://images.nu.nl/m/pfjxt5ka33lh_sqr256/726/0/2362/2362/kraker-ajax-az-psv-loopt-na-monsterzege-in-op-koploper-feyenoord.jpg"
-    },
-    {
-     "title": "Manchester United en Carrick dieper in de problemen na nederlaag bij Chelsea",
-     "link": "https://www.nu.nl/voetbal/6415041/manchester-united-en-carrick-dieper-in-de-problemen-na-nederlaag-bij-chelsea.html",
-     "time": "2026-10-31T15:35:46+01:00",
-     "img": "https://images.nu.nl/m/853xy2raxwon_sqr256/396/0/1452/1452/manchester-united-en-carrick-dieper-in-de-problemen-na-nederlaag-bij-chelsea.jpg"
-    },
-    {
-     "title": "Brit die 28 jaar rond de wereld wandelde bijna thuis: 'Ken maatschappij niet meer'",
-     "link": "https://www.nu.nl/opmerkelijk/6415042/brit-die-28-jaar-rond-de-wereld-wandelde-bijna-thuis-ken-maatschappij-niet-meer.html",
-     "time": "2026-10-31T15:28:54+01:00",
-     "img": "https://images.nu.nl/m/ccox9jaaa9nr_sqr256/931/0/3333/3333/brit-die-28-jaar-rond-de-wereld-wandelde-bijna-thuis-ken-maatschappij-niet-meer.jpg"
     }
    ]
   }
