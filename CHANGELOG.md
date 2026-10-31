@@ -10,6 +10,7 @@ Onder de lijst staat per ronde de uitgebreide toelichting zoals die toen geschre
 
 | Versie | Wat |
 |---|---|
+| 0.48.0 | Eén inlog, fase 2: Google (agenda, mail, gezondheid) en Spotify kunnen mee in de bundel en vernieuwen zichzelf, zonder hulpprogramma en zonder server. Spotify koppel je één keer op 127.0.0.1:8765/koppel met je Client Secret (README stap 13). Maak daarna de bundel opnieuw. |
 | 0.47.0 | Eén inlog, fase 1: inlogscherm met je eigen wachtwoord als deze browser nog niks heeft. Ontgrendelt een versleutelde bundel (vault.json) met voorlopig het archief-token en de Twelve Data-key; Spotify en Google volgen in fase 2. 'Deze computer onthouden' uit = alles weg als je het tabblad sluit. Uitlogknop in de topbalk (alleen na inloggen met het wachtwoord) wist alles. Bundel maken in Instellingen › Inloggen (alleen op je pc, via het hulpprogramma). |
 | 0.46.4 | Episodes Left: JoJo (STEEL BALL RUN) kreeg geen cover, omdat AniList titels met een krul-apostrof (’) niet vindt; die wordt nu als gewone ' gezocht. Covers worden één keer opnieuw opgehaald. Ook in het archief krijgt JoJo nu weer het aantal uitgezonden afleveringen. De knop 'Open LiveChart' (zonder gegevens) wijst naar het nieuwe adres van My List. |
 

@@ -148,20 +148,34 @@
       return null;
     }
   }
+  // Zonder hulpprogramma (laptop, andere pc): de blijvende sleutels uit de inlogbundel (vault.js, `google.refresh`).
+  // Google staat het vernieuwen vanuit de browser toe (CORS), dus geen server nodig.
+  async function fromBundle(which) {
+    const g = store.get('google.refresh');
+    if (DEMO || !g || !g[which]) return null;
+    try {
+      const res = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ client_id: g.client_id, client_secret: g.client_secret, refresh_token: g[which], grant_type: 'refresh_token' }),
+      });
+      return res.ok ? await res.json() : null;
+    } catch { return null; }
+  }
   let refreshing = null;
   function refreshFromHelper() {
     if (refreshing) return refreshing;
     refreshing = (async () => {
       let changed = false;
       if (!token()) {
-        const t = await fromHelper('main');
+        const t = await fromHelper('main') || await fromBundle('main');
         if (t && t.scope.includes(SCOPE)) {
           store.set(KEY.token, { access: t.access_token, expires: Date.now() + t.expires_in * 1000, gmail: t.scope.includes(GMAIL), helper: true });
           changed = true;
         }
       }
       if (!healthToken()) {
-        const t = await fromHelper('health');
+        const t = await fromHelper('health') || await fromBundle('health');
         if (t && HEALTH.every((x) => t.scope.includes(x))) {
           store.set(KEY.healthToken, { access: t.access_token, expires: Date.now() + t.expires_in * 1000, granted: true, helper: true });
           changed = true;

@@ -7,10 +7,12 @@
 //   tabblad dichtgaat, ook in bestanden die zelf localStorage gebruiken.
 // - Inlogscherm als deze browser nog geen sleutels heeft en er een bundel is. "Zonder inloggen" = dashboard zonder persoonlijke vakken.
 // - Uitloggen (knop in de topbalk, alleen in browsers die via de bundel zijn ingelogd) wist alle opslag van het dashboard.
-// - Bundel maken: Instellingen › Inloggen, alleen waar het hulpprogramma draait (dat schrijft vault.json en pusht hem).
+// - Bundel maken: Instellingen › Inloggen, alleen waar het hulpprogramma draait (dat levert de blijvende Google- en Spotify-
+//   sleutels via /vault/keys, en schrijft vault.json en pusht hem). Sinds 0.48.0 vernieuwen Google en Spotify zichzelf.
 window.DASH_VAULT = (() => {
   const ITER = 600000;
-  const KEYS = ['data.token', 'feeds.twelvedata'];   // wat er in de bundel gaat (Spotify en Google volgen in fase 2)
+  const KEYS = ['data.token', 'feeds.twelvedata'];   // uit deze browser
+  const HELPER_KEYS = ['google.refresh', 'spotify.tokens'];   // uit het hulpprogramma (blijvende sleutels, zie hieronder)
   const FLAG = 'vault.session';                      // in sessionStorage: dit tabblad is niet onthouden
   const MARK = 'vault.unlocked';                     // in de gekozen opslag: ingelogd via de bundel
   const SKIP = 'vault.skip';                         // in sessionStorage: "zonder inloggen" gekozen
@@ -85,7 +87,7 @@ window.DASH_VAULT = (() => {
   }
 
   const unlocked = () => has(MARK);
-  const hasKeys = () => KEYS.some(has);
+  const hasKeys = () => [...KEYS, ...HELPER_KEYS].some(has);
 
   // ---------- Inlogscherm ----------
   function el(tag, cls, text) {
@@ -159,8 +161,21 @@ window.DASH_VAULT = (() => {
   async function helperUp() {
     try {
       const r = await fetch(HELPER, { cache: 'no-store' });
-      return r.ok ? r.json() : 'oud';
+      if (!r.ok) return 'oud';
+      const info = await r.json();
+      const k = await fetch(`${HELPER}/keys`, { cache: 'no-store' });
+      if (!k.ok) return 'oud';
+      return { ...info, keys: await k.json() };
     } catch { return null; }
+  }
+
+  // Blijvende sleutels van het hulpprogramma als opslagwaarden: Google (calendar.js fromBundle) en Spotify (spotify.js,
+  // met `secret`: die sleutel vervalt niet bij gebruik, anders dan die van de gewone PKCE-inlog)
+  function helperValues(keys) {
+    const out = {};
+    if (keys.google) out['google.refresh'] = JSON.stringify(keys.google);
+    if (keys.spotify) out['spotify.tokens'] = JSON.stringify({ access: '', refresh: keys.spotify.refresh, expires: 0, scope: keys.spotify.scope, secret: keys.spotify.client_secret });
+    return out;
   }
 
   function settingsTab(root) {
@@ -169,6 +184,8 @@ window.DASH_VAULT = (() => {
     const list = h('ul', 'vault-list');
     for (const k of KEYS) list.append(h('li', has(k) ? 'ok' : 'nee', `${k}: ${has(k) ? 'staat in deze browser' : 'ontbreekt hier'}`));
     root.append(list);
+    const helperList = h('ul', 'vault-list');
+    root.append(helperList);
     const status = h('p', 'w-note', 'Hulpprogramma zoeken…');
     root.append(status);
     helperUp().then((info) => {
@@ -180,6 +197,11 @@ window.DASH_VAULT = (() => {
         status.textContent = 'Het hulpprogramma draait, maar is een oude versie. Dubbelklik op start.bat in dashboard/helper en open dit tabje opnieuw.';
         return;
       }
+      const extra = helperValues(info.keys);
+      helperList.append(
+        h('li', extra['google.refresh'] ? 'ok' : 'nee', `Google (agenda, mail, gezondheid): ${extra['google.refresh'] ? 'gekoppeld in het hulpprogramma' : 'nog niet gekoppeld (127.0.0.1:8765/koppel)'}`),
+        h('li', extra['spotify.tokens'] ? 'ok' : 'nee', `Spotify: ${extra['spotify.tokens'] ? 'gekoppeld in het hulpprogramma' : 'nog niet gekoppeld (127.0.0.1:8765/koppel, README stap 13)'}`),
+      );
       status.textContent = info.exists ? `Er staat al een bundel online (gemaakt ${info.made || 'onbekend'}). Een nieuwe vervangt hem.` : 'Er staat nog geen bundel online.';
       const pw1 = h('input', 'vault-input');
       const pw2 = h('input', 'vault-input');
@@ -192,7 +214,8 @@ window.DASH_VAULT = (() => {
         if (pw1.value.length < 12) { out.textContent = 'Te kort: minstens 12 tekens (liever 4+ woorden).'; return; }
         if (pw1.value !== pw2.value) { out.textContent = 'De wachtwoorden zijn niet gelijk.'; return; }
         const keys = {};
-        for (const k of KEYS) { const v = store().getItem(k); if (v != null && k !== MARK) keys[k] = v; }
+        for (const k of KEYS) { const v = store().getItem(k); if (v != null) keys[k] = v; }
+        Object.assign(keys, extra);
         if (!Object.keys(keys).length) { out.textContent = 'Er staan geen sleutels in deze browser.'; return; }
         go.disabled = true;
         out.textContent = 'Versleutelen…';
@@ -222,5 +245,5 @@ window.DASH_VAULT = (() => {
     fetchBox().then((box) => { if (box) showLogin(); }).catch(() => {});
   });
 
-  return { KEYS, unlock, logout, unlocked, seal, open };
+  return { KEYS, HELPER_KEYS, unlock, logout, unlocked, seal, open };
 })();

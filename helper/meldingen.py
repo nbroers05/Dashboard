@@ -24,6 +24,7 @@ from winrt.windows.ui.notifications import KnownNotificationBindings, Notificati
 from winrt.windows.ui.notifications.management import UserNotificationListener, UserNotificationListenerAccessStatus
 
 import google_token
+import spotify_token
 import vault
 import wensen
 
@@ -180,7 +181,16 @@ a.k{{display:inline-block;margin:6px 8px 6px 0;padding:12px 20px;border-radius:9
             f"<a class='k' href='/koppel/{w}'>{'Opnieuw koppelen' if st[w] else 'Koppelen'}</a></p>"
             for w in google_token.SCOPES
         )
-        self.pagina(200, "Google koppelen", "<p>Koppel allebei. Daarna haalt het dashboard zelf elk uur een nieuwe toegang op.</p>" + regels)
+        sp = spotify_token.status()
+        uri = spotify_token.redirect_uri(PORT)
+        spotify = ("<h2>Spotify (voor de inlogbundel)</h2>"
+                   "<p>Alleen nodig voor <b>Alles met één inlog</b> (README stap 13). Zet eerst <code>" + uri + "</code> als Redirect URI in je Spotify-app.</p>"
+                   "<form method='post' action='/spotify-secret'><p>Client Secret: " + ("<span class=ok>staat erin ✓</span>" if sp["secret"] else "<span class=nee>nog niet</span>") + "<br>"
+                   "<input name='secret' type='password' autocomplete='off' placeholder='plak hier de Client Secret' style='width:300px;padding:8px;border-radius:8px;border:1px solid #444;background:#222;color:#eee'> "
+                   "<button style='padding:8px 14px;border-radius:999px;border:0'>Bewaren</button></p></form>"
+                   + (f"<p>Spotify: {'<span class=ok>gekoppeld ✓</span>' if sp['linked'] else '<span class=nee>nog niet gekoppeld</span>'}<br>"
+                      f"<a class='k' href='/koppel/spotify'>{'Opnieuw koppelen' if sp['linked'] else 'Koppelen'}</a></p>" if sp["secret"] else ""))
+        self.pagina(200, "Google koppelen", "<p>Koppel allebei. Daarna haalt het dashboard zelf elk uur een nieuwe toegang op.</p>" + regels + spotify)
 
     def do_GET(self):
         pad, _, query = self.path.partition("?")
@@ -189,6 +199,24 @@ a.k{{display:inline-block;margin:6px 8px 6px 0;padding:12px 20px;border-radius:9
             return self.koppel()
         if pad == "/vault" and self.headers.get("Origin") in TOEGESTAAN:
             return self.antwoord(200, vault.status())
+        if pad == "/koppel/spotify":
+            try:
+                url = spotify_token.login_url(PORT)
+            except spotify_token.TokenError as e:
+                return self.pagina(400, "Koppelen lukt niet", f"<p class='nee'>{html.escape(str(e))}</p><p><a class='k' href='/koppel'>Terug</a></p>")
+            self.send_response(302)
+            self.send_header("Location", url)
+            self.end_headers()
+            return
+        if pad == "/spotify-oauth":
+            try:
+                spotify_token.callback(params, PORT)
+            except spotify_token.TokenError as e:
+                return self.pagina(400, "Koppelen lukt niet", f"<p class='nee'>{html.escape(str(e))}</p><p><a class='k' href='/koppel'>Terug</a></p>")
+            return self.pagina(200, "Spotify gekoppeld ✓", "<p>Maak nu de bundel opnieuw: dashboard → tandwiel → Inloggen.</p><p><a class='k' href='/koppel'>Terug naar koppelen</a></p>")
+        if pad == "/vault/keys" and self.headers.get("Origin") in TOEGESTAAN:
+            # Alleen voor Instellingen › Inloggen: de blijvende sleutels, die daar versleuteld in de bundel gaan
+            return self.antwoord(200, {"google": google_token.bundel(), "spotify": spotify_token.bundel()})
         if pad.startswith("/koppel/"):
             try:
                 url = google_token.login_url(pad.rsplit("/", 1)[1], PORT)
@@ -254,6 +282,20 @@ a.k{{display:inline-block;margin:6px 8px 6px 0;padding:12px 20px;border-radius:9
         self.antwoord(200, {"items": items})
 
     def do_POST(self):
+        # /spotify-secret: formulier op /koppel (alleen vanaf de koppelpagina zelf)
+        if self.path == "/spotify-secret":
+            if self.headers.get("Origin") != f"http://127.0.0.1:{PORT}":
+                return self.antwoord(403, {"error": "niet toegestaan"})
+            lengte = min(int(self.headers.get("Content-Length") or 0), 2000)
+            velden = dict(urllib.parse.parse_qsl(self.rfile.read(lengte).decode("utf-8", "replace")))
+            try:
+                spotify_token.bewaar_secret(velden.get("secret"))
+            except spotify_token.TokenError as e:
+                return self.pagina(400, "Niet bewaard", f"<p class='nee'>{html.escape(str(e))}</p><p><a class='k' href='/koppel'>Terug</a></p>")
+            self.send_response(303)
+            self.send_header("Location", "/koppel")
+            self.end_headers()
+            return
         # /vault: versleutelde inlogbundel van Instellingen › Inloggen opslaan en pushen (vault.py)
         if self.path == "/vault" and self.headers.get("Origin") in TOEGESTAAN:
             try:

@@ -102,10 +102,14 @@
     });
   }
 
-  async function tokenRequest(params) {
+  // secret: alleen bij een inlog uit de bundel (vault.js): die sleutel is gemaakt met de Client Secret en vervalt niet bij gebruik
+  async function tokenRequest(params, secret) {
     const res = await fetch(TOKEN_URL, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        ...(secret ? { Authorization: `Basic ${btoa(`${CLIENT_ID}:${secret}`)}` } : {}),
+      },
       body: new URLSearchParams(params),
     });
     const data = await res.json().catch(() => ({}));
@@ -119,6 +123,7 @@
       refresh: data.refresh_token || old.refresh,
       expires: Date.now() + data.expires_in * 1000,
       scope: data.scope || old.scope || '',
+      ...(secret ? { secret } : {}),
     };
     store.set(KEY.tokens, tokens);
     return tokens;
@@ -129,7 +134,7 @@
     if (!refreshing) {
       const t = store.get(KEY.tokens);
       if (!t || !t.refresh) return Promise.reject(new AuthError('Niet ingelogd.'));
-      refreshing = tokenRequest({ grant_type: 'refresh_token', refresh_token: t.refresh, client_id: CLIENT_ID })
+      refreshing = tokenRequest(t.secret ? { grant_type: 'refresh_token', refresh_token: t.refresh } : { grant_type: 'refresh_token', refresh_token: t.refresh, client_id: CLIENT_ID }, t.secret)
         .finally(() => { refreshing = null; });
     }
     return refreshing;

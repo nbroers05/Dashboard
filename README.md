@@ -202,10 +202,15 @@ Open dan `http://127.0.0.1:8000/` (niet `localhost`, dat telt voor Spotify als a
 Hiermee open je het dashboard op een andere computer (je laptop) met alleen een wachtwoord.
 
 1. Op je eigen pc: zorg dat het hulpprogramma draait (dubbelklik `helper/start.bat`; na een update altijd één keer opnieuw).
-2. Open het dashboard → tandwiel → **Inloggen**. Je ziet welke sleutels in deze browser staan.
-3. Kies een **lange wachtzin** van minstens 4 woorden (iedereen kan de versleutelde bundel downloaden en proberen te raden), typ hem twee keer en klik **Bundel maken en online zetten**. Na een minuut of twee staat hij live.
-4. Op de andere computer: open het dashboard, typ je wachtzin. Vinkje **Deze computer onthouden** alleen op je eigen laptop; zonder vinkje is alles weg zodra je het tabblad sluit.
-5. Verandert er een sleutel, of wil je een ander wachtwoord: stap 2 en 3 opnieuw. Let op: browsers die al ingelogd zijn houden hun sleutels tot je daar uitlogt.
+2. **Spotify, één keer** (anders werkt Spotify niet op de andere computer):
+   1. Ga naar developer.spotify.com/dashboard → app **Dashboard** → **Settings** → **Edit**. Voeg bij **Redirect URIs** toe: `http://127.0.0.1:8765/spotify-oauth` → **Add** → onderaan **Save**.
+   2. Klik in dezelfde Settings op **View client secret** en kopieer hem.
+   3. Open `http://127.0.0.1:8765/koppel`, plak de Client Secret bij Spotify → **Bewaren** → **Koppelen** → bij Spotify **Agree**.
+   Google hoeft niet: dat is al gekoppeld in het hulpprogramma (stap 9).
+3. Open het dashboard → tandwiel → **Inloggen**. Je ziet welke sleutels er mee gaan (alles groen = goed).
+4. Kies een **lange wachtzin** van minstens 4 woorden (iedereen kan de versleutelde bundel downloaden en proberen te raden), typ hem twee keer en klik **Bundel maken en online zetten**. Na een minuut of twee staat hij live.
+5. Op de andere computer: open het dashboard, typ je wachtzin. Vinkje **Deze computer onthouden** alleen op je eigen laptop; zonder vinkje is alles weg zodra je het tabblad sluit.
+6. Verandert er een sleutel, of wil je een ander wachtwoord: stap 3 en 4 opnieuw. Let op: browsers die al ingelogd zijn houden hun sleutels tot je daar uitlogt.
 
 ## Problemen
 

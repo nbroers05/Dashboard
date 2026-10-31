@@ -175,6 +175,19 @@ def access_token(which):
         return hit
 
 
+def bundel():
+    """Wat er van Google in de inlogbundel gaat (vault.js): client + beide blijvende sleutels, of None."""
+    tokens = lees_tokens()
+    try:
+        c = client()
+    except TokenError:
+        return None
+    if not any(tokens.get(w) for w in SCOPES):
+        return None
+    return {"client_id": c["client_id"], "client_secret": c["client_secret"],
+            **{w: tokens[w]["refresh_token"] for w in SCOPES if tokens.get(w)}}
+
+
 def status():
     tokens = lees_tokens()
     try:
