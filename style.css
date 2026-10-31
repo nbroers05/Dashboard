@@ -399,6 +399,7 @@ button { font: inherit; color: inherit; }
 .ds-row.off .ds-dot { color: var(--muted); }
 .ds-name, .ds-when { display: flex; flex-direction: column; min-width: 0; }
 .ds-when { text-align: right; font-size: .88rem; }
+.ds-note { grid-column: 2 / -1; margin: 0; font-size: .78rem; color: var(--muted); overflow-wrap: anywhere; }
 .ds-err { grid-column: 2 / -1; margin: 0; font-size: .78rem; color: #ffb3b3; overflow-wrap: anywhere; }
 .ds-foot { margin: 6px 2px 0; }
 @media (max-width: 700px) { .ds-row { grid-template-columns: 18px minmax(0, 1fr); } .ds-when { grid-column: 2; text-align: left; } }

@@ -64,9 +64,11 @@ window.DASH_DATA_STATUS = (() => {
         name.append(h('b', null, NAMES[key] || key), h('span', 'w-sub', `${WHERE[s.where] || s.where} · ${s.kind === 'hourly' ? 'elk uur' : s.kind === 'daily' ? 'dagelijks' : 'als er iets is'}`));
         const when = h('div', 'ds-when');
         const last = s.last_success || s.last_new_data;
-        when.append(h('span', null, s.skipped && !s.rows ? s.skipped : `laatst: ${ago(last)}`),
+        // Uitgezet met een (lange) reden: "uit" rechts en de reden over de volle breedte eronder, anders drukt hij de naam weg
+        when.append(h('span', null, s.skipped && !s.rows ? 'uit' : `laatst: ${ago(last)}`),
           h('span', 'w-sub', `${(s.rows || 0).toLocaleString('nl-NL')} rijen${s.latest_row ? ` · nieuwste ${new Date(s.latest_row).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })}` : ''}`));
         row.append(h('span', 'ds-dot', bad ? '⚠' : s.skipped && !s.rows ? '○' : '●'), name, when);
+        if (s.skipped && !s.rows) row.append(h('p', 'ds-note', s.skipped));
         if (s.error) row.append(h('p', 'ds-err', s.error));
         list.append(row);
       }
@@ -141,8 +143,10 @@ window.DASH_DATA_STATUS = (() => {
       st.className = `st-state ${ok ? 'ok' : 'off'}`;
     });
     const run = store.get('data.run');
-    row('Archief elk uur starten', 'Dit dashboard start de Action zelf als GitHub hem uitstelt (datarun.js; token met "Actions: Read and write")',
-      !run ? ['nog niet geprobeerd', 'off'] : run.error ? [run.error, 'warn'] : [`laatst gestart ${new Date(run.started).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })}`, 'ok']);
+    const hm = (t) => new Date(t).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
+    row('Archief elk uur starten', 'Elk dashboard met het archief-token start de Action zelf als GitHub hem uitstelt (datarun.js; token met "Actions: Read and write")',
+      !run ? ['nog niet gekeken', 'off'] : run.error ? [run.error, 'warn']
+        : [`laatste run ${hm(run.lastRun)}${run.started ? ` · door dit dashboard gestart ${hm(run.started)}` : ''}`, 'ok']);
     const bday = h('input');
     bday.type = 'date';
     bday.value = store.get('theme.birthday') || '';
@@ -153,7 +157,7 @@ window.DASH_DATA_STATUS = (() => {
     row('Spotify client-ID', 'Openbaar, staat in config.js', pub(C.spotifyClientId));
     row('Google client-ID', 'Openbaar, staat in config.js', pub(C.googleClientId));
     row('TMDB-key', 'Filmposters (alleen-lezen), staat in config.js', pub(C.tmdbApiKey));
-    el.append(h('p', 'th-set-note', 'Sleutels die je hier opslaat blijven alleen in deze browser. Op een andere computer moet je ze opnieuw invullen.'));
+    el.append(h('p', 'th-set-note', 'Sleutels die je hier opslaat blijven alleen in deze browser. Op een andere computer: log in met je wachtwoord (tabje Inloggen), dan komen ze uit de bundel.'));
   }
 
   function open() {
