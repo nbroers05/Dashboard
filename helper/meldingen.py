@@ -24,6 +24,7 @@ from winrt.windows.ui.notifications import KnownNotificationBindings, Notificati
 from winrt.windows.ui.notifications.management import UserNotificationListener, UserNotificationListenerAccessStatus
 
 import google_token
+import vault
 import wensen
 
 # Media (wat er afspeelt): als dat deel niet laadt, werkt de rest gewoon door
@@ -139,6 +140,7 @@ class Handler(BaseHTTPRequestHandler):
             self.send_header("Access-Control-Allow-Origin", origin)
             self.send_header("Vary", "Origin")
             self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+            self.send_header("Access-Control-Allow-Headers", "Content-Type")
             # Chrome vraagt dit als een https-site met je eigen pc praat
             self.send_header("Access-Control-Allow-Private-Network", "true")
 
@@ -185,6 +187,8 @@ a.k{{display:inline-block;margin:6px 8px 6px 0;padding:12px 20px;border-radius:9
         params = dict(urllib.parse.parse_qsl(query))
         if pad == "/koppel":
             return self.koppel()
+        if pad == "/vault" and self.headers.get("Origin") in TOEGESTAAN:
+            return self.antwoord(200, vault.status())
         if pad.startswith("/koppel/"):
             try:
                 url = google_token.login_url(pad.rsplit("/", 1)[1], PORT)
@@ -250,6 +254,15 @@ a.k{{display:inline-block;margin:6px 8px 6px 0;padding:12px 20px;border-radius:9
         self.antwoord(200, {"items": items})
 
     def do_POST(self):
+        # /vault: versleutelde inlogbundel van Instellingen › Inloggen opslaan en pushen (vault.py)
+        if self.path == "/vault" and self.headers.get("Origin") in TOEGESTAAN:
+            try:
+                lengte = int(self.headers.get("Content-Length") or 0)
+                if not 0 < lengte < 200000:
+                    raise vault.VaultError("bundel te groot of leeg")
+                return self.antwoord(200, vault.bewaar(json.loads(self.rfile.read(lengte))))
+            except (vault.VaultError, ValueError) as e:
+                return self.antwoord(400, {"error": str(e)})
         # /media/playpause|next|prev?id=...: media bedienen
         if self.path.startswith("/media/") and self.headers.get("Origin") in TOEGESTAAN and media is not None:
             pad, _, query = self.path.partition("?")

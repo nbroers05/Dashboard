@@ -2605,6 +2605,26 @@ body.agenda-open .tall-rot > .tile { visibility: hidden !important; }
 #offline-note[hidden] { display: none; }
 
 /* Beweging beperken (instelling van het apparaat): alles uit */
+/* ---------- Inloggen (vault.js, sinds 0.47.0) ---------- */
+.panel-dialog.vault-dialog { --c: #0060ff; width: min(420px, calc(100vw - 24px)); height: fit-content; max-height: calc(100dvh - 24px); overflow-y: auto; }
+.vault-form { display: flex; flex-direction: column; gap: 12px; padding: 26px 28px 22px; }
+.vault-form h2 { margin: 0; font-size: 1.25rem; }
+.vault-input { width: 100%; box-sizing: border-box; padding: 11px 14px; border: 1px solid rgba(255, 255, 255, .12); border-radius: 10px; background: #2f2b36; color: var(--text); font: inherit; }
+.vault-input:focus { outline: 2px solid #b48cff; outline-offset: 1px; }
+.vault-check { display: flex; gap: 10px; align-items: flex-start; font-size: .92rem; cursor: pointer; }
+.vault-check input { width: 18px; height: 18px; margin: 1px 0 0; accent-color: #b48cff; flex: none; }
+.vault-go { justify-content: center; color: #fff; padding: 11px 16px; font-size: 1rem; }
+.vault-go:disabled { opacity: .6; cursor: wait; }
+.vault-err { margin: 0; min-height: 1.2em; color: #ff8a5c; font-size: .9rem; }
+.vault-err:empty { display: none; }
+.vault-small { font-size: .82rem; }
+.vault-skip { align-self: flex-start; padding: 0; border: 0; background: none; color: var(--muted); font: inherit; font-size: .85rem; text-decoration: underline; cursor: pointer; }
+.st-body .vault-input { margin: 4px 0; max-width: 340px; display: block; }
+.st-body .w-btn { margin-top: 6px; }
+.vault-list { margin: 10px 0; padding-left: 20px; font-size: .9rem; }
+.vault-list .ok { color: #5bd38a; }
+.vault-list .nee { color: var(--muted); }
+
 @media (prefers-reduced-motion: reduce) {
   :root { transition: none; }
   *, *::before, *::after, ::backdrop { animation: none !important; transition: none !important; }

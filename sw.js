@@ -25,7 +25,7 @@ function cacheable(req) {
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return false;
   const path = url.pathname.slice(new URL(self.registration.scope).pathname.length);
-  if (/^(data|helper)\//.test(path) || url.searchParams.has('code')) return false;
+  if (/^(data|helper)\//.test(path) || path === 'vault.json' || url.searchParams.has('code')) return false;
   return true;
 }
 

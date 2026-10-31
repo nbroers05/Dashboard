@@ -197,6 +197,16 @@ python -m http.server 8000 --bind 127.0.0.1
 
 Open dan `http://127.0.0.1:8000/` (niet `localhost`, dat telt voor Spotify als ander adres).
 
+## 13. Eén inlog op elke computer
+
+Hiermee open je het dashboard op een andere computer (je laptop) met alleen een wachtwoord.
+
+1. Op je eigen pc: zorg dat het hulpprogramma draait (dubbelklik `helper/start.bat`; na een update altijd één keer opnieuw).
+2. Open het dashboard → tandwiel → **Inloggen**. Je ziet welke sleutels in deze browser staan.
+3. Kies een **lange wachtzin** van minstens 4 woorden (iedereen kan de versleutelde bundel downloaden en proberen te raden), typ hem twee keer en klik **Bundel maken en online zetten**. Na een minuut of twee staat hij live.
+4. Op de andere computer: open het dashboard, typ je wachtzin. Vinkje **Deze computer onthouden** alleen op je eigen laptop; zonder vinkje is alles weg zodra je het tabblad sluit.
+5. Verandert er een sleutel, of wil je een ander wachtwoord: stap 2 en 3 opnieuw. Let op: browsers die al ingelogd zijn houden hun sleutels tot je daar uitlogt.
+
 ## Problemen
 
 - **"INVALID_CLIENT: Invalid redirect URI"**: de URL in de adresbalk komt niet exact overeen met een Redirect URI. Let op `/` aan het eind.
