@@ -1,5 +1,5 @@
 {
- "day": "2026-10-30",
+ "day": "2026-10-31",
  "sources": [
   "LantarenVenster"
  ],
@@ -1801,20 +1801,6 @@
    ]
   },
   {
-   "title": "The Meltdown",
-   "key": "themeltdown",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/the-meltdown/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
    "title": "The Preacher Men",
    "key": "thepreachermen",
    "poster": null,
@@ -1852,7 +1838,7 @@
      "url": "https://www.lantarenvenster.nl/programma/the-rocky-horror-picture-show-1975/",
      "day": null,
      "next": null,
-     "until": null
+     "until": "2026-10-31"
     }
    ]
   },
@@ -2006,7 +1992,7 @@
      "url": "https://www.lantarenvenster.nl/programma/wild-horse-nine/",
      "day": null,
      "next": null,
-     "until": null
+     "until": "2026-11-01"
     }
    ]
   },
@@ -2021,6 +2007,20 @@
      "day": null,
      "next": null,
      "until": "2026-10-31"
+    }
+   ]
+  },
+  {
+   "title": "You Can See Everything",
+   "key": "youcanseeeverything",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/you-can-see-everything/",
+     "day": null,
+     "next": null,
+     "until": null
     }
    ]
   },
