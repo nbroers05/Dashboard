@@ -6,6 +6,7 @@ Geeft het dashboard ook nieuwe Google-tokens (google_token.py), zodat "Vernieuwe
 Starten: dubbelklik op start.bat in deze map. Zie README, stap 9.
 
 Houdt ook een logboek bij (meldingen-log.csv, alleen op deze pc): per nieuwe melding de tijd en de app, ZONDER inhoud.
+Het meldingencentrum wordt elke 10 s op de achtergrond gelezen (Windows doet daar zelf ~3 s over); /meldingen antwoordt uit dat geheugen.
 De dagelijkse taak van de privé repo dashboard-data telt daaruit het aantal meldingen per app per uur.
 """
 
@@ -43,65 +44,51 @@ MAX = 30
 TOEGESTAAN = {"https://nbroers05.github.io", "http://127.0.0.1:8000"}
 
 listener = UserNotificationListener.current
-lock = threading.Lock()
+lock = threading.Lock()          # media (wat er afspeelt, bedienen)
+meld_lock = threading.Lock()     # meldingencentrum (los, zodat een trage leesronde de mediaknoppen niet ophoudt)
 
 
 async def lees():
+    """Eén keer het meldingencentrum lezen, voor het dashboard én het logboek. Windows doet hier zelf al ~3 s over
+    (gemeten 31 okt 2026, 30 meldingen), daarom gebeurt dit alleen in ververs_lus() en niet per vraag van het dashboard."""
     if listener.get_access_status() != UserNotificationListenerAccessStatus.ALLOWED:
         status = await listener.request_access_async()
         if status != UserNotificationListenerAccessStatus.ALLOWED:
-            return None
-    items = []
+            return None, []
+    items, log = [], []
     for n in await listener.get_notifications_async(NotificationKinds.TOAST):
         try:
             app = n.app_info.display_info.display_name
         except Exception:
             app = "Onbekend"
+        t = int(n.creation_time.timestamp() * 1000)
+        try:
+            binding = n.notification.visual.get_binding(KnownNotificationBindings.toast_generic)
+            teksten = [x.text for x in binding.get_text_elements()] if binding else []
+        except Exception:
+            teksten = []
+        # Logboek: bij Phone Link is de eerste regel de naam van de app op de telefoon (bijv. "WhatsApp"); de rest is
+        # inhoud en wordt niet bewaard
+        log.append((n.id, t, app, (teksten[0].strip() if app in TELEFOON_APPS and teksten and teksten[0].strip() else app)[:60]))
         if ALLEEN_TELEFOON and app not in TELEFOON_APPS:
             continue
-        binding = n.notification.visual.get_binding(KnownNotificationBindings.toast_generic)
-        teksten = [t.text for t in binding.get_text_elements()] if binding else []
-        teksten = [t for t in teksten if t and t.strip()]
+        teksten = [x for x in teksten if x and x.strip()]
         if not teksten:
             continue
-        items.append({
-            "id": n.id,
-            "app": app,
-            "telefoon": app in TELEFOON_APPS,
-            "title": teksten[0],
-            "body": " · ".join(teksten[1:]),
-            "time": int(n.creation_time.timestamp() * 1000),
-        })
+        items.append({"id": n.id, "app": app, "telefoon": app in TELEFOON_APPS, "title": teksten[0], "body": " · ".join(teksten[1:]), "time": t})
     items.sort(key=lambda x: x["time"], reverse=True)
-    return items[:MAX]
+    return items[:MAX], log
 
 
 # ---------- Logboek: alleen tijd en app per melding, geen inhoud ----------
 LOG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "meldingen-log.csv")
-LOG_ELKE = 30          # seconden
+VERVERS = 10          # seconden tussen twee keer het meldingencentrum lezen (dat duurt zelf al ~3 s)
+cache = {"items": None, "geen_toegang": False, "klaar": threading.Event()}
 gezien = set()         # (tijd, app) die al in het logboek staan, zodat een melding maar één keer telt (ook na herstarten)
 
 
-async def voor_log():
-    if listener.get_access_status() != UserNotificationListenerAccessStatus.ALLOWED:
-        return []
-    out = []
-    for n in await listener.get_notifications_async(NotificationKinds.TOAST):
-        try:
-            win_app = n.app_info.display_info.display_name
-        except Exception:
-            win_app = "Onbekend"
-        app = win_app
-        if win_app in TELEFOON_APPS:
-            # Bij Phone Link is de eerste regel de naam van de app op de telefoon (bijv. "WhatsApp"); de rest is inhoud en wordt niet bewaard
-            binding = n.notification.visual.get_binding(KnownNotificationBindings.toast_generic)
-            teksten = [t.text for t in binding.get_text_elements()] if binding else []
-            app = (teksten[0].strip() if teksten and teksten[0].strip() else win_app)[:60]
-        out.append((n.id, int(n.creation_time.timestamp() * 1000), win_app, app))
-    return out
-
-
-def log_lus():
+def ververs_lus():
+    """Meldingen op de achtergrond bijhouden (voor /meldingen, dat dan meteen antwoordt) en het logboek bijwerken."""
     nieuw_bestand = not os.path.exists(LOG_FILE)
     if not nieuw_bestand:
         with open(LOG_FILE, encoding="utf-8", newline="") as f:
@@ -109,9 +96,11 @@ def log_lus():
                 gezien.add((int(r["time_ms"]), r["app"]))
     while True:
         try:
-            with lock:
-                items = asyncio.run(voor_log())
-            nieuw = [x for x in items if (x[1], x[3]) not in gezien]
+            with meld_lock:
+                items, log = asyncio.run(lees())
+            cache["items"], cache["geen_toegang"] = items or [], items is None
+            cache["klaar"].set()
+            nieuw = [x for x in log if (x[1], x[3]) not in gezien]
             if nieuw:
                 with open(LOG_FILE, "a", encoding="utf-8", newline="") as f:
                     w = csv.writer(f)
@@ -126,12 +115,14 @@ def log_lus():
                 gezien.clear()
                 gezien.update(houden)
         except Exception as e:
-            print(f"Logboek meldingen: {e}", file=sys.stderr)
-        time.sleep(LOG_ELKE)
+            print(f"Meldingen lezen: {e}", file=sys.stderr)
+        time.sleep(VERVERS)
 
 
 def weg(nid):
     listener.remove_notification(nid)
+    if cache["items"]:
+        cache["items"] = [x for x in cache["items"] if x["id"] != nid]
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -275,8 +266,8 @@ a.k{{display:inline-block;margin:6px 8px 6px 0;padding:12px 20px;border-radius:9
         # Andere sites mogen niets lezen
         if self.headers.get("Origin") not in TOEGESTAAN | {None}:
             return self.antwoord(403, {"error": "niet toegestaan"})
-        with lock:
-            items = asyncio.run(lees())
+        cache["klaar"].wait(8)   # alleen vlak na het starten hoeft dit te wachten
+        items = None if cache["geen_toegang"] else (cache["items"] or [])
         if items is None:
             return self.antwoord(403, {"error": "Windows geeft geen toegang tot meldingen. Zet het aan bij Instellingen > Privacy en beveiliging > Meldingen."})
         self.antwoord(200, {"items": items})
@@ -318,7 +309,7 @@ a.k{{display:inline-block;margin:6px 8px 6px 0;padding:12px 20px;border-radius:9
         if not self.path.startswith("/weg/") or self.headers.get("Origin") not in TOEGESTAAN:
             return self.antwoord(403, {"error": "niet toegestaan"})
         try:
-            with lock:
+            with meld_lock:
                 weg(int(self.path.split("/")[2]))
             self.antwoord(200, {"ok": True})
         except (ValueError, IndexError):
@@ -334,7 +325,7 @@ def main():
     except OSError:
         print(f"Poort {PORT} is al in gebruik: draait het hulpprogramma al?", file=sys.stderr)
         return
-    threading.Thread(target=log_lus, daemon=True).start()
+    threading.Thread(target=ververs_lus, daemon=True).start()
     print(f"Meldingen: http://127.0.0.1:{PORT}/meldingen · Google koppelen: http://127.0.0.1:{PORT}/koppel (Ctrl+C om te stoppen)")
     server.serve_forever()
 
