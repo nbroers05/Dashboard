@@ -4,6 +4,12 @@
    "name": "NOS",
    "items": [
     {
+     "title": "Rood of toch blauw? Republikeinen doen aan koorddansen om kiezers te behouden",
+     "link": "https://nos.nl/l/2637494",
+     "time": "2026-10-31T20:00:01+01:00",
+     "img": "https://images.cdn.nos.nl/7/G/X/U/7/1/SjEFqU2EjGAhv4JbgWtyDT4xErvXn1xG23LYAHj/3x623x3824x2151-1024x576.webp"
+    },
+    {
      "title": "Macht van Vucic neemt af: huisbank van Servische staat valt om",
      "link": "https://nos.nl/l/2637491",
      "time": "2026-10-31T19:04:21+01:00",
@@ -86,18 +92,36 @@
      "link": "https://nos.nl/l/2637420",
      "time": "2026-10-31T11:39:30+01:00",
      "img": "https://images.cdn.nos.nl/4/4/y/y/F/6/TW8JQN6CpSrhpqteAnmmoBwhy3AVma35cDFHPir/8x59x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Kabinet spreekt verder met oppositie, deadline nadert snel",
-     "link": "https://nos.nl/l/2637415",
-     "time": "2026-10-31T10:51:17+01:00",
-     "img": "https://images.cdn.nos.nl/3/A/J/3/u/C/pDhm51NvCAT6oA1V8xBFbgZ21ZDezAYJD5J9uCf/8x212x3984x2241-1024x576.webp"
     }
    ]
   },
   {
    "name": "NOS Sport",
    "items": [
+    {
+     "title": "Heerenveen heeft aan één treffer genoeg om NEC te kloppen",
+     "link": "https://nos.nl/l/2637507",
+     "time": "2026-10-31T20:57:59+01:00",
+     "img": null
+    },
+    {
+     "title": "Parabaanwielrenner Buur pakt tweede goud op WK in Apeldoorn",
+     "link": "https://nos.nl/l/2637506",
+     "time": "2026-10-31T20:40:18+01:00",
+     "img": "https://images.cdn.nos.nl/5/3/R/a/W/k/TNg3fUg9XDWZd6bcpSCp2Y2QhcziF9xgV1ZsViZ/205x654x1360x765-1024x576.webp"
+    },
+    {
+     "title": "PSV met ruime cijfers langs machteloos Willem II bij rentree Streppel",
+     "link": "https://nos.nl/l/2637505",
+     "time": "2026-10-31T20:36:45+01:00",
+     "img": "https://images.cdn.nos.nl/2/4/r/t/B/v/C1Yya4tbRocVup4oN4ZJsmibDzi4Z22FVE2ENW2/765x149x2512x1413-1024x576.webp"
+    },
+    {
+     "title": "Van 't Wout rijdt Boer onderuit in finale, Velzeboer verrassend uitgeschakeld",
+     "link": "https://nos.nl/l/2637495",
+     "time": "2026-10-31T20:01:52+01:00",
+     "img": "https://images.cdn.nos.nl/4/D/4/p/h/S/9Ta3JA8WhkbsD2fkKQ4vKXPrjQJav2GZMK6b3N7/198x82x3552x1998-1024x576.webp"
+    },
     {
      "title": "Interim-trainer Kuijt ziet Fenerbahçe instorten, woensdag weerzien met Liverpool",
      "link": "https://nos.nl/l/2637488",
@@ -163,36 +187,30 @@
      "link": "https://nos.nl/l/2637400",
      "time": "2026-10-31T06:00:02+01:00",
      "img": "https://images.cdn.nos.nl/4/F/C/n/a/b/aC38csYUZfLSGVSws8AVJnseK3JWoBhRToJAJV9/1183x4x2352x1323-1024x576.webp"
-    },
-    {
-     "title": "Antonelli volgt na 73 jaar Ascari op, de Italiaan om wie een miljoen mensen rouwden",
-     "link": "https://nos.nl/l/2637399",
-     "time": "2026-10-31T06:00:02+01:00",
-     "img": "https://images.cdn.nos.nl/7/C/E/T/x/k/MPkUGLSkPp9AbqUigmvABc1fCZ87Bh425PoZfqX/0x0x1920x1080-1024x576.webp"
-    },
-    {
-     "title": "Verstappen en Lawson krijgen gridstraf na botsing in vrije training Mexico",
-     "link": "https://nos.nl/l/2637394",
-     "time": "2026-10-31T00:08:19+01:00",
-     "img": "https://images.cdn.nos.nl/1/B/E/U/T/9/aB35VL5EjcBkDHoSy6VoP91o4uq4XdNA8eNaE2a/0x141x1280x720-1024x576.webp"
-    },
-    {
-     "title": "Almere City en Roda JC handhaven zich in top, foutloze thuisreeks Volendam doorbroken",
-     "link": "https://nos.nl/l/2637379",
-     "time": "2026-10-30T22:40:39+01:00",
-     "img": "https://images.cdn.nos.nl/8/4/m/Y/L/2/v6zQhPtQJqWoS4r1jiCsojbSzteKqGjPDq2GVdg/115x111x2672x1503-1024x576.webp"
-    },
-    {
-     "title": "Beune terug aan kop op 1.500 meter, ook olympisch kampioen Rijpma-de Jong naar wereldbeker",
-     "link": "https://nos.nl/l/2637370",
-     "time": "2026-10-30T21:37:51+01:00",
-     "img": "https://images.cdn.nos.nl/6/6/D/w/Q/9/wJKpN3SA4rxYvpbuHvz1zP1Jtgcximsehm4eW7V/126x189x3152x1773-1024x576.webp"
     }
    ]
   },
   {
    "name": "NU.nl",
    "items": [
+    {
+     "title": "PSV scoort zeven keer tegen Willem II en profiteert van misstap Feyenoord",
+     "link": "https://www.nu.nl/voetbal/6415075/psv-scoort-zeven-keer-tegen-willem-ii-en-profiteert-van-misstap-feyenoord.html",
+     "time": "2026-10-31T20:37:14+01:00",
+     "img": "https://images.nu.nl/m/b04xyvdafd2y_sqr256/581/0/2852/2852/psv-scoort-zeven-keer-tegen-willem-ii-en-profiteert-van-misstap-feyenoord.jpg"
+    },
+    {
+     "title": "Franse en Duitse 'Halloweenprotesten' leiden tot rellen in Parijs en Keulen",
+     "link": "https://www.nu.nl/buitenland/6415067/franse-en-duitse-halloweenprotesten-leiden-tot-rellen-in-parijs-en-keulen.html",
+     "time": "2026-10-31T20:23:59+01:00",
+     "img": "https://images.nu.nl/m/4a7x2l7apmni_sqr256/2510/692/4262/4262/franse-en-duitse-halloweenprotesten-leiden-tot-rellen-in-parijs-en-keulen.jpg"
+    },
+    {
+     "title": "Video | Agenten worden geraakt door molotovcocktail tijdens rellen in Parijs",
+     "link": "https://www.nu.nl/331840/video/agenten-worden-geraakt-door-molotovcocktail-tijdens-rellen-in-parijs.html",
+     "time": "2026-10-31T20:04:46+01:00",
+     "img": "https://images.nu.nl/m/83zxrlaafol5_sqr256/407/0/1080/1080/agenten-worden-geraakt-door-molotovcocktail-tijdens-rellen-in-parijs.jpg"
+    },
     {
      "title": "Verstappen vijfde in laatste training GP Mexico, Antonelli tweede achter Norris",
      "link": "https://www.nu.nl/formule-1/6415068/verstappen-vijfde-in-laatste-training-gp-mexico-antonelli-tweede-achter-norris.html",
@@ -248,16 +266,10 @@
      "img": "https://images.nu.nl/m/tqxxbsnay4jl_sqr256/1306/0/3799/3799/formule-1-coureur-ocon-wordt-nog-tijdens-gp-mexico-vervangen-door-haas.jpg"
     },
     {
-     "title": "Video | Betogers worden gearresteerd in Den Haag, veel politie in andere steden",
-     "link": "https://www.nu.nl/331835/video/betogers-worden-gearresteerd-in-den-haag-veel-politie-in-andere-steden.html",
-     "time": "2026-10-31T16:08:21+01:00",
-     "img": "https://images.nu.nl/m/yd7xjtka4t60_sqr256/599/0/1080/1080/betogers-worden-gearresteerd-in-den-haag-veel-politie-in-andere-steden.jpg"
-    },
-    {
-     "title": "Live Eredivisie | PSV verdubbelt voorsprong tegen hekkensluiter Willem II",
-     "link": "https://www.nu.nl/voetbal/6415047/psv-verdubbelt-voorsprong-tegen-hekkensluiter-willem-ii.html",
+     "title": "Live Eredivisie | Kraker Ajax-AZ, PSV loopt na monsterzege in op koploper Feyenoord",
+     "link": "https://www.nu.nl/voetbal/6415047/kraker-ajax-az-psv-loopt-na-monsterzege-in-op-koploper-feyenoord.html",
      "time": "2026-10-31T15:55:44+01:00",
-     "img": "https://images.nu.nl/m/0nvxsfvaj9da_sqr256/1584/0/4000/4000/psv-verdubbelt-voorsprong-tegen-hekkensluiter-willem-ii.jpg"
+     "img": "https://images.nu.nl/m/pfjxt5ka33lh_sqr256/726/0/2362/2362/kraker-ajax-az-psv-loopt-na-monsterzege-in-op-koploper-feyenoord.jpg"
     },
     {
      "title": "Manchester United en Carrick dieper in de problemen na nederlaag bij Chelsea",
@@ -270,18 +282,6 @@
      "link": "https://www.nu.nl/opmerkelijk/6415042/brit-die-28-jaar-rond-de-wereld-wandelde-bijna-thuis-ken-maatschappij-niet-meer.html",
      "time": "2026-10-31T15:28:54+01:00",
      "img": "https://images.nu.nl/m/ccox9jaaa9nr_sqr256/931/0/3333/3333/brit-die-28-jaar-rond-de-wereld-wandelde-bijna-thuis-ken-maatschappij-niet-meer.jpg"
-    },
-    {
-     "title": "Cryptobeurzen nemen maatregelen na miljardenroof bij Binance",
-     "link": "https://www.nu.nl/economie/6415045/cryptobeurzen-nemen-maatregelen-na-miljardenroof-bij-binance.html",
-     "time": "2026-10-31T15:22:44+01:00",
-     "img": "https://images.nu.nl/m/lf9x05gau1ju_sqr256/115/0/3711/3711/cryptobeurzen-nemen-maatregelen-na-miljardenroof-bij-binance.jpg"
-    },
-    {
-     "title": "ME ingezet in Den Haag, veel politie maar geen jongeren in Maastricht",
-     "link": "https://www.nu.nl/binnenland/6415043/me-ingezet-in-den-haag-veel-politie-maar-geen-jongeren-in-maastricht.html",
-     "time": "2026-10-31T15:10:17+01:00",
-     "img": "https://images.nu.nl/m/nx5xaxha6v0r_sqr256/185/2/4295/4295/me-ingezet-in-den-haag-veel-politie-maar-geen-jongeren-in-maastricht.jpg"
     }
    ]
   }
