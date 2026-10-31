@@ -10,6 +10,7 @@ Onder de lijst staat per ronde de uitgebreide toelichting zoals die toen geschre
 
 | Versie | Wat |
 |---|---|
+| 0.51.0 | Mensen, fase 2 (alleen GitHub, geen server): Spotify nu en een berichtenvak. Per persoon een eigen privé repo met een eigen token; jouw dashboard schrijft wat je luistert (zolang het ergens open staat) en je ziet berichten in het nieuwe vak Berichten (Meer-balk) en als melding. Instellen in Instellingen › Mensen (README stap 14). |
 | 0.50.0 | Mensen, fase 1: Instellingen › Mensen. Per persoon een eigen adres (?thomas) met een eigen wachtwoord, en aanvinken wat die persoon ziet: AH-diensten, uren deze week, colleges en tentamens, laatst gekeken film, weer. Elk uur maakt het archief daar een versleuteld pakketje van; hun pagina toont alleen dat. Werkt pas als het token DASHBOARD_TOKEN in het archief staat (README stap 14). Spotify nu en berichten volgen in fase 2. |
 | 0.49.0 | Eén inlog, fase 3: je verjaardag komt nu uit het privé archief, dus na inloggen klopt hij op elke computer. Op een computer waar het hulpprogramma nooit gedraaid heeft (je laptop) zegt het meldingenvak niet meer 'start het hulpprogramma'; mediakaarten van de pc en Wensen waren daar al verborgen. |
 | 0.48.0 | Eén inlog, fase 2: Google (agenda, mail, gezondheid) en Spotify kunnen mee in de bundel en vernieuwen zichzelf, zonder hulpprogramma en zonder server. Spotify koppel je één keer op 127.0.0.1:8765/koppel met je Client Secret (README stap 13). Maak daarna de bundel opnieuw. |

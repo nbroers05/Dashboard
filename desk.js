@@ -135,15 +135,15 @@
   const MODES = {
     desk: {
       enter() {
-        const ids = ['media-stack', 'calendar', 'version', 'w-weather', 'w-rain', 'w-alerts', 'w-ah', 'w-canvas', 'w-f1', 'w-episodes', 'w-stars', 'w-letterboxd', 'w-friends', 'w-mail', 'w-todo', 'w-wishes', 'w-health', 'w-sptop', 'w-checkin'];
+        const ids = ['media-stack', 'calendar', 'version', 'w-weather', 'w-rain', 'w-alerts', 'w-ah', 'w-canvas', 'w-f1', 'w-episodes', 'w-stars', 'w-letterboxd', 'w-friends', 'w-mail', 'w-todo', 'w-wishes', 'w-msg', 'w-health', 'w-sptop', 'w-checkin'];
         remember(ids);
         put(weather, ['w-weather', 'w-rain']);
         put(tabs, ['w-stars', 'w-letterboxd', 'w-friends']);
         put(left, [weather, 'w-alerts', 'w-checkin', 'w-ah']);
         put(mid, ['media-stack', 'calendar']);
         put(right, ['w-canvas', 'w-f1', 'w-episodes', tabs]);
-        put(drawer, ['w-mail', 'w-todo', 'w-wishes', 'w-health', 'w-sptop']);
-        moreList.textContent = 'Mail · To-do · Wensen · Gezondheid · Spotify';
+        put(drawer, ['w-mail', 'w-todo', 'w-wishes', 'w-msg', 'w-health', 'w-sptop']);
+        moreList.textContent = 'Mail · To-do · Wensen · Berichten · Gezondheid · Spotify';
         if ($('version')) moreBar.append($('version'));
         dash.append(left, mid, right, more);
         setTab(store.get(TAB_KEY) || 'w-stars');
@@ -159,15 +159,15 @@
     },
     tall: {
       enter() {
-        const ids = ['w-weather', 'w-rain', 'w-f1', 'w-ah', 'w-canvas', 'w-alerts', ...ROT, 'w-mail', 'w-todo', 'w-wishes', 'w-checkin', 'version'];
+        const ids = ['w-weather', 'w-rain', 'w-f1', 'w-ah', 'w-canvas', 'w-alerts', ...ROT, 'w-mail', 'w-todo', 'w-wishes', 'w-msg', 'w-checkin', 'version'];
         remember(ids);
         put(weather, ['w-weather', 'w-rain']);
         put(row3, [weather, 'w-f1', 'w-ah']);
         put(row2, ['w-canvas', 'w-alerts']);
         rot.prepend(...ROT.map($).filter(Boolean));
         put(hidden, ['w-mail']);
-        put(drawer, ['w-checkin', 'w-todo', 'w-wishes']);
-        moreList.textContent = 'Check-in · To-do · Wensen';
+        put(drawer, ['w-checkin', 'w-todo', 'w-wishes', 'w-msg']);
+        moreList.textContent = 'Check-in · To-do · Wensen · Berichten';
         if ($('version')) moreBar.append($('version'));   // versie rechts in de Meer-balk, net als in desk
         const before = $('calendar');
         [row3, row2, rot].forEach((el) => dash.insertBefore(el, before));

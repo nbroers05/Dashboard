@@ -129,11 +129,97 @@
     return card;
   }
 
+  // ---------- Live (sinds 0.51.0): Spotify nu en berichten, via hun eigen privé repo (GHFILE, ghfile.js) ----------
+  let timers = [];
+  function stopLive() { timers.forEach(clearInterval); timers = []; }
+
+  function spotifyCard(l) {
+    const card = el('div', 'card');
+    card.append(el('h2', null, 'Noah luistert'));
+    let box = el('div', 'muted', '…');
+    card.append(box);
+    let etag = null;
+    async function load() {
+      try {
+        const r = await GHFILE.get(l.repo, l.token, 'nu.json', etag);
+        if (r.status === 304) return;
+        etag = r.etag;
+        const n = r.data;
+        const left = n && n.playing && n.duration ? Date.parse(n.at) + (n.duration - (n.progress || 0)) + 30000 - Date.now() : -1;
+        if (!n || !n.title) { box.replaceWith(box = el('div', 'muted', 'Nu niets.')); return; }
+        const row = el('div', 'now');
+        if (n.cover) { const img = el('img'); img.src = n.cover; img.alt = ''; row.append(img); }
+        const t = el('div');
+        t.append(el('div', 'muted', left > 0 ? 'nu' : `om ${new Date(n.at).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })}`), el('div', 'big', n.title), el('div', null, n.artist || ''));
+        row.append(t);
+        box.replaceWith(box = row);
+      } catch (e) { box.replaceWith(box = el('div', 'muted', `Niet beschikbaar (${e.message})`)); }
+    }
+    load();
+    timers.push(setInterval(() => { if (!document.hidden) { etag = null; load(); } }, 20000));
+    return card;
+  }
+
+  function chatCard(l, data) {
+    const card = el('div', 'card');
+    card.append(el('h2', null, 'Berichten'));
+    const list = el('div', 'chat');
+    const form = el('form', 'send');
+    const input = el('input');
+    Object.assign(input, { placeholder: 'Typ een bericht…', maxLength: 500, autocomplete: 'off' });
+    const btn = el('button', null, '➤');
+    form.append(input, btn);
+    card.append(list, form);
+    const mine = `berichten/${id}.json`;
+    const st = { me: [], noah: [], etag: {} };
+    function draw() {
+      const items = [...st.me.map((x) => ({ ...x, me: true })), ...st.noah].sort((a, b) => a.t.localeCompare(b.t));
+      const atEnd = list.scrollTop + list.clientHeight >= list.scrollHeight - 30;
+      list.replaceChildren(...(items.length ? items.slice(-100).map((x) => {
+        const b = el('div', `b${x.me ? ' me' : ''}`, x.text);
+        b.append(el('small', null, new Date(x.t).toLocaleString('nl-NL', { weekday: 'short', hour: '2-digit', minute: '2-digit' })));
+        return b;
+      }) : [el('p', 'muted', `Nog geen berichten. Typ hieronder iets voor Noah.`)]));
+      if (atEnd) list.scrollTop = list.scrollHeight;
+    }
+    async function poll() {
+      try {
+        const [a, b] = await Promise.all([GHFILE.get(l.repo, l.token, mine, st.etag.me), GHFILE.get(l.repo, l.token, 'berichten/noah.json', st.etag.noah)]);
+        let ch = false;
+        if (a.status !== 304) { st.me = a.data || []; st.etag.me = a.etag; ch = true; }
+        if (b.status !== 304) { st.noah = b.data || []; st.etag.noah = b.etag; ch = true; }
+        if (ch) draw();
+      } catch (e) { input.placeholder = `Niet verbonden (${e.message})`; }
+    }
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const text = input.value.trim().slice(0, 500);
+      if (!text) return;
+      btn.disabled = true;
+      try {
+        st.me = await GHFILE.update(l.repo, l.token, mine, (cur) => [...(cur || []), { t: new Date().toISOString(), text }].slice(-200), `Bericht van ${data.naam}`);
+        st.etag.me = null;
+        input.value = '';
+        draw();
+        list.scrollTop = list.scrollHeight;
+      } catch (x) { input.placeholder = `Niet verstuurd: ${x.message}`; }
+      btn.disabled = false;
+    });
+    draw();
+    poll();
+    timers.push(setInterval(() => { if (!document.hidden) poll(); }, 5000));
+    return card;
+  }
+
   function show(data) {
+    stopLive();
     const o = data.onderdelen || {};
+    const l = data.live;
     const head = el('div', 'card');
-    head.append(el('h1', null, 'Noah'), el('p', 'sub', `voor ${data.naam} · alleen kijken`));
+    head.append(el('h1', null, 'Noah'), el('p', 'sub', `voor ${data.naam}${l && l.berichten ? '' : ' · alleen kijken'}`));
     const cards = [head];
+    if (l && l.spotify) cards.push(spotifyCard(l));
+    if (l && l.berichten) cards.push(chatCard(l, data));
     if (o.ah || o.studie) cards.push(agenda(o));
     if (o.uren) {
       const c = el('div', 'card');
@@ -145,7 +231,7 @@
     if (cards.length === 1) cards.push(el('div', 'card muted', 'Er staat hier nu niets voor je aan.'));
     const foot = el('footer');
     const out = el('button', 'link', 'Uitloggen');
-    out.onclick = () => { forget(); start(); };
+    out.onclick = () => { stopLive(); forget(); start(); };
     foot.append(el('span', null, data.bijgewerkt ? `bijgewerkt ${new Date(data.bijgewerkt).toLocaleString('nl-NL', { weekday: 'short', hour: '2-digit', minute: '2-digit' })}` : ''), out);
     cards.push(foot);
     app.replaceChildren(...cards);
@@ -155,6 +241,7 @@
     let box;
     try { box = await fetchBox(); } catch { app.replaceChildren(el('div', 'card', 'Geen verbinding. Probeer het zo opnieuw.')); return; }
     if (!box) return gone();
+    lastData = box.data;
     const k = savedKey();
     if (!k) return login(box);
     try {
@@ -165,6 +252,13 @@
     }
   }
 
+  // Elke 10 minuten een nieuw pakketje? Alleen dan opnieuw tekenen (anders zou een half getypt bericht verdwijnen)
+  let lastData = null;
   start();
-  setInterval(() => { if (savedKey() && !document.hidden) start(); }, 10 * 60 * 1000);
+  setInterval(async () => {
+    if (!savedKey() || document.hidden) return;
+    const box = await fetchBox().catch(() => null);
+    if (!box) return gone();
+    if (box.data !== lastData) { lastData = box.data; start(); }
+  }, 10 * 60 * 1000);
 })();

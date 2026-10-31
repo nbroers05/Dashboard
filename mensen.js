@@ -5,6 +5,7 @@
 // `key` = AES-sleutel die hier met PBKDF2 uit hun wachtwoord wordt afgeleid (het wachtwoord zelf wordt nergens bewaard).
 // De Action in dashboard-data (scripts/mensen.py) maakt daar elk uur versleutelde pakketjes van in mensen/<id>.json;
 // hun pagina is mensen.html (vault.js stuurt ?<id> daarheen). Alleen bruikbaar met het archief-token.
+// Sinds 0.51.0 ook Spotify nu en Berichtenvak via een live-koppeling (eigen privé repo + token per persoon, zie liveBox).
 (() => {
   const { h } = DASH;
   const ITER = 600000;
@@ -14,8 +15,11 @@
     { id: 'studie', label: 'Colleges en tentamens' },
     { id: 'film', label: 'Laatst gekeken film' },
     { id: 'weer', label: 'Weer bij mij' },
+    { id: 'spotify', label: 'Spotify nu', live: true },
+    { id: 'berichten', label: 'Berichtenvak', live: true },
   ];
-  const LATER = ['Spotify nu', 'Berichtenvak', 'AH-loon in €', 'Mijn data'];   // fase 2 en later
+  const LATER = ['AH-loon in €', 'Mijn data'];
+  const LIVE = new Set(PARTS.filter((x) => x.live).map((x) => x.id));
   // Adressen die het dashboard zelf al gebruikt (thema's, testvlaggen): geen persoon met die naam
   const RESERVED = new Set(['demo', 'maat', 'mini', 'standaard', 'herfst', 'winter', 'lente', 'zomer', 'halloween', 'sinterklaas', 'kerst',
     'oudennieuw', 'valentijn', 'pasen', 'koningsdag', 'bevrijdingsdag', 'verjaardag', 'f1', 'tentamen', 'kerstavond', 'oudjaar', 'nieuwjaar']);
@@ -130,7 +134,43 @@
       pwBox.append(f.a, f.b, ok);
       pw.onclick = () => { pwBox.hidden = !pwBox.hidden; };
       c.append(head, state, boxes, btns, pwBox);
+      if ((p.onderdelen || []).some((x) => LIVE.has(x))) c.append(liveBox(p));
       return c;
+    }
+
+    // Live-koppeling (sinds 0.51.0) voor Spotify nu en Berichtenvak: een eigen privé repo per persoon met een eigen
+    // fine-grained token (alleen die repo, Contents lezen en schrijven). Dat token gaat in hun pakketje; het archief-token nooit.
+    function liveBox(p) {
+      const box = h('div', 'mn-live');
+      const repoName = (p.live && p.live.repo) || `nbroers05/dashboard-live-${p.id}`;
+      box.append(h('p', 'mn-state', p.live ? `Live-koppeling: ${p.live.repo} ✓` : `Live-koppeling nodig voor Spotify nu en berichten: maak de privé repo ${repoName} en een token voor alleen die repo (README stap 14).`));
+      const repo = h('input', 'vault-input');
+      Object.assign(repo, { value: repoName, placeholder: 'nbroers05/dashboard-live-…', autocomplete: 'off' });
+      const tok = h('input', 'vault-input');
+      Object.assign(tok, { type: 'password', placeholder: p.live ? 'Token opgeslagen (nieuw plakken = vervangen)' : 'github_pat_…', autocomplete: 'off' });
+      const go = h('button', 'w-btn ghost', 'Koppeling opslaan');
+      go.type = 'button';
+      go.onclick = async () => {
+        const r = repo.value.trim(), t = tok.value.trim();
+        if (!/^[\w.-]+\/[\w.-]+$/.test(r)) { msg.textContent = 'Repo als eigenaar/naam, bijv. nbroers05/dashboard-live-margriet'; return; }
+        if (!/^(github_pat_|ghp_)\w+$/.test(t)) { msg.textContent = 'Plak het token (begint met github_pat_).'; return; }
+        go.disabled = true;
+        msg.textContent = 'Token controleren…';
+        try {
+          const res = await fetch(`https://api.github.com/repos/${r}`, { cache: 'no-store', headers: { Authorization: `Bearer ${t}` } });
+          const info = await res.json().catch(() => ({}));
+          if (!res.ok) throw new Error(res.status === 401 ? 'token ongeldig' : 'repo niet gevonden met dit token');
+          if (!info.private) throw new Error('die repo is openbaar; maak hem privé');
+          if (info.permissions && !info.permissions.push) throw new Error('token mag niet schrijven (Contents: Read and write)');
+        } catch (e) {
+          msg.textContent = `Niet opgeslagen: ${e.message}.`;
+          go.disabled = false;
+          return;
+        }
+        save((ms) => { const m = ms.find((x) => x.id === p.id); if (m) m.live = { repo: r, token: t }; }, `Live-koppeling voor ${p.naam} opgeslagen. Binnen een uur werkt het op hun versie.`);
+      };
+      box.append(repo, tok, go);
+      return box;
     }
 
     function addForm() {

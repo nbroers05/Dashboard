@@ -37,11 +37,20 @@
     button { padding: 11px 16px; border: 0; border-radius: 999px; background: var(--blue); color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
     button.link { align-self: flex-start; padding: 0; background: none; color: var(--muted); font-weight: 400; text-decoration: underline; }
     .err { color: #ff8a5c; margin: 0; min-height: 1.2em; }
+    .now { display: flex; gap: 14px; align-items: center; }
+    .now img { width: 64px; height: 64px; border-radius: 8px; object-fit: cover; }
+    .chat { display: flex; flex-direction: column; gap: 6px; max-height: 340px; overflow-y: auto; margin-bottom: 10px; }
+    .b { max-width: 80%; padding: 7px 12px; border-radius: 14px; background: var(--field); align-self: flex-start; overflow-wrap: anywhere; }
+    .b.me { align-self: flex-end; background: #4a3a6e; }
+    .b small { display: block; color: var(--muted); font-size: .72rem; }
+    .send { flex-direction: row; gap: 8px; }
+    .send input { flex: 1; min-width: 0; padding: 11px 14px; border: 1px solid rgba(255, 255, 255, .12); border-radius: 999px; background: var(--field); color: var(--text); font: inherit; }
     footer { display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: .85rem; }
   </style>
 </head>
 <body>
   <main id="app"><p class="muted">Laden…</p></main>
-  <script src="mensen-view.js?v=0.50.0"></script>
+  <script src="ghfile.js?v=0.51.0"></script>
+  <script src="mensen-view.js?v=0.51.0"></script>
 </body>
 </html>

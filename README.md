@@ -230,6 +230,16 @@ Hiermee geef je iemand (Thomas, Margriet) een eigen adres zoals `nbroers05.githu
 3. **Link kopiëren** en stuur die persoon het adres en het wachtwoord (liefst los van elkaar).
 4. Uitvinken of **Toegang intrekken** = binnen een uur weg. **Wachtwoord wijzigen** = het oude werkt binnen een uur niet meer.
 
+**Spotify nu en berichten (per persoon, bijv. Margriet)**
+Die moeten live zijn, dus elke persoon krijgt een eigen privé opslagplek op GitHub.
+1. github.com → **+** rechtsboven → **New repository**. Naam: `dashboard-live-margriet` (met de naam van die persoon), kies **Private**, vink **Add a README file** aan → **Create repository**.
+2. Maak een token zoals hierboven (stap 1-5), maar met naam `Dashboard live Margriet` en bij **Only select repositories** alleen **dashboard-live-margriet**. Contents: **Read and write**.
+3. Dashboard → tandwiel → **Mensen** → bij Margriet **Spotify nu** en/of **Berichtenvak** aanvinken. Er verschijnt een vakje **Live-koppeling**: plak het token → **Koppeling opslaan**. Het dashboard controleert meteen of het klopt.
+4. Binnen een uur kan Margriet berichten sturen. Jij ziet ze in het vak **Berichten** (in de Meer-balk) en als melding.
+5. "Spotify nu" werkt zolang jouw dashboard ergens open staat (het staande scherm).
+
+Goed om te weten: dat token zit (versleuteld) in Margriets pakketje, want haar pagina heeft het nodig. Het kan alleen bij haar eigen repo, nergens anders.
+
 ## Problemen
 
 - **"INVALID_CLIENT: Invalid redirect URI"**: de URL in de adresbalk komt niet exact overeen met een Redirect URI. Let op `/` aan het eind.

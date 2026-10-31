@@ -704,7 +704,7 @@ window.DASH_PHONE = (() => {
   // ---------- Aan en uit (vanuit desk.js) ----------
   function enter({ remember, put, dash }) {
     active = true;
-    const ids = ['media-stack', 'lyrics', 'calendar', 'version', 'w-weather', 'w-rain', 'w-ah', 'w-canvas', 'w-alerts', 'w-mail', 'w-todo', 'w-checkin', 'w-wishes',
+    const ids = ['media-stack', 'lyrics', 'calendar', 'version', 'w-weather', 'w-rain', 'w-ah', 'w-canvas', 'w-alerts', 'w-mail', 'w-todo', 'w-checkin', 'w-wishes', 'w-msg',
       'w-stars', 'w-letterboxd', 'w-friends', 'w-episodes', 'w-f1', 'w-sptop', 'w-health'];
     remember(ids);
     panes.vandaag.replaceChildren(chips, today);
@@ -716,7 +716,7 @@ window.DASH_PHONE = (() => {
     put(panes.media, ['w-stars', 'w-letterboxd', 'w-episodes', 'w-f1', 'w-friends', 'w-sptop']);
     panes.data.replaceChildren(header('Data', allCharts), ciBox, kpiBox, memory);
     put(panes.data, ['w-health', 'version']);
-    put(hidden, ['w-weather', 'w-rain', 'w-ah', 'w-canvas', 'w-alerts', 'w-mail', 'w-todo', 'w-checkin', 'w-wishes']);
+    put(hidden, ['w-weather', 'w-rain', 'w-ah', 'w-canvas', 'w-alerts', 'w-mail', 'w-todo', 'w-checkin', 'w-wishes', 'w-msg']);
     dash.append(...TABS.map(([id]) => panes[id]), hidden);
     document.body.append(miniEl, bar);
     const actions = document.querySelector('#topbar .tb-actions');
