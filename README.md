@@ -224,6 +224,11 @@ Hiermee geef je iemand (Thomas, Margriet) een eigen adres zoals `nbroers05.githu
 5. **Generate token** en kopieer hem.
 6. Ga naar github.com/nbroers05/dashboard-data → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**. Name: `DASHBOARD_TOKEN`, Secret: plakken → **Add secret**.
 
+**Eén keer: je archief-token mag de Action starten** (anders worden de pakketjes maar elke 5-7 uur gemaakt, omdat GitHub geplande runs uitstelt)
+1. github.com → profielfoto → **Settings** → **Developer settings** → **Personal access tokens** → **Fine-grained tokens** → klik op het token van je data-archief (het token dat alleen bij `dashboard-data` kan).
+2. **Edit** → **Permissions** → **Repository permissions** → **Actions** → **Read and write** → onderaan **Update**.
+3. Klaar: het token zelf blijft hetzelfde, je hoeft niets opnieuw te plakken of de bundel opnieuw te maken. In Instellingen › Data zie je bij "Archief elk uur starten" wanneer het dashboard hem voor het laatst startte.
+
 **Iemand toevoegen**
 1. Dashboard → tandwiel → **Mensen** → naam en een wachtwoord voor die persoon → **+ Persoon toevoegen**.
 2. Vink aan wat die persoon mag zien. Binnen een uur staat het online.

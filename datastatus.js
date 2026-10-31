@@ -140,6 +140,9 @@ window.DASH_DATA_STATUS = (() => {
       st.textContent = ok ? 'draait' : 'niet bereikbaar';
       st.className = `st-state ${ok ? 'ok' : 'off'}`;
     });
+    const run = store.get('data.run');
+    row('Archief elk uur starten', 'Dit dashboard start de Action zelf als GitHub hem uitstelt (datarun.js; token met "Actions: Read and write")',
+      !run ? ['nog niet geprobeerd', 'off'] : run.error ? [run.error, 'warn'] : [`laatst gestart ${new Date(run.started).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })}`, 'ok']);
     const bday = h('input');
     bday.type = 'date';
     bday.value = store.get('theme.birthday') || '';
