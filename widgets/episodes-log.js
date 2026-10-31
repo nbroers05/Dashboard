@@ -19,7 +19,7 @@
     const cache = store.get(AIRED) || {};
     const missing = titles.filter((t) => !cache[t] || Date.now() - cache[t].at > 6 * 3600000).slice(0, 25);
     if (missing.length) {
-      const query = `{ ${missing.map((t, i) => `a${i}: Page(perPage: 1) { media(search: ${JSON.stringify(t)}, type: ANIME) { id episodes status nextAiringEpisode { episode } } }`).join(' ')} }`;
+      const query = `{ ${missing.map((t, i) => `a${i}: Page(perPage: 1) { media(search: ${JSON.stringify(t.replace(/[‘’]/g, "'"))}, type: ANIME) { id episodes status nextAiringEpisode { episode } } }`).join(' ')} }`;
       const res = await fetch('https://graphql.anilist.co', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ query }) });
       const json = await res.json().catch(() => ({}));
       if (res.ok && json.data) {

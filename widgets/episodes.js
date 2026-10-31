@@ -5,7 +5,7 @@
 DASH.widget('w-episodes', (card, body, guard) => {
   const { h, store, img } = DASH;
   const KEY = 'episodes.data';
-  const COVERS = 'anilist.covers.v2';   // v2: de oude cache kon mislukte pogingen een maand onthouden
+  const COVERS = 'anilist.covers.v3';   // v3: opnieuw zoeken na de fix voor krul-apostroffen (0.46.4)
   const MONTH = 30 * 86400000;
   const DAY = 86400000;
 
@@ -18,7 +18,7 @@ DASH.widget('w-episodes', (card, body, guard) => {
     const box = h('div', 'w-empty');
     box.append(h('p', null, 'Nog geen gegevens van Episodes Left.'));
     const a = h('a', 'w-btn', 'Open LiveChart');
-    a.href = 'https://www.livechart.me/library';
+    a.href = 'https://www.livechart.me/users/library';
     a.target = '_blank';
     a.rel = 'noopener';
     box.append(a);
@@ -33,8 +33,10 @@ DASH.widget('w-episodes', (card, body, guard) => {
 
   // Let op: met Media(search) maakt één onbekende titel het héle verzoek leeg (404).
   // Page(...){ media(...) } geeft dan alleen voor die ene titel een lege lijst.
+  // Krul-apostroffen ("JoJo’s") vindt AniList niet, gewone wel: die zoeken we dus met '.
   async function anilist(titles) {
-    const query = `{ ${titles.map((t, i) => `a${i}: Page(perPage: 1) { media(search: ${JSON.stringify(t)}, type: ANIME) { coverImage { large color } siteUrl } }`).join(' ')} }`;
+    const term = (t) => JSON.stringify(t.replace(/[‘’]/g, "'"));
+    const query = `{ ${titles.map((t, i) => `a${i}: Page(perPage: 1) { media(search: ${term(t)}, type: ANIME) { coverImage { large color } siteUrl } }`).join(' ')} }`;
     const res = await fetch('https://graphql.anilist.co', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },

@@ -6,6 +6,12 @@ Daarom staan de oude nummers hier als 0.N.0. Nummer 19 en 24 zijn nooit uitgebra
 Onder de lijst staat per ronde de uitgebreide toelichting zoals die toen geschreven is.
 
 
+## 31 oktober 2026
+
+| Versie | Wat |
+|---|---|
+| 0.46.4 | Episodes Left: JoJo (STEEL BALL RUN) kreeg geen cover, omdat AniList titels met een krul-apostrof (’) niet vindt; die wordt nu als gewone ' gezocht. Covers worden één keer opnieuw opgehaald. Ook in het archief krijgt JoJo nu weer het aantal uitgezonden afleveringen. De knop 'Open LiveChart' (zonder gegevens) wijst naar het nieuwe adres van My List. |
+
 ## 30 oktober 2026
 
 | Versie | Wat |
