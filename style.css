@@ -2625,6 +2625,21 @@ body.agenda-open .tall-rot > .tile { visibility: hidden !important; }
 .vault-list .ok { color: #5bd38a; }
 .vault-list .nee { color: var(--muted); }
 
+/* ---------- Instellingen › Mensen (mensen.js, sinds 0.50.0) ---------- */
+html.mn-check body { visibility: hidden; }
+.mn-list { display: flex; flex-direction: column; gap: 12px; margin-top: 10px; }
+.mn-card { padding: 14px 16px; border-radius: 14px; background: rgba(255, 255, 255, .05); display: flex; flex-direction: column; gap: 8px; }
+.mn-head { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
+.mn-link { color: var(--muted); font-size: .82rem; overflow-wrap: anywhere; }
+.mn-state { margin: 0; color: var(--muted); font-size: .82rem; }
+.mn-parts { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 6px 14px; }
+.mn-later { color: var(--muted); font-size: .85rem; opacity: .6; }
+.mn-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.st-body .mn-btns .w-btn { margin-top: 0; }
+.mn-revoke { color: #ff8a5c; }
+.mn-pw, .mn-add { gap: 6px; }
+.mn-pw[hidden] { display: none; }
+
 @media (prefers-reduced-motion: reduce) {
   :root { transition: none; }
   *, *::before, *::after, ::backdrop { animation: none !important; transition: none !important; }

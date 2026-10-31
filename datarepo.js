@@ -86,6 +86,24 @@ window.DASH_DATA = (() => {
     throw new DataError(409, 'Kon niet opslaan (bestand werd steeds tegelijk gewijzigd)');
   }
 
+  // JSON-bestand aanpassen (sinds 0.50.0, Instellingen › Mensen → config.json): change(data) krijgt de huidige inhoud
+  // en past die aan; bij een botsing opnieuw met de nieuwste versie, zodat wijzigingen van de pc/Action niet verloren gaan
+  async function updateJson(path, change, message) {
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const cur = await read(path);
+      const data = cur ? JSON.parse(cur.text) : {};
+      change(data);
+      try {
+        await call(path, { method: 'PUT', body: JSON.stringify({ message, content: b64encode(`${JSON.stringify(data, null, 1)}
+`), ...(cur ? { sha: cur.sha } : {}) }) });
+        return data;
+      } catch (e) {
+        if (e.status !== 409 && e.status !== 422) throw e;
+      }
+    }
+    throw new DataError(409, 'Kon niet opslaan (bestand werd steeds tegelijk gewijzigd)');
+  }
+
   // ---------- Tijd in Amsterdam (zelfde formaat als scripts/lib.py) ----------
   function localIso(date) {
     const parts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', {
@@ -99,5 +117,5 @@ window.DASH_DATA = (() => {
   }
   const utcIso = (date) => date.toISOString().replace(/\.\d{3}Z$/, 'Z');
 
-  return { REPO, token, setToken, read, appendCsv, appendRows, localIso, utcIso, DataError };
+  return { REPO, token, setToken, read, appendCsv, appendRows, updateJson, localIso, utcIso, DataError };
 })();

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>Noah</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <!-- Eigen versie voor iemand anders (groot idee "Mensen", sinds 0.50.0): mensen-view.js. Bewust los van het dashboard:
+       hier laadt niets van Noahs koppelingen, alleen het versleutelde pakketje mensen/<id>.json. -->
+  <style>
+    :root { --bg: #141218; --card: #221f26; --field: #2f2b36; --text: #f2f0f5; --muted: #9a94a3; --accent: #b48cff; --ah: #00ade6; --blue: #0060ff; }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.45 "Segoe UI", system-ui, sans-serif; }
+    main { max-width: 560px; margin: 0 auto; padding: 24px 16px 48px; display: flex; flex-direction: column; gap: 14px; }
+    .card { background: var(--card); border-radius: 18px; padding: 18px 20px; }
+    h1 { margin: 0; font-size: 1.5rem; }
+    h2 { margin: 0 0 10px; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .sub { margin: 2px 0 0; color: var(--muted); font-size: .9rem; }
+    .row { display: flex; gap: 14px; padding: 7px 0; border-top: 1px solid rgba(255, 255, 255, .06); }
+    .row:first-of-type { border-top: 0; }
+    .row .day { width: 92px; flex: none; color: var(--muted); }
+    .row.past { opacity: .45; }
+    .tag { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 8px; background: var(--accent); }
+    .tag.ah { background: var(--ah); }
+    .tag.tentamen { background: #ff6b6b; }
+    .big { font-size: 1.6rem; font-weight: 700; }
+    .film { display: flex; gap: 14px; align-items: center; }
+    .film img { width: 64px; border-radius: 8px; }
+    .stars { color: #00e054; letter-spacing: 1px; }
+    .muted { color: var(--muted); font-size: .88rem; }
+    form { display: flex; flex-direction: column; gap: 12px; }
+    input[type=password] { padding: 11px 14px; border: 1px solid rgba(255, 255, 255, .12); border-radius: 10px; background: var(--field); color: var(--text); font: inherit; }
+    label { display: flex; gap: 10px; align-items: center; font-size: .92rem; }
+    input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--accent); }
+    button { padding: 11px 16px; border: 0; border-radius: 999px; background: var(--blue); color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
+    button.link { align-self: flex-start; padding: 0; background: none; color: var(--muted); font-weight: 400; text-decoration: underline; }
+    .err { color: #ff8a5c; margin: 0; min-height: 1.2em; }
+    footer { display: flex; justify-content: space-between; align-items: center; color: var(--muted); font-size: .85rem; }
+  </style>
+</head>
+<body>
+  <main id="app"><p class="muted">Laden…</p></main>
+  <script src="mensen-view.js?v=0.50.0"></script>
+</body>
+</html>

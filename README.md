@@ -212,6 +212,24 @@ Hiermee open je het dashboard op een andere computer (je laptop) met alleen een 
 5. Op de andere computer: open het dashboard, typ je wachtzin. Vinkje **Deze computer onthouden** alleen op je eigen laptop; zonder vinkje is alles weg zodra je het tabblad sluit.
 6. Verandert er een sleutel, of wil je een ander wachtwoord: stap 3 en 4 opnieuw. Let op: browsers die al ingelogd zijn houden hun sleutels tot je daar uitlogt.
 
+## 14. Mensen (eigen versie voor anderen)
+
+Hiermee geef je iemand (Thomas, Margriet) een eigen adres zoals `nbroers05.github.io/Dashboard/?thomas` met een eigen wachtwoord. Die persoon ziet alleen wat jij aanvinkt.
+
+**Eén keer: een token zodat het archief de pakketjes online mag zetten**
+1. github.com → je profielfoto → **Settings** → helemaal onderaan **Developer settings** → **Personal access tokens** → **Fine-grained tokens** → **Generate new token**.
+2. Naam `Dashboard mensen`, Expiration: zo lang als mogelijk (of **No expiration**).
+3. **Repository access** → **Only select repositories** → kies **nbroers05/Dashboard** (alleen deze).
+4. **Permissions** → **Repository permissions** → **Contents** → **Read and write**. Verder niets.
+5. **Generate token** en kopieer hem.
+6. Ga naar github.com/nbroers05/dashboard-data → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**. Name: `DASHBOARD_TOKEN`, Secret: plakken → **Add secret**.
+
+**Iemand toevoegen**
+1. Dashboard → tandwiel → **Mensen** → naam en een wachtwoord voor die persoon → **+ Persoon toevoegen**.
+2. Vink aan wat die persoon mag zien. Binnen een uur staat het online.
+3. **Link kopiëren** en stuur die persoon het adres en het wachtwoord (liefst los van elkaar).
+4. Uitvinken of **Toegang intrekken** = binnen een uur weg. **Wachtwoord wijzigen** = het oude werkt binnen een uur niet meer.
+
 ## Problemen
 
 - **"INVALID_CLIENT: Invalid redirect URI"**: de URL in de adresbalk komt niet exact overeen met een Redirect URI. Let op `/` aan het eind.

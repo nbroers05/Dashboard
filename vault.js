@@ -28,6 +28,20 @@ window.DASH_VAULT = (() => {
     try { Object.defineProperty(window, 'localStorage', { configurable: true, get: () => session }); return true; } catch { return false; }
   }
   if (sget(FLAG)) useSession();
+
+  // ?thomas, ?margriet: eigen versie voor iemand anders (groot idee "Mensen", mensen.html). Alleen een kaal woord als
+  // enige parameter; bestaat mensen/<woord>.json, dan daarheen (tot dan is de pagina onzichtbaar), anders gewoon verder
+  // (thema's als ?herfst, ?demo).
+  (() => {
+    const q = location.search.slice(1);
+    if (!/^[a-z][a-z0-9-]{1,23}$/.test(q) || ['demo', 'maat'].includes(q)) return;
+    const root = document.documentElement;
+    root.classList.add('mn-check');
+    const done = () => root.classList.remove('mn-check');
+    setTimeout(done, 3000);
+    fetch(`mensen/${q}.json`, { method: 'HEAD', cache: 'no-store' })
+      .then((r) => { if (r.ok) location.replace(`mensen.html?${q}`); else done(); }, done);
+  })();
   const store = () => window.localStorage;
   const has = (k) => { try { return store().getItem(k) != null; } catch { return false; } };
 
