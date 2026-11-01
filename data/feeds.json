@@ -4,6 +4,18 @@
    "name": "NOS",
    "items": [
     {
+     "title": "800 jaar oude kerken in Groningen kraken onder zomerse droogte",
+     "link": "https://nos.nl/l/2637650",
+     "time": "2026-11-01T19:45:24+01:00",
+     "img": "https://images.cdn.nos.nl/6/6/k/y/X/w/6pQSaocroNgzRhABAN5BR2bXq2UwMAQseJ7bSZL/0x0x1920x1080-1024x576.webp"
+    },
+    {
+     "title": "Suriname zet groep illegale mennonieten het land uit",
+     "link": "https://nos.nl/l/2637647",
+     "time": "2026-11-01T19:31:54+01:00",
+     "img": "https://images.cdn.nos.nl/8/6/N/w/S/H/nbGLwdz21gJexymZwJxaLJgJj52KDkFeVMxTa5U/1169x410x1056x594-1024x576.webp"
+    },
+    {
      "title": "Piraten kapen Iraans schip bij Somalië, mogelijk met meer aanvallen als doel",
      "link": "https://nos.nl/l/2637625",
      "time": "2026-11-01T17:40:09+01:00",
@@ -80,18 +92,6 @@
      "link": "https://nos.nl/l/2637561",
      "time": "2026-11-01T11:00:05+01:00",
      "img": "https://images.cdn.nos.nl/2/9/A/r/2/D/nuPS7K2AMPhoDkAUQ92CvVi2vi7go7HjtTnAza7/328x632x3232x1818-1024x576.webp"
-    },
-    {
-     "title": "Honderdduizenden auto's ondanks mogelijke defecten toch de weg op, zo zit het met jouw auto",
-     "link": "https://nos.nl/l/2637553",
-     "time": "2026-11-01T07:59:15+01:00",
-     "img": "https://images.cdn.nos.nl/8/2/5/8/a/w/n1Lq5xBSV9j3JEwaMVLNtLY1KgHv5a39RS7HASG/0x0x4000x2250-1024x576.webp"
-    },
-    {
-     "title": "Nacht vol plunderingen en branden in Frankfurt na dag met vreedzame protesten",
-     "link": "https://nos.nl/l/2637552",
-     "time": "2026-11-01T07:54:21+01:00",
-     "img": "https://images.cdn.nos.nl/8/9/3/s/8/q/QP9uqvtLPTgNo68Eb5DnLhtWcNEBRyjpqPZbBuc/8x215x1968x1107-1024x576.webp"
     }
    ]
   },
@@ -99,10 +99,40 @@
    "name": "NOS Sport",
    "items": [
     {
+     "title": "Arsenal neemt koppositie Premier League over door zeldzame zege op Anfield",
+     "link": "https://nos.nl/l/2637651",
+     "time": "2026-11-01T19:47:04+01:00",
+     "img": "https://images.cdn.nos.nl/3/B/P/P/r/c/4hbdxuEf9ZRrNBXt58nSQ8JKwows38v3dh4AFUk/0x417x4000x2250-1024x576.webp"
+    },
+    {
+     "title": "Blunderend Groningen ondanks bliksemstart onderuit tegen Sparta",
+     "link": "https://nos.nl/l/2637639",
+     "time": "2026-11-01T18:40:56+01:00",
+     "img": "https://images.cdn.nos.nl/4/7/i/A/2/2/imtbg9FaX31WNakKLEEcjvvab35zFNiX4S7KLZ4/275x315x2016x1134-1024x576.webp"
+    },
+    {
+     "title": "Real Madrid blijft in spoor Barcelona en Atlético: eenvoudige zege op Racing Santander",
+     "link": "https://nos.nl/l/2637638",
+     "time": "2026-11-01T18:25:33+01:00",
+     "img": "https://images.cdn.nos.nl/1/F/Z/2/f/F/gtKB64xYnA3RD82VkzeWAeWfKP5PJf8bLEvQEkR/3x388x3712x2088-1024x576.webp"
+    },
+    {
+     "title": "Alcaraz dendert in Wenen naar vierde tennistitel van 2026",
+     "link": "https://nos.nl/l/2637634",
+     "time": "2026-11-01T18:16:58+01:00",
+     "img": "https://images.cdn.nos.nl/5/7/E/c/6/E/9hhkYuaNauqV5pUcJcqj2zkYQgueF6hXKWj6eUn/125x320x3664x2061-1024x576.webp"
+    },
+    {
+     "title": "Oud-PSV'er Saibari 'minstens drie maanden' uitgeschakeld na enkeloperatie",
+     "link": "https://nos.nl/l/2637632",
+     "time": "2026-11-01T18:10:04+01:00",
+     "img": "https://images.cdn.nos.nl/2/3/H/S/S/H/Pt1eMgLZoeaJXJKonzpRZ2zSroaMSoDUbZA59Lb/8x367x3984x2241-1024x576.webp"
+    },
+    {
      "title": "Sensationele zege Zweed Almgren bij marathondebuut in New York, Nageeye dertiende",
      "link": "https://nos.nl/l/2637627",
      "time": "2026-11-01T17:49:54+01:00",
-     "img": "https://images.cdn.nos.nl/1/9/7/c/B/v/8hnzfjHE898MkFrSjvvpz1RpL8Ut4R841nV9MCU/8x171x3984x2241-1024x576.webp"
+     "img": "https://images.cdn.nos.nl/2/D/T/U/a/Y/CwrchJZTUwhCJxE2Q3Zj5RAifbVEVxQZ36Xuwxh/0x0x4000x2250-1024x576.webp"
     },
     {
      "title": "Twente glundert na 0-9 winst, 'maar één keer extra scoren was nog cooler geweest'",
@@ -114,13 +144,13 @@
      "title": "Hockeyers Amsterdam winnen weer niet in klassieker tegen Bloemendaal",
      "link": "https://nos.nl/l/2637618",
      "time": "2026-11-01T16:50:18+01:00",
-     "img": "https://images.cdn.nos.nl/2/B/u/E/z/F/Nx5YQyV1MojUjNRec2Mj3EcvTUvnXyJDBPhzyVV/4x286x2992x1683-1024x576.webp"
+     "img": "https://images.cdn.nos.nl/7/6/r/a/s/f/A1e4dCyQR962brtheriiC1Z4qjH6VX62thmv9Pm/6x3x2464x1386-1024x576.webp"
     },
     {
      "title": "Sterk Telstar doet oud-trainer Correia pijn met overwinning op Utrecht",
      "link": "https://nos.nl/l/2637614",
      "time": "2026-11-01T16:28:02+01:00",
-     "img": "https://images.cdn.nos.nl/2/3/o/F/M/2/wpPHGR7owTF4VKb2eh6YUjjUqWbn1hqF2zMrqpR/3x240x3536x1989-1024x576.webp"
+     "img": "https://images.cdn.nos.nl/4/9/p/w/S/U/SnnHXvHQAEe1vKaF6WnPEYXhBEg8JqqUfH8pUhz/1x1x3536x1989-1024x576.webp"
     },
     {
      "title": "Weghorst en Ørjasaeter schitteren bij recordzege Twente op Excelsior: 0-9",
@@ -157,36 +187,6 @@
      "link": "https://nos.nl/l/2637584",
      "time": "2026-11-01T14:12:13+01:00",
      "img": "https://images.cdn.nos.nl/7/4/7/d/M/t/2vRydzL49QM9wAnHWDFcRgzT1iqYaCPJvcMAB4z/0x202x4000x2250-1024x576.webp"
-    },
-    {
-     "title": "Krommenhoek wint ook 10.000 meter kwalificatietoernooi, Groenewoud snelste op 5.000 meter",
-     "link": "https://nos.nl/l/2637580",
-     "time": "2026-11-01T13:48:26+01:00",
-     "img": "https://images.cdn.nos.nl/8/9/2/m/f/Y/GbymC8tfpCAC8VnSN8YciNacWJpj1igZREAPQRy/0x0x2688x1512-1024x576.webp"
-    },
-    {
-     "title": "Winnen geen toevalligheid voor Twente Vrouwen: 'Basis is vrouwentak met kampioensstandaarden'",
-     "link": "https://nos.nl/l/2637562",
-     "time": "2026-11-01T11:03:12+01:00",
-     "img": "https://images.cdn.nos.nl/8/H/d/o/Z/v/Abe2eGwb5nTjnQbVc17PNwfFkoMEPGUHSZDiQV7/538x332x2416x1359-1024x576.webp"
-    },
-    {
-     "title": "Machtsvertoon Márquez in MotoGP Maleisië: ruim vier seconden voorsprong",
-     "link": "https://nos.nl/l/2637557",
-     "time": "2026-11-01T08:59:05+01:00",
-     "img": "https://images.cdn.nos.nl/3/E/c/N/1/R/LKP5rQH1xaWS1k1cbmpikNHgoXuin8u7D2zn7Ah/1x67x2592x1458-1024x576.webp"
-    },
-    {
-     "title": "Antonelli (20) op matchpoint om jongste wereldkampioen Formule 1 te worden",
-     "link": "https://nos.nl/l/2637544",
-     "time": "2026-11-01T06:00:01+01:00",
-     "img": "https://images.cdn.nos.nl/8/F/V/K/A/j/yhGQW9gKYQoQF7zuuarX6q9hSDLhvV94GPgiZiY/175x49x3696x2079-1024x576.webp"
-    },
-    {
-     "title": "Cambuur-Go Ahead bij 4-0 gestaakt na vuurwerk, duel wordt niet uitgespeeld",
-     "link": "https://nos.nl/l/2637536",
-     "time": "2026-10-31T23:48:55+01:00",
-     "img": "https://images.cdn.nos.nl/1/8/b/3/F/8/QUjVrQw7LN9H2gwHoYp6L71jnRvNWMBvr6BoFdn/1161x909x2688x1512-1024x576.webp"
     }
    ]
   },
@@ -194,7 +194,37 @@
    "name": "NU.nl",
    "items": [
     {
-     "title": "Demonstrant verstoort opzetten van probleemwolf 'Bram' in Naturalis",
+     "title": "Live F1 | Antonelli maakt zich op voor kampioensrace, veelbesproken Lawson start vanuit pits",
+     "link": "https://www.nu.nl/formule-1/6415162/antonelli-maakt-zich-op-voor-kampioensrace-veelbesproken-lawson-start-vanuit-pits.html",
+     "time": "2026-11-01T19:53:31+01:00",
+     "img": "https://images.nu.nl/m/2c0xkj0atj9y_sqr256/743/1/3999/3999/antonelli-maakt-zich-op-voor-kampioensrace-veelbesproken-lawson-start-vanuit-pits.jpg"
+    },
+    {
+     "title": "Weghorst dankt God voor speciale middag en hoopt dat Litmanen zijn goals ziet",
+     "link": "https://www.nu.nl/voetbal/6415158/weghorst-dankt-god-voor-speciale-middag-en-hoopt-dat-litmanen-zijn-goals-ziet.html",
+     "time": "2026-11-01T18:30:13+01:00",
+     "img": "https://images.nu.nl/m/uw0xjelal9hp_sqr256/668/276/3676/3676/weghorst-dankt-god-voor-speciale-middag-en-hoopt-dat-litmanen-zijn-goals-ziet.jpg"
+    },
+    {
+     "title": "Deelnemers van nagebootste Mars-missie verlaten isolatie na ruim een jaar",
+     "link": "https://www.nu.nl/wetenschap/6415156/deelnemers-van-nagebootste-mars-missie-verlaten-isolatie-na-ruim-een-jaar.html",
+     "time": "2026-11-01T18:17:28+01:00",
+     "img": "https://images.nu.nl/m/ggyx7t2ap91j_sqr256/402/0/4198/4198/deelnemers-van-nagebootste-mars-missie-verlaten-isolatie-na-ruim-een-jaar.jpg"
+    },
+    {
+     "title": "Cartoonist krijgt 4 jaar cel in Marokko om beledigen koning: 'Trend van intimidatie'",
+     "link": "https://www.nu.nl/buitenland/6415155/cartoonist-krijgt-4-jaar-cel-in-marokko-om-beledigen-koning-trend-van-intimidatie.html",
+     "time": "2026-11-01T17:56:28+01:00",
+     "img": "https://images.nu.nl/m/cmcxbwaaftkn_sqr256/95/0/1999/1999/cartoonist-krijgt-4-jaar-cel-in-marokko-om-beledigen-koning-trend-van-intimidatie.jpg"
+    },
+    {
+     "title": "Zweeds hardloopfenomeen van 31 jaar wint in New York bij debuut op marathon",
+     "link": "https://www.nu.nl/sport-overig/6415149/zweeds-hardloopfenomeen-van-31-jaar-wint-in-new-york-bij-debuut-op-marathon.html",
+     "time": "2026-11-01T17:55:17+01:00",
+     "img": "https://images.nu.nl/m/g3sxxjfad0nu_sqr256/115/0/3096/3096/zweeds-hardloopfenomeen-van-31-jaar-wint-in-new-york-bij-debuut-op-marathon.jpg"
+    },
+    {
+     "title": "Demonstrant verstoort opzetten van probleemwolf Bram in Naturalis",
      "link": "https://www.nu.nl/wolf/6415148/demonstrant-verstoort-opzetten-van-probleemwolf-bram-in-naturalis.html",
      "time": "2026-11-01T16:55:38+01:00",
      "img": "https://images.nu.nl/m/jrcxbe6apyqc_sqr256/267/0/1067/1067/demonstrant-verstoort-opzetten-van-probleemwolf-bram-in-naturalis.jpg"
@@ -252,36 +282,6 @@
      "link": "https://www.nu.nl/binnenland/6415129/marechaussee-noemt-migrantenboot-voor-zeeuwse-kust-uniek-incident.html",
      "time": "2026-11-01T14:02:16+01:00",
      "img": "https://images.nu.nl/m/b9mxmfjarz9y_sqr256/1248/0/3712/3712/marechaussee-noemt-migrantenboot-voor-zeeuwse-kust-uniek-incident.jpg"
-    },
-    {
-     "title": "Zonnige week in aantocht met kans op nachtvorst: 'Het wordt behoorlijk koud'",
-     "link": "https://www.nu.nl/weerbericht/6415100/zonnige-week-in-aantocht-met-kans-op-nachtvorst-het-wordt-behoorlijk-koud.html",
-     "time": "2026-11-01T13:55:04+01:00",
-     "img": "https://images.nu.nl/m/i8rxn1qavmre_sqr256/563/0/2000/2000/zonnige-week-in-aantocht-met-kans-op-nachtvorst-het-wordt-behoorlijk-koud.jpg"
-    },
-    {
-     "title": "Slijptol en priem onder 22 wapens gevonden bij preventief fouilleren in Enschede",
-     "link": "https://www.nu.nl/binnenland/6415120/slijptol-en-priem-onder-22-wapens-gevonden-bij-preventief-fouilleren-in-enschede.html",
-     "time": "2026-11-01T13:49:33+01:00",
-     "img": "https://images.nu.nl/m/sinx43gaptfr_sqr256/0/0/1536/1536/slijptol-en-priem-onder-22-wapens-gevonden-bij-preventief-fouilleren-in-enschede.jpg"
-    },
-    {
-     "title": "Skelet van fruitetende dinosoort ter grootte van een kalkoen ontdekt in VS",
-     "link": "https://www.nu.nl/dieren/6415125/skelet-van-fruitetende-dinosoort-ter-grootte-van-een-kalkoen-ontdekt-in-vs.html",
-     "time": "2026-11-01T12:48:20+01:00",
-     "img": "https://images.nu.nl/m/i41xhseaexhd_sqr256/0/445/1583/1583/skelet-van-fruitetende-dinosoort-ter-grootte-van-een-kalkoen-ontdekt-in-vs.jpg"
-    },
-    {
-     "title": "Olympiër en atletiekkampioene Ciara Mageean (34) overleden aan darmkanker",
-     "link": "https://www.nu.nl/sport-overig/6415122/olympier-en-atletiekkampioene-ciara-mageean-34-overleden-aan-darmkanker.html",
-     "time": "2026-11-01T12:40:47+01:00",
-     "img": "https://images.nu.nl/m/wumxcu0ahcer_sqr256/868/0/5121/5121/olympier-en-atletiekkampioene-ciara-mageean-34-overleden-aan-darmkanker.jpg"
-    },
-    {
-     "title": "Nieuwe regels rond vakantieverhuur moet aan lopende band verhuren tegengaan",
-     "link": "https://www.nu.nl/economie/6414936/nieuwe-regels-rond-vakantieverhuur-moet-aan-lopende-band-verhuren-tegengaan.html",
-     "time": "2026-11-01T12:32:31+01:00",
-     "img": "https://images.nu.nl/m/s2oxp94av6w6_sqr256/354/4/4460/4460/nieuwe-regels-rond-vakantieverhuur-moet-aan-lopende-band-verhuren-tegengaan.jpg"
     }
    ]
   }
