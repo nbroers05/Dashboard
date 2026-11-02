@@ -30,11 +30,15 @@ html.y2k body {
   -webkit-font-smoothing: auto;
   background: #0f2c6e;
 }
-/* Bureaublad: effen XP-blauw met een vleugje verloop, geen hoesgloed */
+/* Bureaublad: kleurt mee met de hoes van wat er speelt (--tint, net als in Modern), met een vleug XP-blauw
+   en heel lichte beeldlijntjes zoals een oude CRT */
+html.y2k body { background: color-mix(in srgb, var(--tint) 45%, #081436); }
 html.y2k body::before {
   background:
-    radial-gradient(120% 70% at 50% 0%, #2457b4 0%, transparent 70%),
-    linear-gradient(180deg, #16388a 0%, #0c2563 100%);
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, .025) 0 1px, transparent 1px 3px),
+    radial-gradient(110% 80% at 85% 0%, color-mix(in srgb, var(--tint) 90%, transparent), transparent 70%),
+    radial-gradient(90% 70% at 0% 100%, color-mix(in srgb, var(--tint) 60%, transparent), transparent 70%),
+    linear-gradient(180deg, color-mix(in srgb, var(--tint) 40%, #14306f) 0%, color-mix(in srgb, var(--tint) 35%, #070f2b) 100%);
 }
 html.y2k :focus-visible { outline: 1px dotted #000; outline-offset: 2px; }
 
@@ -444,6 +448,140 @@ html.y2k .ph-mini-play { border-radius: 3px; background: var(--y2-btn); border: 
 html.y2k .ph-mini-play svg { fill: #111; }
 html.y2k .ph-mini-prog { background: #2fb34a; }
 html.y2k.phone-mode body:not(.minimal) .topbar { border-radius: 0; }
+
+/* ---------- Elk vak een eigen gezicht (zoals de mockup), zodat ze niet allemaal hetzelfde zijn ---------- */
+/* Klassieke scrollbalk met knopjes (Chrome/Edge); Firefox kent alleen kleur en breedte */
+html.y2k .y2-scroll, html.y2k .ly-scroll { scrollbar-width: auto; scrollbar-color: #c9c2ad #f3eccd; }
+html.y2k :is(.y2-scroll, .ly-scroll, .wk-body, .al-list, .cal-list)::-webkit-scrollbar { display: block; width: 16px; height: 16px; }
+html.y2k :is(.y2-scroll, .ly-scroll, .wk-body, .al-list, .cal-list)::-webkit-scrollbar-track { background: repeating-conic-gradient(#f3eccd 0 25%, #e4dcbc 0 50%) 0 0 / 2px 2px; }
+html.y2k :is(.y2-scroll, .ly-scroll, .wk-body, .al-list, .cal-list)::-webkit-scrollbar-thumb {
+  border: 1px solid #6f6a5c;
+  background: linear-gradient(90deg, #fffdf8, #e2dbc8);
+  box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #b9b2a2;
+}
+html.y2k :is(.y2-scroll, .ly-scroll, .wk-body, .al-list, .cal-list)::-webkit-scrollbar-button:single-button {
+  display: block; height: 16px;
+  border: 1px solid #6f6a5c;
+  background: var(--y2-btn);
+}
+
+/* Songtekst: geel kladblok met lijntjes en een echte scrollbalk */
+html.y2k #lyrics { background: #fff8c9; }
+/* Kopregel (kopje + Sluiten) wordt de titelbalk, Sluiten een knopje erin */
+html.y2k #lyrics > .w-row {
+  flex: none;
+  height: var(--y2-bar);
+  margin: 0 -12px;
+  padding: 0 3px 0 8px;
+  background: var(--y2-title);
+  border-bottom: 1px solid #0a3590;
+}
+html.y2k #lyrics > .w-row .eyebrow {
+  color: #fff;
+  font: 700 .78rem/var(--y2-bar) var(--y2-font);
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, .45);
+}
+html.y2k #lyrics-close {
+  padding: 1px 8px;
+  border: 1px solid #fff;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #f2f2f2, #c9c6bd);
+  box-shadow: inset -1px -1px 0 #8b877c;
+  color: #1b1b1b;
+  font: 400 .75rem/1.2 var(--y2-font);
+}
+html.y2k #lyrics .w-body { margin-top: 0; }
+html.y2k #lyrics .w-body {
+  margin: 0 -12px -10px;
+  border-top: 1px solid #c9b25a;
+  background: #fffbe0;
+}
+/* De lijntjes scrollen mee met de tekst (background-attachment: local) en elke regel valt precies op een lijntje */
+html.y2k #lyrics { --ly-h: 30px; }
+html.y2k .desk #lyrics { --ly-h: 36px; }
+html.y2k .ly-scroll {
+  background: repeating-linear-gradient(180deg, transparent 0 calc(var(--ly-h) - 1px), #eadb8f calc(var(--ly-h) - 1px) var(--ly-h)) local;
+  /* zoals Modern 35% boven en onder (huidige regel in het midden), afgerond op hele regels zodat de lijntjes kloppen */
+  padding: calc(var(--ly-h) * 6) 10px calc(var(--ly-h) * 6) 14px;
+  padding-block: round(down, 35%, var(--ly-h));
+  -webkit-mask-image: none;
+  mask-image: none;
+  border-left: 2px solid #f0a0a0;   /* rode kantlijn */
+}
+html.y2k .ly-scroll.plain { padding: 0 10px 0 14px; }
+html.y2k .ly-line { margin: 0; line-height: var(--ly-h); font-weight: 400; color: #9b9070; }
+html.y2k .ly-line.past { color: #5f5843; }
+html.y2k .ly-line.now { color: #000; font-weight: 700; text-shadow: none; background: #ffe680; box-shadow: 0 0 0 3px #ffe680; }
+html.y2k .ly-scroll.plain .ly-line { margin: 0; line-height: var(--ly-h); color: #2b2820; font-weight: 400; }
+html.y2k .ly-note { color: #5f5843; }
+html.y2k .desk #lyrics:not([hidden]) {
+  padding: 0 12px 10px !important;
+  border: 1px solid #0a3590;
+  border-radius: 6px 6px 0 0;
+  background: #fff8c9;
+  box-shadow: 0 0 0 100vmax rgba(8, 24, 64, .45), 4px 4px 0 rgba(0, 0, 0, .55);
+}
+
+/* Weer: buienalarm op ruitjespapier met blokjes in plaats van ronde staafjes */
+html.y2k :is(.rn-chart, .rn-flat) {
+  border: 1px solid #7f9db9;
+  background-color: #fbfdff;
+  background-image: linear-gradient(#d6e2f2 1px, transparent 1px), linear-gradient(90deg, #d6e2f2 1px, transparent 1px);
+  background-size: 10px 10px;
+  background-position: -1px -1px;
+}
+html.y2k .rn-chart { gap: 1px; padding: 0 1px; }
+html.y2k .rn-bar i { border-radius: 0; background: linear-gradient(180deg, #4b95f7, #1556cf); box-shadow: inset 1px 1px 0 rgba(255, 255, 255, .5); }
+html.y2k .rn-bar.dry i { background: #b9c7da; box-shadow: none; }
+html.y2k .rn-flat::before { background: #7f9db9; height: 1px; }
+html.y2k .rn-flat span { border-radius: 2px; border: 1px solid #7f9db9; background: #fff; color: #0d3a9e; }
+html.y2k #w-weather { background: linear-gradient(180deg, #e6f1fc 0%, var(--y2-cream) 55%); }
+
+/* AH-uren: lichtblauw rekenblad (rustig blauw, niet het felle AH-blauw) */
+html.y2k #w-ah {
+  background-color: #e3effa;
+  background-image: linear-gradient(#cbdcee 1px, transparent 1px);
+  background-size: 100% 22px;
+}
+html.y2k .ah-pay { border-top-color: #9fb6d3; }
+html.y2k .ah-bar .stack { border-radius: 0; background: #fff; border: 1px solid #7f9db9; }
+html.y2k .ah-bar .w { background: linear-gradient(90deg, #4b95f7, #1556cf); }
+html.y2k .ah-bar .p { background: repeating-linear-gradient(45deg, #9cc0f0 0 3px, #d6e6fb 3px 6px); }
+
+/* Episodes Left: donker paars scherm, zoals een mediabibliotheek */
+html.y2k #w-episodes {
+  --text: #fff;
+  --muted: #e2c7d6;
+  background: linear-gradient(180deg, #3a1530, #24091d);
+  color: #fff;
+}
+html.y2k #w-episodes .w-big { color: #ff8fc4; }
+html.y2k .ep-cover .img-box { border-radius: 0; border: 1px solid #000; box-shadow: 2px 2px 0 rgba(0, 0, 0, .6); }
+html.y2k .ep-badge { border-radius: 2px; }
+
+/* F1: podium als knoppen, nummer 1 goud */
+html.y2k .f1-pod {
+  border: 1px solid #8b8370;
+  border-radius: 2px;
+  background: var(--y2-btn);
+  box-shadow: inset 1px 1px 0 #fff, 1px 1px 0 rgba(0, 0, 0, .25);
+}
+html.y2k .f1-pod.p1 { background: linear-gradient(180deg, #fff6c8, #f2d36b); border-color: #9a7a10; }
+
+/* Speler: zilver met bevel, zoals een oude mediaspeler */
+html.y2k .media-stack > .player[data-pos="0"],
+html.y2k .media-stack > .player:only-of-type { background: linear-gradient(180deg, #f4f3ef 0%, #d9d5ca 100%); }
+
+/* Meldingen: wit lijstje, Canvas: schrift met kantlijn */
+html.y2k #w-alerts .w-body { background: #fff; margin: 0 -12px -10px; padding: 8px 12px 10px; border-top: 1px solid #c8bfa8; }
+html.y2k .desk #w-alerts .w-body { margin-bottom: -6px; }
+html.y2k #w-canvas { background: linear-gradient(90deg, transparent 0 6px, #f0a0a0 6px 7px, transparent 7px), var(--y2-cream); }
+
+/* Film van vanavond / Laatst gekeken: donkere bioscoop-strook achter de posters */
+html.y2k :is(.lb-row, .film-poster) { border-radius: 0; }
+html.y2k .film-poster { border: 1px solid #000; box-shadow: 2px 2px 0 rgba(0, 0, 0, .5); }
 
 /* Instellingen: tabbladen, kopjes en themakaartjes op crème */
 html.y2k .st-tabs { gap: 2px; border-bottom: 1px solid #8b8370; }

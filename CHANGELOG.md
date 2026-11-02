@@ -10,6 +10,7 @@ Onder de lijst staat per ronde de uitgebreide toelichting zoals die toen geschre
 
 | Versie | Wat |
 |---|---|
+| 0.53.1 | Y2K: elk vak een eigen gezicht zoals de mockup. Songtekst is een geel kladblok met lijntjes (elke regel precies op een lijn), rode kantlijn en een ouderwetse scrollbalk; buienalarm op ruitjespapier met blauwe blokjes; AH-uren als lichtblauw rekenblad; Episodes Left donkerpaars; F1-podium als knoppen met goud voor nummer 1; zilveren speler; meldingen op wit; Canvas met kantlijn. De achtergrond kleurt weer mee met de hoes van wat er speelt (met lichte beeldlijntjes), in plaats van altijd blauw. |
 | 0.53.0 | Nieuwe stijl **Y2K (2003)** in Instellingen › Thema › Stijl: elk vak is een venster met blauwe titelbalk en sluitknopje, crème binnenkant en harde schaduw; grijs-beige knoppen, ouderwetse tabbladen, groene pixelklok (VT323) en pixelcijfers, onderbalk als taakbalk met Start-knop, agenda in Outlook-stijl, telefoon met dezelfde stijl. Indeling en functies blijven gelijk; de seizoens- en feestdagthema's werken er gewoon bovenop. Testen kan ook met `?stijl=y2k`. |
 
 ## 31 oktober 2026
