@@ -2646,3 +2646,45 @@ html.mn-check body { visibility: hidden; }
   *, *::before, *::after, ::backdrop { animation: none !important; transition: none !important; }
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
 }
+
+/* ---------- Windows-app (?app=pc, appbar.js): eigen titelbalk bovenaan, de rest schuift eronder ----------
+   --app-h = hoogte van de balk; alles wat 100dvh of top: 0 gebruikt krijgt die hoogte eraf. Schermvullend (F11) = geen balk. */
+.app-bar { display: none; }
+html.app { --app-h: 30px; }
+html.app.app-full { --app-h: 0px; }
+html.app body { box-sizing: border-box; padding-top: var(--app-h); }
+html.app .app-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 90;
+  display: flex; align-items: center; justify-content: space-between;
+  height: var(--app-h);
+  padding-left: 12px;
+  background: color-mix(in srgb, var(--tint, #000) 14%, #0b0b0e);
+  border-bottom: 1px solid rgba(255, 255, 255, .06);
+  color: var(--muted);
+  font-size: .74rem;
+  user-select: none; -webkit-user-select: none;
+  cursor: default;
+}
+html.app.app-full .app-bar { display: none; }
+.app-bar-title { display: flex; align-items: center; gap: 8px; min-width: 0; white-space: nowrap; letter-spacing: .02em; pointer-events: none; }
+.app-bar-btns { display: flex; align-self: stretch; }
+.app-btn { display: grid; place-items: center; width: 46px; padding: 0; border: 0; background: none; color: var(--text); cursor: default; }
+.app-btn svg { width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 1; }
+.app-btn:hover { background: rgba(255, 255, 255, .08); }
+.app-btn.app-close:hover { background: #c42b1c; color: #fff; }
+html.app-maxed .app-max svg path { d: path('M1.5 3h5.5v5.5h-5.5zM3 3v-1.5h5.5v5.5h-1.5'); }
+/* Wat de balk anders zou overlappen */
+html.app .dashboard.desk { height: calc(100dvh - var(--app-h)); }
+html.app .rail { top: var(--app-h); }
+html.app body.minimal .topbar { top: var(--app-h); }
+html.app .ag-layer { top: calc(120px + var(--app-h)); }
+html.app #offline-note { top: calc(var(--app-h) + 8px); }
+html.app dialog:modal { top: var(--app-h); max-height: calc(100dvh - var(--app-h)); }
+html.app .panel-dialog.page-dialog,
+html.app .panel-dialog.wx-dialog,
+html.app .panel-dialog.settings-dialog { max-height: calc(100dvh - var(--app-h)); }
+html.app .panel-dialog.page-dialog { height: calc(100dvh - var(--app-h)); }
+@media (max-width: 700px) {
+  html.app .panel-dialog.wx-dialog,
+  html.app .panel-dialog.settings-dialog { height: calc(100dvh - var(--app-h)); }
+}

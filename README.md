@@ -245,6 +245,19 @@ Die moeten live zijn, dus elke persoon krijgt een eigen privé opslagplek op Git
 
 Goed om te weten: dat token zit (versleuteld) in Margriets pakketje, want haar pagina heeft het nodig. Het kan alleen bij haar eigen repo, nergens anders.
 
+## 15. Als app op je pc (Windows)
+
+Een eigen venster zonder Firefox-balken, met een titelbalk die het dashboard zelf tekent (in Y2K een XP-titelbalk). De app laadt gewoon deze site, dus nieuwe dashboardversies zie je meteen.
+
+1. Ga naar https://github.com/nbroers05/dashboard-app/releases en open de nieuwste versie.
+2. Download onder **Assets** het bestand dat eindigt op `_x64-setup.exe`.
+3. Dubbelklik het. Windows zegt **"Windows heeft uw pc beschermd"**: klik **Meer informatie** › **Toch uitvoeren** (de app is niet ondertekend, dat kost geld).
+4. **Volgende** › **Installeren** › **Voltooien**.
+5. Log één keer in met je **wachtzin** en kies **Onthouden** (de app heeft eigen opslag, los van Firefox).
+6. Meestarten met Windows: rechtsklik op het icoon rechtsonder in het systeemvak › **Automatisch opstarten**.
+
+Sluiten (✕) zet hem in het systeemvak; echt afsluiten via rechtsklik op het icoon › **Afsluiten**. **F11** = schermvullend. Links naar andere sites openen in Firefox. De extensies **Episodes Left** en **Sterrenvoorspeller** werken (nog) niet in de app. Meer uitleg in de README van `dashboard-app`.
+
 ## Problemen
 
 - **"INVALID_CLIENT: Invalid redirect URI"**: de URL in de adresbalk komt niet exact overeen met een Redirect URI. Let op `/` aan het eind.

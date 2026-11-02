@@ -617,3 +617,28 @@ html.y2k .gm-score { color: #8a5a00; }
 
 /* ---------- Versie onderaan (tall/telefoon) ---------- */
 html.y2k .version { color: #c9d7f5; opacity: 1; }
+
+/* ---------- Windows-app (?app=pc): XP-titelbalk ---------- */
+html.y2k.app:not(.app-full) { --app-h: 30px; }
+html.y2k.app .app-bar {
+  padding: 0 4px 0 6px;
+  background: linear-gradient(180deg, #0a5eea 0%, #3d8bff 7%, #0a5eea 18%, #0055e5 55%, #0049d6 90%, #0037b3 100%);
+  border-bottom: 1px solid #002a8f;
+  color: #fff;
+  font: 700 .82rem/1 var(--y2-font);
+  text-shadow: 1px 1px 0 #0a1f6e;
+}
+html.y2k .app-bar-title { gap: 6px; letter-spacing: 0; }
+html.y2k .app-bar-btns { align-self: center; gap: 2px; }
+html.y2k .app-btn {
+  width: 21px; height: 21px;
+  border: 1px solid #fff; border-radius: 3px;
+  background: linear-gradient(180deg, #4c95ff 0%, #2a6cf0 45%, #1554dc 100%);
+  box-shadow: inset -1px -1px 0 rgba(0, 0, 10, .3), inset 1px 1px 0 rgba(255, 255, 255, .35);
+  color: #fff;
+}
+html.y2k .app-btn svg { width: 9px; height: 9px; stroke-width: 2; }
+html.y2k .app-btn:hover { background: linear-gradient(180deg, #6eaaff 0%, #3f80ff 45%, #2565ea 100%); }
+html.y2k .app-btn.app-close { background: linear-gradient(180deg, #ef8a63 0%, #dc4f22 50%, #c33a14 100%); }
+html.y2k .app-btn.app-close:hover { background: linear-gradient(180deg, #ffa27c 0%, #ee6235 50%, #d44a1f 100%); }
+html.y2k .app-btn:active { box-shadow: inset 1px 1px 0 rgba(0, 0, 10, .35); }
