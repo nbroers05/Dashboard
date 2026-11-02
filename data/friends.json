@@ -15,6 +15,20 @@
  ],
  "logs": [
   {
+   "title": "Inception",
+   "year": 2010,
+   "rating": 5.0,
+   "watched": "2026-11-02",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/marrie01/film/inception/",
+   "slug": "inception",
+   "tmdbId": "27205",
+   "poster": "https://image.tmdb.org/t/p/w342/xlaY2zyzMfkhk0HSC5VUwzoZPU1.jpg",
+   "user": "Marrie01",
+   "name": "Margriet"
+  },
+  {
    "title": "Weapons",
    "year": 2025,
    "rating": 3.5,
@@ -375,20 +389,6 @@
    "slug": "taxi-driver",
    "tmdbId": "103",
    "poster": "https://a.ltrbxd.com/resized/film-poster/5/1/9/4/7/51947-taxi-driver-0-600-0-900-crop.jpg?v=3ae07cca2d",
-   "user": "Marrie01",
-   "name": "Margriet"
-  },
-  {
-   "title": "Jojo Rabbit",
-   "year": 2019,
-   "rating": 4.5,
-   "watched": "2026-07-26",
-   "rewatch": false,
-   "liked": false,
-   "link": "https://letterboxd.com/marrie01/film/jojo-rabbit/",
-   "slug": "jojo-rabbit",
-   "tmdbId": "515001",
-   "poster": "https://a.ltrbxd.com/resized/film-poster/4/4/4/6/0/0/444600-jojo-rabbit-0-600-0-900-crop.jpg?v=a5ad083635",
    "user": "Marrie01",
    "name": "Margriet"
   },
