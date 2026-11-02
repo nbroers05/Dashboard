@@ -61,12 +61,93 @@
 
   const two = (n) => String(n).padStart(2, '0');
   const clock = () => { const d = new Date(); return `${two(d.getHours())}:${two(d.getMinutes())}`; };
+  const who = layer.querySelector('.kamer-who');
+  let said = null, typing = 0;
+  // Tekst verschijnt letter voor letter, zoals in een DS-spel (één keer per bericht; niet bij minder beweging)
+  function type(text) {
+    clearInterval(typing);
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { line.textContent = text; return; }
+    let i = 0;
+    line.textContent = '';
+    typing = setInterval(() => { line.textContent = text.slice(0, ++i); if (i >= text.length) clearInterval(typing); }, 18);
+  }
   const setLine = () => {
+    if (said) return;
+    who.textContent = 'Kamer';
+    clearInterval(typing);
     line.textContent = mode === 'phone'
       ? `Het is ${clock()}. Tik op je telefoon.`
       : `Het is ${clock()}. Klik op de monitor of druk op Enter.`;
   };
   setLine();
+
+  // ---------- Wat de voorwerpen zeggen (gegevens die het dashboard al heeft) ----------
+  const DAYS = ['zo', 'ma', 'di', 'wo', 'do', 'vr', 'za'];
+  const when = (ms) => {
+    const d = new Date(ms), t = `${two(d.getHours())}:${two(d.getMinutes())}`;
+    const day0 = new Date(); day0.setHours(0, 0, 0, 0);
+    const diff = Math.floor((new Date(d).setHours(0, 0, 0, 0) - day0) / 864e5);
+    return diff === 0 ? `vandaag ${t}` : diff === 1 ? `morgen ${t}` : `${DAYS[d.getDay()]} ${d.getDate()}/${d.getMonth() + 1} ${t}`;
+  };
+  const nextAH = () => {
+    const ev = (window.DASH_CALENDAR?.events || []).filter((e) => window.DASH?.isAH(e) && e.start > Date.now()).sort((a, b) => a.start - b.start)[0];
+    return ev ? when(ev.start) : null;
+  };
+  const SAY = {
+    async raam() {
+      const temp = window.DASH_WEATHER?.current?.temperature_2m;
+      const t = temp != null ? ` ${Math.round(temp)}°C.` : '';
+      try {
+        const r = await window.DASH.radar();
+        const MIN = window.DASH.RAIN_MIN || .1;
+        const slots = r.slots || [];
+        const wetNow = slots[0] && slots[0].mmh >= MIN;
+        if (wetNow) {
+          const dry = slots.find((x) => x.mmh < MIN);
+          return dry ? `Het regent. Droog om ${when(dry.start).replace(/^vandaag /, '')}, zegt Buienradar.${t}` : `Het regent, en de komende 2 uur blijft dat zo.${t}`;
+        }
+        const wet = slots.find((x) => x.mmh >= MIN);
+        return wet ? `Nog droog. Om ${when(wet.start).replace(/^vandaag /, '')} begint het te regenen.${t}` : `Droog buiten, de komende 2 uur ook.${t}`;
+      } catch { return temp != null ? `Buiten is het${t}` : 'Het weer is nog niet geladen.'; }
+    },
+    poster() {
+      const tr = window.DASH_TRACK;
+      return tr ? `Nu op Spotify: ${tr.name} van ${tr.artist}.` : 'Op Spotify speelt nu niets.';
+    },
+    async cds() {
+      try {
+        const d = await window.DASH.getJSON(`data/letterboxd.json?t=${Math.floor(Date.now() / 900000)}`);
+        const f = d.logs && d.logs[0];
+        if (!f) return 'Nog niets gelogd op Letterboxd.';
+        const stars = f.rating ? `${String(f.rating).replace('.', ',')} ${f.rating === 1 ? 'ster' : 'sterren'}` : 'zonder cijfer';
+        return `Laatst gelogd op Letterboxd: ${f.title} (${f.year}), ${stars}${f.liked ? ', met een hartje' : ''}.`;
+      } catch { return 'Letterboxd is nog niet geladen.'; }
+    },
+    ps2() {
+      let d = null; try { d = JSON.parse(localStorage.getItem('episodes.data')); } catch {}
+      const rows = (d && d.rows) || [];
+      if (!rows.length) return 'Episodes Left heeft hier nog geen gegevens (de extensie werkt alleen in Firefox).';
+      const total = rows.reduce((n, r) => n + (r.left || 0), 0);
+      const top = rows.slice().sort((a, b) => (b.left || 0) - (a.left || 0))[0];
+      return total ? `Episodes Left: nog ${total} ${total === 1 ? 'aflevering' : 'afleveringen'}, de meeste van ${top.title} (${top.left}).` : 'Episodes Left: je bent overal bij.';
+    },
+    bed() {
+      const ah = nextAH();
+      return `Bed for sleeping in. ${ah ? `Volgende AH-dienst: ${ah}.` : 'Geen AH-dienst in de agenda.'}`;
+    },
+    phone() {
+      const n = (window.DASH?.allAlerts?.() || []).length;
+      return n ? `Je mobiel. ${n} ${n === 1 ? 'melding' : 'meldingen'}.` : 'Je mobiel. Niks nieuws.';
+    },
+  };
+  async function say(key) {
+    said = key;
+    who.textContent = 'Noah';
+    type('…');
+    let text;
+    try { text = await SAY[key](); } catch { text = '…'; }
+    if (said === key) type(text);
+  }
 
   // ---------- Vaste tekening van het dashboard (Y2K) ----------
   // Zelfde grove indeling als het echte dashboard in die modus: vensters met blauwe titelbalk op een blauw bureaublad.
@@ -296,6 +377,7 @@
     };
     const mat = (c, extra = {}) => psx(new THREE.MeshLambertMaterial(typeof c === 'number' ? { color: c, ...extra } : { map: c, ...extra }));
     const basic = (o) => psx(new THREE.MeshBasicMaterial(o), { dither: false });
+    const tag = (key, m) => { m.userData.say = key; return m; };
     const boxAt = (w, h, d, x, y, z, c, parent = scene) => {
       const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), c instanceof THREE.Material ? c : mat(c));
       m.position.set(x, y, z); parent.add(m); return m;
@@ -307,9 +389,9 @@
     boxAt(4, 2.6, .02, 2, 1.3, -.01, T.wallB);
     boxAt(.02, 2.6, 4, -.01, 1.3, 2, T.wallL);
     // Raam met jaloezieën (linkermuur)
-    boxAt(.04, 1.2, 1.5, .01, 1.55, 2.0, T.beige);
-    boxAt(.02, 1.08, 1.38, .03, 1.55, 2.0, basic({ color: p.sky }));
-    for (let i = 0; i < 9; i++) boxAt(.03, .04, 1.36, .05, 2.04 - i * .12, 2.0, T.blinds);
+    tag('raam', boxAt(.04, 1.2, 1.5, .01, 1.55, 2.0, T.beige));
+    tag('raam', boxAt(.02, 1.08, 1.38, .03, 1.55, 2.0, basic({ color: p.sky })));
+    for (let i = 0; i < 9; i++) tag('raam', boxAt(.03, .04, 1.36, .05, 2.04 - i * .12, 2.0, T.blinds));
     const sun = new THREE.DirectionalLight(p.sun, p.sunI);
     sun.position.set(-2, 2.4, 2.2); sun.target.position.set(2, 0, 1.8);
     scene.add(sun, sun.target);
@@ -339,19 +421,21 @@
     boxAt(.04, 1.5, .04, .45, .75, .35, 0xc8c0a8);
     boxAt(.2, .14, .2, .45, 1.55, .35, mat(0xf2b45a, { emissive: 0xf2b45a, emissiveIntensity: .5 }));
     const lamp = new THREE.PointLight(0xffb35c, p.lamp, 3.5); lamp.position.set(.45, 1.4, .45); scene.add(lamp);
-    boxAt(.9, .03, .2, 1.6, 1.45, .1, T.wood);
+    tag('cds', boxAt(.9, .03, .2, 1.6, 1.45, .1, T.wood));
     ['#d84a4a', '#f2d14a', '#3a6ad8', '#e8e8e8', '#2a2a2a', '#55c3a8', '#e0457b', '#f28a3a', '#8a5ad8', '#e8e8e8']
-      .forEach((c, i) => boxAt(.025, .14, .12, 1.25 + i * .045, 1.535, .1, new THREE.Color(c).getHex()));
-    boxAt(.7, .9, .01, 3.0, 1.6, .005, T.poster1);
-    boxAt(.4, .55, .01, 3.65, 1.55, .005, T.poster2);
+      .forEach((c, i) => tag('cds', boxAt(.025, .14, .12, 1.25 + i * .045, 1.535, .1, new THREE.Color(c).getHex())));
+    tag('poster', boxAt(.7, .9, .01, 3.0, 1.6, .005, T.poster1));
+    tag('poster', boxAt(.4, .55, .01, 3.65, 1.55, .005, T.poster2));
     // PS2 + controller op de vloer
-    boxAt(.3, .07, .2, 1.4, .045, 2.1, T.ps2);
-    boxAt(.12, .03, .07, 1.7, .025, 2.4, 0x2a2a34);
+    tag('ps2', boxAt(.3, .07, .2, 1.4, .045, 2.1, T.ps2));
+    tag('ps2', boxAt(.12, .03, .07, 1.7, .025, 2.4, 0x2a2a34));
+    // Onzichtbaar, groter klikvlak: de PS2 is van een afstand maar een paar pixels
+    tag('ps2', boxAt(.7, .25, .6, 1.5, .12, 2.25, new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })));
     // Bed rechts tegen de achtermuur, klaptelefoon op het dekbed
-    boxAt(1.0, .35, 2.0, 3.45, .175, 1.05, 0x2c3fa8);
-    boxAt(1.0, .1, 2.0, 3.45, .4, 1.05, T.duvet);
-    boxAt(.7, .12, .35, 3.45, .51, .25, 0xf4f4f4);
-    boxAt(1.05, .7, .06, 3.45, .35, .02, T.wood);
+    tag('bed', boxAt(1.0, .35, 2.0, 3.45, .175, 1.05, 0x2c3fa8));
+    tag('bed', boxAt(1.0, .1, 2.0, 3.45, .4, 1.05, T.duvet));
+    tag('bed', boxAt(.7, .12, .35, 3.45, .51, .25, 0xf4f4f4));
+    tag('bed', boxAt(1.05, .7, .06, 3.45, .35, .02, T.wood));
     // Klaptelefoon: onderkant ligt plat, het klepje scharniert aan de verre kant (kleinere z)
     phone = new THREE.Group(); phone.position.set(3.3, .455, 1.25); phone.rotation.y = -.35; phone.scale.setScalar(1.6); scene.add(phone);
     boxAt(.055, .014, .1, 0, .007, 0, 0xc8ccd8, phone);
@@ -372,8 +456,13 @@
     onResize();
     addEventListener('resize', onResize);
     cv.addEventListener('pointermove', (e) => { cv.style.cursor = hit(e) ? 'pointer' : ''; });
-    cv.addEventListener('click', (e) => { if (hit(e)) enter(); });
-    setInterval(() => { if (!busy && !done) { setLine(); crtIdle(); draw(); } }, 20000);
+    cv.addEventListener('click', (e) => {
+      const h = hit(e);
+      if (h === 'enter') enter();
+      else if (h) say(h);
+      else if (said) { said = null; setLine(); }
+    });
+    setInterval(() => { if (!busy && !done) { setLine(); crtIdle(); draw(); } }, 20000);   // setLine laat een bericht staan
     layer.classList.add('ready');
   }
 
@@ -404,12 +493,20 @@
   }
 
   const ray = () => new THREE.Raycaster();
+  // Wat er onder de muis ligt: 'enter' (monitor, of de telefoon op de telefoon), een voorwerp dat iets zegt, of null
   function hit(e) {
-    if (!renderer || busy) return false;
+    if (!renderer || busy) return null;
     const r = cv.getBoundingClientRect();
     const v = new THREE.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
     const rc = ray(); rc.setFromCamera(v, camera);
-    return rc.intersectObject(mode === 'phone' ? phone : crt, true).length > 0;
+    const first = rc.intersectObject(scene, true)[0];
+    if (!first) return null;
+    for (let o = first.object; o; o = o.parent) {
+      if (o === crt) return mode === 'phone' ? null : 'enter';
+      if (o === phone) return mode === 'phone' ? 'enter' : 'phone';
+      if (o.userData.say) return o.userData.say;
+    }
+    return null;
   }
 
   // Camera recht voor een schermvlak, op de afstand waarop het de breedte ('w') of hoogte ('h') van het beeld vult
