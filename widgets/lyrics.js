@@ -44,18 +44,24 @@ DASH.widget('lyrics', (card, body, guard) => {
     return m ? { t: (Number(m[1]) * 60 + Number(m[2])) * 1000, text: m[3].trim() } : null;
   }).filter(Boolean);
 
+  // 404 = niet gevonden; elke andere fout (LRCLIB plat, 502 enz.) gooit, zodat het niet als 'geen tekst' onthouden wordt
+  async function get(path, params) {
+    const res = await fetch(`${API}/${path}?${new URLSearchParams(params)}`);
+    if (res.ok) return res.json();
+    if (res.status === 404) return null;
+    throw new Error(`LRCLIB ${res.status}`);
+  }
+
   async function find(track) {
     const durS = Math.round(track.duration / 1000);
     // 1. Exact op titel, artiest, album en duur
-    const exact = await fetch(`${API}/get?${new URLSearchParams({ track_name: track.name, artist_name: track.artist, album_name: track.album, duration: durS })}`);
-    if (exact.ok) return { hit: await exact.json(), scale: 1 };
+    const exact = await get('get', { track_name: track.name, artist_name: track.artist, album_name: track.album, duration: durS });
+    if (exact) return { hit: exact, scale: 1 };
     // 2. Zoeken met een opgeschoonde titel; dichtstbijzijnde duur met tekst wint
     const name = clean(track.name);
-    const res = await fetch(`${API}/search?${new URLSearchParams({ track_name: name, artist_name: track.artist })}`);
-    let list = res.ok ? await res.json() : [];
+    let list = (await get('search', { track_name: name, artist_name: track.artist })) || [];
     if (!list.length && name !== track.name) {
-      const r2 = await fetch(`${API}/search?${new URLSearchParams({ q: `${name} ${track.artist}` })}`);
-      list = r2.ok ? await r2.json() : [];
+      list = (await get('search', { q: `${name} ${track.artist}` })) || [];
     }
     const withText = list.filter((x) => x.syncedLyrics || x.plainLyrics || x.instrumental);
     if (!withText.length) return null;
@@ -99,7 +105,7 @@ DASH.widget('lyrics', (card, body, guard) => {
     try {
       entry = await load(track);
     } catch {
-      if (shown === track.id) note('Kon de songtekst niet ophalen. Probeer het zo nog eens.');
+      if (shown === track.id) note('Kon de songtekst niet ophalen (LRCLIB reageert niet). Volgende nummer of opnieuw openen probeert het weer.');
       cache.delete(track.id);
       shown = null;
       return;

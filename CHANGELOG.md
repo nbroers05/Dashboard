@@ -10,6 +10,7 @@ Onder de lijst staat per ronde de uitgebreide toelichting zoals die toen geschre
 
 | Versie | Wat |
 |---|---|
+| 0.52.3 | Songtekst: als LRCLIB plat ligt (vanavond gaf hun API een 502) staat er nu 'Kon de songtekst niet ophalen' in plaats van 'Geen songtekst gevonden', en wordt dat niet meer per nummer onthouden; het volgende nummer of opnieuw openen probeert het weer. |
 | 0.52.2 | Gezondheid: stappen per bron tellen. Sinds 28 okt komen dezelfde stappen via drie bronnen bij Google binnen (Google Health-app, Samsung Health, telefoonsensor) en Google telde ze deels dubbel (30 okt: 24.494 in plaats van 13.701). Nu telt de hoogste bron, ook in het archief (25-30 okt opnieuw opgehaald). |
 | 0.52.1 | Instellingen › Data: 'Archief elk uur starten' toont nu de laatste run (ook als een ander dashboard hem startte, eerst stond er dan 'nog niet geprobeerd'); de dashboards wachten 0-5 min zodat ze niet tegelijk starten; de lange Canvas-reden staat nu onder de naam in plaats van eroverheen; uitleg onderaan noemt het inloggen met je wachtwoord. |
 | 0.52.0 | Het archief draait weer elk uur: GitHub stelde de geplande run uit tot elke 5-7 uur, nu start je dashboard hem zelf als hij te lang wacht (je archief-token heeft daarvoor het recht 'Actions: Read and write' nodig, README stap 14). Stand in Instellingen › Data. Ook: het vak Berichten laadde soms vóór de archiefverbinding en bleef dan tot een half uur leeg. |
