@@ -4,6 +4,12 @@
    "name": "NOS",
    "items": [
     {
+     "title": "Vijf personen gered na drie maanden rondzwerven in Stille Oceaan",
+     "link": "https://nos.nl/l/2637684",
+     "time": "2026-11-02T02:52:30+01:00",
+     "img": "https://images.cdn.nos.nl/8/H/9/J/Z/o/ZRmU4xSMGqeNop4NAu9kGwqEbHx7o38ruGn99zv/8x212x3984x2241-1024x576.webp"
+    },
+    {
      "title": "App die Oekraïners waarschuwt, verstuurt 'door hack' nepbericht over nucleaire aanval",
      "link": "https://nos.nl/l/2637683",
      "time": "2026-11-02T01:02:18+01:00",
@@ -37,7 +43,7 @@
      "title": "Eerlijke verkiezingen? Amerikaanse kiezers vrezen vooral wat erna komt",
      "link": "https://nos.nl/l/2637659",
      "time": "2026-11-01T20:30:02+01:00",
-     "img": "https://images.cdn.nos.nl/5/5/c/W/D/F/1wwv9BH5rBbA69jyumaG1fkGEzUiVQo5TwApe1Q/632x760x3360x1890-1024x576.webp"
+     "img": "https://images.cdn.nos.nl/5/5/c/W/D/F/1wwv9BH5rBbA69jyumaG1fkGEzUiVQo5TwApe1Q/1094x918x2784x1566-1024x576.webp"
     },
     {
      "title": "NOS Journaal in nieuw decor: waarom we blijven werken aan herkenbare journalistiek",
@@ -86,12 +92,6 @@
      "link": "https://nos.nl/l/2637599",
      "time": "2026-11-01T15:34:57+01:00",
      "img": "https://images.cdn.nos.nl/7/4/7/T/G/5/BQvqdG4hT393hqcJP9VuvsPGw2Fev1QPLDCJQc1/5x154x1504x846-1024x576.webp"
-    },
-    {
-     "title": "Israëlische aanvallen kosten zeker acht Palestijnen in Gaza het leven",
-     "link": "https://nos.nl/l/2637590",
-     "time": "2026-11-01T14:51:40+01:00",
-     "img": "https://images.cdn.nos.nl/3/7/4/P/j/2/9wajpn1dwFm2XE73ik7wx73232MTcoUmeF1jsgY/8x177x3984x2241-1024x576.webp"
     }
    ]
   },
@@ -390,50 +390,7 @@
   }
  ],
  "youtube": {
-  "channels": [
-   "Ken"
-  ],
-  "videos": [
-   {
-    "title": "20 win challenge",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=mXRk9WgvHrQ",
-    "thumb": "https://i.ytimg.com/vi/mXRk9WgvHrQ/mqdefault.jpg",
-    "time": "2026-11-01T10:00:32+00:00",
-    "short": false
-   },
-   {
-    "title": "chaos mega draft, but I pick air",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=LR5jmisfQo0",
-    "thumb": "https://i.ytimg.com/vi/LR5jmisfQo0/mqdefault.jpg",
-    "time": "2026-10-31T10:00:01+00:00",
-    "short": false
-   },
-   {
-    "title": "20 win challenge (day 4)",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=XEWpfLVNBHU",
-    "thumb": "https://i.ytimg.com/vi/XEWpfLVNBHU/mqdefault.jpg",
-    "time": "2026-10-30T15:38:25+00:00",
-    "short": false
-   },
-   {
-    "title": "chaos mega draft, but I pick win conditions",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=BOLEIbXcOOM",
-    "thumb": "https://i.ytimg.com/vi/BOLEIbXcOOM/mqdefault.jpg",
-    "time": "2026-10-30T15:30:24+00:00",
-    "short": false
-   },
-   {
-    "title": "20 win challenge (day 4)",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=sFOTrmpM_E4",
-    "thumb": "https://i.ytimg.com/vi/sFOTrmpM_E4/mqdefault.jpg",
-    "time": "2026-10-30T15:22:59+00:00",
-    "short": false
-   }
-  ]
+  "channels": [],
+  "videos": []
  }
 }
