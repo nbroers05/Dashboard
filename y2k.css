@@ -1,0 +1,481 @@
+/* ---------- Y2K-stijl (early 2000s, Windows XP-achtig) ----------
+   Aan via Instellingen › Thema › Stijl (theme.settings.style = 'y2k' → html.y2k; testen met ?stijl=y2k).
+   Alleen opmaak: indeling, volgorde en functies blijven gelijk. Alles hieronder begint met html.y2k,
+   zodat de gewone stijl er niets van merkt. Het seizoensthema (deeltjes, versiering) blijft gewoon werken. */
+
+html.y2k {
+  --bg: #0f2c6e;
+  --text: #15130f;
+  --muted: #5b564b;
+  --surface: rgba(0, 0, 0, .07);
+  --surface-hover: rgba(0, 0, 0, .13);
+  --accent: #2a62d9;
+
+  /* eigen tokens */
+  --y2-cream: #f1ecdf;
+  --y2-cream2: #e6dfcd;
+  --y2-line: #2b2820;
+  --y2-shadow: 3px 3px 0 rgba(0, 0, 0, .55);
+  --y2-title: linear-gradient(180deg, #4b95f7 0%, #1f63dc 14%, #1556cf 55%, #0d45b6 100%);
+  --y2-title-dim: linear-gradient(180deg, #7ea5e3 0%, #5f86cf 55%, #4d74bd 100%);
+  --y2-task: linear-gradient(180deg, #3f7ff0 0%, #2a63d8 8%, #2559cc 50%, #1d47ad 92%, #173c96 100%);
+  --y2-btn: linear-gradient(180deg, #fffdf8 0%, #ece6d6 100%);
+  --y2-font: Tahoma, Verdana, 'Segoe UI', 'DejaVu Sans', sans-serif;
+  --y2-pixel: 'VT323', 'Lucida Console', monospace;
+  --y2-bar: 22px;
+  color-scheme: light;
+}
+html.y2k body {
+  font-family: var(--y2-font);
+  -webkit-font-smoothing: auto;
+  background: #0f2c6e;
+}
+/* Bureaublad: effen XP-blauw met een vleugje verloop, geen hoesgloed */
+html.y2k body::before {
+  background:
+    radial-gradient(120% 70% at 50% 0%, #2457b4 0%, transparent 70%),
+    linear-gradient(180deg, #16388a 0%, #0c2563 100%);
+}
+html.y2k :focus-visible { outline: 1px dotted #000; outline-offset: 2px; }
+
+/* ---------- Vensters ---------- */
+html.y2k .card,
+html.y2k .tile {
+  background: var(--y2-cream);
+  border: 1px solid var(--y2-line);
+  border-radius: 0;
+  box-shadow: var(--y2-shadow), inset 1px 1px 0 #fff;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  color: var(--text);
+}
+html.y2k .tile {
+  --ct: color-mix(in srgb, var(--c) 72%, black);
+  padding: 0 12px 10px !important;
+}
+/* Desk past precies in één scherm: daar wat zuiniger, zodat F1 en Film niet krapper worden dan in de gewone stijl */
+html.y2k .desk .tile { padding-bottom: 6px !important; }
+html.y2k .desk .tile > .eyebrow { margin-bottom: 3px; }
+html.y2k .desk-col { gap: 8px;
+}
+/* Titelbalk = het bestaande kopje van het vak */
+html.y2k .tile > .eyebrow {
+  position: relative;
+  flex: none;
+  height: var(--y2-bar);
+  margin: 0 -12px 8px;
+  padding: 0 30px 0 8px;
+  background: var(--y2-title);
+  border-bottom: 1px solid #0a3590;
+  color: #fff;
+  font: 700 .78rem/var(--y2-bar) var(--y2-font);
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, .45);
+}
+/* Decoratief sluitknopje */
+html.y2k .tile > .eyebrow::after,
+html.y2k :is(#calendar, .player)::after {
+  content: '×';
+  position: absolute;
+  top: 3px; right: 4px;
+  width: 16px; height: 15px;
+  display: grid; place-items: center;
+  border: 1px solid #fff;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #f2f2f2, #c9c6bd);
+  box-shadow: inset -1px -1px 0 #8b877c;
+  color: #1b1b1b;
+  font: 700 13px/1 var(--y2-font);
+  text-shadow: none;
+  text-transform: none;
+}
+
+/* Vakken waar het kopje verborgen is (tabjes in desk, compacte check-in): geen titelbalk, wel wat lucht */
+html.y2k .desk-tabs > .tile,
+html.y2k .desk #w-checkin { padding-top: 8px !important; }
+
+/* Speler en agenda hebben geen eigen kopje-als-balk: een titelbalk erboven via ::before */
+html.y2k .player,
+html.y2k #calendar { padding-top: calc(var(--y2-bar) + 10px) !important; }
+html.y2k .player::before,
+html.y2k #calendar::before {
+  content: 'Agenda';
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 3;
+  height: var(--y2-bar);
+  padding: 0 30px 0 8px;
+  background: var(--y2-title);
+  border-bottom: 1px solid #0a3590;
+  color: #fff;
+  font: 700 .78rem/var(--y2-bar) var(--y2-font);
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, .45);
+  filter: none;
+  transform: none;
+}
+html.y2k #calendar { position: relative; }
+html.y2k .player::before { content: 'Mediaspeler'; }
+html.y2k #spotify::before { content: 'Spotify'; }
+html.y2k :is(#calendar, .player)::after { z-index: 4; inset: auto; top: 3px; right: 4px; }
+html.y2k .media-stack > .player { background: var(--y2-cream); }
+html.y2k .media-stack > .player[data-pos="1"] { background: #ddd6c3; border-color: var(--y2-line); }
+html.y2k .media-stack > .player[data-pos="2"] { background: #cfc7b2; border-color: var(--y2-line); }
+/* Achter de voorste speler: grijzere titelbalk zoals een inactief venster */
+html.y2k .media-card:not(:first-child)::before { background: var(--y2-title-dim); }
+
+/* ---------- Tekst ---------- */
+html.y2k .eyebrow { color: var(--muted); }
+html.y2k .title { letter-spacing: 0; color: var(--text); }
+html.y2k .w-big,
+html.y2k :is(.f1-count, .film-score, .cine-score, .hl-num, .ah-month b, .ah-pay b) {
+  font-family: var(--y2-pixel);
+  font-weight: 400;
+  letter-spacing: 0;
+  font-size-adjust: ex-height .53;   /* VT323 is kleiner dan de gewone letter: even groot maken, dus niets verschuift */
+}
+html.y2k .w-big { line-height: .9; color: var(--text); }
+html.y2k .w-big small { font-size-adjust: none; }
+html.y2k .w-big small { font-family: var(--y2-font); line-height: 1.2; }
+html.y2k .serif-nums .w-big, html.y2k.serif-nums .w-big { font-family: var(--y2-pixel); }
+html.y2k .w-label, html.y2k .ws-head, html.y2k .ci-label, html.y2k .ph-label { color: #3d3a32; }
+html.y2k a { color: #0b3fc2; }
+html.y2k .w-note a { color: #0b3fc2; }
+
+/* ---------- Knoppen ---------- */
+html.y2k :is(.w-btn, .pill-btn, .cal-nav-btn, .ph-btn, .ph-round, .desk-more-chev) {
+  border: 1px solid #6f6a5c;
+  border-radius: 3px;
+  background: var(--y2-btn);
+  box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #c3bba8;
+  color: #111;
+  font-family: var(--y2-font);
+  font-weight: 400;
+  filter: none;
+}
+html.y2k :is(.w-btn, .pill-btn):hover,
+html.y2k .cal-nav-btn:hover { background: linear-gradient(180deg, #fff 0%, #f6e7b8 100%); border-color: #c48a1b; }
+html.y2k :is(.w-btn, .pill-btn, .cal-nav-btn):active { box-shadow: inset 1px 1px 0 #8f8878; }
+html.y2k .w-btn { padding: 5px 12px; }
+html.y2k .w-btn.ghost { background: var(--y2-btn); color: #111; }
+html.y2k .w-btn.lb { background: linear-gradient(180deg, #5ef08f, #19b44d); color: #062b12; }
+html.y2k .pill-btn { padding: 8px 18px; }
+
+/* Ronde spelerknoppen worden vierkante knopjes */
+html.y2k .btn {
+  border: 1px solid #6f6a5c;
+  border-radius: 3px;
+  background: var(--y2-btn);
+  box-shadow: inset 1px 1px 0 #fff, inset -1px -1px 0 #c3bba8;
+  color: #111;
+}
+html.y2k .btn:hover { background: linear-gradient(180deg, #fff 0%, #f6e7b8 100%); }
+html.y2k .btn.small { background: transparent; border-color: transparent; box-shadow: none; }
+html.y2k .btn.small:hover { background: var(--y2-btn); border-color: #6f6a5c; }
+html.y2k .btn.pill { background: linear-gradient(180deg, #fffdf8 0%, #d9e6fb 100%); color: #0d3a9e; }
+html.y2k .btn[aria-pressed="true"], html.y2k #repeat:not([data-mode="off"]) { color: #1556cf; }
+
+/* Segmentknoppen (Lijst/Week enz.) */
+html.y2k .seg { padding: 0; gap: 0; border-radius: 0; background: none; }
+html.y2k .seg button {
+  margin-left: -1px;
+  padding: 4px 10px;
+  border: 1px solid #6f6a5c;
+  border-radius: 0;
+  background: var(--y2-btn);
+  box-shadow: inset 1px 1px 0 #fff;
+  color: #111;
+  font-weight: 400;
+}
+html.y2k .seg button:first-child { border-radius: 3px 0 0 3px; }
+html.y2k .seg button:last-child { border-radius: 0 3px 3px 0; }
+html.y2k .seg button[aria-pressed="true"] { background: #fff2c2; box-shadow: inset 1px 1px 2px rgba(0, 0, 0, .3); font-weight: 700; }
+
+html.y2k .w-pill { border: 1px solid #6f6a5c; border-radius: 3px; background: #fff; color: #111; }
+html.y2k .w-pill.good { background: #c9f2d5; color: #08210f; }
+html.y2k .w-pill.bad { background: #ffd2bf; color: #2a0d02; }
+html.y2k .w-pill.live { background: var(--c); color: #fff; }
+
+/* Lijstjes en rijtjes: wit vlakje met een dun randje */
+html.y2k :is(.al-item, .ml-item, .ds-row, .cv-item, .ph-alert, .td-item, .ws-item) {
+  border-radius: 2px;
+  background: #fffdf6;
+  border: 1px solid #bdb5a2;
+}
+html.y2k .al-item { border-left: 4px solid var(--lv); }
+html.y2k .al-item.lv-urgent { background: #ffe3dc; }
+html.y2k button.al-item:hover { background: #fff6d9; }
+
+/* Invoervelden */
+html.y2k :is(input, select, textarea):not([type="checkbox"]):not([type="radio"]):not([type="range"]) {
+  border: 1px solid #7f9db9;
+  border-radius: 0;
+  background: #fff;
+  color: #111;
+  font-family: var(--y2-font);
+}
+
+/* Scrollbalken in XP-kleuren (Firefox) */
+html.y2k * { scrollbar-color: #c3bba8 #ece6d6; }
+
+/* ---------- Topbalk ---------- */
+html.y2k .topbar {
+  border-radius: 0;
+  border: 1px solid #06205e;
+  background: linear-gradient(180deg, #2a5ec8 0%, #133f9c 45%, #0d2f7d 100%);
+  box-shadow: var(--y2-shadow), inset 0 1px 0 rgba(255, 255, 255, .35);
+  color: #fff;
+  --text: #fff;
+  --muted: #c9d7f5;
+}
+html.y2k .tb-time {
+  font-family: var(--y2-pixel);
+  font-weight: 400;
+  font-size: 3.6rem;
+  letter-spacing: 0;
+  color: #5dff7e;
+  text-shadow: 0 0 6px rgba(93, 255, 126, .45);
+}
+html.y2k .tb-dayline { color: #ffe680; }
+html.y2k .tb-search {
+  border: 1px solid #7f9db9;
+  border-radius: 0;
+  background: #fff;
+}
+html.y2k .tb-search input { color: #111; }
+html.y2k .tb-search svg { fill: #3a5a96; }
+html.y2k .tb-search kbd { border-radius: 2px; background: #ece6d6; color: #333; border: 1px solid #aaa; }
+html.y2k .tb-search:focus-within { border-color: #f0b23a; background: #fff; }
+html.y2k .tb-btn { border-radius: 3px; }
+html.y2k .tb-btn:hover, html.y2k .tb-link:hover { background: rgba(255, 255, 255, .18); }
+html.y2k .tb-icon, html.y2k .tb-link img { image-rendering: pixelated; }
+html.y2k .tb-badge { border-radius: 2px; box-shadow: 0 0 0 1px #fff; }
+
+/* Zijbalk (desk): verticale XP-balk */
+html.y2k .rail {
+  background: linear-gradient(90deg, #1d4fbf 0%, #2a63d8 40%, #1b48ad 100%);
+  border-right: 1px solid #06205e;
+  box-shadow: 2px 0 0 rgba(0, 0, 0, .35);
+}
+html.y2k .rail :is(a, button) { border-radius: 3px; color: #fff; }
+html.y2k .rail :is(a, button):hover,
+html.y2k .rail [aria-current] { background: rgba(255, 255, 255, .2); box-shadow: inset 1px 1px 0 rgba(0, 0, 0, .3); }
+
+/* ---------- Speler ---------- */
+html.y2k .player::after { background: linear-gradient(180deg, #f2f2f2, #c9c6bd); }
+html.y2k .player .cover { border-radius: 0; border: 1px solid var(--y2-line); box-shadow: 2px 2px 0 rgba(0, 0, 0, .4); }
+html.y2k .player .bar { border-radius: 0; background: #fff; border: 1px solid #7f9db9; }
+html.y2k .player .fill { border-radius: 0; background: repeating-linear-gradient(90deg, #2fb34a 0 8px, transparent 8px 10px); }
+html.y2k .artist, html.y2k .times { color: var(--muted); }
+html.y2k .media-dots button { border-radius: 0; background: #8d8676; }
+html.y2k .media-dots button[aria-current="true"], html.y2k .media-dots button.on { background: #1556cf; }
+
+/* ---------- Agenda in Outlook-stijl ---------- */
+html.y2k .week { background: #fbf7ea; border: 1px solid #a49c86; }
+html.y2k .wk-day { color: #3d3a32; background: #ece4cc; border-bottom: 1px solid #a49c86; padding-top: 4px; }
+html.y2k .wk-day b { color: #111; }
+html.y2k .wk-day.today b { border-radius: 0; background: #1556cf; color: #fff; }
+html.y2k .wk-allday { border-top-color: #a49c86; background: #f4eedb; }
+html.y2k .wk-row.wk-body { border-top-color: #a49c86; }
+html.y2k .wk-times > div { color: #3d3a32; }
+html.y2k .wk-col {
+  border-left: 1px solid #cfc5aa;
+  background-color: #fbf7ea;
+  background-image: linear-gradient(#ddd3b8 1px, transparent 1px);
+}
+html.y2k .wk-col.today { background-color: #fff6d2; }
+html.y2k .wk-ev, html.y2k .wk-chip {
+  border-radius: 0;
+  border: 1px solid rgba(0, 0, 0, .7);
+  border-left: 1px solid rgba(0, 0, 0, .7);
+  background: color-mix(in srgb, var(--c, var(--accent)) 68%, black);   /* ook lichte agendakleuren donker genoeg voor witte tekst */
+  color: #fff;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, .35);
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, .25);
+}
+html.y2k .wk-ev.past { opacity: .55; }
+html.y2k .cal-day h3 { color: #111; border-bottom: 1px solid #a49c86; }
+html.y2k .event { border-radius: 0; background: #fffdf6; border: 1px solid #bdb5a2; border-left: 4px solid var(--c, var(--accent)); }
+html.y2k .cal-week-label { color: var(--muted); }
+
+/* ---------- Desk: tabjes, onderbalk en lade ---------- */
+html.y2k .desk-tabs {
+  border-radius: 0;
+  border: 1px solid var(--y2-line);
+  background: var(--y2-cream);
+  box-shadow: var(--y2-shadow);
+}
+html.y2k .desk-tabbar { gap: 2px; padding: 6px 8px 0; border-bottom: 1px solid #8b8370; background: var(--y2-cream2); }
+html.y2k .desk-tabbar button {
+  margin-bottom: -1px;
+  border: 1px solid #8b8370;
+  border-bottom: 0;
+  border-radius: 4px 4px 0 0;
+  background: linear-gradient(180deg, #fbf8f0, #ddd5c1);
+  color: #333;
+}
+html.y2k .desk-tabbar button[aria-selected="true"] {
+  background: var(--y2-cream);
+  border-top: 2px solid #f0a020;
+  color: #111;
+  position: relative;
+  z-index: 1;
+}
+html.y2k .desk-tabs > .tile { box-shadow: none; border: 0; }
+
+/* Desk-weer: weer en buienalarm in één venster */
+html.y2k .desk-weather { border-radius: 0; border: 1px solid var(--y2-line); background: var(--y2-cream); box-shadow: var(--y2-shadow); }
+html.y2k .desk-weather > .tile { border: 0; box-shadow: none; }
+html.y2k .desk-weather > #w-rain { border-top: 1px solid #c8bfa8; }
+html.y2k .desk-weather > #w-rain > .eyebrow {
+  height: auto; margin: 6px 0 4px; padding: 0;
+  background: none; border: 0; color: #3d3a32; text-shadow: none; line-height: 1.2;
+}
+html.y2k .desk-weather > #w-rain > .eyebrow::after { content: none; }
+html.y2k .desk-weather > #w-rain { padding-top: 0 !important; }
+
+/* Onderbalk = taakbalk met Start-knop */
+html.y2k .desk-more-bar {
+  position: relative;
+  padding: 0 14px 0 0;
+  min-height: 34px;
+  border: 0;
+  border-top: 1px solid #5a8ff0;
+  border-radius: 0;
+  background: var(--y2-task);
+  color: #fff;
+}
+html.y2k .desk-more-bar:hover { background: var(--y2-task); filter: brightness(1.08); }
+html.y2k .desk-more-bar::before {
+  content: 'Start';
+  align-self: stretch;
+  display: flex; align-items: center;
+  padding: 0 18px 0 34px;
+  border-radius: 0 12px 12px 0;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8' shape-rendering='crispEdges'%3E%3Crect x='0' y='0' width='8' height='8' fill='%23ffffff'/%3E%3Crect x='1' y='1' width='6' height='6' fill='%23ffcc33'/%3E%3Crect x='2' y='2' width='2' height='2' fill='%23ff5a2a'/%3E%3Crect x='4' y='4' width='2' height='2' fill='%232a62d9'/%3E%3Crect x='4' y='2' width='2' height='2' fill='%2335b84a'/%3E%3Crect x='2' y='4' width='2' height='2' fill='%23ffffff'/%3E%3C/svg%3E") 11px 50% / 16px 16px no-repeat,
+    linear-gradient(180deg, #4cb34c 0%, #3a9b3a 45%, #2e832e 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .4), 2px 0 3px rgba(0, 0, 0, .35);
+  color: #fff;
+  font: italic 700 1rem/1 var(--y2-font);
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, .5);
+}
+html.y2k .desk-more-label { font-weight: 700; }
+html.y2k .desk-more-list { color: #e6eeff; }
+html.y2k .desk-more-chev { color: #fff; border: 0; background: none; box-shadow: none; }
+html.y2k .desk-more-bar .version {
+  align-self: stretch; display: flex; align-items: center;
+  margin-right: -14px; padding: 0 14px;
+  background: linear-gradient(180deg, #19a6ef 0%, #1290db 50%, #0d7ac7 100%);
+  border-left: 1px solid #0b4fa0;
+  color: #fff; opacity: 1;
+}
+html.y2k .desk-drawer {
+  border-radius: 0;
+  background: #d9d2bf;
+  border: 1px solid var(--y2-line);
+  box-shadow: var(--y2-shadow);
+}
+
+/* ---------- Pop-ups ---------- */
+html.y2k .panel-dialog {
+  border: 1px solid #0a3590;
+  border-radius: 6px 6px 0 0;
+  background: var(--y2-cream);
+  color: var(--text);
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, .55);
+  --text: #15130f;
+  --muted: #5b564b;
+}
+html.y2k .panel-dialog::backdrop { background: rgba(8, 24, 64, .45); backdrop-filter: none; }
+html.y2k .panel-dialog .panel-head {
+  padding: 4px 6px 4px 10px;
+  border: 0;
+  background: var(--y2-title);
+  color: #fff;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, .45);
+}
+html.y2k .panel-dialog .panel-head .w-btn { padding: 2px 8px; text-shadow: none; }
+html.y2k .panel-frame { color-scheme: light; }
+
+html.y2k .rail-btn { color: #fff; }
+html.y2k .rail-btn:hover,
+html.y2k :is(.rail-btn[aria-current="page"], .rail-btn[aria-pressed="true"]) { background: rgba(255, 255, 255, .2); color: #fff; box-shadow: inset 1px 1px 0 rgba(0, 0, 0, .35); border-radius: 3px; }
+html.y2k .rail-dot { box-shadow: 0 0 0 1px #fff; border-radius: 0; }
+
+/* ---------- Telefoon: kaartjes worden kleine vensters, tabbalk wordt taakbalk ---------- */
+html.y2k :is(.ph-card, .ph-wx, .ph-canvas, .ph-alerts, .ph-checkin, .ph-ci) {
+  border: 1px solid var(--y2-line);
+  border-radius: 0;
+  background: var(--y2-cream);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, .5), inset 1px 1px 0 #fff;
+  color: var(--text);
+}
+html.y2k .ph-card > .ph-title:first-child,
+html.y2k .ph-card > .ph-label:first-child { color: #0d3a9e; }
+/* AH: geen fel AH-blauw meer, alleen een blauwe rand (het felle blauw hoort bij de agenda) */
+html.y2k :is(.ph-ah, .ph-kpi-ah) { background: var(--y2-cream); color: var(--text); border-color: var(--y2-line); box-shadow: inset 5px 0 0 #00ADE6, 2px 2px 0 rgba(0, 0, 0, .5); }
+html.y2k .ph-prog { border-radius: 0; background: #fff; border: 1px solid #7f9db9; }
+html.y2k .ph-prog i { border-radius: 0; background: repeating-linear-gradient(90deg, #2fb34a 0 6px, transparent 6px 8px); }
+html.y2k :is(.ph-chip, .ph-fchip, .ph-day) {
+  border: 1px solid #6f6a5c;
+  border-radius: 3px;
+  background: var(--y2-btn);
+  box-shadow: inset 1px 1px 0 #fff;
+  color: #111;
+}
+html.y2k :is(.ph-fchip[aria-pressed="true"], .ph-day.today) { background: #fff2c2; color: #111; box-shadow: inset 1px 1px 2px rgba(0, 0, 0, .3); }
+html.y2k .ph-btn { background: var(--y2-btn); color: #111; }
+html.y2k :is(.ph-alert, .ph-ev) { border-radius: 2px; background: #fffdf6; border: 1px solid #bdb5a2; color: var(--text); }
+html.y2k .ph-ev { box-shadow: inset 4px 0 0 var(--c); }
+html.y2k .ph-alert.urgent { background: #ffe3dc; }
+html.y2k .ph-alert.warn { background: #fff0cf; }
+html.y2k .ph-ev-count { border-radius: 2px; color: #c4161c; }
+html.y2k :is(.ph-note-btn, .ph-memory) { border-color: #8b8370; }
+html.y2k .ph-head h2 { color: #fff; text-shadow: 1px 1px 0 rgba(0, 0, 0, .5); }
+html.y2k .ph-link { color: #dbe6ff; }
+html.y2k .ph-bar { background: var(--y2-task); border-top: 1px solid #5a8ff0; }
+html.y2k .ph-tab { color: #e6eeff; }
+html.y2k .ph-tab[aria-current="page"] .ph-tab-icon { background: rgba(255, 255, 255, .22); border-radius: 3px; box-shadow: inset 1px 1px 0 rgba(0, 0, 0, .35); }
+html.y2k .ph-mini { border: 1px solid var(--y2-line); border-radius: 0; background: var(--y2-cream); box-shadow: 2px 2px 0 rgba(0, 0, 0, .5); }
+html.y2k .ph-mini-play { border-radius: 3px; background: var(--y2-btn); border: 1px solid #6f6a5c; }
+html.y2k .ph-mini-play svg { fill: #111; }
+html.y2k .ph-mini-prog { background: #2fb34a; }
+html.y2k.phone-mode body:not(.minimal) .topbar { border-radius: 0; }
+
+/* Instellingen: tabbladen, kopjes en themakaartjes op crème */
+html.y2k .st-tabs { gap: 2px; border-bottom: 1px solid #8b8370; }
+html.y2k .st-tab {
+  margin-bottom: -1px;
+  border: 1px solid #8b8370; border-bottom: 0; border-radius: 4px 4px 0 0;
+  background: linear-gradient(180deg, #fbf8f0, #ddd5c1); color: #333;
+}
+html.y2k .st-tab[aria-selected="true"] { background: var(--y2-cream); border-top: 2px solid #f0a020; color: #111; }
+html.y2k .st-later { border-style: dashed; background: none; }
+html.y2k .th-set-h { color: #0d3a9e; }
+html.y2k :is(.th-sw, .st-row) { border-bottom-color: #d3cab4; }
+html.y2k .th-auto { border: 1px solid #8b8370; border-radius: 2px; background: #fffdf6; color: var(--text); }
+html.y2k .th-auto[aria-pressed="true"] { border: 2px solid #1556cf; background: #e8f0ff; }
+html.y2k .th-card { border-radius: 2px; border-color: var(--y2-line); }
+html.y2k .th-card[aria-pressed="true"] { border-color: #f0a020; box-shadow: 0 0 0 2px #f0a020; }
+html.y2k .th-card-name { color: #fff; text-shadow: 1px 1px 0 rgba(0, 0, 0, .7); }
+html.y2k .th-sw input[role="switch"] { border-radius: 2px; background: #fff; border: 1px solid #7f9db9; }
+html.y2k .th-sw input[role="switch"]::after { border-radius: 1px; background: var(--y2-btn); border: 1px solid #6f6a5c; top: 2px; left: 2px; }
+html.y2k .th-sw input[role="switch"]:checked { background: #2fb34a; }
+
+/* Lichte accentkleuren die voor donker bedoeld waren: donkerder op crème */
+html.y2k :is(.u-red, .u-late) .cv-when { color: #c4161c; }
+html.y2k .u-orange .cv-when { color: #b35a00; }
+html.y2k :is(.ci-err, .ds-err, .st-state.bad) { color: #c4161c; }
+html.y2k .g-late .cvp-title { color: #c4161c; }
+html.y2k .g-today .cvp-title { color: #b3261e; }
+html.y2k .cvp-count { border-radius: 2px; }
+html.y2k .vid-empty { border-radius: 0; background: #1b1b1b; color: #ddd; }
+html.y2k .st-state.ok { color: #1a7a35; }
+html.y2k .st-state.warn { color: #9a5b00; }
+html.y2k .gm-score { color: #8a5a00; }
+
+/* ---------- Versie onderaan (tall/telefoon) ---------- */
+html.y2k .version { color: #c9d7f5; opacity: 1; }

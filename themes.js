@@ -107,7 +107,7 @@ window.DASH_THEMES = (() => {
   const kind = (name, def) => { kinds[name] = def; };
 
   // ---------- Instellingen ----------
-  const DEFAULTS = { choice: 'auto', all: true, particles: true, deco: true, topbar: true, bg: true, weather: true, fx: true, amount: 'normaal', serif: true };
+  const DEFAULTS = { choice: 'auto', all: true, particles: true, deco: true, topbar: true, bg: true, weather: true, fx: true, amount: 'normaal', serif: true, style: 'modern' };
   const AMOUNT = { rustig: { parts: 10, deco: 0.5 }, normaal: { parts: 30, deco: 1 }, feestje: { parts: 60, deco: 1.6 } };
   const settings = () => ({ ...DEFAULTS, ...(store.get('theme.settings') || {}) });
   function set(key, value) {
@@ -115,11 +115,19 @@ window.DASH_THEMES = (() => {
     s[key] = value;
     store.set('theme.settings', s);
     serif();
+    style();
     refresh();
   }
   // Schreefcijfers (grote hoofdgetallen in een schreefletter, html.serif-nums): los van "Alle effecten", meteen bij laden
   const serif = () => root.classList.toggle('serif-nums', settings().serif !== false);
   serif();
+  // Stijl (html.y2k, opmaak in y2k.css): los van het thema, dus seizoenen en feestdagen blijven werken. ?stijl=y2k|modern om te testen
+  const urlStyle = /^(y2k|modern)$/.test(params.get('stijl') || '') ? params.get('stijl') : null;
+  const style = () => {
+    root.classList.toggle('y2k', (urlStyle || settings().style) === 'y2k');
+    window.dispatchEvent(new Event('resize'));   // vensterranden en titelbalken veranderen de maten: indelingen opnieuw laten meten
+  };
+  style();
   const session = {
     get(k) { try { return sessionStorage.getItem(k); } catch { return null; } },
     set(k, v) { try { if (v == null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch {} },
@@ -705,6 +713,20 @@ window.DASH_THEMES = (() => {
     const change = (k, v) => { set(k, v); redraw(); };
     const head = (text) => el.append(h('p', 'th-set-h', text));
     const f = forced();
+
+    head('Stijl');
+    const styleRow = h('div', 'th-sw th-amount');
+    const styleSeg = h('div', 'seg');
+    for (const [k, label] of [['modern', 'Modern'], ['y2k', 'Y2K (2003)']]) {
+      const b = h('button', null, label);
+      b.type = 'button';
+      b.setAttribute('aria-pressed', String((s.style || 'modern') === k));
+      b.onclick = () => change('style', k);
+      styleSeg.append(b);
+    }
+    styleRow.append(h('span', 'th-sw-txt', 'Uiterlijk van de vakken'), styleSeg);
+    el.append(styleRow);
+    if (urlStyle) el.append(h('p', 'th-set-note', `Nu vastgezet via de link (?stijl=${urlStyle}).`));
 
     head('Kies thema');
     const auto = h('button', 'th-auto');
