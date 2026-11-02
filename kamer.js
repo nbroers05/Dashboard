@@ -231,6 +231,7 @@
 
   // ---------- Three.js ----------
   let THREE, renderer, scene, camera, crt, phone, lid, crtScreen, phoneScreen, crtTex, crtCtx;
+  let sun, amb, lamp, patch, skyCanvas, skyTex;
   let raf = 0, tween = null;
   const loop = () => {
     raf = 0;
@@ -256,7 +257,42 @@
     avond: { wallL: 0x4a2f4f, wallB: 0x5a3a5e, floor: 0x5a3c2a, ceil: 0x3a2440, sky: 0xf08a5d, sun: 0xffb38a, sunI: .9, amb: .45, lamp: 1.1 },
     dag: { wallL: 0x9c94c4, wallB: 0xaaa3d0, floor: 0x8a6446, ceil: 0xc9c3e6, sky: 0x8fd0ff, sun: 0xfff6d8, sunI: 1.6, amb: .7, lamp: .2 },
   };
-  const daypart = () => { const h = new Date().getHours(); return h >= 8 && h < 17 ? 'dag' : h >= 17 && h < 20 ? 'avond' : 'nacht'; };
+  // ---------- Zon en weer ----------
+  // Zonnestand voor Rotterdam (zelfde formules als SunCalc), zodat de kamer niet op het weervak hoeft te wachten.
+  // Testen: ?kamertijd=17:30 (met ?datum=JJJJ-MM-DD van de thema's) en ?kamerweer=regen|bewolkt|zon.
+  const HOME = { lat: 51.9225, lon: 4.4792 };
+  const now = () => {
+    const t = /^(\d{1,2}):(\d{2})$/.exec(params.get('kamertijd') || ''), day = params.get('datum');
+    if (!t && !day) return new Date();
+    const d = day && /^\d{4}-\d{2}-\d{2}$/.test(day) ? new Date(`${day}T12:00`) : new Date();
+    if (t) d.setHours(+t[1], +t[2], 0, 0);
+    return d;
+  };
+  function sunPos(date) {
+    const rad = Math.PI / 180, e = rad * 23.4397;
+    const d = date / 864e5 - .5 + 2440588 - 2451545;
+    const M = rad * (357.5291 + .98560028 * d);
+    const L = M + rad * (1.9148 * Math.sin(M) + .02 * Math.sin(2 * M) + .0003 * Math.sin(3 * M)) + rad * 102.9372 + Math.PI;
+    const dec = Math.asin(Math.sin(L) * Math.sin(e)), ra = Math.atan2(Math.sin(L) * Math.cos(e), Math.cos(L));
+    const phi = rad * HOME.lat, H = rad * (280.16 + 360.9856235 * d) + rad * HOME.lon - ra;
+    const alt = Math.asin(Math.sin(phi) * Math.sin(dec) + Math.cos(phi) * Math.cos(dec) * Math.cos(H));
+    const az = Math.atan2(Math.sin(H), Math.cos(H) * Math.sin(phi) - Math.tan(dec) * Math.cos(phi)) + Math.PI;   // vanaf het noorden, met de klok mee
+    return { alt: alt / rad, az: az / rad };
+  }
+  // Kleuren tussen de dagdelen in: nacht → avond rond zonsondergang (-8° .. 0°), avond → dag (0° .. 12°)
+  const COLORS = ['wallL', 'wallB', 'floor', 'ceil', 'sky', 'sun'];
+  function palAt(alt) {
+    const mix = (a, b, t) => {
+      const o = {};
+      for (const k in a) o[k] = COLORS.includes(k) ? new THREE.Color(a[k]).lerp(new THREE.Color(b[k]), t).getHex() : a[k] + (b[k] - a[k]) * t;
+      return o;
+    };
+    const cl = (x) => Math.max(0, Math.min(1, x));
+    return alt < 0 ? mix(PAL.nacht, PAL.avond, cl((alt + 8) / 8)) : mix(PAL.avond, PAL.dag, cl(alt / 12));
+  }
+  const daypart = () => { const a = sunPos(now()).alt; return a > 6 ? 'dag' : a > -6 ? 'avond' : 'nacht'; };
+  // Weer: 'zon', 'bewolkt' of 'regen' (Buienradar nu, anders de weercode van het weervak)
+  let weather = { kind: 'zon', mm: 0 };
 
   function crtIdle() {
     const W = crtTex.image.width, H = crtTex.image.height;
@@ -390,12 +426,23 @@
     boxAt(.02, 2.6, 4, -.01, 1.3, 2, T.wallL);
     // Raam met jaloezieën (linkermuur)
     tag('raam', boxAt(.04, 1.2, 1.5, .01, 1.55, 2.0, T.beige));
-    tag('raam', boxAt(.02, 1.08, 1.38, .03, 1.55, 2.0, basic({ color: p.sky })));
+    skyCanvas = document.createElement('canvas'); skyCanvas.width = 48; skyCanvas.height = 36;
+    skyTex = new THREE.CanvasTexture(skyCanvas);
+    skyTex.magFilter = skyTex.minFilter = THREE.NearestFilter; skyTex.generateMipmaps = false; skyTex.colorSpace = THREE.SRGBColorSpace;
+    tag('raam', boxAt(.02, 1.08, 1.38, .03, 1.55, 2.0, basic({ map: skyTex })));
     for (let i = 0; i < 9; i++) tag('raam', boxAt(.03, .04, 1.36, .05, 2.04 - i * .12, 2.0, T.blinds));
-    const sun = new THREE.DirectionalLight(p.sun, p.sunI);
+    sun = new THREE.DirectionalLight(p.sun, p.sunI);
     sun.position.set(-2, 2.4, 2.2); sun.target.position.set(2, 0, 1.8);
     scene.add(sun, sun.target);
-    scene.add(new THREE.AmbientLight(0xffffff, p.amb));
+    amb = new THREE.AmbientLight(0xffffff, p.amb); scene.add(amb);
+    // Lichtvlek door het raam op de vloer (met de lamellen erin), vorm volgt de zon
+    const slats = pix(4, 16, (x, w, h) => { x.fillStyle = '#fff'; x.fillRect(0, 0, w, h); x.fillStyle = '#000'; for (let y = 2; y < h; y += 4) x.fillRect(0, y, w, 1); });
+    patch = new THREE.Mesh(new THREE.BufferGeometry(), new THREE.MeshBasicMaterial({ map: slats, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0, side: THREE.DoubleSide }));
+    patch.geometry.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(12), 3));
+    patch.geometry.setAttribute('uv', new THREE.Float32BufferAttribute([0, 1, 1, 1, 1, 0, 0, 0], 2));
+    patch.geometry.setIndex([0, 1, 2, 0, 2, 3]);
+    patch.renderOrder = 2; patch.frustumCulled = false;
+    scene.add(patch);
     // Kleed
     boxAt(1.6, .01, 1.2, 1.5, .005, 2.2, T.rug);
     // Bureau tegen de achtermuur
@@ -420,7 +467,7 @@
     boxAt(.2, .45, .45, 2.15, .225, .3, T.beige);
     boxAt(.04, 1.5, .04, .45, .75, .35, 0xc8c0a8);
     boxAt(.2, .14, .2, .45, 1.55, .35, mat(0xf2b45a, { emissive: 0xf2b45a, emissiveIntensity: .5 }));
-    const lamp = new THREE.PointLight(0xffb35c, p.lamp, 3.5); lamp.position.set(.45, 1.4, .45); scene.add(lamp);
+    lamp = new THREE.PointLight(0xffb35c, p.lamp, 3.5); lamp.position.set(.45, 1.4, .45); scene.add(lamp);
     tag('cds', boxAt(.9, .03, .2, 1.6, 1.45, .1, T.wood));
     ['#d84a4a', '#f2d14a', '#3a6ad8', '#e8e8e8', '#2a2a2a', '#55c3a8', '#e0457b', '#f28a3a', '#8a5ad8', '#e8e8e8']
       .forEach((c, i) => tag('cds', boxAt(.025, .14, .12, 1.25 + i * .045, 1.535, .1, new THREE.Color(c).getHex())));
@@ -462,8 +509,77 @@
       else if (h) say(h);
       else if (said) { said = null; setLine(); }
     });
-    setInterval(() => { if (!busy && !done) { setLine(); crtIdle(); draw(); } }, 20000);   // setLine laat een bericht staan
+    applySky();
+    refreshWeather();
+    addEventListener('dash:weather', refreshWeather);
+    setInterval(() => { if (!busy && !done) { setLine(); crtIdle(); applySky(); } }, 20000);   // setLine laat een bericht staan
+    setInterval(() => { if (!busy && !done) refreshWeather(); }, 5 * 60000);
     layer.classList.add('ready');
+  }
+
+  // Raam op de linkermuur (x = 0) kijkt naar het zuidwesten; vanuit de kamer gezien is +z rechts van het raam
+  const WINDOW_AZ = 225;
+  const WIN = { y0: 1.01, y1: 2.09, z0: 1.31, z1: 2.69 };
+  async function refreshWeather() {
+    const force = params.get('kamerweer');
+    if (/^(regen|bewolkt|zon)$/.test(force || '')) { weather = { kind: force, mm: force === 'regen' ? 1.5 : 0 }; return applySky(); }
+    const code = window.DASH_WEATHER?.current?.weather_code;
+    let kind = code == null ? 'zon' : code >= 51 ? 'regen' : code >= 2 ? 'bewolkt' : 'zon', mm = 0;
+    try {
+      const r = await window.DASH?.radar();
+      const first = r && r.slots && r.slots[0];
+      if (first) { mm = first.mmh; if (mm >= (window.DASH.RAIN_MIN || .1)) kind = 'regen'; else if (kind === 'regen') kind = 'bewolkt'; }
+    } catch {}
+    weather = { kind, mm };
+    applySky();
+  }
+  function applySky() {
+    if (!renderer || done) return;
+    const t = now(), sp = sunPos(t), q = palAt(sp.alt);
+    const grey = weather.kind === 'regen' ? .75 : weather.kind === 'bewolkt' ? .45 : 0;
+    const sky = new THREE.Color(q.sky).lerp(new THREE.Color(sp.alt > 0 ? 0x8a93a3 : 0x1c2030), grey);
+    // Zon door het raam: alleen als hij boven de horizon staat en aan de kant van het raam
+    const rad = Math.PI / 180, rel = (sp.az - WINDOW_AZ) * rad, h = Math.max(sp.alt, 0) * rad;
+    const toSun = new THREE.Vector3(-Math.cos(rel) * Math.cos(h), Math.sin(h), Math.sin(rel) * Math.cos(h));
+    const facing = Math.max(0, Math.cos(rel));
+    const strength = sp.alt > 0 ? Math.min(1, sp.alt / 6) * facing * (1 - grey) : 0;
+    sun.color.set(q.sun);
+    sun.intensity = q.sunI * (1 - grey * .6);
+    sun.position.set(1.2 + toSun.x * 5, 1.2 + Math.max(.3, toSun.y) * 5, 2 + toSun.z * 5);
+    amb.intensity = q.amb * (1 - grey * .25);
+    lamp.intensity = q.lamp;
+    scene.background.set(q.ceil); scene.fog.color.set(q.ceil);
+    // Lichtvlek: de hoeken van het raam langs de zonnestraal op de vloer (of de muur ertegenover) geprojecteerd
+    const pos = patch.geometry.attributes.position;
+    if (strength > .02 && toSun.y > .02) {
+      const d = toSun.clone().negate();
+      const corners = [[WIN.y1, WIN.z0], [WIN.y1, WIN.z1], [WIN.y0, WIN.z1], [WIN.y0, WIN.z0]];
+      const hits = corners.map(([y, z]) => { const k = (y - .012) / -d.y; return [d.x * k, z, d.z * k]; });   // tot de vloer
+      // Lage zon (herfst/winter) zou ver achter het bed uitkomen: de vlek in dezelfde vorm terugschalen naar de vloer voor het raam
+      const f = Math.min(1, 2.3 / Math.max(...hits.map((q) => q[0])));
+      hits.forEach(([px, z, dz], i) => pos.setXYZ(i, Math.max(.02, px * f), .012, Math.min(3.98, Math.max(.02, z + dz * f))));
+      pos.needsUpdate = true;
+      patch.material.color.set(q.sun);
+      patch.material.opacity = .55 * strength;
+      patch.visible = true;
+    } else patch.visible = false;
+    // Lucht in het raam: verloop, maan 's nachts, regen als strepen op het glas (staan stil)
+    const x = skyCanvas.getContext('2d'), W = skyCanvas.width, H = skyCanvas.height;
+    const top = sky.clone().multiplyScalar(.75), g = x.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, '#' + top.getHexString()); g.addColorStop(1, '#' + sky.getHexString());
+    x.fillStyle = g; x.fillRect(0, 0, W, H);
+    if (sp.alt < -4 && weather.kind === 'zon') { x.fillStyle = '#e8ecff'; x.fillRect(10, 6, 5, 5); x.fillStyle = 'rgba(255,255,255,.7)'; for (const [a, b] of [[30, 4], [38, 12], [22, 15], [42, 3]]) x.fillRect(a, b, 1, 1); }
+    if (sp.alt > 0 && weather.kind === 'zon' && facing > .2) { x.fillStyle = '#fff6d0'; x.fillRect(Math.round(24 - Math.sin(rel) * 18), Math.round(H - 6 - Math.min(sp.alt, 40) / 40 * (H - 12)), 5, 5); }
+    if (weather.kind !== 'zon') { x.fillStyle = 'rgba(255,255,255,.18)'; for (let i = 0; i < 6; i++) x.fillRect((i * 9 + 3) % W, 3 + (i % 3) * 4, 10, 3); }
+    if (weather.kind === 'regen') {
+      x.fillStyle = 'rgba(200,225,255,.75)';
+      let sd = 3;
+      const r = () => ((sd = (sd * 16807) % 2147483647) / 2147483647);
+      const n = Math.min(40, 10 + Math.round((weather.mm || 1) * 8));
+      for (let i = 0; i < n; i++) { const a = Math.floor(r() * W), b = Math.floor(r() * (H - 4)); x.fillRect(a, b, 1, 2 + Math.floor(r() * 3)); }
+    }
+    skyTex.needsUpdate = true;
+    draw();
   }
 
   // ---------- Camera's ----------
