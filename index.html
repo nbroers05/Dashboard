@@ -14,16 +14,16 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400..800&family=Source+Serif+4:opsz,wght@8..60,400..700&family=VT323&display=swap">
   <!-- ?v=0.MINOR.PATCH: ophogen bij elke wijziging (zie CLAUDE.md); de rest krijgt hetzelfde nummer via dash.js -->
-  <link rel="stylesheet" href="style.css?v=0.55.0">
-  <link rel="stylesheet" href="y2k.css?v=0.55.0">
+  <link rel="stylesheet" href="style.css?v=0.56.0">
+  <link rel="stylesheet" href="y2k.css?v=0.56.0">
   <!-- Stijl (Instellingen › Thema): meteen zetten, anders flitst eerst de gewone stijl -->
   <script>try { var s = JSON.parse(localStorage.getItem('theme.settings') || '{}'), q = new URLSearchParams(location.search).get('stijl'); if ((q || s.style) === 'y2k') document.documentElement.classList.add('y2k'); } catch (e) {}</script>
   <!-- Windows-app (?app=pc): onthouden voor dit tabblad (de Spotify-inlog komt terug zonder ?app), titelbalk uit appbar.js -->
   <script>try { var a = new URLSearchParams(location.search).get('app'); if (a === 'pc') sessionStorage.setItem('dash.app', 'pc'); if (sessionStorage.getItem('dash.app') === 'pc') document.documentElement.classList.add('app'); } catch (e) {}</script>
 </head>
 <body>
-  <script src="appbar.js?v=0.55.0"></script>
-  <script src="kamer.js?v=0.55.0"></script>
+  <script src="appbar.js?v=0.56.0"></script>
+  <script src="kamer.js?v=0.56.0"></script>
   <main class="dashboard">
 
     <!-- Topbalk: klok, datum, snelkoppelingen, zoeken -->
@@ -276,17 +276,17 @@
 
   <div id="toast" role="status"></div>
 
-  <script src="config.js?v=0.55.0"></script>
-  <script src="vault.js?v=0.55.0"></script>
-  <script src="dash.js?v=0.55.0"></script>
-  <script src="topbar.js?v=0.55.0"></script>
-  <script src="settings.js?v=0.55.0"></script>
-  <script src="mensen.js?v=0.55.0"></script>
-  <script src="themes.js?v=0.55.0"></script>
-  <script src="focus.js?v=0.55.0"></script>
-  <script src="feeds.js?v=0.55.0"></script>
-  <script src="mydata.js?v=0.55.0"></script>
-  <script src="games.js?v=0.55.0"></script>
+  <script src="config.js?v=0.56.0"></script>
+  <script src="vault.js?v=0.56.0"></script>
+  <script src="dash.js?v=0.56.0"></script>
+  <script src="topbar.js?v=0.56.0"></script>
+  <script src="settings.js?v=0.56.0"></script>
+  <script src="mensen.js?v=0.56.0"></script>
+  <script src="themes.js?v=0.56.0"></script>
+  <script src="focus.js?v=0.56.0"></script>
+  <script src="feeds.js?v=0.56.0"></script>
+  <script src="mydata.js?v=0.56.0"></script>
+  <script src="games.js?v=0.56.0"></script>
   <!-- De rest laadt dash.js in deze volgorde: meteen, of met ?mini=1 pas als je het volledige dashboard opent -->
   <script>
     DASH.boot([

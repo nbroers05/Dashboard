@@ -2710,3 +2710,5 @@ body.kamer-on { overflow: hidden; }
 .kamer-copy, .kamer-part { position: absolute; left: 0; top: 0; display: block; }
 .kamer-part.mid { z-index: 2; }
 @media (prefers-reduced-motion: reduce) { .kamer-gl { transition: none; } }
+/* PS1-korrel: vaste ruis, even grof als de lage pixels (kamer.js zet de grootte) */
+.kamer-grain { position: absolute; inset: 0; pointer-events: none; image-rendering: pixelated; mix-blend-mode: soft-light; opacity: .3; }

@@ -25,6 +25,7 @@
   layer.className = 'kamer';
   layer.innerHTML = `
     <canvas class="kamer-gl" aria-label="Kamer: klik op de monitor (of druk op Enter) om het dashboard te openen"></canvas>
+    <div class="kamer-grain" aria-hidden="true"></div>
     <button type="button" class="kamer-box">
       <span class="kamer-who">Kamer</span>
       <span class="kamer-line"></span>
@@ -32,6 +33,7 @@
   document.body.prepend(layer);
   document.body.classList.add('kamer-on');
   const cv = layer.querySelector('.kamer-gl');
+  const grain = layer.querySelector('.kamer-grain');
   const box = layer.querySelector('.kamer-box');
   const line = layer.querySelector('.kamer-line');
 
@@ -187,84 +189,185 @@
     crtTex.needsUpdate = true;
   }
 
+  // ---------- PS1-look ----------
+  // Laag renderen (± 240 pixels op de korte kant) en met image-rendering: pixelated opschalen; vertices springen naar
+  // een grof raster (wiebelen als de camera beweegt); 15-bits kleur met een 4×4-ditherpatroon; pixeltexturen met
+  // NearestFilter; vaste korrel erover. Tijdens het inzoomen loopt de resolutie op tot scherp, zodat het scherm
+  // naadloos overgaat in de DOM-kopie.
+  const LOW = 240;
+  const baseScale = () => Math.max(2, Math.min(layer.clientWidth, layer.clientHeight) / LOW);
+  let scale = 2;
+  const PSX = { uSnap: { value: null } };
+  function setRes(s) {
+    scale = s;
+    const w = layer.clientWidth, h = layer.clientHeight;
+    renderer.setPixelRatio(1);
+    renderer.setSize(Math.max(1, Math.round(w / s)), Math.max(1, Math.round(h / s)), false);
+    // raster voor de vertices: de helft van de lage basisresolutie, zoals de PS1 zonder subpixels
+    const b = baseScale();
+    PSX.uSnap.value.set(w / b / 2, h / b / 2);
+  }
+  function psx(m, { dither = true } = {}) {
+    m.onBeforeCompile = (sh) => {
+      sh.uniforms.uSnap = PSX.uSnap;
+      sh.vertexShader = 'uniform vec2 uSnap;\n' + sh.vertexShader.replace('#include <project_vertex>',
+        '#include <project_vertex>\n  gl_Position.xy = floor(gl_Position.xy / gl_Position.w * uSnap + .5) / uSnap * gl_Position.w;');
+      if (dither) sh.fragmentShader = sh.fragmentShader.replace('#include <dithering_fragment>',
+        `#include <dithering_fragment>
+  {
+    vec2 q = mod(floor(gl_FragCoord.xy), 4.);
+    float i = q.x + q.y * 4.;
+    float b = mod(i * 7. + floor(i / 4.) * 3., 16.) / 16. - .47;
+    gl_FragColor.rgb = floor(gl_FragColor.rgb * 31. + b + .5) / 31.;
+  }`);
+    };
+    m.customProgramCacheKey = () => (dither ? 'psx-d' : 'psx');
+    return m;
+  }
+
+  // Pixeltexturen (4-32 px), getekend op een canvas
+  function pix(w, h, paint, rx = 1, ry = 1) {
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    const x = c.getContext('2d'); x.imageSmoothingEnabled = false;
+    paint(x, w, h);
+    const t = new THREE.CanvasTexture(c);
+    t.magFilter = t.minFilter = THREE.NearestFilter; t.generateMipmaps = false;
+    t.colorSpace = THREE.SRGBColorSpace;
+    t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(rx, ry);
+    return t;
+  }
+  const hex = (n) => '#' + n.toString(16).padStart(6, '0');
+  const shade = (n, f) => '#' + new THREE.Color(n).multiplyScalar(f).getHexString();
+  let seed = 7;
+  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  const speckle = (x, w, h, base, n = .08) => {
+    x.fillStyle = base; x.fillRect(0, 0, w, h);
+    for (let i = 0; i < w * h * .35; i++) {
+      x.fillStyle = rnd() < .5 ? `rgba(0,0,0,${n})` : `rgba(255,255,255,${n * .7})`;
+      x.fillRect(Math.floor(rnd() * w), Math.floor(rnd() * h), 1, 1);
+    }
+  };
+  const wallpaper = (base) => (x, w, h) => {
+    speckle(x, w, h, base, .05);
+    x.fillStyle = 'rgba(0,0,0,.12)'; x.fillRect(0, 0, 3, h);
+    x.fillStyle = 'rgba(255,255,255,.1)'; x.fillRect(9, 7, 2, 2);
+  };
+
   async function build() {
     THREE = await import(THREE_URL);
     if (done) return;
     renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: false, powerPreference: 'low-power' });
-    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+    PSX.uSnap.value = new THREE.Vector2(160, 120);
     scene = new THREE.Scene();
     camera = new THREE.PerspectiveCamera(55, 1, 0.01, 50);
     const p = PAL[daypart()];
     scene.background = new THREE.Color(p.ceil);
+    scene.fog = new THREE.Fog(p.ceil, 4.5, 9);
 
-    const mat = (color, extra = {}) => new THREE.MeshLambertMaterial({ color, ...extra });
-    const boxAt = (w, h, d, x, y, z, color, parent = scene) => {
-      const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), typeof color === 'number' ? mat(color) : color);
+    const T = {
+      floor: pix(32, 32, (x, w) => {      // planken
+        for (let r = 0; r < 4; r++) { x.save(); x.translate(0, r * 8); speckle(x, w, 8, shade(p.floor, .9 + (r % 2) * .15)); x.restore(); }
+        x.fillStyle = 'rgba(0,0,0,.35)';
+        for (let r = 0; r < 4; r++) { x.fillRect(0, r * 8 + 7, w, 1); x.fillRect((r * 13) % w, r * 8, 1, 7); }
+      }, 6, 6),
+      wallB: pix(16, 16, wallpaper(hex(p.wallB)), 20, 13),
+      wallL: pix(16, 16, wallpaper(hex(p.wallL)), 20, 13),
+      ceil: pix(16, 16, (x, w, h) => speckle(x, w, h, hex(p.ceil), .06), 10, 10),
+      wood: pix(32, 16, (x, w, h) => { speckle(x, w, h, '#8a6440', .1); x.fillStyle = 'rgba(0,0,0,.25)'; x.fillRect(0, 5, w, 1); x.fillRect(0, 11, w, 1); }, 2, 1),
+      beige: pix(16, 16, (x, w, h) => speckle(x, w, h, '#d8d0b8', .06)),
+      duvet: pix(16, 16, (x, w, h) => { x.fillStyle = '#3f5bd8'; x.fillRect(0, 0, w, h); x.fillStyle = '#e8ecff'; x.fillRect(0, 0, 8, 8); x.fillRect(8, 8, 8, 8); }, 8, 16),
+      rug: pix(8, 8, (x, w, h) => { x.fillStyle = '#b8324a'; x.fillRect(0, 0, w, h); x.fillStyle = '#d8566a'; x.fillRect(0, 0, 4, 4); x.fillRect(4, 4, 4, 4); }, 12, 9),
+      keys: pix(32, 8, (x, w, h) => {
+        x.fillStyle = '#e0d8c0'; x.fillRect(0, 0, w, h);
+        x.fillStyle = '#b5ac92';
+        for (let r = 0; r < 3; r++) for (let k = 0; k < 15; k++) x.fillRect(1 + k * 2 + (r % 2), 1 + r * 2, 1, 1);
+      }),
+      blinds: pix(4, 16, (x, w, h) => { x.fillStyle = '#d8d0b4'; x.fillRect(0, 0, w, h); x.fillStyle = 'rgba(0,0,0,.25)'; for (let y = 3; y < h; y += 4) x.fillRect(0, y, w, 1); }),
+      poster1: pix(16, 20, (x, w, h) => {
+        x.fillStyle = '#2b2b6e'; x.fillRect(0, 0, w, h); x.fillStyle = '#e0457b'; x.fillRect(0, 12, w, 8);
+        x.fillStyle = '#f2d14a'; x.fillRect(5, 4, 6, 5); x.fillStyle = '#fff'; x.fillRect(2, 15, 12, 1); x.fillRect(2, 17, 8, 1);
+      }),
+      poster2: pix(12, 16, (x, w, h) => { x.fillStyle = '#55c3a8'; x.fillRect(0, 0, w, h); x.fillStyle = '#fff'; x.fillRect(3, 4, 6, 6); x.fillStyle = '#1a1450'; x.fillRect(2, 12, 8, 2); }),
+      ps2: pix(16, 8, (x, w, h) => {
+        x.fillStyle = '#1c1c24'; x.fillRect(0, 0, w, h); x.fillStyle = '#2c2c38';
+        for (let y = 1; y < h; y += 2) x.fillRect(0, y, w, 1);
+        x.fillStyle = '#3a6ad8'; x.fillRect(12, 3, 2, 1);
+      }),
+    };
+    const mat = (c, extra = {}) => psx(new THREE.MeshLambertMaterial(typeof c === 'number' ? { color: c, ...extra } : { map: c, ...extra }));
+    const basic = (o) => psx(new THREE.MeshBasicMaterial(o), { dither: false });
+    const boxAt = (w, h, d, x, y, z, c, parent = scene) => {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), c instanceof THREE.Material ? c : mat(c));
       m.position.set(x, y, z); parent.add(m); return m;
     };
 
     // Kamer: x 0..4 (linkermuur op x=0), z 0..4 (achtermuur op z=0), y 0..2.6
-    boxAt(4, .02, 4, 2, -.01, 2, p.floor);
-    boxAt(4, .02, 4, 2, 2.61, 2, p.ceil);
-    boxAt(4, 2.6, .02, 2, 1.3, -.01, p.wallB);
-    boxAt(.02, 2.6, 4, -.01, 1.3, 2, p.wallL);
+    boxAt(4, .02, 4, 2, -.01, 2, T.floor);
+    boxAt(4, .02, 4, 2, 2.61, 2, T.ceil);
+    boxAt(4, 2.6, .02, 2, 1.3, -.01, T.wallB);
+    boxAt(.02, 2.6, 4, -.01, 1.3, 2, T.wallL);
     // Raam met jaloezieën (linkermuur)
-    boxAt(.04, 1.2, 1.5, .01, 1.55, 2.0, 0xe8e0c8);
-    boxAt(.02, 1.08, 1.38, .03, 1.55, 2.0, new THREE.MeshBasicMaterial({ color: p.sky }));
-    for (let i = 0; i < 9; i++) boxAt(.03, .04, 1.36, .05, 2.04 - i * .12, 2.0, 0xd8d0b4);
+    boxAt(.04, 1.2, 1.5, .01, 1.55, 2.0, T.beige);
+    boxAt(.02, 1.08, 1.38, .03, 1.55, 2.0, basic({ color: p.sky }));
+    for (let i = 0; i < 9; i++) boxAt(.03, .04, 1.36, .05, 2.04 - i * .12, 2.0, T.blinds);
     const sun = new THREE.DirectionalLight(p.sun, p.sunI);
     sun.position.set(-2, 2.4, 2.2); sun.target.position.set(2, 0, 1.8);
     scene.add(sun, sun.target);
     scene.add(new THREE.AmbientLight(0xffffff, p.amb));
     // Kleed
-    boxAt(1.6, .01, 1.2, 1.5, .005, 2.2, 0xb8324a);
+    boxAt(1.6, .01, 1.2, 1.5, .005, 2.2, T.rug);
     // Bureau tegen de achtermuur
-    boxAt(1.5, .05, .7, 1.6, .73, .35, 0x8a6440);
+    boxAt(1.5, .05, .7, 1.6, .73, .35, T.wood);
     for (const [lx, lz] of [[.9, .05], [2.3, .05], [.9, .65], [2.3, .65]]) boxAt(.05, .73, .05, lx, .365, lz, 0x5e4229);
     // CRT: beige kast met bol scherm (schermvlak 0,32 × 0,24 = 4:3)
     crt = new THREE.Group(); crt.position.set(1.55, .755, .3); scene.add(crt);
     boxAt(.2, .03, .18, 0, .015, 0, 0xb5ac92, crt);
-    boxAt(.42, .38, .42, 0, .22, 0, 0xd8d0b8, crt);
-    boxAt(.3, .28, .2, 0, .22, -.28, 0xc9c0a6, crt);
+    boxAt(.42, .38, .42, 0, .22, 0, T.beige, crt);
+    boxAt(.3, .28, .2, 0, .22, -.28, T.beige, crt);
     const tc = document.createElement('canvas'); tc.width = 640; tc.height = 480;
     crtCtx = tc.getContext('2d');
     crtTex = new THREE.CanvasTexture(tc); crtTex.colorSpace = THREE.SRGBColorSpace;
-    crtScreen = new THREE.Mesh(new THREE.PlaneGeometry(.32, .24), new THREE.MeshBasicMaterial({ map: crtTex }));
+    crtScreen = new THREE.Mesh(new THREE.PlaneGeometry(.32, .24), basic({ map: crtTex }));
     crtScreen.position.set(0, .23, .211); crt.add(crtScreen);
-    boxAt(.012, .008, .005, .17, .05, .212, new THREE.MeshBasicMaterial({ color: 0x4ade80 }), crt);
+    boxAt(.012, .008, .005, .17, .05, .212, basic({ color: 0x4ade80 }), crt);
     const glow = new THREE.PointLight(0x4aa8ff, .6, 1.6); glow.position.set(0, .23, .5); crt.add(glow);
     crtIdle();
     // Toetsenbord, muis, pc-kast, lamp, cd-plank, posters
-    boxAt(.44, .025, .15, 1.55, .765, .6, 0xe0d8c0);
+    boxAt(.44, .025, .15, 1.55, .765, .6, T.keys);
     boxAt(.06, .02, .1, 1.95, .76, .6, 0xe0d8c0);
-    boxAt(.2, .45, .45, 2.15, .225, .3, 0xd8d0b8);
+    boxAt(.2, .45, .45, 2.15, .225, .3, T.beige);
     boxAt(.04, 1.5, .04, .45, .75, .35, 0xc8c0a8);
     boxAt(.2, .14, .2, .45, 1.55, .35, mat(0xf2b45a, { emissive: 0xf2b45a, emissiveIntensity: .5 }));
     const lamp = new THREE.PointLight(0xffb35c, p.lamp, 3.5); lamp.position.set(.45, 1.4, .45); scene.add(lamp);
-    boxAt(.9, .03, .2, 1.6, 1.45, .1, 0x7a5638);
+    boxAt(.9, .03, .2, 1.6, 1.45, .1, T.wood);
     ['#d84a4a', '#f2d14a', '#3a6ad8', '#e8e8e8', '#2a2a2a', '#55c3a8', '#e0457b', '#f28a3a', '#8a5ad8', '#e8e8e8']
       .forEach((c, i) => boxAt(.025, .14, .12, 1.25 + i * .045, 1.535, .1, new THREE.Color(c).getHex()));
-    boxAt(.7, .9, .01, 3.0, 1.6, .005, 0x2b2b6e);
-    boxAt(.7, .35, .012, 3.0, 1.32, .006, 0xe0457b);
-    boxAt(.4, .55, .01, 3.65, 1.55, .005, 0x55c3a8);
+    boxAt(.7, .9, .01, 3.0, 1.6, .005, T.poster1);
+    boxAt(.4, .55, .01, 3.65, 1.55, .005, T.poster2);
     // PS2 + controller op de vloer
-    boxAt(.3, .07, .2, 1.4, .045, 2.1, 0x1c1c24);
+    boxAt(.3, .07, .2, 1.4, .045, 2.1, T.ps2);
     boxAt(.12, .03, .07, 1.7, .025, 2.4, 0x2a2a34);
     // Bed rechts tegen de achtermuur, klaptelefoon op het dekbed
     boxAt(1.0, .35, 2.0, 3.45, .175, 1.05, 0x2c3fa8);
-    boxAt(1.0, .1, 2.0, 3.45, .4, 1.05, 0x3f5bd8);
+    boxAt(1.0, .1, 2.0, 3.45, .4, 1.05, T.duvet);
     boxAt(.7, .12, .35, 3.45, .51, .25, 0xf4f4f4);
-    boxAt(1.05, .7, .06, 3.45, .35, .02, 0x5e4229);
+    boxAt(1.05, .7, .06, 3.45, .35, .02, T.wood);
     // Klaptelefoon: onderkant ligt plat, het klepje scharniert aan de verre kant (kleinere z)
     phone = new THREE.Group(); phone.position.set(3.3, .455, 1.25); phone.rotation.y = -.35; phone.scale.setScalar(1.6); scene.add(phone);
     boxAt(.055, .014, .1, 0, .007, 0, 0xc8ccd8, phone);
     for (let r = 0; r < 4; r++) for (let k = 0; k < 3; k++) boxAt(.01, .003, .008, -.015 + k * .015, .015, .01 + r * .018, 0x7a8090, phone);
     lid = new THREE.Group(); lid.position.set(0, .016, -.05); phone.add(lid);
     boxAt(.055, .012, .1, 0, .006, .05, 0xc8ccd8, lid);
-    boxAt(.03, .002, .018, 0, .0125, .06, new THREE.MeshBasicMaterial({ color: 0x7fd0ff }), lid);   // klein buitenschermpje
-    phoneScreen = new THREE.Mesh(new THREE.PlaneGeometry(.045, .06), new THREE.MeshBasicMaterial({ color: 0x7fd0ff }));
+    boxAt(.03, .002, .018, 0, .0125, .06, basic({ color: 0x7fd0ff }), lid);   // klein buitenschermpje
+    phoneScreen = new THREE.Mesh(new THREE.PlaneGeometry(.045, .06), basic({ color: 0x7fd0ff }));
     phoneScreen.rotation.x = Math.PI / 2;           // naar de onderkant van het klepje, "boven" = weg van het scharnier
     phoneScreen.position.set(0, -.0005, .05); lid.add(phoneScreen);
+
+    // Vaste korrel over het beeld (beweegt niet), even grof als de lage pixels
+    const g = document.createElement('canvas'); g.width = g.height = 64;
+    const gx = g.getContext('2d');
+    for (let y = 0; y < 64; y++) for (let x = 0; x < 64; x++) { const v = Math.floor(rnd() * 255); gx.fillStyle = `rgb(${v},${v},${v})`; gx.fillRect(x, y, 1, 1); }
+    grain.style.backgroundImage = `url(${g.toDataURL()})`;
 
     onResize();
     addEventListener('resize', onResize);
@@ -291,7 +394,8 @@
   function onResize() {
     if (busy) return;
     const w = layer.clientWidth, h = layer.clientHeight;
-    renderer.setSize(w, h, false);
+    setRes(baseScale());
+    grain.style.backgroundSize = `${64 * scale}px`;
     camera.aspect = w / h;
     mode = modeNow();
     setLine(); crtIdle();
@@ -361,6 +465,13 @@
   }
 
   // ---------- Overgang ----------
+  // Van lage PS1-resolutie naar scherp naarmate de camera het scherm nadert (eind = gewone pixels, net als de DOM-kopie)
+  let base0 = 2;
+  const sharpen = (k) => {
+    const e = k * k;
+    setRes(base0 + (1 - base0) * e);
+    grain.style.opacity = String(.3 * (1 - e));
+  };
   let busy = false;
   async function enter() {
     if (busy || done) return;
@@ -370,6 +481,8 @@
     const W = layer.clientWidth, H = layer.clientHeight;
     const img = drawDash(W, H, mode);
     img.className = 'kamer-copy';
+    base0 = baseScale();
+    renderer.setPixelRatio(1);
 
     if (mode === 'phone') {
       phoneScreen.material = new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(img) });
@@ -378,16 +491,16 @@
       lid.rotation.x = -.95 * Math.PI;
       const pose = poseFor(phoneScreen, .045, .06, 'w');
       lid.rotation.x = 0;
-      await flyTo(pose, 520, (k) => { lid.rotation.x = -.95 * Math.PI * Math.min(1, k * 1.6); });
+      await flyTo(pose, 520, (k) => { lid.rotation.x = -.95 * Math.PI * Math.min(1, k * 1.6); sharpen(k); });
       const r = rectOf(phoneScreen, .045, .06);
       grow(img, r, 'scale');
     } else if (mode === 'portrait') {
       screenImage(img, 'rot');
-      await flyTo(poseFor(crtScreen, .32, .24, 'w'), 500);
+      await flyTo(poseFor(crtScreen, .32, .24, 'w'), 500, sharpen);
       grow(img, rectOf(crtScreen, .32, .24), 'rotate');
     } else {
       screenImage(img, 'mid');
-      await flyTo(poseFor(crtScreen, .32, .24, 'h'), 500);
+      await flyTo(poseFor(crtScreen, .32, .24, 'h'), 500, sharpen);
       grow(img, rectOf(crtScreen, .32, .24), 'slide');
     }
   }
