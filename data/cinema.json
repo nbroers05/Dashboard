@@ -1,5 +1,5 @@
 {
- "day": "2026-11-03",
+ "day": "2026-11-04",
  "sources": [
   "LantarenVenster"
  ],
@@ -156,6 +156,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/andiamo-a-bere-lultima-expat-cinema-rotterdam/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Avishai Darash Trio",
+   "key": "avishaidarashtrio",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/avishai-darash-trio/",
      "day": null,
      "next": null,
      "until": null
@@ -1101,6 +1115,20 @@
    ]
   },
   {
+   "title": "Killer Of Sheep (1978) - 4K Restoration",
+   "key": "killerofsheep19784krestoration",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/killer-of-sheep-1978-4k-restoration/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "Klara and the Sun",
    "key": "klaraandthesun",
    "poster": null,
@@ -1335,6 +1363,20 @@
      "day": null,
      "next": null,
      "until": "2026-11-11"
+    }
+   ]
+  },
+  {
+   "title": "Mathias Eick Quartet",
+   "key": "mathiaseickquartet",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/mathias-eick-quartet/",
+     "day": null,
+     "next": null,
+     "until": null
     }
    ]
   },
@@ -1710,20 +1752,6 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/salvation/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
-   "title": "Scott Kinsey Group",
-   "key": "scottkinseygroup",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/scott-kinsey-group/",
      "day": null,
      "next": null,
      "until": null
