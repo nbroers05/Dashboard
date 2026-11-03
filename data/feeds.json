@@ -4,6 +4,78 @@
    "name": "NOS",
    "items": [
     {
+     "title": "Overheid was onbetrouwbaar voor boeren, zegt Nationale ombudsman",
+     "link": "https://nos.nl/l/2637945",
+     "time": "2026-11-04T00:37:18+01:00",
+     "img": "https://images.cdn.nos.nl/7/3/4/M/7/Y/UBXfDCY78NxjVqKRmsTcrHVmiGYYoFXwokzk6XC/7x531x3776x2124-1024x576.webp"
+    },
+    {
+     "title": "NOS-podcast De Dag uitgeroepen tot beste dagelijkse podcast",
+     "link": "https://nos.nl/l/2637944",
+     "time": "2026-11-04T00:31:44+01:00",
+     "img": "https://images.cdn.nos.nl/5/2/v/p/K/R/QVLm2XfN9w4dvAxP6Nh1RXFrUYuw2WmG3vqkHvh/8x364x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Opnieuw duizenden Tsjechen de straat op tegen hervorming publieke omroep",
+     "link": "https://nos.nl/l/2637936",
+     "time": "2026-11-03T23:08:45+01:00",
+     "img": "https://images.cdn.nos.nl/3/H/t/J/U/3/5bG31JfFFcBzwMJCpsXgZta522dSMTSssYEPLbK/8x212x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Drenten willen strengere aanpak wolf: 'Kinderen durven niet meer op de fiets'",
+     "link": "https://nos.nl/l/2637932",
+     "time": "2026-11-03T22:46:57+01:00",
+     "img": "https://images.cdn.nos.nl/3/6/2/2/e/E/gx8CcBsf22kdCYw8No8HtNxMPZkm9fGL4Uskiqz/4x47x1584x891-1024x576.webp"
+    },
+    {
+     "title": "Dodental na aanval in regio Zaporizja loopt op, VN veroordeelt aanval op burgers",
+     "link": "https://nos.nl/l/2637930",
+     "time": "2026-11-03T22:05:51+01:00",
+     "img": "https://images.cdn.nos.nl/7/5/k/v/p/q/XjHa6ouCf3U68gb1UDdvDVxoWr11tvsmD3MjehM/8x160x1264x711-1024x576.webp"
+    },
+    {
+     "title": "Spaanse minister van Transport stapt alsnog op na treinramp",
+     "link": "https://nos.nl/l/2637929",
+     "time": "2026-11-03T21:45:25+01:00",
+     "img": "https://images.cdn.nos.nl/4/F/m/X/h/d/1nvrdEyrdMMY1Fc55qryUKnxjwGHHQ4cBE5mvpL/8x298x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Duitse supermarkten ook getroffen door hack",
+     "link": "https://nos.nl/l/2637928",
+     "time": "2026-11-03T21:37:27+01:00",
+     "img": "https://images.cdn.nos.nl/4/F/G/K/5/7/NxdVe2XoWaheJBChqCL9Uogva53QZc7Ymj6bKuD/8x321x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Boerenorganisaties kritisch over stikstofwet: 'Nog niet goed genoeg'",
+     "link": "https://nos.nl/l/2637925",
+     "time": "2026-11-03T21:17:43+01:00",
+     "img": "https://images.cdn.nos.nl/8/9/5/N/X/3/11sQ1qd4YDXc8ggjEHZs6N9JB8b66pmuXKYn8nw/8x187x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Nederlandse industrie krijgt compensatie voor dure stroom",
+     "link": "https://nos.nl/l/2637923",
+     "time": "2026-11-03T20:50:38+01:00",
+     "img": "https://images.cdn.nos.nl/4/H/v/F/V/8/tqRrMAXWcDHJGMhrom2F5gUioS4iFMMqEKXCjGi/6x89x3440x1935-1024x576.webp"
+    },
+    {
+     "title": "Indonesië arresteert drie hoge politiemensen op verdenking van aftappen president",
+     "link": "https://nos.nl/l/2637922",
+     "time": "2026-11-03T20:38:53+01:00",
+     "img": "https://images.cdn.nos.nl/7/H/a/X/i/Q/oi28N5234V4H5WkLtyUXaDu33PDmWAR2FdMPLmy/2x122x3856x2169-1024x576.webp"
+    },
+    {
+     "title": "Stream, blog, kaart: zo volg je de uitslagen uit Amerika bij de NOS",
+     "link": "https://nos.nl/l/2637920",
+     "time": "2026-11-03T19:48:06+01:00",
+     "img": "https://images.cdn.nos.nl/8/D/s/Z/H/T/ndv1hYYAQuBwcs7XDC65mbTrcEx5iuz1waJhbVy/3x1x3440x1935-1024x576.webp"
+    },
+    {
+     "title": "Verkeersregelaar in het ziekenhuis, man vast voor zware mishandeling",
+     "link": "https://nos.nl/l/2637918",
+     "time": "2026-11-03T19:36:55+01:00",
+     "img": "https://images.cdn.nos.nl/2/2/A/6/o/5/J7hmgvRo8xZnkr1J8RUUP8M6YQv2Y2WwArxAGAd/8x74x1984x1116-1024x576.webp"
+    },
+    {
      "title": "Koning Charles noemt slavernij 'beschamend hoofdstuk', maar zegt geen sorry",
      "link": "https://nos.nl/l/2637916",
      "time": "2026-11-03T19:20:45+01:00",
@@ -20,78 +92,6 @@
      "link": "https://nos.nl/l/2637910",
      "time": "2026-11-03T18:33:57+01:00",
      "img": "https://images.cdn.nos.nl/4/5/1/W/q/E/xzSi1vRboDDefogW7BCN5QMMdGVYLeEQKcdZNwy/0x85x3360x1890-1024x576.webp"
-    },
-    {
-     "title": "Binance: hackers kwamen binnen via nepsollicitatie",
-     "link": "https://nos.nl/l/2637909",
-     "time": "2026-11-03T18:26:53+01:00",
-     "img": "https://images.cdn.nos.nl/5/F/r/n/U/d/Ro7BURVaSKUoaeKicQZpaqHXUJhMiUgy2j729qv/39x1x3920x2205-1024x576.webp"
-    },
-    {
-     "title": "Verdienmodel nieuwsmedia onder druk door AI-resultaten zoekmachines en chatbots",
-     "link": "https://nos.nl/l/2637908",
-     "time": "2026-11-03T18:23:53+01:00",
-     "img": "https://images.cdn.nos.nl/4/F/n/w/N/Q/6HqrE38QhDpCnEyZQ7K1p27UjaTisxrMh2SnMnT/8x286x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Britse zanger Steve Ellis (76) van eeuwige hit 'Everlasting Love' overleden",
-     "link": "https://nos.nl/l/2637906",
-     "time": "2026-11-03T18:12:56+01:00",
-     "img": "https://images.cdn.nos.nl/5/F/p/K/Z/h/RjcoamYhNQcavG8NwectaAA1FbbqLRUFRyh14ws/6x413x2928x1647-1024x576.webp"
-    },
-    {
-     "title": "Nachtwerk vaak onnodig en werknemers onvoldoende beschermd, waarschuwt Arbeidsinspectie",
-     "link": "https://nos.nl/l/2637903",
-     "time": "2026-11-03T17:56:54+01:00",
-     "img": "https://images.cdn.nos.nl/4/C/1/J/s/E/1CDhmFnYSuVdt3647nTWw1LYwppaF7iKHgXV5bn/8x243x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Verdachten van mensensmokkel met rubberboot bij Cadzand blijven langer vast",
-     "link": "https://nos.nl/l/2637900",
-     "time": "2026-11-03T17:42:09+01:00",
-     "img": "https://images.cdn.nos.nl/2/G/A/Z/d/o/MbGrgCbu8nkXeUmWtWBRTBnfxarthPBgKcb3s7E/105x3x720x405-720x405.webp"
-    },
-    {
-     "title": "OM eist 100 uur taakstraf tegen agent die met wapenstok ingreep op huwelijksfeest",
-     "link": "https://nos.nl/l/2637896",
-     "time": "2026-11-03T17:18:27+01:00",
-     "img": "https://images.cdn.nos.nl/3/H/t/P/3/8/9fEHRSvzbvjdWpi1pZe9GidAwGkbD4VmqYZ8jHs/7x4x1088x612-1024x576.webp"
-    },
-    {
-     "title": "Bommeldingen bij zeven vluchten in Europa, geen explosieven aangetroffen",
-     "link": "https://nos.nl/l/2637895",
-     "time": "2026-11-03T17:12:26+01:00",
-     "img": "https://images.cdn.nos.nl/7/4/f/9/c/g/PLYyyAfTu3cTn6aGftHaRM8cVu6h28FnUxvyRiJ/0x375x4000x2250-1024x576.webp"
-    },
-    {
-     "title": "Tarwekamp krabbelt op na explosie, maar rechtszaak zorgt voor spanning: 'Met knikkende knieën heen'",
-     "link": "https://nos.nl/l/2637892",
-     "time": "2026-11-03T16:49:16+01:00",
-     "img": "https://images.cdn.nos.nl/4/5/2/W/7/z/4kmNKni3q4LSqqr1i2GTqLuBX8WZrvPinr5e2Jw/187x207x3680x2070-1024x576.webp"
-    },
-    {
-     "title": "Aspirant-koper van bunker Seyss-Inquart terecht uitgesloten van biedproces",
-     "link": "https://nos.nl/l/2637889",
-     "time": "2026-11-03T16:40:24+01:00",
-     "img": "https://images.cdn.nos.nl/4/B/T/C/W/y/j3r4mDBzegX5ExGruoBdyFFzEU7Wgp49rwSD5E1/8x168x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Werknemers onvoldoende voorbereid op het verlies van hun baan, meer scholing nodig",
-     "link": "https://nos.nl/l/2637886",
-     "time": "2026-11-03T16:34:23+01:00",
-     "img": "https://images.cdn.nos.nl/8/8/X/t/r/7/aRBEVA9ZgxwtpEcSFNHQAk8BpaqEkMDv2c7TtjN/8x102x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "CU en 50Plus positief, andere bondjes willen doorpraten over belastingplan",
-     "link": "https://nos.nl/l/2637885",
-     "time": "2026-11-03T16:33:35+01:00",
-     "img": "https://images.cdn.nos.nl/3/H/L/D/u/J/uegYxeDWFuaUeU4jiPXKeZi8XDH9EL1Q7hStHud/5x16x3648x2052-1024x576.webp"
-    },
-    {
-     "title": "PFAS lozen? Dat kan bedrijven voortaan miljoenen euro's aan boetes kosten",
-     "link": "https://nos.nl/l/2637881",
-     "time": "2026-11-03T16:17:49+01:00",
-     "img": "https://images.cdn.nos.nl/2/E/1/u/P/A/NVsBAqaQjrzeq8aqM6KvW9zat8cdNLrDyFzvDcc/8x290x3984x2241-1024x576.webp"
     }
    ]
   },
@@ -99,10 +99,40 @@
    "name": "NOS Sport",
    "items": [
     {
+     "title": "Zeperd tegen 'veel sterker' Inter komt bij Feyenoord 'harder aan dan 5-1 in Barcelona'",
+     "link": "https://nos.nl/l/2637942",
+     "time": "2026-11-04T00:07:00+01:00",
+     "img": "https://images.cdn.nos.nl/4/9/L/R/3/F/mtKLLgDKQyryYVCYfnDQn6GXG6Qw18TryHNYEMx/8x107x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "De Jong speelt zijn 300ste, PSG breekt record en United toont veerkracht",
+     "link": "https://nos.nl/l/2637940",
+     "time": "2026-11-03T23:35:18+01:00",
+     "img": "https://images.cdn.nos.nl/2/d/2/t/Q/L/smw4eDTMLhP8dmiJvxZejwEgc2u3FCg9bPvQ5A/828x345x2576x1449-1024x576.webp"
+    },
+    {
+     "title": "Fenerbahçe van interim-trainer Kuijt vindt in Emre Belözoglu nieuwe coach",
+     "link": "https://nos.nl/l/2637935",
+     "time": "2026-11-03T23:00:44+01:00",
+     "img": "https://images.cdn.nos.nl/8/E/z/d/9/n/V4g7RJYq28pWL9XtZnRDcrfc4Nxrf6PqXc42p1w/8x128x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Machteloos Feyenoord hard onderuit tegen Inter in Champions League",
+     "link": "https://nos.nl/l/2637933",
+     "time": "2026-11-03T22:55:05+01:00",
+     "img": "https://images.cdn.nos.nl/4/5/X/K/K/y/MR43YxQaQ6s4ypNnpgh5V3DxZBxgGUcD8wNEEEu/426x301x2608x1467-1024x576.webp"
+    },
+    {
+     "title": "F1-team Haas neemt al voor einde seizoen afscheid van Ocon en schuift Camara naar voren",
+     "link": "https://nos.nl/l/2637931",
+     "time": "2026-11-03T22:08:02+01:00",
+     "img": "https://images.cdn.nos.nl/8/6/u/z/g/T/GPBR1iC9zEwa1hQneDyMd1bbHsHtaYKw2y5opid/8x182x3984x2241-1024x576.webp"
+    },
+    {
      "title": "Champions League-clubs staan stil bij overlijden De Miguel, duels Spaanse beker opgeschort",
      "link": "https://nos.nl/l/2637917",
      "time": "2026-11-03T19:25:08+01:00",
-     "img": null
+     "img": "https://images.cdn.nos.nl/5/9/w/7/9/r/YrAUfmzuTk28g4D2aHxL4LMtYkHPWfa3jUMgmNS/497x738x2880x1620-1024x576.webp"
     },
     {
      "title": "Toplanden willen wedstrijden tegen Rusland boycotten op WK ijshockey",
@@ -157,36 +187,6 @@
      "link": "https://nos.nl/l/2637846",
      "time": "2026-11-03T11:30:25+01:00",
      "img": "https://images.cdn.nos.nl/6/D/k/h/C/r/6uttZKLBb5q87qnsx2S5R1pZz1kW6XcLMZM9qpQ/410x179x3264x1836-1024x576.webp"
-    },
-    {
-     "title": "Tenerife-voetballer De Miguel (30) overleden na harde botsing met keeper",
-     "link": "https://nos.nl/l/2637836",
-     "time": "2026-11-03T10:00:55+01:00",
-     "img": "https://images.cdn.nos.nl/1/1/4/T/5/z/2nEyqmqXkBPXf8FAYUs2AVZyw558bhJFwmP89h8/0x92x2480x1395-1024x576.webp"
-    },
-    {
-     "title": "Azië Cup bijna jaar uitgesteld vanwege conflict in Midden-Oosten",
-     "link": "https://nos.nl/l/2637823",
-     "time": "2026-11-03T08:41:23+01:00",
-     "img": "https://images.cdn.nos.nl/6/C/A/g/u/1/JHPfJLMEwAkJLjNZiwuymLvVz9jz64h93Fx84N9/0x169x4000x2250-1024x576.webp"
-    },
-    {
-     "title": "Surinaamse internationals raken nog steeds Nederlandse nationaliteit kwijt ondanks wetswijziging",
-     "link": "https://nos.nl/l/2637818",
-     "time": "2026-11-03T07:28:55+01:00",
-     "img": "https://images.cdn.nos.nl/6/H/Z/6/m/k/ebBZRPiiKaxKoCe6tRjjby7kUkv1DbZxztXY9uX/0x174x4000x2250-1024x576.webp"
-    },
-    {
-     "title": "Proevend van de wijn wint 41-jarige James met Sixers makkelijk van Chicago",
-     "link": "https://nos.nl/l/2637817",
-     "time": "2026-11-03T07:28:26+01:00",
-     "img": "https://images.cdn.nos.nl/4/9/K/j/C/Q/7qm7ehFRSwgJtjiBt7CVMMMD5bSz3tQR7aeUMKj/1402x792x1120x630-1024x576.webp"
-    },
-    {
-     "title": "Van de Zandschulp uitgeschakeld in Parijs na nachtelijke slijtageslag tegen Humbert",
-     "link": "https://nos.nl/l/2637809",
-     "time": "2026-11-03T01:00:42+01:00",
-     "img": "https://images.cdn.nos.nl/5/p/s/B/y/y/xxkJBudbHyKfSRV8TkEDtDNPWrNcTb4JTquenq/8x42x3984x2241-1024x576.webp"
     }
    ]
   },
@@ -194,94 +194,94 @@
    "name": "NU.nl",
    "items": [
     {
+     "title": "Eerste peilingen midterms laten ontevredenheid van kiezers over Trump zien",
+     "link": "https://www.nu.nl/verkiezingen-vs/6415417/eerste-peilingen-midterms-laten-ontevredenheid-van-kiezers-over-trump-zien.html",
+     "time": "2026-11-04T00:12:59+01:00",
+     "img": "https://images.nu.nl/m/gslxg8ka2xem_sqr256/1716/0/5504/5504/eerste-peilingen-midterms-laten-ontevredenheid-van-kiezers-over-trump-zien.jpg"
+    },
+    {
+     "title": "Kuijt loopt weerzien met Liverpool mogelijk mis: Fenerbahçe vindt nieuwe trainer",
+     "link": "https://www.nu.nl/voetbal/6415413/kuijt-loopt-weerzien-met-liverpool-mogelijk-mis-fenerbahce-vindt-nieuwe-trainer.html",
+     "time": "2026-11-03T22:59:24+01:00",
+     "img": "https://images.nu.nl/m/do9xvjtapxqv_sqr256/1025/0/2626/2626/kuijt-loopt-weerzien-met-liverpool-mogelijk-mis-fenerbahce-vindt-nieuwe-trainer.jpg"
+    },
+    {
+     "title": "Feyenoord verliest kansloos van Internazionale in Champions League",
+     "link": "https://www.nu.nl/voetbal/6415404/feyenoord-verliest-kansloos-van-internazionale-in-champions-league.html",
+     "time": "2026-11-03T22:55:35+01:00",
+     "img": "https://images.nu.nl/m/ly0xqhealsnk_sqr256/1052/0/2854/2854/feyenoord-verliest-kansloos-van-internazionale-in-champions-league.jpg"
+    },
+    {
+     "title": "Spaanse transportminister vertrekt na tweede treinramp in een jaar tijd",
+     "link": "https://www.nu.nl/buitenland/6415412/spaanse-transportminister-vertrekt-na-tweede-treinramp-in-een-jaar-tijd.html",
+     "time": "2026-11-03T22:14:57+01:00",
+     "img": "https://images.nu.nl/m/ryexm69abmo8_sqr256/315/5/2075/2075/spaanse-transportminister-vertrekt-na-tweede-treinramp-in-een-jaar-tijd.jpg"
+    },
+    {
+     "title": "Duitse politie arresteert vermoedelijk brein achter brandstichting Starlink in Polen",
+     "link": "https://www.nu.nl/buitenland/6415407/duitse-politie-arresteert-vermoedelijk-brein-achter-brandstichting-starlink-in-polen.html",
+     "time": "2026-11-03T21:36:18+01:00",
+     "img": "https://images.nu.nl/m/vkzxf62aen09_sqr256/664/0/2860/2860/duitse-politie-arresteert-vermoedelijk-brein-achter-brandstichting-starlink-in-polen.jpg"
+    },
+    {
+     "title": "Video | Koning en Yesilgöz bezoeken Liverpool: 'Bouwen aan sterker Europa'",
+     "link": "https://www.nu.nl/331933/video/koning-en-yesilgoz-bezoeken-liverpool-samen-bouwen-aan-sterker-europa.html",
+     "time": "2026-11-03T21:28:01+01:00",
+     "img": "https://images.nu.nl/m/ky0xhriagrii_sqr256/164/0/888/888/koning-en-yesilgoz-bezoeken-liverpool-samen-bouwen-aan-sterker-europa.jpg"
+    },
+    {
+     "title": "Verdachte dodelijke schietpartij in auto Rotterdam is buiten levensgevaar",
+     "link": "https://www.nu.nl/binnenland/6415398/verdachte-dodelijke-schietpartij-in-auto-rotterdam-is-buiten-levensgevaar.html",
+     "time": "2026-11-03T21:18:52+01:00",
+     "img": "https://images.nu.nl/m/fpzxoqraslaz_sqr256/304/0/450/450/verdachte-dodelijke-schietpartij-in-auto-rotterdam-is-buiten-levensgevaar.jpg"
+    },
+    {
+     "title": "Live | Voetbal | Bekijk alle uitslagen van de Champions League-avond",
+     "link": "https://www.nu.nl/voetbal/6415397/voetbal-bekijk-alle-uitslagen-van-de-champions-league-avond.html",
+     "time": "2026-11-03T20:58:16+01:00",
+     "img": "https://images.nu.nl/m/c3cxcluayhye_sqr256/352/0/2832/2832/voetbal-bekijk-alle-uitslagen-van-de-champions-league-avond.jpg"
+    },
+    {
+     "title": "PRO steunt uitwerking stikstofplannen van kabinet: 'Eindelijk actie'",
+     "link": "https://www.nu.nl/politiek/6415401/pro-steunt-uitwerking-stikstofplannen-van-kabinet-eindelijk-actie.html",
+     "time": "2026-11-03T20:38:42+01:00",
+     "img": "https://images.nu.nl/m/fyux93vatep5_sqr256/2069/676/3684/3684/pro-steunt-uitwerking-stikstofplannen-van-kabinet-eindelijk-actie.jpg"
+    },
+    {
+     "title": "Japanse dief heeft spijt en stuurt horloge van 250.000 euro terug naar winkel",
+     "link": "https://www.nu.nl/opmerkelijk/6415399/japanse-dief-heeft-spijt-en-stuurt-horloge-van-250000-euro-terug-naar-winkel.html",
+     "time": "2026-11-03T20:37:14+01:00",
+     "img": "https://images.nu.nl/m/w9wxjoraj9ig_sqr256/1397/0/5773/5773/japanse-dief-heeft-spijt-en-stuurt-horloge-van-250000-euro-terug-naar-winkel.jpg"
+    },
+    {
+     "title": "Bommeldingen bij zeven vluchten in Europa, geen explosieven gevonden",
+     "link": "https://www.nu.nl/buitenland/6415400/bommeldingen-bij-zeven-vluchten-in-europa-geen-explosieven-gevonden.html",
+     "time": "2026-11-03T20:28:24+01:00",
+     "img": "https://images.nu.nl/m/sxexxota8lxp_sqr256/475/0/1004/1004/bommeldingen-bij-zeven-vluchten-in-europa-geen-explosieven-gevonden.jpg"
+    },
+    {
+     "title": "Boksgevecht Rico Verhoeven in voorprogramma van Fury-Joshua gaat niet door",
+     "link": "https://www.nu.nl/sport-overig/6415394/boksgevecht-rico-verhoeven-in-voorprogramma-van-fury-joshua-gaat-niet-door.html",
+     "time": "2026-11-03T20:15:37+01:00",
+     "img": "https://images.nu.nl/m/2kixpdnaa12y_sqr256/0/0/2967/2967/boksgevecht-rico-verhoeven-in-voorprogramma-van-fury-joshua-gaat-niet-door.jpg"
+    },
+    {
+     "title": "Box 3-chaos blijft voortbestaan: dit is nu het plan van het kabinet",
+     "link": "https://www.nu.nl/politiek/6415356/box-3-chaos-blijft-voortbestaan-dit-is-nu-het-plan-van-het-kabinet.html",
+     "time": "2026-11-03T19:50:12+01:00",
+     "img": "https://images.nu.nl/m/k16xlcxaou6q_sqr256/2199/813/3042/3042/box-3-chaos-blijft-voortbestaan-dit-is-nu-het-plan-van-het-kabinet.jpg"
+    },
+    {
+     "title": "Man krijgt vier jaar gevangenisstraf voor omkopen Amsterdamse boa",
+     "link": "https://www.nu.nl/binnenland/6415390/man-krijgt-vier-jaar-gevangenisstraf-voor-omkopen-amsterdamse-boa.html",
+     "time": "2026-11-03T19:37:22+01:00",
+     "img": "https://images.nu.nl/m/3mtxx8iag4oo_sqr256/1772/0/4000/4000/man-krijgt-vier-jaar-gevangenisstraf-voor-omkopen-amsterdamse-boa.jpg"
+    },
+    {
      "title": "Inspectie waarschuwt voor onveilige condooms na Franse terugroepactie",
      "link": "https://www.nu.nl/economie/6415381/inspectie-waarschuwt-voor-onveilige-condooms-na-franse-terugroepactie.html",
      "time": "2026-11-03T19:03:29+01:00",
      "img": "https://images.nu.nl/m/pfjxnt0a9914_sqr256/397/4/3634/3634/inspectie-waarschuwt-voor-onveilige-condooms-na-franse-terugroepactie.jpg"
-    },
-    {
-     "title": "Q&A | Wat doet Trump bij nederlaag? 'Mogelijk meer buitenlandse avonturen'",
-     "link": "https://www.nu.nl/buitenland/6415384/wat-doet-trump-bij-nederlaag-mogelijk-meer-buitenlandse-avonturen.html",
-     "time": "2026-11-03T18:53:27+01:00",
-     "img": "https://images.nu.nl/m/wwtxc14a16ph_sqr256/750/0/3803/3803/wat-doet-trump-bij-nederlaag-mogelijk-meer-buitenlandse-avonturen.jpg"
-    },
-    {
-     "title": "Chagrijn over belastingplan sijpelt ook door in coalitie: 'Geen casinopolitiek'",
-     "link": "https://www.nu.nl/algemeen/6415389/chagrijn-over-belastingplan-sijpelt-ook-door-in-coalitie-geen-casinopolitiek.html",
-     "time": "2026-11-03T18:32:02+01:00",
-     "img": "https://images.nu.nl/m/vxuxoicavk2n_sqr256/1046/0/4000/4000/chagrijn-over-belastingplan-sijpelt-ook-door-in-coalitie-geen-casinopolitiek.jpg"
-    },
-    {
-     "title": "Kamer wil hele jaar goedkoper ov-abonnement, kabinet aan zet",
-     "link": "https://www.nu.nl/politiek/6415379/kamer-wil-hele-jaar-goedkoper-ov-abonnement-kabinet-aan-zet.html",
-     "time": "2026-11-03T17:53:11+01:00",
-     "img": "https://images.nu.nl/m/ivnxxxuav9r8_sqr256/2233/0/4483/4483/kamer-wil-hele-jaar-goedkoper-ov-abonnement-kabinet-aan-zet.jpg"
-    },
-    {
-     "title": "Koelhack legt verzekeringsprobleem bloot: bedorven voorraad wordt niet gedekt",
-     "link": "https://www.nu.nl/economie/6415357/koelhack-legt-verzekeringsprobleem-bloot-bedorven-voorraad-wordt-niet-gedekt.html",
-     "time": "2026-11-03T17:46:26+01:00",
-     "img": "https://images.nu.nl/m/8m5xe31ao0id_sqr256/582/0/4672/4672/koelhack-legt-verzekeringsprobleem-bloot-bedorven-voorraad-wordt-niet-gedekt.jpg"
-    },
-    {
-     "title": "Miljardenroof bij 's werelds grootste cryptobeurs was mogelijk door nepsollicitatie",
-     "link": "https://www.nu.nl/economie/6415382/miljardenroof-bij-s-werelds-grootste-cryptobeurs-was-mogelijk-door-nepsollicitatie.html",
-     "time": "2026-11-03T17:34:45+01:00",
-     "img": "https://images.nu.nl/m/yrux2e8a3x4h_sqr256/1257/0/4160/4160/miljardenroof-bij-s-werelds-grootste-cryptobeurs-was-mogelijk-door-nepsollicitatie.jpg"
-    },
-    {
-     "title": "Explainer | Bijzonder verschijnsel bij stembureaus VS: dit zijn de 'poll greeters'",
-     "link": "https://www.nu.nl/331925/video/bijzonder-verschijnsel-bij-stembureaus-vs-dit-zijn-de-poll-greeters.html",
-     "time": "2026-11-03T17:17:16+01:00",
-     "img": "https://images.nu.nl/m/9cuxq2aaukj8_sqr256/0/1/1309/1309/bijzonder-verschijnsel-bij-stembureaus-vs-dit-zijn-de-poll-greeters.jpg"
-    },
-    {
-     "title": "Koude dagen met volop zon in aantocht: 'Lokaal kans op vriesnachten'",
-     "link": "https://www.nu.nl/binnenland/6415324/koude-dagen-met-volop-zon-in-aantocht-lokaal-kans-op-vriesnachten.html",
-     "time": "2026-11-03T16:55:31+01:00",
-     "img": "https://images.nu.nl/m/38pxzl5acpbs_sqr256/894/526/2183/2183/koude-dagen-met-volop-zon-in-aantocht-lokaal-kans-op-vriesnachten.jpg"
-    },
-    {
-     "title": "Politie onderzoekt of keeper kan worden vervolgd na fatale botsing met De Miguel",
-     "link": "https://www.nu.nl/voetbal/6415374/politie-onderzoekt-of-keeper-kan-worden-vervolgd-na-fatale-botsing-met-de-miguel.html",
-     "time": "2026-11-03T16:31:07+01:00",
-     "img": "https://images.nu.nl/m/uvrxx93as132_sqr256/522/61/1749/1749/politie-onderzoekt-of-keeper-kan-worden-vervolgd-na-fatale-botsing-met-de-miguel.jpg"
-    },
-    {
-     "title": "Doetinchemmer die aanslag op azc wilde plegen krijgt 2,5 jaar cel",
-     "link": "https://www.nu.nl/binnenland/6415368/doetinchemmer-die-aanslag-op-azc-wilde-plegen-krijgt-25-jaar-cel.html",
-     "time": "2026-11-03T16:12:57+01:00",
-     "img": "https://images.nu.nl/m/qeqxm8radrxt_sqr256/450/0/2080/2080/doetinchemmer-die-aanslag-op-azc-wilde-plegen-krijgt-25-jaar-cel.jpg"
-    },
-    {
-     "title": "Stikstofplannen op de schop: provincies maken eigen plan rond kwetsbare natuur",
-     "link": "https://www.nu.nl/politiek/6415354/stikstofplannen-op-de-schop-provincies-maken-eigen-plan-rond-kwetsbare-natuur.html",
-     "time": "2026-11-03T16:01:44+01:00",
-     "img": "https://images.nu.nl/m/4bexw0bayho6_sqr256/1344/0/4000/4000/stikstofplannen-op-de-schop-provincies-maken-eigen-plan-rond-kwetsbare-natuur.jpg"
-    },
-    {
-     "title": "Paris Jackson eist 600 miljoen dollar uit erfenis van vader Michael",
-     "link": "https://www.nu.nl/achterklap/6415365/paris-jackson-eist-600-miljoen-dollar-uit-erfenis-van-vader-michael.html",
-     "time": "2026-11-03T15:52:02+01:00",
-     "img": "https://images.nu.nl/m/ji6xkbta4tzg_sqr256/117/0/533/533/paris-jackson-eist-600-miljoen-dollar-uit-erfenis-van-vader-michael.jpg"
-    },
-    {
-     "title": "Protesten van Franse scholieren gaan na herfstvakantie gewoon weer door",
-     "link": "https://www.nu.nl/buitenland/6415326/protesten-van-franse-scholieren-gaan-na-herfstvakantie-gewoon-weer-door.html",
-     "time": "2026-11-03T15:23:50+01:00",
-     "img": "https://images.nu.nl/m/9lpxiv8awfe4_sqr256/1113/14/5746/5746/protesten-van-franse-scholieren-gaan-na-herfstvakantie-gewoon-weer-door.jpg"
-    },
-    {
-     "title": "Robèrt van Beckhoven heeft nieuwe liefde: 'Ze heeft alles wat ik nodig heb'",
-     "link": "https://www.nu.nl/achterklap/6415351/robert-van-beckhoven-heeft-nieuwe-liefde-ze-heeft-alles-wat-ik-nodig-heb.html",
-     "time": "2026-11-03T14:44:03+01:00",
-     "img": "https://images.nu.nl/m/098xgs4a90se_sqr256/993/0/3939/3939/robert-van-beckhoven-heeft-nieuwe-liefde-ze-heeft-alles-wat-ik-nodig-heb.jpg"
-    },
-    {
-     "title": "Ziggo trekt na jaren weer klanten aan, maar houdt er minder aan over",
-     "link": "https://www.nu.nl/economie/6415344/ziggo-trekt-na-jaren-weer-klanten-aan-maar-houdt-er-minder-aan-over.html",
-     "time": "2026-11-03T14:00:03+01:00",
-     "img": "https://images.nu.nl/m/c6hxw1maqfhg_sqr256/573/1/2833/2833/ziggo-trekt-na-jaren-weer-klanten-aan-maar-houdt-er-minder-aan-over.jpg"
     }
    ]
   }
@@ -391,9 +391,7 @@
  ],
  "youtube": {
   "channels": [
-   "Patrick (H) Willems",
-   "The Yard",
-   "Ken"
+   "Patrick (H) Willems"
   ],
   "videos": [
    {
@@ -403,86 +401,6 @@
     "thumb": "https://i.ytimg.com/vi/f5iyzbgBTgA/mqdefault.jpg",
     "time": "2026-11-03T14:14:19+00:00",
     "short": false
-   },
-   {
-    "title": "I love bullying",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=zujgPKfV-Mw",
-    "thumb": "https://i.ytimg.com/vi/zujgPKfV-Mw/mqdefault.jpg",
-    "time": "2026-11-03T10:00:25+00:00",
-    "short": false
-   },
-   {
-    "title": "The Halloween Episode was a disaster.. #podcast #theyard #comedy",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/shorts/BXbval-c8r8",
-    "thumb": "https://i.ytimg.com/vi/BXbval-c8r8/mqdefault.jpg",
-    "time": "2026-11-02T19:38:58+00:00",
-    "short": true
-   },
-   {
-    "title": "Can I beat 20 wins in front of 10,000 viewers?",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=hOxZPqFmXf4",
-    "thumb": "https://i.ytimg.com/vi/hOxZPqFmXf4/mqdefault.jpg",
-    "time": "2026-11-02T11:07:59+00:00",
-    "short": false
-   },
-   {
-    "title": "20 win challenge (finale)",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=sFOTrmpM_E4",
-    "thumb": "https://i.ytimg.com/vi/sFOTrmpM_E4/mqdefault.jpg",
-    "time": "2026-11-02T09:26:04+00:00",
-    "short": false
-   },
-   {
-    "title": "20 win challenge (finale)",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=fFFMdG05IJI",
-    "thumb": "https://i.ytimg.com/vi/fFFMdG05IJI/mqdefault.jpg",
-    "time": "2026-11-02T09:12:31+00:00",
-    "short": false
-   },
-   {
-    "title": "20 win challenge",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=mXRk9WgvHrQ",
-    "thumb": "https://i.ytimg.com/vi/mXRk9WgvHrQ/mqdefault.jpg",
-    "time": "2026-11-01T10:00:32+00:00",
-    "short": false
-   },
-   {
-    "title": "Halloween, But We're All Ludwig | The Yard",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/watch?v=9mFou52l7sw",
-    "thumb": "https://i.ytimg.com/vi/9mFou52l7sw/mqdefault.jpg",
-    "time": "2026-10-29T17:09:18+00:00",
-    "short": false
-   },
-   {
-    "title": "THAT WAS MY SPEECH!! #podcast #theyard #comedy",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/shorts/tr3Zow_Q8aQ",
-    "thumb": "https://i.ytimg.com/vi/tr3Zow_Q8aQ/mqdefault.jpg",
-    "time": "2026-10-28T20:04:12+00:00",
-    "short": true
-   },
-   {
-    "title": "Killing my friends because I have to | Yard D&D | S1E65",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/watch?v=U0W6YEky_jk",
-    "thumb": "https://i.ytimg.com/vi/U0W6YEky_jk/mqdefault.jpg",
-    "time": "2026-10-27T23:44:27+00:00",
-    "short": false
-   },
-   {
-    "title": "Aiden somehow wins?! #podcast #theyard #comedy",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/shorts/D5OG9wbJAD8",
-    "thumb": "https://i.ytimg.com/vi/D5OG9wbJAD8/mqdefault.jpg",
-    "time": "2026-10-25T14:42:51+00:00",
-    "short": true
    },
    {
     "title": "Is This The Best Directed Movie Ever?",
