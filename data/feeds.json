@@ -4,6 +4,12 @@
    "name": "NOS",
    "items": [
     {
+     "title": "Philips schikt apneu-zaak met Amerikaanse justitie, topman enthousiast over AI",
+     "link": "https://nos.nl/l/2637844",
+     "time": "2026-11-03T11:10:13+01:00",
+     "img": "https://images.cdn.nos.nl/5/J/1/G/P/N/WkGFdxgMaaMM4Z7c3ueaDJs9fobhi8cEHT4e8Pc/577x423x3120x1755-1024x576.webp"
+    },
+    {
      "title": "Vliegtuig uit Londen maakt landing in Polen vanwege mogelijk explosief aan boord",
      "link": "https://nos.nl/l/2637841",
      "time": "2026-11-03T10:43:23+01:00",
@@ -86,18 +92,18 @@
      "link": "https://nos.nl/l/2637801",
      "time": "2026-11-02T21:55:22+01:00",
      "img": "https://images.cdn.nos.nl/6/4/c/r/W/N/43GtYWJQp1eASvtqy2Bx4EW2NBFBh7NQeANfLUx/8x200x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "In Florida gecrashte privéjet verloor mogelijk in de lucht onderdelen",
-     "link": "https://nos.nl/l/2637800",
-     "time": "2026-11-02T21:47:24+01:00",
-     "img": "https://images.cdn.nos.nl/1/B/E/e/v/h/n4JE2h3jqH1vS8nc7ant3Ep2UKZqoTr2jinnmDw/0x0x2560x1440-1024x576.webp"
     }
    ]
   },
   {
    "name": "NOS Sport",
    "items": [
+    {
+     "title": "Geplaagd Inter moet tegen Feyenoord 'de honger en energie terugvinden'",
+     "link": "https://nos.nl/l/2637846",
+     "time": "2026-11-03T11:30:25+01:00",
+     "img": "https://images.cdn.nos.nl/6/D/k/h/C/r/6uttZKLBb5q87qnsx2S5R1pZz1kW6XcLMZM9qpQ/410x179x3264x1836-1024x576.webp"
+    },
     {
      "title": "Tenerife-voetballer De Miguel (30) overleden na harde botsing met keeper",
      "link": "https://nos.nl/l/2637836",
@@ -120,7 +126,7 @@
      "title": "Proevend van de wijn wint 41-jarige James met Sixers makkelijk van Chicago",
      "link": "https://nos.nl/l/2637817",
      "time": "2026-11-03T07:28:26+01:00",
-     "img": "https://images.cdn.nos.nl/7/4/g/3/i/5/iPacNvpPMDqL2E7HnH8yX4je2PQkzSwAHLer3od/243x1x672x378-672x378.webp"
+     "img": "https://images.cdn.nos.nl/4/9/K/j/C/Q/7qm7ehFRSwgJtjiBt7CVMMMD5bSz3tQR7aeUMKj/1402x792x1120x630-1024x576.webp"
     },
     {
      "title": "Van de Zandschulp uitgeschakeld in Parijs na nachtelijke slijtageslag tegen Humbert",
@@ -181,18 +187,24 @@
      "link": "https://nos.nl/l/2637719",
      "time": "2026-11-02T10:46:34+01:00",
      "img": "https://images.cdn.nos.nl/8/B/B/x/U/p/4ouLR8w9eq5qxtUgBimp2Y576diyLuf7czTGr1C/264x531x3408x1917-1024x576.webp"
-    },
-    {
-     "title": "ADO Den Haag ontslaat hoofdtrainer Peter na tegenvallende seizoensstart",
-     "link": "https://nos.nl/l/2637713",
-     "time": "2026-11-02T10:10:33+01:00",
-     "img": "https://images.cdn.nos.nl/7/9/W/v/f/f/rX78gViodLxKdYD8mJZNT1C3VnqGXoKUv3PgemW/0x225x4000x2250-1024x576.webp"
     }
    ]
   },
   {
    "name": "NU.nl",
    "items": [
+    {
+     "title": "Minder vrouwen onderzocht op borstkanker door personeelstekort",
+     "link": "https://www.nu.nl/gezondheid/6415323/minder-vrouwen-onderzocht-op-borstkanker-door-personeelstekort.html",
+     "time": "2026-11-03T11:47:21+01:00",
+     "img": "https://images.nu.nl/m/a8lxkhua9c48_sqr256/321/0/3996/3996/minder-vrouwen-onderzocht-op-borstkanker-door-personeelstekort.jpg"
+    },
+    {
+     "title": "Explainer | Obama maakt grap over Trump: dit restaurant zit nu midden in een rel",
+     "link": "https://www.nu.nl/331908/video/obama-maakt-grap-over-trump-dit-restaurant-zit-nu-midden-in-een-rel.html",
+     "time": "2026-11-03T11:26:48+01:00",
+     "img": "https://images.nu.nl/m/s0kxcmjawcgu_sqr256/479/0/1440/1440/obama-maakt-grap-over-trump-dit-restaurant-zit-nu-midden-in-een-rel.jpg"
+    },
     {
      "title": "Tanken wordt weer iets goedkoper: benzineprijs zakt naar niveau van begin juli",
      "link": "https://www.nu.nl/economie/6415311/tanken-wordt-weer-iets-goedkoper-benzineprijs-zakt-naar-niveau-van-begin-juli.html",
@@ -219,9 +231,9 @@
     },
     {
      "title": "Tenerife-speler Jesús de Miguel (30) overleden na harde botsing met keeper",
-     "link": "https://www.nu.nl/algemeen/6415309/tenerife-speler-jesus-de-miguel-30-overleden-na-harde-botsing-met-keeper.html",
+     "link": "https://www.nu.nl/voetbal/6415309/tenerife-speler-jesus-de-miguel-30-overleden-na-harde-botsing-met-keeper.html",
      "time": "2026-11-03T09:50:33+01:00",
-     "img": "https://images.nu.nl/m/fbuxmhjazth8_sqr256/62/78/291/291/tenerife-speler-jesus-de-miguel-30-overleden-na-harde-botsing-met-keeper.jpg"
+     "img": "https://images.nu.nl/m/b28xkvfaqht5_sqr256/742/0/2518/2518/tenerife-speler-jesus-de-miguel-30-overleden-na-harde-botsing-met-keeper.jpg"
     },
     {
      "title": "Binnenskamers | Nu alweer een kabinetsval? Dan zonder nieuwe verkiezingen",
@@ -260,12 +272,6 @@
      "img": "https://images.nu.nl/m/mbpx6lca9f5t_sqr256/854/0/3529/3529/aantal-alleenstaande-aowers-groeit-sneller-onder-mannen-dan-onder-vrouwen.jpg"
     },
     {
-     "title": "Explainer | Texanen hebben boodschap voor Elon Musk: 'Wij zijn niet te koop'",
-     "link": "https://www.nu.nl/331900/video/texanen-hebben-boodschap-voor-elon-musk-wij-zijn-niet-te-koop.html",
-     "time": "2026-11-03T05:46:29+01:00",
-     "img": "https://images.nu.nl/m/qo9x2pgalts2_sqr256/286/37/1402/1402/texanen-hebben-boodschap-voor-elon-musk-wij-zijn-niet-te-koop.jpg"
-    },
-    {
      "title": "In Florida neergestort vliegtuig mogelijk al in de lucht uit elkaar gevallen",
      "link": "https://www.nu.nl/buitenland/6415293/in-florida-neergestort-vliegtuig-mogelijk-al-in-de-lucht-uit-elkaar-gevallen.html",
      "time": "2026-11-03T05:40:07+01:00",
@@ -276,12 +282,6 @@
      "link": "https://www.nu.nl/verkiezingen-vs/6414680/amerikaanse-midterms-bepalen-hoe-de-laatste-twee-jaar-trump-eruitzien.html",
      "time": "2026-11-03T05:04:01+01:00",
      "img": "https://images.nu.nl/m/xu1x8kqa9v15_sqr256/642/4/3663/3663/amerikaanse-midterms-bepalen-hoe-de-laatste-twee-jaar-trump-eruitzien.jpg"
-    },
-    {
-     "title": "Ook jongste dochter van Brad Pitt schrapt officieel zijn achternaam",
-     "link": "https://www.nu.nl/achterklap/6415290/ook-jongste-dochter-van-brad-pitt-schrapt-officieel-zijn-achternaam.html",
-     "time": "2026-11-02T23:37:10+01:00",
-     "img": "https://images.nu.nl/m/99ixfk5aoni1_sqr256/669/1/3878/3878/ook-jongste-dochter-van-brad-pitt-schrapt-officieel-zijn-achternaam.jpg"
     }
    ]
   }
@@ -397,6 +397,14 @@
   ],
   "videos": [
    {
+    "title": "I love bullying",
+    "channel": "Ken",
+    "link": "https://www.youtube.com/watch?v=zujgPKfV-Mw",
+    "thumb": "https://i.ytimg.com/vi/zujgPKfV-Mw/mqdefault.jpg",
+    "time": "2026-11-03T10:00:25+00:00",
+    "short": false
+   },
+   {
     "title": "The Halloween Episode was a disaster.. #podcast #theyard #comedy",
     "channel": "The Yard",
     "link": "https://www.youtube.com/shorts/BXbval-c8r8",
@@ -434,14 +442,6 @@
     "link": "https://www.youtube.com/watch?v=mXRk9WgvHrQ",
     "thumb": "https://i.ytimg.com/vi/mXRk9WgvHrQ/mqdefault.jpg",
     "time": "2026-11-01T10:00:32+00:00",
-    "short": false
-   },
-   {
-    "title": "chaos mega draft, but I pick air",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=LR5jmisfQo0",
-    "thumb": "https://i.ytimg.com/vi/LR5jmisfQo0/mqdefault.jpg",
-    "time": "2026-10-31T10:00:01+00:00",
     "short": false
    },
    {
