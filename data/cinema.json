@@ -1,5 +1,5 @@
 {
- "day": "2026-11-02",
+ "day": "2026-11-03",
  "sources": [
   "LantarenVenster"
  ],
@@ -74,7 +74,7 @@
      "url": "https://www.lantarenvenster.nl/programma/all-of-a-sudden/",
      "day": null,
      "next": null,
-     "until": "2026-11-03"
+     "until": "2026-11-11"
     }
    ]
   },
@@ -89,6 +89,20 @@
      "day": null,
      "next": null,
      "until": null
+    }
+   ]
+  },
+  {
+   "title": "Amarga Navidad",
+   "key": "amarganavidad",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/amarga-navidad/",
+     "day": null,
+     "next": null,
+     "until": "2026-11-11"
     }
    ]
   },
@@ -130,7 +144,7 @@
      "url": "https://www.lantarenvenster.nl/programma/andiamo-a-bere-lultima/",
      "day": null,
      "next": null,
-     "until": "2026-11-04"
+     "until": "2026-11-11"
     }
    ]
   },
@@ -438,7 +452,7 @@
      "url": "https://www.lantarenvenster.nl/programma/coward/",
      "day": null,
      "next": null,
-     "until": "2026-11-08"
+     "until": "2026-11-11"
     }
    ]
   },
@@ -471,6 +485,20 @@
    ]
   },
   {
+   "title": "De Manager",
+   "key": "demanager",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/de-manager/",
+     "day": null,
+     "next": null,
+     "until": "2026-11-10"
+    }
+   ]
+  },
+  {
    "title": "Dial Q Filmquiz",
    "key": "dialqfilmquiz",
    "poster": null,
@@ -478,6 +506,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/dialq-filmquiz/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Disney's Hexed (NL)",
+   "key": "disneyshexednl",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/disneys-hexed-nl/",
      "day": null,
      "next": null,
      "until": null
@@ -522,7 +564,7 @@
      "url": "https://www.lantarenvenster.nl/programma/downtown/",
      "day": null,
      "next": null,
-     "until": "2026-11-02"
+     "until": "2026-11-08"
     }
    ]
   },
@@ -681,8 +723,8 @@
    ]
   },
   {
-   "title": "Fjord",
-   "key": "fjord",
+   "title": "Fjord - Film&Ontbijt",
+   "key": "fjordfilmandontbijt",
    "poster": null,
    "shows": [
     {
@@ -690,7 +732,7 @@
      "url": "https://www.lantarenvenster.nl/programma/fjord/",
      "day": null,
      "next": null,
-     "until": "2026-12-03"
+     "until": "2026-11-29"
     }
    ]
   },
@@ -746,7 +788,7 @@
      "url": "https://www.lantarenvenster.nl/programma/het-geheim-van-hotel-new-york/",
      "day": null,
      "next": null,
-     "until": "2026-11-09"
+     "until": "2026-11-11"
     }
    ]
   },
@@ -802,7 +844,7 @@
      "url": "https://www.lantarenvenster.nl/programma/imago/",
      "day": null,
      "next": null,
-     "until": "2026-11-02"
+     "until": "2026-11-09"
     }
    ]
   },
@@ -1068,7 +1110,7 @@
      "url": "https://www.lantarenvenster.nl/programma/klara-and-the-sun/",
      "day": null,
      "next": null,
-     "until": "2026-11-04"
+     "until": "2026-11-11"
     }
    ]
   },
@@ -1185,6 +1227,76 @@
    ]
   },
   {
+   "title": "Makandra: Ritme",
+   "key": "makandraritme",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/makandra-ritme/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Makandra: Roots",
+   "key": "makandraroots",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/makandra-roots/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Makandra: Spiritualiteit",
+   "key": "makandraspiritualiteit",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/makandra-spiritualiteit/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Makandra: Toekomst",
+   "key": "makandratoekomst",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/makandra-toekomst/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Makandra: Verbinding",
+   "key": "makandraverbinding",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/makandra-verbinding/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "Maridalen",
    "key": "maridalen",
    "poster": null,
@@ -1222,7 +1334,7 @@
      "url": "https://www.lantarenvenster.nl/programma/maspalomas/",
      "day": null,
      "next": null,
-     "until": "2026-11-04"
+     "until": "2026-11-11"
     }
    ]
   },
@@ -1269,6 +1381,20 @@
    ]
   },
   {
+   "title": "Minotaur - Expat Cinema Rotterdam",
+   "key": "minotaurexpatcinemarotterdam",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/minotaur-expat-cinema-rotterdam/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "Mister and Mississippi",
    "key": "misterandmississippi",
    "poster": null,
@@ -1279,6 +1405,20 @@
      "day": null,
      "next": null,
      "until": null
+    }
+   ]
+  },
+  {
+   "title": "Moppervis (5+)",
+   "key": "moppervis5",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/moppervis/",
+     "day": null,
+     "next": null,
+     "until": "2026-11-07"
     }
    ]
   },
@@ -1320,7 +1460,7 @@
      "url": "https://www.lantarenvenster.nl/programma/naza/",
      "day": null,
      "next": null,
-     "until": "2026-11-04"
+     "until": "2026-11-11"
     }
    ]
   },
@@ -1418,7 +1558,7 @@
      "url": "https://www.lantarenvenster.nl/programma/primetime/",
      "day": null,
      "next": null,
-     "until": "2026-11-04"
+     "until": "2026-11-11"
     }
    ]
   },
@@ -1563,6 +1703,20 @@
    ]
   },
   {
+   "title": "Salvation",
+   "key": "salvation",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/salvation/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "Scott Kinsey Group",
    "key": "scottkinseygroup",
    "poster": null,
@@ -1586,7 +1740,21 @@
      "url": "https://www.lantarenvenster.nl/programma/sense-and-sensibility/",
      "day": null,
      "next": null,
-     "until": "2026-11-02"
+     "until": "2026-11-11"
+    }
+   ]
+  },
+  {
+   "title": "Shaun het Schaap: Het Beest van de Boerderij (6+)",
+   "key": "shaunhetschaaphetbeestvandeboerderij6",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/shaun-het-schaap-het-beest-van-de-boerderij/",
+     "day": null,
+     "next": null,
+     "until": "2026-11-08"
     }
    ]
   },
@@ -1619,20 +1787,6 @@
    ]
   },
   {
-   "title": "Signalen van boven",
-   "key": "signalenvanboven",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/signalen-van-boven/",
-     "day": null,
-     "next": null,
-     "until": "2026-11-02"
-    }
-   ]
-  },
-  {
    "title": "SML",
    "key": "sml",
    "poster": null,
@@ -1656,7 +1810,7 @@
      "url": "https://www.lantarenvenster.nl/programma/sneakpreview/",
      "day": null,
      "next": null,
-     "until": "2026-11-02"
+     "until": "2026-11-09"
     }
    ]
   },
@@ -1726,7 +1880,7 @@
      "url": "https://www.lantarenvenster.nl/programma/the-beloved/",
      "day": null,
      "next": null,
-     "until": "2026-11-04"
+     "until": "2026-11-11"
     }
    ]
   },
@@ -1768,7 +1922,7 @@
      "url": "https://www.lantarenvenster.nl/programma/the-cycle-of-love/",
      "day": null,
      "next": null,
-     "until": "2026-11-04"
+     "until": "2026-11-11"
     }
    ]
   },
@@ -2020,7 +2174,35 @@
      "url": "https://www.lantarenvenster.nl/programma/wicker/",
      "day": null,
      "next": null,
-     "until": "2026-11-04"
+     "until": "2026-11-11"
+    }
+   ]
+  },
+  {
+   "title": "Wild Horse Nine",
+   "key": "wildhorsenine",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/wild-horse-nine/",
+     "day": null,
+     "next": null,
+     "until": "2026-11-11"
+    }
+   ]
+  },
+  {
+   "title": "Wild Horse Nine - Film&Ontbijt",
+   "key": "wildhorseninefilmandontbijt",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/wild-horse-nine-filmontbijt/",
+     "day": null,
+     "next": null,
+     "until": null
     }
    ]
   },
@@ -2034,7 +2216,7 @@
      "url": "https://www.lantarenvenster.nl/programma/yellow-letters/",
      "day": null,
      "next": null,
-     "until": "2026-11-02"
+     "until": "2026-11-09"
     }
    ]
   },
@@ -2076,7 +2258,7 @@
      "url": "https://www.lantarenvenster.nl/programma/youri/",
      "day": null,
      "next": null,
-     "until": "2026-11-04"
+     "until": "2026-11-11"
     }
    ]
   },
