@@ -4,6 +4,12 @@
    "name": "NOS",
    "items": [
     {
+     "title": "Koning Charles noemt slavernij 'beschamend hoofdstuk', maar zegt geen sorry",
+     "link": "https://nos.nl/l/2637916",
+     "time": "2026-11-03T19:20:45+01:00",
+     "img": "https://images.cdn.nos.nl/1/b/a/r/W/N/turVHSzMGTqNjkEMEBmQXRVpJfM4eSdRDU39Wv/4x152x3024x1701-1024x576.webp"
+    },
+    {
      "title": "OM eist 12 jaar cel voor verdachte van 'vriezermoord' op vader",
      "link": "https://nos.nl/l/2637914",
      "time": "2026-11-03T19:00:57+01:00",
@@ -86,18 +92,18 @@
      "link": "https://nos.nl/l/2637881",
      "time": "2026-11-03T16:17:49+01:00",
      "img": "https://images.cdn.nos.nl/2/E/1/u/P/A/NVsBAqaQjrzeq8aqM6KvW9zat8cdNLrDyFzvDcc/8x290x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Podcast De Dag: Wikipedianen in tijden van AI",
-     "link": "https://nos.nl/l/2637880",
-     "time": "2026-11-03T16:11:29+01:00",
-     "img": "https://images.cdn.nos.nl/8/7/z/w/2/8/cjQ7b598MqqVygncj3rgr8gXidMrDHuvALQj6cT/0x0x1920x1080-1024x576.webp"
     }
    ]
   },
   {
    "name": "NOS Sport",
    "items": [
+    {
+     "title": "Champions League-clubs staan stil bij overlijden De Miguel, duels Spaanse beker opgeschort",
+     "link": "https://nos.nl/l/2637917",
+     "time": "2026-11-03T19:25:08+01:00",
+     "img": null
+    },
     {
      "title": "Toplanden willen wedstrijden tegen Rusland boycotten op WK ijshockey",
      "link": "https://nos.nl/l/2637907",
@@ -181,12 +187,6 @@
      "link": "https://nos.nl/l/2637809",
      "time": "2026-11-03T01:00:42+01:00",
      "img": "https://images.cdn.nos.nl/5/p/s/B/y/y/xxkJBudbHyKfSRV8TkEDtDNPWrNcTb4JTquenq/8x42x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Koploper Heracles verslaat ook TOP Oss en blijft foutloos in Almelo",
-     "link": "https://nos.nl/l/2637803",
-     "time": "2026-11-02T22:39:06+01:00",
-     "img": "https://images.cdn.nos.nl/6/G/x/H/f/s/GZUwFKFbNYYD5DrJ5QEW9juq5XMfgR7ZNBtYjk8/161x220x3312x1863-1024x576.webp"
     }
    ]
   },
@@ -291,6 +291,14 @@
    "name": "Letterboxd Journal",
    "items": [
     {
+     "title": "With Friends Like These: twenty wildly entertaining buddy comedies",
+     "link": "https://letterboxd.com/journal/buddy-comedies-starter-pack-wild-horse-nine/",
+     "time": "2026-11-04T07:26:19+13:00",
+     "img": "https://a.ltrbxd.com/resized/sm/upload/jo/vh/88/r3/Buddy%20comedies%20header%20(1)-0-960-0-540-crop-fill.jpg?k=2b40bc39d0",
+     "intro": "With Martin McDonagh’s Wild Horse Nine galloping into theaters, Rory Doherty writes in praise of twenty essential buddy comedies—from The Sting to Superbad—to watch with your friends or your frenemies.",
+     "category": "Cinemascope"
+    },
+    {
      "title": "Neon Screams: twenty films where horror and noir bleed into one",
      "link": "https://letterboxd.com/journal/horror-noir-starter-pack/",
      "time": "2026-11-03T04:56:20+13:00",
@@ -376,14 +384,6 @@
      "time": "2026-10-23T22:21:29+13:00",
      "img": "https://a.ltrbxd.com/resized/sm/upload/ef/z9/0q/sb/zz0J14pzfXGcQRXG1VIfmhbtQgK-0-960-0-540-crop-fill.jpg?k=d1695d1304",
      "intro": "With his Sandra Hüller-starring historical portrait out now, Polish auteur Paweł Pawlikowski tells Luke Hicks about the rich storytelling of his Cannes winner Fatherland.",
-     "category": "Interview"
-    },
-    {
-     "title": "Beauty Costs: John Turturro on The Only Living Pickpocket in New York and his storied career as a character actor",
-     "link": "https://letterboxd.com/journal/john-turturro-the-only-living-pickpocket-in-new-york-interview/",
-     "time": "2026-10-23T04:48:42+13:00",
-     "img": "https://a.ltrbxd.com/resized/sm/upload/iy/kp/5z/2c/Turturro%20header-0-960-0-540-crop-fill.jpg?k=1d8b2f89b2",
-     "intro": "As his tense, tender crime drama The Only Living Pickpocket in New York hits theaters, John Turturro tells Dan Mecca about improving with age, accepting radical change and doing it his way across his 46-year career.",
      "category": "Interview"
     }
    ]
