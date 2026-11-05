@@ -1782,7 +1782,7 @@ html.th-still .th-bulb, html.th-still .th-deco, html.th-still .th-deco * { anima
 html.portrait-wide body:not(.minimal) .topbar { --fade-on: 0; transition: --fade-on .3s ease; }
 html.portrait-wide body:not(.minimal) .topbar:has(.tb-links:hover, .tb-links:focus-within, .tb-links.open) { --fade-on: 1; }
 html.portrait-wide body:not(.minimal) .tb-day { min-width: 0; overflow: hidden; }
-html.portrait-wide body:not(.minimal) .tb-dayline { max-width: none; }
+html.portrait-wide body:not(.minimal) .tb-dayline { max-width: none; white-space: normal; text-overflow: clip; text-wrap: pretty; }   /* 0.60.0: mag over twee regels, niet meer afknippen ("Oma m…") */
 html.portrait-wide body:not(.minimal) .tb-clock {
   flex: 0 1 auto;
   min-width: 0;
@@ -2764,3 +2764,27 @@ body.kamer-on { overflow: hidden; }
 .tall #w-health { display: flex; flex-direction: column; }
 .tall #w-health > .w-body { flex: 1 1 auto; display: flex; flex-direction: column; gap: 12px; min-height: 0; }
 .tall #w-health .hl-bars { flex: 1 1 auto; height: auto; min-height: 64px; }
+
+/* ---------- Memory Lane (sinds 0.60.0, alleen tall in het roterende vak) ---------- */
+#w-memory { --c: #b48cff; }
+.mm-wrap { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 28px; min-height: 0; }
+.mm-main { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.mm-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.mm-date { font-size: 1.35rem; color: color-mix(in srgb, var(--c) 45%, #ffd27a); }
+.mm-label { display: block; font-size: .75rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: color-mix(in srgb, var(--c) 70%, white); }
+.mm-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+.mm-stat { display: flex; flex-direction: column; gap: 2px; padding: 10px 14px; border-radius: 14px; background: rgba(255, 255, 255, .06); min-width: 0; }
+.mm-stat b { font-size: 1.25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mm-stat .w-sub { overflow-wrap: anywhere; }
+.mm-films { display: flex; gap: 16px; min-width: 0; }
+.mm-film { display: flex; gap: 10px; align-items: center; min-width: 0; flex: 0 1 auto; }
+.mm-poster { width: 64px; aspect-ratio: 2 / 3; border-radius: 6px; flex: none; }
+.mm-film-txt { display: flex; flex-direction: column; min-width: 0; }
+.mm-film-txt b { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mm-stars { color: #ffd27a; font-size: .9rem; }
+.mm-agenda { font-size: .95rem; min-width: 0; }
+.mm-others { display: flex; flex-direction: column; gap: 6px; min-width: 0; overflow: hidden; }
+.mm-year { display: flex; gap: 10px; align-items: baseline; padding: 6px 10px; border: 0; border-radius: 10px; background: none; text-align: left; cursor: pointer; min-width: 0; color: inherit; font: inherit; }
+.mm-year:hover, .mm-year:focus-visible { background: rgba(255, 255, 255, .07); }
+.mm-year b { flex: none; color: color-mix(in srgb, var(--c) 70%, white); }
+.mm-year span { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--muted); font-size: .92rem; }

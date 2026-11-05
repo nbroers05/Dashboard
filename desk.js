@@ -79,7 +79,7 @@
   const nav = h('div', 'tall-nav');
   nav.append(prevBtn, dots, nextBtn);
   rot.append(nav);
-  const ROT = ['w-letterboxd', 'w-friends', 'w-stars', 'w-sptop', 'w-episodes'];   // gezondheid staat sinds 0.59.0 vast in de rij Canvas/Meldingen
+  const ROT = ['w-letterboxd', 'w-memory', 'w-friends', 'w-stars', 'w-sptop', 'w-episodes'];   // w-memory = Memory Lane (0.60.0, alleen tall)   // gezondheid staat sinds 0.59.0 vast in de rij Canvas/Meldingen
   const ROT_MS = 12000;
   let rotIndex = 0, rotTimer = null, pausedUntil = 0, hover = false;
   const calm = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -116,11 +116,15 @@
   }
   function rotTick() {
     // Pauze: muis erop, een pop-up open, net zelf gekozen, of "beweging beperken"
-    if (hover || calm() || Date.now() < pausedUntil) return;
+    if ((hover && Date.now() - movedAt < 30000) || calm() || Date.now() < pausedUntil) return;
     if (document.querySelector('dialog[open]') || more.classList.contains('open')) return;
     next();
   }
-  rot.addEventListener('mouseenter', () => { hover = true; });
+  // Muis erop = even pauze, maar alleen zolang je hem beweegt (0.60.0): ligt de muis er toevallig stil op, dan draait
+  // het vak na 30 s gewoon weer verder (staand scherm zonder dat je eraan zit, 1.0-plan).
+  let movedAt = 0;
+  rot.addEventListener('mouseenter', () => { hover = true; movedAt = Date.now(); });
+  rot.addEventListener('mousemove', () => { movedAt = Date.now(); });
   rot.addEventListener('mouseleave', () => { hover = false; });
 
   // ---------- Verplaatsen en terugzetten ----------
@@ -182,7 +186,9 @@
         put(row3, [weather, 'w-f1', 'w-ah']);
         put(row2, ['w-canvas', 'w-alerts', 'w-health']);
         thin(store.get(THIN_KEY) === true);
+        const memory = $('w-memory');   // vóór het verplaatsen pakken: rot hangt nog niet in de pagina, dan vindt $() hem niet
         rot.prepend(...ROT.map($).filter(Boolean));
+        if (memory) memory.hidden = false;
         put(hidden, ['w-mail']);
         // To-do weg van tall en Berichten op pauze (0.59.0, 1.0-plan); het to-do-vak laadt nog wel (desk/telefoon)
         put(hidden, ['w-todo']);
@@ -199,6 +205,7 @@
       },
       leave() {
         thin(false, true);
+        if ($('w-memory')) $('w-memory').hidden = true;   // rot hangt hier nog in de pagina
         clearInterval(rotTimer);
         slides().forEach((el) => { el.classList.remove('on'); el.removeAttribute('aria-hidden'); });
         [row3, row2, rot, hidden].forEach((el) => el.remove());
