@@ -5,6 +5,17 @@ Statische site: vanilla HTML/CSS/JS, geen build-stap, geen server. Hangt altijd 
 
 ## Over de gebruiker
 
+### Richting: 1.0 (sinds 5 nov 2026)
+
+Doel (uit het 1.0-plan bovenaan WENSEN.md): **één scherm op het staande pc-scherm (1350 × 2199, tall) waar Noah alles op ziet zonder ermee te hoeven interacteren.** Het archief verzamelt op de achtergrond. Al het andere leidt af.
+
+- **Alleen tall telt.** Liggend en telefoon blijven werken, maar geen nieuw werk tot na 1.0.
+- **Niks wat een klik nodig heeft**: alles wat hij wil zien staat op tall zonder tabjes, pop-ups of Meer-balk. Roteren mag (gaat vanzelf).
+- **Zelfherstel**: een knop "Vernieuwen", een inlogscherm of "hulpprogramma niet bereikbaar" is een bug. Na slaapstand of internet weg herstelt het vanzelf. 's Nachts niks nodig (pc en scherm gaan uit).
+- Nieuwe dingen alleen als ze vanzelf veranderen en niks vragen (Memory Lane is de enige kandidaat).
+- **Bevroren tot na 1.0**: Y2K en thema's, spelletjes, focusmodus, Feeds. Ze blijven werken, er komt niks bij.
+- **"Na 1.0" in WENSEN.md niet bouwen** (ook Kamer, App fase 2/3, Jaaroverzicht), tenzij Noah het zelf weer vraagt.
+
 - Schrijf in het **Nederlands**, **kort en direct**.
 - Noah is **geen programmeur**: leg stappen (GitHub, Google Cloud, Spotify-dashboard, extensies) concreet en stap voor stap uit.
 - Bij ontwerpwijzigingen: eerst één versie laten zien en op feedback wachten.
