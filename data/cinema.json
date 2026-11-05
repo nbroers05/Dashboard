@@ -1,5 +1,5 @@
 {
- "day": "2026-11-04",
+ "day": "2026-11-05",
  "sources": [
   "LantarenVenster"
  ],
@@ -75,20 +75,6 @@
      "day": null,
      "next": null,
      "until": "2026-11-11"
-    }
-   ]
-  },
-  {
-   "title": "All of a Sudden - Expat Cinema Rotterdam",
-   "key": "allofasuddenexpatcinemarotterdam",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/all-of-a-sudden-expat-cinema-rotterdam/",
-     "day": null,
-     "next": null,
-     "until": null
     }
    ]
   },
@@ -191,6 +177,20 @@
    ]
   },
   {
+   "title": "Behemoth!",
+   "key": "behemoth",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/behemoth/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "Being John Malkovich (1999)",
    "key": "beingjohnmalkovich1999",
    "poster": null,
@@ -254,6 +254,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/bertolf/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Best of IDFA on Tour 2027",
+   "key": "bestofidfaontour2027",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/best-of-idfa-on-tour-2027/",
      "day": null,
      "next": null,
      "until": null
@@ -676,7 +690,7 @@
      "url": "https://www.lantarenvenster.nl/programma/fatherland/",
      "day": null,
      "next": null,
-     "until": null
+     "until": "2026-11-20"
     }
    ]
   },
@@ -688,6 +702,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/fatherland-expat-cinema-rotterdam/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Fay Claassen & Koosje",
+   "key": "fayclaassenandkoosje",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/fay-claassen-koosje/",
      "day": null,
      "next": null,
      "until": null
@@ -1993,6 +2021,20 @@
      "day": null,
      "next": null,
      "until": null
+    }
+   ]
+  },
+  {
+   "title": "The New Library - Part one | 1983-2026",
+   "key": "thenewlibrarypartone19832026",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/the-new-library-part-one-1983-2026/",
+     "day": null,
+     "next": null,
+     "until": "2026-11-23"
     }
    ]
   },
