@@ -4,6 +4,48 @@
    "name": "NOS",
    "items": [
     {
+     "title": "KLM schrapt 5000 banen, 'voortbestaan is geen vanzelfsprekendheid'",
+     "link": "https://nos.nl/l/2638103",
+     "time": "2026-11-05T08:25:55+01:00",
+     "img": null
+    },
+    {
+     "title": "Hongkongse activist Wong veroordeeld tot 10 jaar cel, kritiek op vonnis",
+     "link": "https://nos.nl/l/2638102",
+     "time": "2026-11-05T08:00:36+01:00",
+     "img": "https://images.cdn.nos.nl/1/8/3/s/E/u/HjRtQfikBneyn1ZDePqdhGiShbzqWNYQzKWfkPD/8x212x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Protesten, stakingen en vrees voor rellen: weer een cruciale dag voor Frankrijk",
+     "link": "https://nos.nl/l/2638099",
+     "time": "2026-11-05T07:09:38+01:00",
+     "img": "https://images.cdn.nos.nl/8/6/u/n/c/M/fmg2MYfPfhtdLc8TX8fYMmNCEYggu5HZJPj5cFJ/1124x680x2112x1188-1024x576.webp"
+    },
+    {
+     "title": "Tweede Kamer wil wegbezuinigde onderwijsambtenaar omscholen tot leraar",
+     "link": "https://nos.nl/l/2638094",
+     "time": "2026-11-05T06:53:33+01:00",
+     "img": "https://images.cdn.nos.nl/6/D/m/F/k/Q/3oe6WrzDeMCh78JjTkj2LteFkfjVAGdU1aVJyVy/56x35x1712x963-1024x576.webp"
+    },
+    {
+     "title": "Wekdienst 5/11: Protest verwacht in Frankrijk • Terrorismezaak tegen 18- en 19-jarige",
+     "link": "https://nos.nl/l/2638092",
+     "time": "2026-11-05T06:42:39+01:00",
+     "img": "https://images.cdn.nos.nl/2/9/9/T/8/H/PckirxdCaVVcuyRsGfYbcfc8qsp7MCWfHb56voM/0x0x1920x1080-1024x576.webp"
+    },
+    {
+     "title": "Brussel rekent niet op betere tijden met Trump: 'Niet slechter zou al winst zijn'",
+     "link": "https://nos.nl/l/2638089",
+     "time": "2026-11-05T06:30:03+01:00",
+     "img": "https://images.cdn.nos.nl/8/H/8/G/z/G/RWA6JFGHnay8bcJLheQAWu4burLsb4MKDQTXHpN/704x14x3072x1728-1024x576.webp"
+    },
+    {
+     "title": "Duitse politicus dood aangetroffen in hotelkamer",
+     "link": "https://nos.nl/l/2638085",
+     "time": "2026-11-05T05:15:45+01:00",
+     "img": "https://images.cdn.nos.nl/2/2/i/Y/e/r/6V9iiCQonDXsEc2qbeCf4eksadLCoxrvXCuNbNB/5x667x3360x1890-1024x576.webp"
+    },
+    {
      "title": "NASA-telescoop na ruim twintig jaar vergaan in atmosfeer",
      "link": "https://nos.nl/l/2638084",
      "time": "2026-11-05T02:36:44+01:00",
@@ -28,7 +70,7 @@
      "img": "https://images.cdn.nos.nl/1/E/X/Y/Y/i/3WxCy9tVWvqa4ZrLqCxAUL9yxk2yEgp1n1wc3Kz/8x113x3984x2241-1024x576.webp"
     },
     {
-     "title": "Hongarije maakt namen van informanten die burgers spioneerden openbaar",
+     "title": "Hongarije maakt namen van informanten die burgers bespioneerden openbaar",
      "link": "https://nos.nl/l/2638073",
      "time": "2026-11-04T22:51:06+01:00",
      "img": "https://images.cdn.nos.nl/5/5/4/d/S/C/nwwhjNUMimB4724HrAUdhbt7RyT48rghaEnqoJD/99x544x3824x2151-1024x576.webp"
@@ -50,54 +92,24 @@
      "link": "https://nos.nl/l/2638063",
      "time": "2026-11-04T19:50:19+01:00",
      "img": "https://images.cdn.nos.nl/1/4/n/o/R/y/iaLR49Do72DcZAyiFVf559aTqSMTZcZjCxCeR6s/360x586x3376x1899-1024x576.webp"
-    },
-    {
-     "title": "Drie mannen de cel in voor miljoenenfraude met valse retourzendingen bij Amazon",
-     "link": "https://nos.nl/l/2638062",
-     "time": "2026-11-04T18:57:26+01:00",
-     "img": "https://images.cdn.nos.nl/2/7/1/Y/G/E/P6JxZhTLoHbs84RF3GDz415j27bqFit4vkmVWAy/0x366x4000x2250-1024x576.webp"
-    },
-    {
-     "title": "Tot 30 procent minder veehouderijen verwacht als gevolg van stikstofplannen",
-     "link": "https://nos.nl/l/2638061",
-     "time": "2026-11-04T18:48:28+01:00",
-     "img": "https://images.cdn.nos.nl/1/F/3/x/m/3/hdUB8ioVQAcJVJFeQ2dcPRrWoR2zJJ3gh89qGDS/8x222x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Oekraïense onderscheiding voor Melania Trump voor bemiddeling bij bestand in Olesjky",
-     "link": "https://nos.nl/l/2638056",
-     "time": "2026-11-04T18:25:56+01:00",
-     "img": "https://images.cdn.nos.nl/7/5/j/F/8/2/ry3yaDDS16QnsSFsbxiNtFW4aDe68tAuWkntfS1/8x212x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Verdachten Tarwekamp: plan ging van stelen bruidsjurken tot brandstichten",
-     "link": "https://nos.nl/l/2638052",
-     "time": "2026-11-04T17:52:18+01:00",
-     "img": "https://images.cdn.nos.nl/7/7/L/5/D/N/gVgEbyJB1aTdrJvLLeKPXHq5we3CKTe5k25dkFq/8x4x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Censuur of broodnodige bescherming? Australisch hof toetst verbod sociale media",
-     "link": "https://nos.nl/l/2638048",
-     "time": "2026-11-04T17:23:16+01:00",
-     "img": "https://images.cdn.nos.nl/1/E/U/R/e/K/GZFF4C69C9me56J7hXsGjuMMSb2x4LoUiArVwCA/0x202x4000x2250-1024x576.webp"
-    },
-    {
-     "title": "Franse bloedbanken ontsnappen aan schade na cyberaanval op koelinstallaties",
-     "link": "https://nos.nl/l/2638045",
-     "time": "2026-11-04T16:57:12+01:00",
-     "img": "https://images.cdn.nos.nl/7/E/s/d/p/q/6fWyMLyr4mf95wkPvvK1gsUbpJnQAFyDTK7juVD/8x212x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Podcast De Dag: de problemen van Trump",
-     "link": "https://nos.nl/l/2638044",
-     "time": "2026-11-04T16:43:19+01:00",
-     "img": "https://images.cdn.nos.nl/5/F/r/S/9/8/fc1V891Mttxut8FSaEHxdTysRSua9s3MNvcT1vP/0x0x1920x1080-1024x576.webp"
     }
    ]
   },
   {
    "name": "NOS Sport",
    "items": [
+    {
+     "title": "Australisch Formule 1-icoon Alan Jones (80) overleden",
+     "link": "https://nos.nl/l/2638093",
+     "time": "2026-11-05T06:48:56+01:00",
+     "img": "https://images.cdn.nos.nl/4/E/h/v/R/p/ycdFzckuQ5vXcWZsDuq63uXyk9AXZx1g9g93Ugu/3x564x1872x1053-1024x576.webp"
+    },
+    {
+     "title": "'Vroeger lag hij vaak op de grond', plaagt oudste Koopmeiners voor duel met broertje",
+     "link": "https://nos.nl/l/2638088",
+     "time": "2026-11-05T06:06:38+01:00",
+     "img": "https://images.cdn.nos.nl/2/E/Y/R/4/5/TgkatZDrnw6y5sDyWfqRcL6haCPdbK5KaT7AdzV/52x54x3664x2061-1024x576.webp"
+    },
     {
      "title": "Bosz verklaart Champions League-nederlaag: 'Kansen niet afmaken en geen grip op Forbs'",
      "link": "https://nos.nl/l/2638082",
@@ -175,24 +187,54 @@
      "link": "https://nos.nl/l/2637993",
      "time": "2026-11-04T10:48:28+01:00",
      "img": "https://images.cdn.nos.nl/1/4/G/J/k/E/XE9zk4FZKewzgsdHmiabVsDEBCXBXqqEMscvnJH/57x106x2768x1557-1024x576.webp"
-    },
-    {
-     "title": "Verzet tegen rentree Russische ijshockeyers groeit: Canada wil land weren van WK junioren",
-     "link": "https://nos.nl/l/2637989",
-     "time": "2026-11-04T09:57:57+01:00",
-     "img": "https://images.cdn.nos.nl/1/F/Y/Y/Q/Q/tCjQumjSkwgWsUAZRutNpCST5fvTh9g1sSiBf9i/0x417x4000x2250-1024x576.webp"
-    },
-    {
-     "title": "Ondanks nieuwe trainer en intense emoties weet Kuijt zeker: 'Ik wil bij Fener blijven'",
-     "link": "https://nos.nl/l/2637978",
-     "time": "2026-11-04T08:23:54+01:00",
-     "img": "https://images.cdn.nos.nl/8/H/d/G/N/x/KyEA7TWxgXongW56DQersu1fVLaK5GZ71GNEdht/156x73x1760x990-1024x576.webp"
     }
    ]
   },
   {
    "name": "NU.nl",
    "items": [
+    {
+     "title": "KLM schrapt ongeveer vijfduizend banen om kosten te besparen",
+     "link": "https://www.nu.nl/economie/6415551/klm-schrapt-ongeveer-vijfduizend-banen-om-kosten-te-besparen.html",
+     "time": "2026-11-05T08:13:39+01:00",
+     "img": "https://images.nu.nl/m/kbsxp1caqchu_sqr256/883/0/2361/2361/klm-schrapt-ongeveer-vijfduizend-banen-om-kosten-te-besparen.jpg"
+    },
+    {
+     "title": "Moeder en dochter omgekomen bij aanval door zeker één beer in Canada",
+     "link": "https://www.nu.nl/buitenland/6415548/moeder-en-dochter-omgekomen-bij-aanval-door-zeker-een-beer-in-canada.html",
+     "time": "2026-11-05T07:53:36+01:00",
+     "img": "https://images.nu.nl/m/sylxbajaybbu_sqr256/1749/532/3004/3004/moeder-en-dochter-omgekomen-bij-aanval-door-zeker-een-beer-in-canada.jpg"
+    },
+    {
+     "title": "Amerikaan breekt wereldrecord met elastiekbal zo zwaar als een olifant",
+     "link": "https://www.nu.nl/opmerkelijk/6415525/amerikaan-breekt-wereldrecord-met-elastiekbal-zo-zwaar-als-een-olifant.html",
+     "time": "2026-11-05T06:44:21+01:00",
+     "img": "https://images.nu.nl/m/dtlx1e1aahew_sqr256/244/0/599/599/amerikaan-breekt-wereldrecord-met-elastiekbal-zo-zwaar-als-een-olifant.jpg"
+    },
+    {
+     "title": "Hongkongse activist Joshua Wong nog eens tien jaar de cel in",
+     "link": "https://www.nu.nl/buitenland/6415544/hongkongse-activist-joshua-wong-nog-eens-tien-jaar-de-cel-in.html",
+     "time": "2026-11-05T06:19:59+01:00",
+     "img": "https://images.nu.nl/m/doaxgk3a6lka_sqr256/269/4/2447/2447/hongkongse-activist-joshua-wong-nog-eens-tien-jaar-de-cel-in.jpg"
+    },
+    {
+     "title": "Gebrek aan verschilmaker breekt PSV op: 'Zijn individuele klasse kwijtgeraakt'",
+     "link": "https://www.nu.nl/voetbal/6415539/gebrek-aan-verschilmaker-breekt-psv-op-zijn-individuele-klasse-kwijtgeraakt.html",
+     "time": "2026-11-05T06:02:18+01:00",
+     "img": "https://images.nu.nl/m/16cxkkoahqvv_sqr256/349/0/5753/5753/gebrek-aan-verschilmaker-breekt-psv-op-zijn-individuele-klasse-kwijtgeraakt.jpg"
+    },
+    {
+     "title": "Explainer | Kiezers over Republikeins bloedbad in Texas: 'Zijn de misleiding zat'",
+     "link": "https://www.nu.nl/331981/video/kiezers-over-republikeins-bloedbad-in-texas-zijn-de-misleiding-zat.html",
+     "time": "2026-11-05T05:42:11+01:00",
+     "img": "https://images.nu.nl/m/55uxzzfaqy9t_sqr256/226/1/1439/1439/kiezers-over-republikeins-bloedbad-in-texas-zijn-de-misleiding-zat.jpg"
+    },
+    {
+     "title": "Vingerwijzen bij boze Republikeinen is begonnen: 'Trump is gewond, maar machtig'",
+     "link": "https://www.nu.nl/verkiezingen-vs/6415514/vingerwijzen-bij-boze-republikeinen-is-begonnen-trump-is-gewond-maar-machtig.html",
+     "time": "2026-11-05T05:01:34+01:00",
+     "img": "https://images.nu.nl/m/j0ix5idaicn1_sqr256/1059/5/2305/2305/vingerwijzen-bij-boze-republikeinen-is-begonnen-trump-is-gewond-maar-machtig.jpg"
+    },
     {
      "title": "Ruimtetelescoop Swift na 22 jaar en mislukte reddingsactie vergaan in dampkring",
      "link": "https://www.nu.nl/wetenschap/6415540/ruimtetelescoop-swift-na-22-jaar-en-mislukte-reddingsactie-vergaan-in-dampkring.html",
@@ -230,12 +272,6 @@
      "img": "https://images.nu.nl/m/fb6x64ia9bc4_sqr256/1359/8/3492/3492/mensenrechtenorganisaties-stoppen-samenwerking-met-strafhof-na-sancties-vs.jpg"
     },
     {
-     "title": "Video | Bellingham scoort met fantastisch hakje in Champions League",
-     "link": "https://www.nu.nl/331977/video/bellingham-scoort-met-fantastisch-hakje-in-champions-league.html",
-     "time": "2026-11-04T20:43:33+01:00",
-     "img": "https://images.nu.nl/m/uivxl4cai7wn_sqr256/417/0/2167/2167/bellingham-scoort-met-fantastisch-hakje-in-champions-league.jpg"
-    },
-    {
      "title": "Dirk Kuijt stunt tegen oude liefde Liverpool in laatste duel als Fenerbahçe-coach",
      "link": "https://www.nu.nl/voetbal/6415522/dirk-kuijt-stunt-tegen-oude-liefde-liverpool-in-laatste-duel-als-fenerbahce-coach.html",
      "time": "2026-11-04T20:38:57+01:00",
@@ -246,42 +282,6 @@
      "link": "https://www.nu.nl/misdaad/6415516/overasselt-verdachte-alsnog-op-vrije-voeten-vanwege-gebrek-aan-bewijs.html",
      "time": "2026-11-04T20:29:09+01:00",
      "img": "https://images.nu.nl/m/o3mxrwsayrwt_sqr256/700/0/4335/4335/overasselt-verdachte-alsnog-op-vrije-voeten-vanwege-gebrek-aan-bewijs.jpg"
-    },
-    {
-     "title": "Drie tieners opgepakt voor mishandeling jongen die op intensive care belandde",
-     "link": "https://www.nu.nl/binnenland/6415520/drie-tieners-opgepakt-voor-mishandeling-jongen-die-op-intensive-care-belandde.html",
-     "time": "2026-11-04T20:26:54+01:00",
-     "img": "https://images.nu.nl/m/20sxlgha3buo_sqr256/228/0/1408/1408/drie-tieners-opgepakt-voor-mishandeling-jongen-die-op-intensive-care-belandde.jpg"
-    },
-    {
-     "title": "Voorzichtige reacties in Europa na midterms VS, Spaanse premier haalt uit",
-     "link": "https://www.nu.nl/verkiezingen-vs/6415468/voorzichtige-reacties-in-europa-na-midterms-vs-spaanse-premier-haalt-uit.html",
-     "time": "2026-11-04T19:19:06+01:00",
-     "img": "https://images.nu.nl/m/qo3xgqla33ce_sqr256/1877/0/4000/4000/voorzichtige-reacties-in-europa-na-midterms-vs-spaanse-premier-haalt-uit.jpg"
-    },
-    {
-     "title": "Moeder van Paul de Leeuw overleden: 'Dag mama, wat was het leuk'",
-     "link": "https://www.nu.nl/achterklap/6415515/moeder-van-paul-de-leeuw-overleden-dag-mama-wat-was-het-leuk.html",
-     "time": "2026-11-04T18:45:00+01:00",
-     "img": "https://images.nu.nl/m/t5ixszoa5yii_sqr256/2285/0/4873/4873/moeder-van-paul-de-leeuw-overleden-dag-mama-wat-was-het-leuk.jpg"
-    },
-    {
-     "title": "Van Barneveld (59) zet reuzenstap naar 34e deelname aan WK darts",
-     "link": "https://www.nu.nl/darts/6415510/van-barneveld-59-zet-reuzenstap-naar-34e-deelname-aan-wk-darts.html",
-     "time": "2026-11-04T18:44:50+01:00",
-     "img": "https://images.nu.nl/m/qj8xl4kal61v_sqr256/1026/0/2846/2846/van-barneveld-59-zet-reuzenstap-naar-34e-deelname-aan-wk-darts.jpg"
-    },
-    {
-     "title": "Ook Oufkir kiest voor Marokko: 'Misschien moet KNVB eerder in gesprek gaan'",
-     "link": "https://www.nu.nl/voetbal/6415512/ook-oufkir-kiest-voor-marokko-misschien-moet-knvb-eerder-in-gesprek-gaan.html",
-     "time": "2026-11-04T18:40:15+01:00",
-     "img": "https://images.nu.nl/m/rz8xmdaa6s9n_sqr256/1373/86/1699/1699/ook-oufkir-kiest-voor-marokko-misschien-moet-knvb-eerder-in-gesprek-gaan.jpg"
-    },
-    {
-     "title": "Floor Jansen over Nightwish-vertrek: 'Kwamen moeilijke periodes niet meer door'",
-     "link": "https://www.nu.nl/muziek/6415330/floor-jansen-over-nightwish-vertrek-kwamen-moeilijke-periodes-niet-meer-door.html",
-     "time": "2026-11-04T18:32:24+01:00",
-     "img": "https://images.nu.nl/m/05mxa6oa7iqp_sqr256/633/0/2539/2539/floor-jansen-over-nightwish-vertrek-kwamen-moeilijke-periodes-niet-meer-door.jpg"
     }
    ]
   }
