@@ -2,7 +2,7 @@
 
 // Canvas-deadlines op urgentie: wat het eerst moet, staat bovenaan.
 // Vak: de 3 urgentste. Knop "Alle deadlines" (of #canvas in de adresbalk) opent de volledige pagina.
-// De Canvas-agenda zegt niet of je iets hebt ingeleverd: dat vink je zelf af (bewaard in deze browser).
+// De Canvas-agenda zegt niet of je iets hebt ingeleverd: dat vink je zelf af (sinds 0.59.0 gedeeld via het privé archief).
 DASH.widget('w-canvas', (card, body, guard) => {
   const { h, fmtTime, startOfDay, startOfWeek, addDays, store } = DASH;
   const PALETTE = ['#2fbf71', '#4fc3f7', '#ffb74d', '#ba68c8', '#f06292', '#aed581', '#4db6ac', '#ffd54f'];
@@ -23,13 +23,67 @@ DASH.widget('w-canvas', (card, body, guard) => {
     return PALETTE[n % PALETTE.length];
   }
 
-  const doneSet = () => new Set(store.get(DONE_KEY) || []);
-  function setDone(id, on) {
-    const s = doneSet();
-    if (on) s.add(id); else s.delete(id);
-    store.set(DONE_KEY, [...s]);
-    render();
+  // ---------- Ingeleverd, gedeeld tussen apparaten (sinds 0.59.0) ----------
+  // Per opdracht { id: [1 = ingeleverd / 0 = niet, tijd van afvinken] } in deze browser (canvas.doneMap) én in het privé
+  // archief (state/canvas-done.json, via het archief-token). Bij verschil wint het laatst aangepaste. Zonder token of
+  // offline blijft het gewoon in deze browser en gaat het mee bij de volgende keer dat het lukt.
+  const MAP_KEY = 'canvas.doneMap';
+  const SYNC_PATH = 'state/canvas-done.json';
+  function doneMap() {
+    let m = store.get(MAP_KEY);
+    if (!m) {   // oude lijst (vóór 0.59.0) overnemen
+      m = {};
+      for (const id of store.get(DONE_KEY) || []) m[id] = [1, 0];
+      store.set(MAP_KEY, m);
+    }
+    return m;
   }
+  function saveMap(m) {
+    store.set(MAP_KEY, m);
+    store.set(DONE_KEY, Object.keys(m).filter((id) => m[id][0] === 1));
+  }
+  const doneSet = () => { const m = doneMap(); return new Set(Object.keys(m).filter((id) => m[id][0] === 1)); };
+  function setDone(id, on) {
+    const m = doneMap();
+    m[id] = [on ? 1 : 0, Date.now()];
+    saveMap(m);
+    render();
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(sync, 1500);
+  }
+  // Nieuwste per id wint; geeft true als `into` veranderde
+  function merge(into, from) {
+    let changed = false;
+    for (const [id, v] of Object.entries(from || {})) {
+      if (!Array.isArray(v)) continue;
+      if (!into[id] || v[1] > into[id][1]) { into[id] = v; changed = true; }
+    }
+    return changed;
+  }
+  let syncTimer = null, syncing = false;
+  async function sync() {
+    const D = window.DASH_DATA;
+    if (DASH.DEMO || syncing || !D || !D.token()) return;
+    syncing = true;
+    try {
+      const f = await D.read(SYNC_PATH);
+      const remote = (f && JSON.parse(f.text).items) || {};
+      const local = doneMap();
+      if (merge(local, remote)) { saveMap(local); render(); }
+      // Heeft deze browser iets wat het archief nog niet heeft? Dan wegschrijven
+      const probe = { ...remote };
+      if (merge(probe, local)) {
+        await D.updateJson(SYNC_PATH, (data) => { data.items = data.items || {}; merge(data.items, local); }, 'Canvas: ingeleverd bijgewerkt');
+      }
+    } catch (e) {
+      console.warn('[canvas] synchroniseren', e);
+    } finally {
+      syncing = false;
+    }
+  }
+  window.addEventListener('dash:data-token', () => sync());
+  setTimeout(sync, 3000);   // datarepo.js laadt na dit bestand
+  DASH.every(10 * 60 * 1000, () => sync());
 
   // ---------- Model ----------
   function items() {
@@ -127,6 +181,7 @@ DASH.widget('w-canvas', (card, body, guard) => {
     const top = [...late, ...upcoming].slice(0, 3);
 
     card.classList.toggle('has-late', late.length > 0);
+    card.classList.toggle('cv-none', open.length === 0);   // tall: vak valt dan weg (sinds 0.59.0)
 
     // Meldingen: te laat, of binnen 24 uur
     const soon = upcoming.filter((it) => it.due - now < DAY);

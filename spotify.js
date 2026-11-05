@@ -234,7 +234,7 @@
       render(await api('GET', '/me/player?additional_types=episode'));
       schedule(nextDelay());
     } catch (e) {
-      if (e instanceof AuthError) return logout('Je sessie is verlopen. Log opnieuw in.');
+      if (e instanceof AuthError) return authTrouble();
       if (card.dataset.state === 'loading') {
         el.idleTitle.textContent = 'Spotify niet bereikbaar';
         el.idleMsg.textContent = e instanceof ApiError ? `Spotify zegt: ${e.message}` : 'Controleer je internetverbinding.';
@@ -460,7 +460,7 @@
   }
 
   function handleActionError(e) {
-    if (e instanceof AuthError) return logout('Je sessie is verlopen. Log opnieuw in.');
+    if (e instanceof AuthError) return authTrouble();
     if (e instanceof ApiError) {
       if (e.status === 404 || e.reason === 'NO_ACTIVE_DEVICE') return toast('Geen actief apparaat. Open Spotify ergens.');
       if (e.status === 403) return toast('Dat staat Spotify nu niet toe.');
@@ -560,6 +560,17 @@
     toastTimer = setTimeout(() => el.toast.classList.remove('show'), 3200);
   }
 
+  // Spotify weigert de sleutel (sinds 0.59.0, 1.0-zelfherstel): niet meer uitloggen en de sleutel wissen, want vaak is het
+  // tijdelijk (slaapstand midden in een verzoek, Spotify-storing) en de sleutel uit de inlogbundel kun je niet zelf terugzetten.
+  // Dus: inlogscherm met uitleg, sleutel bewaren en elke 5 minuten stil opnieuw proberen. Lukt het, dan is de speler terug.
+  const AUTH_RETRY = 5 * 60 * 1000;
+  function authTrouble() {
+    clearTimeout(pollTimer);
+    if (!store.get(KEY.tokens)) return showLogin();
+    showLogin('Spotify weigert de inlog even. Het dashboard probeert het elke 5 minuten opnieuw; lukt het niet, log dan opnieuw in.');
+    pollTimer = setTimeout(poll, AUTH_RETRY);
+  }
+
   function logout(msg) {
     clearTimeout(pollTimer);
     store.del(KEY.tokens);
@@ -584,8 +595,10 @@
 
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) clearTimeout(pollTimer);
-    else if (card.dataset.state !== 'login') poll();
+    else if (card.dataset.state !== 'login' || store.get(KEY.tokens)) poll();
   });
+  // Na slaapstand of als internet terug is (dash.js): meteen kijken
+  window.addEventListener('dash:wake', () => { if (!DEMO && store.get(KEY.tokens)) poll(); });
 
   // ---------- Demo (?demo): nep-data om de look te testen ----------
   const demo = {

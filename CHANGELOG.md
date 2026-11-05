@@ -6,6 +6,12 @@ Daarom staan de oude nummers hier als 0.N.0. Nummer 19 en 24 zijn nooit uitgebra
 Onder de lijst staat per ronde de uitgebreide toelichting zoals die toen geschreven is.
 
 
+## 5 november 2026
+
+| Versie | Wat |
+|---|---|
+| 0.59.0 | **Richting 1.0, eerste stap** (keuzes uit het 1.0-overzicht). Zelfherstel: na slaapstand of als internet terugkomt haalt elk vak meteen opnieuw op (`dash:wake`); het dashboard herlaadt zichzelf bij een nieuwe versie (elk kwartier kijken, alleen als niemand muis/toetsen gebruikt); de agenda probeert na een mislukte tokenpoging elke 5 minuten opnieuw en toont "Vernieuwen" pas na een uur; Spotify logt niet meer uit als hij de sleutel één keer weigert, maar probeert elke 5 minuten opnieuw. Tall (staand scherm): knop **dunne speler** in de speler (smalle strook zoals liggend, songtekst ernaast), rij Canvas · Meldingen · **Gezondheid** (stappenring vast in beeld, niet meer in het roterende vak; Canvas valt weg als er niks open staat), ongelezen **mail als melding**, to-do weg uit de Meer-balk. Gezondheid: slaap en hartslag weg (werden niet gemeten). Canvas "ingeleverd" wordt gedeeld tussen apparaten via het privé archief. **Mensen op pauze**: geen pakketjes en berichten meer, Instellingen › Mensen = onder constructie. |
+
 ## 2 november 2026
 
 | Versie | Wat |

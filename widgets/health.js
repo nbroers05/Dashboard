@@ -1,6 +1,6 @@
 'use strict';
 
-// Gezondheid: stappen, slaap en hartslag via de Google Health API (opvolger van Google Fit).
+// Gezondheid: stappen via de Google Health API (opvolger van Google Fit). Slaap en hartslag sinds 0.59.0 weg (worden niet gemeten).
 // Route: Samsung Health → Health Connect → Google Health-app → Google-cloud → hier. Zelfde Google-inlog als agenda en mail, alleen lezen.
 DASH.widget('w-health', (card, body, guard) => {
   const { h, fmtTime, startOfDay, addDays, DEMO } = DASH;
@@ -60,62 +60,19 @@ DASH.widget('w-health', (card, body, guard) => {
     return out;
   }
 
+  // Alleen stappen (sinds 0.59.0): slaap en hartslag worden niet gemeten (de API gaf ze altijd leeg), dus weggehaald.
   async function fetchAll() {
     const today = startOfDay(Date.now());
-    // Losse delen mogen mislukken (bijv. nog geen hartslag): dan ontbreekt alleen dat stukje
-    const [steps, sleep, hr, rest] = await Promise.allSettled([
-      stepsPerDay(addDays(today, -6), today),
-      call(`sleep/dataPoints?${new URLSearchParams({ pageSize: 5, filter: `sleep.interval.civil_end_time >= "${iso(addDays(today, -1))}"` })}`),
-      call(`heart-rate/dataPoints?${new URLSearchParams({ pageSize: 1 })}`),
-      call(`daily-resting-heart-rate/dataPoints?${new URLSearchParams({ pageSize: 7 })}`),
-    ]);
-    // Alles mislukt met dezelfde fout (bijv. API staat uit): die fout tonen
-    const all = [steps, sleep, hr, rest];
-    if (all.every((r) => r.status === 'rejected')) throw all[0].reason;
-
-    const out = { steps: [], sleep: null, hr: null, rest: null };
-    if (steps.status === 'fulfilled') {
-      out.steps = steps.value;
-    }
-    if (sleep.status === 'fulfilled') {
-      const s = (sleep.value.dataPoints || []).map((p) => p.sleep).filter(Boolean)
-        .sort((a, b) => Date.parse(b.interval.endTime) - Date.parse(a.interval.endTime))[0];
-      if (s) {
-        const sum = s.summary || {};
-        out.sleep = {
-          start: Date.parse(s.interval.startTime), end: Date.parse(s.interval.endTime),
-          asleep: sum.minutesAsleep != null ? Number(sum.minutesAsleep) : null,
-          stages: (sum.stagesSummary || []).map((x) => ({ type: x.type, minutes: Number(x.minutes) || 0 })),
-        };
-      }
-    }
-    if (hr.status === 'fulfilled') {
-      const p = (hr.value.dataPoints || [])[0];
-      if (p && p.heartRate) out.hr = { bpm: Number(p.heartRate.beatsPerMinute), at: Date.parse(p.heartRate.sampleTime && p.heartRate.sampleTime.physicalTime) };
-    }
-    if (rest.status === 'fulfilled') {
-      const p = (rest.value.dataPoints || []).map((x) => x.dailyRestingHeartRate).filter(Boolean)
-        .sort((a, b) => (b.date.year - a.date.year) || (b.date.month - a.date.month) || (b.date.day - a.date.day))[0];
-      if (p) out.rest = { bpm: Number(p.beatsPerMinute), day: new Date(p.date.year, p.date.month - 1, p.date.day).getTime() };
-    }
-    return out;
+    return { steps: await stepsPerDay(addDays(today, -6), today), sleep: null };
   }
 
   function demo() {
     const today = startOfDay(Date.now());
     const counts = [8412, 11230, 6120, 9876, 12890, 4310, 6234];
-    const end = today + 7.2 * 3600000;
-    return {
-      steps: counts.map((c, i) => ({ day: addDays(today, i - 6), count: c })),
-      sleep: { start: end - 7.6 * 3600000, end, asleep: 412, stages: [{ type: 'LIGHT', minutes: 228 }, { type: 'DEEP', minutes: 74 }, { type: 'REM', minutes: 110 }, { type: 'AWAKE', minutes: 44 }] },
-      hr: { bpm: 72, at: Date.now() - 12 * 60000 },
-      rest: { bpm: 58, day: today },
-    };
+    return { steps: counts.map((c, i) => ({ day: addDays(today, i - 6), count: c })), sleep: null };
   }
 
   // ---------- Tonen ----------
-  const STAGE = { DEEP: ['Diep', '#5b6cff'], LIGHT: ['Licht', '#8fb4ff'], REM: ['REM', '#c58bff'], AWAKE: ['Wakker', '#ff9e7a'], ASLEEP: ['Slaap', '#8fb4ff'], RESTLESS: ['Onrustig', '#ffc27a'] };
-  const dur = (min) => `${Math.floor(min / 60)}u ${String(Math.round(min % 60)).padStart(2, '0')}m`;
 
   let last = null;
   function render(d) {
@@ -126,9 +83,8 @@ DASH.widget('w-health', (card, body, guard) => {
     const GOAL = goal();
     const today = startOfDay(Date.now());
     const todaySteps = (d.steps.find((x) => x.day === today) || {}).count;
-    const asleep = d.sleep ? (d.sleep.asleep != null ? d.sleep.asleep : (d.sleep.end - d.sleep.start) / 60000) : null;
 
-    // Ring = % van het dagdoel (SVG, ronde kop); stappen en slaap ernaast
+    // Ring = % van het dagdoel (SVG, ronde kop); stappen ernaast
     const stepsBox = h('div', 'hl-steps');
     const p = Math.min(1, (todaySteps || 0) / GOAL);
     const ring = h('div', 'hl-ring');
@@ -145,10 +101,7 @@ DASH.widget('w-health', (card, body, guard) => {
     const stepsSub = h('span', 'w-sub', 'stappen · ');
     stepsSub.append(goalBtn);
     stepsCell.append(h('b', 'hl-num', todaySteps != null ? todaySteps.toLocaleString('nl-NL') : '–'), stepsSub);
-    const sleepCell = h('div', 'hl-stat');
-    sleepCell.append(h('b', 'hl-num', asleep != null ? `${Math.floor(asleep / 60)}u ${String(Math.round(asleep % 60)).padStart(2, '0')}` : '–'),
-      h('span', 'w-sub', d.sleep ? `slaap · ${fmtTime(d.sleep.start)}–${fmtTime(d.sleep.end)}` : 'slaap · niets gevonden'));
-    side.append(stepsCell, sleepCell);
+    side.append(stepsCell);
     stepsBox.append(ring, side);
 
     const bars = h('div', 'hl-bars');
@@ -164,35 +117,7 @@ DASH.widget('w-health', (card, body, guard) => {
       bars.append(col);
     }
 
-    // Slaap en hartslag
-    const row = h('div', 'hl-row');
-    const sleepBox = h('div', 'hl-cell');
-    sleepBox.append(h('span', 'w-label', '😴 Slaapfases'));
-    const total = d.sleep ? d.sleep.stages.reduce((t, s) => t + s.minutes, 0) : 0;
-    if (total) {
-      const st = h('div', 'hl-stages');
-      const legend = h('span', 'w-sub');
-      for (const s of d.sleep.stages) {
-        const [name, color] = STAGE[s.type] || [s.type, '#888'];
-        const seg = h('i');
-        seg.style.flex = String(s.minutes);
-        seg.style.background = color;
-        seg.title = `${name}: ${dur(s.minutes)}`;
-        st.append(seg);
-      }
-      const deep = d.sleep.stages.find((s) => s.type === 'DEEP');
-      legend.textContent = deep ? `diep ${dur(deep.minutes)}` : `${d.sleep.stages.length} fases`;
-      sleepBox.append(st, legend);
-    } else sleepBox.append(h('span', 'w-sub', d.sleep ? 'geen fases' : '–'));
-
-    const hrBox = h('div', 'hl-cell');
-    hrBox.append(h('span', 'w-label', '❤️ Hartslag'));
-    if (d.rest) hrBox.append(h('b', null, `${d.rest.bpm} bpm`), h('span', 'w-sub', d.rest.day === today ? 'rust, vandaag' : `rust, ${new Date(d.rest.day).toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric' })}`));
-    else hrBox.append(h('b', null, '–'));
-    if (d.hr && d.hr.bpm) hrBox.append(h('span', 'w-sub', `laatste ${d.hr.bpm} bpm${d.hr.at ? ` om ${fmtTime(d.hr.at)}` : ''}`));
-    row.append(sleepBox, hrBox);
-
-    body.replaceChildren(stepsBox, bars, row);
+    body.replaceChildren(stepsBox, bars);
   }
 
   // Doel aanpassen in het vak zelf: knopje wordt een getalveld (Enter/klik ernaast = opslaan, Esc = laten)
@@ -238,7 +163,7 @@ DASH.widget('w-health', (card, body, guard) => {
     if (!G.healthToken()) {
       return G.healthEverGranted()
         ? message('Toegang tot je gezondheidsgegevens is verlopen (Google geeft een website maar 1 uur).', 'Vernieuwen', () => G.connectHealth())
-        : message('Geef het dashboard leesrechten voor je stappen, slaap en hartslag.', 'Gezondheid koppelen', () => G.connectHealth());
+        : message('Geef het dashboard leesrechten voor je stappen.', 'Gezondheid koppelen', () => G.connectHealth());
     }
     try {
       render(await fetchAll());

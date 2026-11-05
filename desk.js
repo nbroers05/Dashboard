@@ -68,7 +68,8 @@
 
   // ---------- tall: rijen en het roterende vak ----------
   const row3 = h('div', 'tall-row tall-3');
-  const row2 = h('div', 'tall-row tall-2');
+  // Canvas · Meldingen · Gezondheid (sinds 0.59.0): even brede kolommen; Canvas zonder open deadlines valt weg (tall-auto)
+  const row2 = h('div', 'tall-row tall-auto');
   const hidden = h('div', 'tall-hidden');   // het mailvak blijft laden (voor het getal op het Gmail-icoon), maar zonder vak
   const rot = h('div', 'tall-rot');
   const dots = h('div', 'tall-dots');
@@ -78,7 +79,7 @@
   const nav = h('div', 'tall-nav');
   nav.append(prevBtn, dots, nextBtn);
   rot.append(nav);
-  const ROT = ['w-letterboxd', 'w-friends', 'w-stars', 'w-sptop', 'w-episodes', 'w-health'];
+  const ROT = ['w-letterboxd', 'w-friends', 'w-stars', 'w-sptop', 'w-episodes'];   // gezondheid staat sinds 0.59.0 vast in de rij Canvas/Meldingen
   const ROT_MS = 12000;
   let rotIndex = 0, rotTimer = null, pausedUntil = 0, hover = false;
   const calm = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -132,6 +133,22 @@
   }
   const put = (box, ids) => box.append(...ids.map((id) => (typeof id === 'string' ? $(id) : id)).filter(Boolean));
 
+  // ---------- Dunne speler op tall (sinds 0.59.0) ----------
+  // Knop in de speler (#player-size, alleen zichtbaar op tall): de grote speler wordt een smalle strook zoals in de liggende
+  // indeling (hoes klein links, titel, balk en knoppen ernaast). Songtekst blijft werken (ernaast, even hoog). Per browser.
+  const THIN_KEY = 'tall.playerThin';
+  const sizeBtn = $('player-size');
+  function thin(on, keep) {
+    dash.classList.toggle('player-thin', on);
+    if (sizeBtn) {
+      sizeBtn.setAttribute('aria-pressed', String(on));
+      sizeBtn.title = on ? 'Grote speler' : 'Dunne speler';
+    }
+    if (!keep) store.set(THIN_KEY, on);
+    window.dispatchEvent(new Event('resize'));
+  }
+  if (sizeBtn) sizeBtn.onclick = () => thin(!dash.classList.contains('player-thin'));
+
   const MODES = {
     desk: {
       enter() {
@@ -143,7 +160,7 @@
         put(mid, ['media-stack', 'calendar']);
         put(right, ['w-canvas', 'w-f1', 'w-episodes', tabs]);
         put(drawer, ['w-mail', 'w-todo', 'w-wishes', 'w-msg', 'w-health', 'w-sptop']);
-        moreList.textContent = 'Mail · To-do · Wensen · Berichten · Gezondheid · Spotify';
+        moreList.textContent = 'Mail · To-do · Wensen · Gezondheid · Spotify';
         if ($('version')) moreBar.append($('version'));
         dash.append(left, mid, right, more);
         setTab(store.get(TAB_KEY) || 'w-stars');
@@ -159,15 +176,18 @@
     },
     tall: {
       enter() {
-        const ids = ['w-weather', 'w-rain', 'w-f1', 'w-ah', 'w-canvas', 'w-alerts', ...ROT, 'w-mail', 'w-todo', 'w-wishes', 'w-msg', 'w-checkin', 'version'];
+        const ids = ['w-weather', 'w-rain', 'w-f1', 'w-ah', 'w-canvas', 'w-alerts', 'w-health', ...ROT, 'w-mail', 'w-todo', 'w-wishes', 'w-msg', 'w-checkin', 'version'];
         remember(ids);
         put(weather, ['w-weather', 'w-rain']);
         put(row3, [weather, 'w-f1', 'w-ah']);
-        put(row2, ['w-canvas', 'w-alerts']);
+        put(row2, ['w-canvas', 'w-alerts', 'w-health']);
+        thin(store.get(THIN_KEY) === true);
         rot.prepend(...ROT.map($).filter(Boolean));
         put(hidden, ['w-mail']);
-        put(drawer, ['w-checkin', 'w-todo', 'w-wishes', 'w-msg']);
-        moreList.textContent = 'Check-in · To-do · Wensen · Berichten';
+        // To-do weg van tall en Berichten op pauze (0.59.0, 1.0-plan); het to-do-vak laadt nog wel (desk/telefoon)
+        put(hidden, ['w-todo']);
+        put(drawer, ['w-checkin', 'w-wishes']);
+        moreList.textContent = 'Check-in · Wensen';
         if ($('version')) moreBar.append($('version'));   // versie rechts in de Meer-balk, net als in desk
         const before = $('calendar');
         [row3, row2, rot].forEach((el) => dash.insertBefore(el, before));
@@ -178,6 +198,7 @@
         rotTimer = setInterval(rotTick, ROT_MS);
       },
       leave() {
+        thin(false, true);
         clearInterval(rotTimer);
         slides().forEach((el) => { el.classList.remove('on'); el.removeAttribute('aria-hidden'); });
         [row3, row2, rot, hidden].forEach((el) => el.remove());

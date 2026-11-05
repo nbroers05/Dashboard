@@ -2712,3 +2712,55 @@ body.kamer-on { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) { .kamer-gl { transition: none; } }
 /* PS1-korrel: vaste ruis, even grof als de lage pixels (kamer.js zet de grootte) */
 .kamer-grain { position: absolute; inset: 0; pointer-events: none; image-rendering: pixelated; mix-blend-mode: soft-light; opacity: .3; }
+
+/* ---------- 1.0 op tall (sinds 0.59.0) ---------- */
+/* Knop voor de dunne speler alleen op tall */
+.dashboard:not(.tall) #player-size { display: none; }
+.btn#player-size[aria-pressed="true"] { color: var(--accent); }
+
+/* Dunne speler: zelfde strook als liggend (desk), met de songtekst ernaast even hoog */
+.tall.player-thin .media-stack { grid-row: auto; }
+.tall.player-thin .media-stack > .player { padding: 14px 18px; border-radius: 24px; }
+.tall.player-thin .media-stack.stacked-1 { padding-bottom: 26px; }
+.tall.player-thin .media-stack.stacked-2 { padding-bottom: 38px; }
+.tall.player-thin .media-stack > .player[data-pos="1"] { transform: translateY(12px) scale(.97); }
+.tall.player-thin .media-stack > .player[data-pos="2"] { transform: translateY(22px) scale(.94); }
+.tall.player-thin .player-view {
+  grid-template-columns: 112px minmax(0, 1fr);
+  grid-template-areas: "cover info" "cover progress" "cover controls";
+  grid-template-rows: auto auto auto;
+  row-gap: 4px; column-gap: 18px; align-items: center;
+}
+.tall.player-thin .player-view .cover { width: 112px; border-radius: 14px; box-shadow: 0 10px 24px rgba(0, 0, 0, .45); }
+.tall.player-thin .player-view .info { align-self: end; }
+.tall.player-thin .player-view .eyebrow { margin-bottom: 0; font-size: .75rem; }
+.tall.player-thin .player-view .title { font-size: 1.35rem; -webkit-line-clamp: 1; }
+.tall.player-thin .player-view .artist { margin-top: 0; font-size: .9rem; }
+.tall.player-thin .player-view .meta { display: none; }
+.tall.player-thin .player-view .bar { height: 14px; }
+.tall.player-thin .player-view .times { font-size: .72rem; margin-top: 0; }
+.tall.player-thin .player-view .controls { flex-direction: row; justify-content: flex-start; gap: 6px; align-self: start; }
+.tall.player-thin .player-view .group { gap: 4px; }
+.tall.player-thin .player-view .extra { margin-left: auto; }
+.tall.player-thin .player-view .btn { width: 40px; height: 40px; }
+.tall.player-thin .player-view .btn svg { width: 22px; height: 22px; }
+.tall.player-thin .player-view .btn.pill { width: 64px; height: 40px; }
+.tall.player-thin .player-view .btn.small { width: 36px; height: 36px; }
+.tall.player-thin .player-view .btn.small svg { width: 20px; height: 20px; }
+.tall.player-thin .player .login-view .title, .tall.player-thin .player .idle-view .title { font-size: 1.2rem; }
+.tall.player-thin .player .login-view .row, .tall.player-thin .player .idle-view .meta { margin-top: 8px; }
+.tall.player-thin .player .muted { margin: 4px 0 0; font-size: .9rem; }
+.tall.player-thin #lyrics { grid-row: auto; padding: 14px 20px; border-radius: 24px; }
+.tall.player-thin #lyrics .ly-line { font-size: 1.05rem; }
+
+/* Rij Canvas · Meldingen · Gezondheid: even brede kolommen; Canvas zonder open deadlines valt weg */
+.tall-auto { grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
+.tall #w-canvas.cv-none { display: none; }
+.tall #w-canvas .w-big { font-size: 2.2rem; display: flex; align-items: baseline; gap: 8px; }
+.tall #w-canvas .w-big small { margin: 0; }
+.tall #w-canvas .cv-more { padding: 6px 12px; font-size: .85rem; }
+.tall #w-alerts .w-big { font-size: 2.2rem; display: flex; align-items: baseline; gap: 8px; }
+.tall #w-alerts .w-big small { margin: 0; }
+.tall #w-health { display: flex; flex-direction: column; }
+.tall #w-health > .w-body { flex: 1 1 auto; display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+.tall #w-health .hl-bars { flex: 1 1 auto; height: auto; min-height: 64px; }

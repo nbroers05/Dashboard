@@ -88,9 +88,27 @@ DASH.widget('w-mail', (card, body, guard) => {
       list.append(a);
     }
     body.replaceChildren(head, list);
+    last = data;
+    toAlerts();
     window.DASH_MAIL = data;
     window.dispatchEvent(new CustomEvent('dash:mail', { detail: data }));
   }
+
+  // Staand scherm (tall): het mailvak is verborgen, dus ongelezen mail als één regel in het meldingenvak
+  // (sinds 0.59.0, 1.0-plan). Klik = Gmail. Andere indelingen hebben het mailvak zelf.
+  let last = null;
+  function toAlerts() {
+    const tall = !!document.querySelector('.dashboard.tall');
+    if (!tall || !last || !last.count) return DASH.alert('mail', null);
+    const n = last.count;
+    DASH.alert('mail', [{
+      level: 'info', icon: '✉️',
+      text: n === 1 ? '1 ongelezen mail' : `${n} ongelezen mails`,
+      sub: last.mails.slice(0, 3).map((m) => `${m.from}: ${m.subject}`).join(' · '),
+      onClick: () => window.open('https://mail.google.com/mail/u/0/#inbox', '_blank', 'noopener'),
+    }]);
+  }
+  window.addEventListener('dash:layout', guard(toAlerts));
 
   const load = guard(async () => {
     if (DEMO) return render(demoMail());

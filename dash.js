@@ -133,14 +133,68 @@ window.DASH = (() => {
     guard(fn)(card, body, guard);
   }
 
-  // Herhaal fn elke ms, maar niet als het tabblad op de achtergrond staat (en direct bij terugkomen)
+  // Herhaal fn elke ms, maar niet als het tabblad op de achtergrond staat (en direct bij terugkomen).
+  // Sinds 0.59.0 ook meteen na slaapstand of als internet terug is (event dash:wake, zie hieronder).
   function every(ms, fn) {
     let last = Date.now();
     setInterval(() => { if (!document.hidden) { last = Date.now(); fn(); } }, ms);
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden && Date.now() - last > ms) { last = Date.now(); fn(); }
     });
+    addEventListener('dash:wake', () => { if (!document.hidden) { last = Date.now(); fn(); } });
   }
+
+  // ---------- Zelfherstel (sinds 0.59.0, 1.0-plan) ----------
+  // Wakker worden: een timer die elke 30 s tikt; zat er ineens meer dan 3 minuten tussen, dan sliep de pc.
+  // Dan (na 8 s, zodat wifi en hulpprogramma op zijn), en als internet terugkomt (na 3 s): event dash:wake,
+  // waarop elk vak via every() meteen opnieuw ophaalt. Nooit vaker dan eens per 30 s.
+  let tickAt = Date.now(), wakeTimer = null, wokeAt = 0;
+  function wake(delay) {
+    clearTimeout(wakeTimer);
+    wakeTimer = setTimeout(() => {
+      if (Date.now() - wokeAt < 30000) return;
+      wokeAt = Date.now();
+      dispatchEvent(new CustomEvent('dash:wake'));
+      checkVersion();
+    }, delay);
+  }
+  setInterval(() => {
+    const now = Date.now();
+    if (now - tickAt > 3 * 60000) wake(8000);
+    tickAt = now;
+  }, 30000);
+  addEventListener('online', () => wake(3000));
+
+  // Nieuwe versie op de site: zelf herladen, zodat een scherm dat altijd openstaat niet op oude code blijft draaien.
+  // Elke 15 minuten (en na wakker worden) index.html ophalen en het ?v= van dash.js vergelijken. Alleen herladen als
+  // niemand het dashboard gebruikt: 2 minuten geen muis/toetsen, geen pop-up open en niet aan het typen.
+  // Eén keer per nieuwe versie (sessionStorage), zodat een oude kopie uit een cache geen herlaad-lus geeft.
+  let lastInput = Date.now();
+  for (const ev of ['pointerdown', 'pointermove', 'keydown', 'wheel', 'touchstart']) addEventListener(ev, () => { lastInput = Date.now(); }, { passive: true, capture: true });
+  let pendingVersion = null;
+  async function checkVersion() {
+    if (DEMO || VERSION === '?' || location.protocol === 'file:') return;
+    try {
+      const res = await fetch(`${location.pathname}?versiecheck=${Date.now()}`, { cache: 'no-store' });
+      if (!res.ok) return;
+      const m = (await res.text()).match(/dash\.js\?v=([\w.]+)/);
+      if (m && m[1] !== VERSION) pendingVersion = m[1];
+    } catch {}
+    tryReload();
+  }
+  function tryReload() {
+    if (!pendingVersion) return;
+    let done = null;
+    try { done = sessionStorage.getItem('dash.reloadedFor'); } catch {}
+    if (done === pendingVersion) return;
+    const busy = Date.now() - lastInput < 2 * 60000 || document.querySelector('dialog[open]')
+      || (document.activeElement && /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName));
+    if (busy) return;
+    try { sessionStorage.setItem('dash.reloadedFor', pendingVersion); } catch {}
+    location.reload();
+  }
+  setInterval(checkVersion, 15 * 60000);
+  setInterval(tryReload, 60000);
 
   // Afspraken uit calendar.js
   function onCalendar(fn) {

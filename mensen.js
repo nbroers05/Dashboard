@@ -208,5 +208,19 @@
     }).catch((e) => { msg.textContent = `Archief lezen lukt niet: ${e.message}`; });
   }
 
-  if (window.DASH_SETTINGS) DASH_SETTINGS.add({ id: 'mensen', label: 'Mensen', order: 40, render });
+  // Op pauze sinds 0.59.0 (05-11-2026, 1.0-plan): geen pakketjes meer (stap "Mensen" in de Action van dashboard-data staat
+  // uit) en geen berichten (widgets/berichten.js wordt niet geladen). Het tabje zegt alleen dat het onder constructie is;
+  // de code hierboven blijft staan voor na 1.0 (dan `render` hieronder weer gebruiken).
+  function paused(el) {
+    const box = document.createElement('div');
+    box.className = 'set-paused';
+    const t = document.createElement('p');
+    t.innerHTML = '<b>🚧 Onder constructie</b>';
+    const p = document.createElement('p');
+    p.className = 'w-sub';
+    p.textContent = 'Mensen (een eigen pagina voor anderen, berichten en "Noah luistert") staat op pauze tot na versie 1.0. Er worden geen pakketjes of berichten meer bijgewerkt. Wat er al was, blijft bewaard.';
+    box.append(t, p);
+    el.replaceChildren(box);
+  }
+  if (window.DASH_SETTINGS) DASH_SETTINGS.add({ id: 'mensen', label: 'Mensen', order: 40, render: paused });
 })();

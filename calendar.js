@@ -239,6 +239,8 @@
       events = lists.flat();
       fetchedAt = Date.now();
       store.set(KEY.cache, { fetchedAt, events });
+      failSince = 0;
+      el.reconnect.hidden = true;
       render();
       fetchTimer = setTimeout(load, REFETCH);
     } catch (e) {
@@ -755,10 +757,23 @@
     return li;
   }
 
+  // Token verlopen en stil vernieuwen lukte niet (hulpprogramma nog niet op na het opstarten, internet nog weg na slaapstand).
+  // Sinds 0.59.0 (1.0-zelfherstel): gewoon elke 5 minuten opnieuw stil proberen, en de knop "Vernieuwen" pas tonen als
+  // het een uur lang niet lukt. Daarvoor bleef de agenda hier staan tot je het tabblad wisselde.
+  let failSince = 0;
+  const RETRY_AUTH = 5 * 60 * 1000;
+  const showReconnect = () => { el.reconnect.hidden = !failSince || Date.now() - failSince < 3600000; };
   function expired() {
+    if (!failSince) failSince = Date.now();
     if (events.length) render();
     else card.dataset.state = 'main';
-    el.reconnect.hidden = false;
+    showReconnect();
+    clearTimeout(fetchTimer);
+    fetchTimer = setTimeout(retryAuth, RETRY_AUTH);
+  }
+  function retryAuth() {
+    if (DEMO) return;
+    refreshFromHelper().then(() => (token() ? load() : expired()));
   }
 
   function showLogin(msg) {
@@ -783,15 +798,19 @@
   setInterval(() => {
     if (card.dataset.state !== 'main' || document.hidden) return;
     render();
-    if (!DEMO && !token()) el.reconnect.hidden = false;
+    if (!DEMO) showReconnect();
   }, 60000);
 
   document.addEventListener('visibilitychange', () => {
     if (document.hidden || card.dataset.state !== 'main') return;
     if (DEMO) return render();
     if (token() && Date.now() - fetchedAt > 60000) load();
-    else if (!token()) expired();
+    else if (!token()) retryAuth();
   });
+  // Na slaapstand of als internet terug is (dash.js): meteen opnieuw ophalen
+  window.addEventListener('dash:wake', () => { if (!DEMO && card.dataset.state === 'main') (token() ? load() : retryAuth()); });
+  // Een ander vak (mail, gezondheid) haalde een nieuw token terwijl de agenda vastzat: meteen laden
+  window.addEventListener('dash:google', () => { if (!DEMO && failSince && token()) load(); });
 
   // ---------- Demo (?demo) ----------
   function demoEvents() {
