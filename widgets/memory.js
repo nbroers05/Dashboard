@@ -34,6 +34,12 @@ DASH.widget('w-memory', (card, body, guard) => {
   }
   // Meer dan alleen het weer = een "rijke" dag; die komen groot in beeld
   const rich = (d) => Object.keys(d).some((k) => k !== 'w');
+  // Hoeveel er te zien is (0.60.1): films en agenda tellen zwaarder; het rijkste jaar komt eerst groot
+  const score = (d) => Object.keys(d).filter((k) => k !== 'w').length + (d.f ? 2 : 0) + (d.ag ? 1 : 0);
+  const order = (list) => {
+    const r = list.filter((x) => rich(x.day));
+    return (r.length ? r : list).slice().sort((a, b) => score(b.day) - score(a.day) || b.y - a.y);
+  };
 
   // ---------- Posters (TMDB, cache in deze browser) ----------
   const posters = store.get('memory.posters') || {};
@@ -52,8 +58,9 @@ DASH.widget('w-memory', (card, body, guard) => {
   }
 
   // ---------- Tonen ----------
-  function stat(label, big, sub) {
-    const c = h('div', 'mm-stat');
+  function stat(label, big, sub, href) {
+    const c = h(href ? 'a' : 'div', 'mm-stat');
+    if (href) { c.href = href; c.target = '_blank'; c.rel = 'noopener'; c.title = "Open Google Foto's op deze dag"; }
     c.append(h('span', 'mm-label', label), h('b', null, big));
     if (sub) c.append(h('span', 'w-sub', sub));
     return c;
@@ -83,7 +90,7 @@ DASH.widget('w-memory', (card, body, guard) => {
       body.replaceChildren(h('p', 'w-note', 'Nog niks uit eerdere jaren op deze dag.'));
       return;
     }
-    const cycle = list.some((x) => rich(x.day)) ? list.filter((x) => rich(x.day)) : list;
+    const cycle = order(list);
     if (!list.some((x) => x.y === pick)) pick = cycle[0].y;
     const main = list.find((x) => x.y === pick);
     const d = main.day;
@@ -105,7 +112,12 @@ DASH.widget('w-memory', (card, body, guard) => {
       const sub = [d.out && d.out[0] != null && d.out[1] ? plek(d.out[1]) : null, d.st && d.out && d.out[0] != null ? `${nl(d.st)} stappen` : null].filter(Boolean).join(' · ');
       stats.append(stat('waar', big, sub || null));
     }
-    if (d.ph) stats.append(stat("foto's", nl(d.ph)));
+    // Alleen het aantal staat in het archief (Google laat websites je fotobibliotheek niet lezen): klik = Google Foto's
+    // zoeken op die datum (werkt als je daar bent ingelogd)
+    if (d.ph) {
+      const q = main.date.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
+      stats.append(stat("foto's", `${nl(d.ph)} ${d.ph === 1 ? 'foto' : "foto's"}`, "bekijk in Google Foto's ↗", `https://photos.google.com/search/${encodeURIComponent(q)}`));
+    }
     if (d.pc) stats.append(stat('pc', `${nl(d.pc, 1)} u`));
     left.append(stats);
 
@@ -156,7 +168,7 @@ DASH.widget('w-memory', (card, body, guard) => {
   // Volgende keer dat het vak in beeld komt: het volgende jaar groot (zonder klikken)
   function advance() {
     const list = years(new Date());
-    const cycle = list.some((x) => rich(x.day)) ? list.filter((x) => rich(x.day)) : list;
+    const cycle = order(list);
     if (cycle.length < 2) return;
     const i = cycle.findIndex((x) => x.y === pick);
     pick = cycle[(i + 1) % cycle.length].y;
