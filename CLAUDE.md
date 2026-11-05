@@ -16,6 +16,7 @@ Doel (uit het 1.0-plan bovenaan WENSEN.md): **één scherm op het staande pc-sch
 - **Bevroren tot na 1.0**: Y2K en thema's, spelletjes, focusmodus, Feeds. Ze blijven werken, er komt niks bij.
 - Tall draait in **Firefox (web app)**, niet in de Tauri-app (die heeft geen zoom en Episodes Left werkt er niet). App-aanpassingen zijn niet nodig.
 - **Keuzes van Noah (5 nov 2026, 0.59.0)**: speler en songtekst blijven (favoriet), met knop voor een dunne speler; rij weer/F1/AH blijft zoals hij is; agenda mag onder de rand staan (verder testen); Meer-balk mag blijven, "een paar klikken is niet erg, maar geen doolhof van tabjes"; mail als melding (later ook Outlook-mail van school); to-do weg van tall; Canvas-afvinken blijft, maar gedeeld tussen apparaten; Episodes-melding blijft; Mensen op pauze; de knop "Nu herladen" in vakken blijft. Overzicht: `Claude eigen mapje/wensen/1.0-overzicht.md`.
+- **Testweek: van 5 t/m 12 november 2026 niks aan het dashboard aanpassen** (afspraak met Noah; versie 0.60.1 blijft staan, het nummer gaat niet naar 0.99). Problemen schrijft hij onder "Te doen" met "(na de testweek)"; alleen fixen als het scherm echt onbruikbaar is. Na een goede week wordt het **1.0.0** (de "twee weken zonder fix" uit het oorspronkelijke plan vervalt).
 - **"Na 1.0" in WENSEN.md niet bouwen** (ook Kamer, App fase 2/3, Jaaroverzicht), tenzij Noah het zelf weer vraagt.
 
 - Schrijf in het **Nederlands**, **kort en direct**.
