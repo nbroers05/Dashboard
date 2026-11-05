@@ -2751,7 +2751,10 @@ body.kamer-on { overflow: hidden; }
 .tall.player-thin .player .login-view .row, .tall.player-thin .player .idle-view .meta { margin-top: 8px; }
 .tall.player-thin .player .muted { margin: 4px 0 0; font-size: .9rem; }
 .tall.player-thin #lyrics { grid-row: auto; padding: 14px 20px; border-radius: 24px; }
-.tall.player-thin #lyrics .ly-line { font-size: 1.05rem; }
+.tall.player-thin #lyrics .ly-line { font-size: 1.05rem; margin-bottom: 8px; }
+/* 0.60.2: de standaard-padding (35% van de breedte, boven én onder) is in de lage strook hoger dan het vak zelf,
+   waardoor de huidige regel onder de rand viel. Hier vaste ruimte van ongeveer een half vak. */
+.tall.player-thin .ly-scroll { padding: 48px 0; -webkit-mask-image: linear-gradient(transparent, #000 28%, #000 72%, transparent); mask-image: linear-gradient(transparent, #000 28%, #000 72%, transparent); }
 
 /* Rij Canvas · Meldingen · Gezondheid: even brede kolommen; Canvas zonder open deadlines valt weg */
 .tall-auto { grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }

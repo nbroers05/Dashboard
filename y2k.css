@@ -650,3 +650,6 @@ html.y2k #w-memory .mm-stars { color: #a86b00; }
 html.y2k #w-memory .mm-stat { background: rgba(0, 0, 0, .05); border: 1px solid rgba(0, 0, 0, .08); }
 html.y2k #w-memory .mm-year span { color: #333; }
 html.y2k #w-memory .mm-year:hover { background: rgba(0, 0, 0, .06); }
+
+/* Dunne speler (0.60.2): lijntjespapier met maar twee lege regels boven en onder, anders valt de huidige regel eruit */
+html.y2k .tall.player-thin .ly-scroll { padding: calc(var(--ly-h) * 2) 10px calc(var(--ly-h) * 2) 14px; }

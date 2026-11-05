@@ -160,6 +160,11 @@ DASH.widget('lyrics', (card, body, guard) => {
     if (l) { userScrollUntil = 0; window.spotifySeek(Math.round(l.t)); }
   });
 
+  // Vak van grootte veranderd (dunne/grote speler, ander scherm): huidige regel meteen weer in het midden (0.60.2)
+  window.addEventListener('resize', () => {
+    const cur = active >= 0 && box.children[active];
+    if (cur && !card.hidden && Date.now() > userScrollUntil) requestAnimationFrame(() => { box.scrollTop = cur.offsetTop - box.clientHeight / 2 + cur.offsetHeight / 2; });
+  });
   window.addEventListener('dash:track', guard((e) => show(e.detail)));
   if (store.get(KEY)) setOpen(true);
 });
