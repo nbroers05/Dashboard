@@ -1,5 +1,5 @@
 {
- "day": "2026-11-05",
+ "day": "2026-11-06",
  "sources": [
   "LantarenVenster"
  ],
@@ -492,6 +492,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/dave-douglas-quartet/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "De Breibios: Wild Horse Nine",
+   "key": "debreibioswildhorsenine",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/de-breibios-wild-horse-nine/",
      "day": null,
      "next": null,
      "until": null
@@ -2158,20 +2172,6 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/tristan-forever/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
-   "title": "True Loves",
-   "key": "trueloves",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/true-loves-26/",
      "day": null,
      "next": null,
      "until": null

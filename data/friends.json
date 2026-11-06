@@ -15,6 +15,34 @@
  ],
  "logs": [
   {
+   "title": "Verity",
+   "year": 2026,
+   "rating": 1.5,
+   "watched": "2026-11-05",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/marrie01/film/verity-2026/",
+   "slug": "verity-2026",
+   "tmdbId": "1283515",
+   "poster": "https://image.tmdb.org/t/p/w342/gUAWodBBFn35ODmgdEOL6dLj3p4.jpg",
+   "user": "Marrie01",
+   "name": "Margriet"
+  },
+  {
+   "title": "The End of Oak Street",
+   "year": 2026,
+   "rating": 2.5,
+   "watched": "2026-11-05",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/loekatheactor/film/the-end-of-oak-street/",
+   "slug": "the-end-of-oak-street",
+   "tmdbId": "1101383",
+   "poster": "https://image.tmdb.org/t/p/w342/zShaBZCBknqIFEzZp5BfETKV5ho.jpg",
+   "user": "loekatheactor",
+   "name": "Loeka"
+  },
+  {
    "title": "Inception",
    "year": 2010,
    "rating": 5.0,
@@ -253,20 +281,6 @@
    "name": "Marijn"
   },
   {
-   "title": "Insidious: Out of the Further",
-   "year": 2026,
-   "rating": 2.5,
-   "watched": "2026-08-27",
-   "rewatch": false,
-   "liked": false,
-   "link": "https://letterboxd.com/loekatheactor/film/insidious-out-of-the-further/",
-   "slug": "insidious-out-of-the-further",
-   "tmdbId": "1291595",
-   "poster": "https://a.ltrbxd.com/resized/film-poster/1/1/7/4/1/5/7/1174157-insidious-out-of-the-further-0-600-0-900-crop.jpg?v=b6c81c5505",
-   "user": "loekatheactor",
-   "name": "Loeka"
-  },
-  {
    "title": "The Last House",
    "year": 2026,
    "rating": 2.5,
@@ -375,20 +389,6 @@
    "slug": "the-menu-2022",
    "tmdbId": "593643",
    "poster": "https://a.ltrbxd.com/resized/film-poster/5/2/1/3/2/3/521323-the-menu-0-600-0-900-crop.jpg?v=d00a0d03a8",
-   "user": "Marrie01",
-   "name": "Margriet"
-  },
-  {
-   "title": "Taxi Driver",
-   "year": 1976,
-   "rating": 3.5,
-   "watched": "2026-07-31",
-   "rewatch": true,
-   "liked": false,
-   "link": "https://letterboxd.com/marrie01/film/taxi-driver/",
-   "slug": "taxi-driver",
-   "tmdbId": "103",
-   "poster": "https://a.ltrbxd.com/resized/film-poster/5/1/9/4/7/51947-taxi-driver-0-600-0-900-crop.jpg?v=3ae07cca2d",
    "user": "Marrie01",
    "name": "Margriet"
   },
