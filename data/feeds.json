@@ -4,6 +4,12 @@
    "name": "NOS",
    "items": [
     {
+     "title": "A32 weer open na afsluiting vanwege risico vallende glasplaten",
+     "link": "https://nos.nl/l/2638383",
+     "time": "2026-11-07T03:32:24+01:00",
+     "img": "https://images.cdn.nos.nl/5/2/u/e/f/g/S39sniMTuQPqBhVWUQn3tgsuedB1TzL9PLPk2WQ/8x211x3984x2241-1024x576.webp"
+    },
+    {
      "title": "Alliana nieuwe president van Paraguay, Peña officieel afgezet na bankcrisis",
      "link": "https://nos.nl/l/2638382",
      "time": "2026-11-07T01:12:02+01:00",
@@ -86,12 +92,6 @@
      "link": "https://nos.nl/l/2638335",
      "time": "2026-11-06T18:50:37+01:00",
      "img": "https://images.cdn.nos.nl/7/G/1/6/1/Y/FaUEQkDshz99Cbr1NXpBsTAoh78m8t9ZHsGyNZq/0x0x1920x1080-1024x576.webp"
-    },
-    {
-     "title": "Verdachte bekent moordpoging op Iraanse publicist in Haarlem",
-     "link": "https://nos.nl/l/2638332",
-     "time": "2026-11-06T18:43:27+01:00",
-     "img": "https://images.cdn.nos.nl/3/D/2/n/r/n/RfrscgfRaTgo6yEJLvGSNVmmV9XuN47qJCaVbdQ/8x182x3984x2241-1024x576.webp"
     }
    ]
   },
@@ -224,10 +224,10 @@
      "img": "https://images.nu.nl/m/161xkx3a0lh1_sqr256/454/0/3587/3587/verstappen-ondanks-stuurproblemen-derde-in-tweede-training-antonelli-snelste.jpg"
     },
     {
-     "title": "Trump vervangt stafchef Witte Huis, opvolger is man achter streng immigratiebeleid",
-     "link": "https://www.nu.nl/buitenland/6415772/trump-vervangt-stafchef-witte-huis-opvolger-is-man-achter-streng-immigratiebeleid.html",
+     "title": "Trump vervangt stafchef Witte Huis door bedenker van streng immigratiebeleid",
+     "link": "https://www.nu.nl/buitenland/6415772/trump-vervangt-stafchef-witte-huis-door-bedenker-van-streng-immigratiebeleid.html",
      "time": "2026-11-06T20:27:10+01:00",
-     "img": "https://images.nu.nl/m/419xerjaqgcr_sqr256/974/0/3723/3723/trump-vervangt-stafchef-witte-huis-opvolger-is-man-achter-streng-immigratiebeleid.jpg"
+     "img": "https://images.nu.nl/m/419xerjaqgcr_sqr256/974/0/3723/3723/trump-vervangt-stafchef-witte-huis-door-bedenker-van-streng-immigratiebeleid.jpg"
     },
     {
      "title": "Oekraïne niet van plan om aanvallen op Russische olieraffinaderijen te staken",
