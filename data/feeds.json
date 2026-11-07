@@ -4,6 +4,12 @@
    "name": "NOS",
    "items": [
     {
+     "title": "Noodtoestand op Canarisch eiland El Hierro: 3000 migranten in een week",
+     "link": "https://nos.nl/l/2638481",
+     "time": "2026-11-07T19:29:58+01:00",
+     "img": "https://images.cdn.nos.nl/5/J/1/X/U/B/2piTxQL8yoh6czGr7KTLXXp1V3f17R37Qz5S81z/3x330x3536x1989-1024x576.webp"
+    },
+    {
      "title": "Zeker 25 mensen gedood bij luchtaanval in de buurt van hoofdstad Jemen",
      "link": "https://nos.nl/l/2638459",
      "time": "2026-11-07T17:20:18+01:00",
@@ -28,10 +34,10 @@
      "img": "https://images.cdn.nos.nl/6/6/C/A/e/G/j2r5dg1P2vNvnYgoDwci3YiAvwCFVWpuCe5bv91/5x112x3920x2205-1024x576.webp"
     },
     {
-     "title": "Man opent vanuit auto het vuur op centraal plein Krakau: 5 doden, 15 gewonden",
+     "title": "Man opent vanuit auto het vuur op centraal plein Krakau: 6 doden, 15 gewonden",
      "link": "https://nos.nl/l/2638449",
      "time": "2026-11-07T16:23:47+01:00",
-     "img": "https://images.cdn.nos.nl/8/B/i/Z/S/j/J4Mx4cp4J9PRcV6zg4QBU9GsGZQdtvVHW2wWSqa/8x212x3984x2241-1024x576.webp"
+     "img": "https://images.cdn.nos.nl/8/4/h/q/e/t/ENW8u7WveKPZtErvz9dw88MFhjtiWofNSDpNfNo/8x240x3984x2241-1024x576.webp"
     },
     {
      "title": "Pinkpop blij met Limburgse plannen voor erfgoedlijst: 'Liefdesverklaring'",
@@ -86,18 +92,36 @@
      "link": "https://nos.nl/l/2638420",
      "time": "2026-11-07T12:59:32+01:00",
      "img": "https://images.cdn.nos.nl/3/F/h/a/o/F/wMEEDZwfPpCr33KkmuoTXdwRFHKBzATeGAKdfD8/0x0x1920x1080-1024x576.webp"
-    },
-    {
-     "title": "Rechter draait tariefsverhoging rondvaartbelasting Amsterdam terug",
-     "link": "https://nos.nl/l/2638419",
-     "time": "2026-11-07T12:38:06+01:00",
-     "img": "https://images.cdn.nos.nl/6/D/n/H/9/r/YUypfTsjyPWy87xqctjr8LfmBJNhFZhd6r6c2U8/376x265x3616x2034-1024x576.webp"
     }
    ]
   },
   {
    "name": "NOS Sport",
    "items": [
+    {
+     "title": "Fortuna en Telstar spelen gelijk na enerverende eerste helft met koddig eigen doelpunt",
+     "link": "https://nos.nl/l/2638474",
+     "time": "2026-11-07T18:41:00+01:00",
+     "img": "https://images.cdn.nos.nl/3/4/R/A/c/a/hVtyhvrrV91dLnUo3DMkoCgaBhg9jgTtaajHBeS/8x4x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Koploper Arsenal thuis moeizaam langs Hull City",
+     "link": "https://nos.nl/l/2638471",
+     "time": "2026-11-07T18:20:36+01:00",
+     "img": "https://images.cdn.nos.nl/2/7/b/B/1/e/ezcSEMCxocdu1SqqhRX3mFDo7nQ94c1bEx1RRJ1/6x55x2880x1620-1024x576.webp"
+    },
+    {
+     "title": "Brand wilde geen protest, woedende Schreiber boycot podium: 'Dit is zo oneerlijk'",
+     "link": "https://nos.nl/l/2638470",
+     "time": "2026-11-07T18:05:05+01:00",
+     "img": "https://images.cdn.nos.nl/3/7/f/1/H/v/xgYfAja82PQCbkYeZYDf4dViug8bWuJX8quMxfD/8x420x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Márquez op matchpoint in MotoGP-titelstrijd na sprintzege in Qatar, in veelbesproken grand prix",
+     "link": "https://nos.nl/l/2638469",
+     "time": "2026-11-07T17:58:18+01:00",
+     "img": "https://images.cdn.nos.nl/3/F/B/1/k/N/NBE4e6uJrNVuQyGwDEvY6Za4AbT8sMDv5sgHDcQ/8x255x3984x2241-1024x576.webp"
+    },
     {
      "title": "Bayern München en Borussia Dortmund maken geen fout, 'oudje' Neuer valt uit",
      "link": "https://nos.nl/l/2638466",
@@ -163,30 +187,6 @@
      "link": "https://nos.nl/l/2638379",
      "time": "2026-11-06T23:51:32+01:00",
      "img": "https://images.cdn.nos.nl/1/C/s/5/9/x/S5PPk2StBtV3PxY2Y3LmnD7CDASQGyawJXJu3JF/0x0x1920x1080-1024x576.webp"
-    },
-    {
-     "title": "Peddemors leidt Wolfsburg naar zege in topper met derde 'doppelpack' in drie weken",
-     "link": "https://nos.nl/l/2638373",
-     "time": "2026-11-06T23:04:11+01:00",
-     "img": "https://images.cdn.nos.nl/8/C/G/F/E/P/rtKoThLwxFuEv7kXGSEZcbuoVsrWBVQ583iSTXg/90x93x3584x2016-1024x576.webp"
-    },
-    {
-     "title": "Oranje-futsallers doen goede zaken in WK-kwalificatie met ruime zege op Andorra",
-     "link": "https://nos.nl/l/2638365",
-     "time": "2026-11-06T22:28:55+01:00",
-     "img": "https://images.cdn.nos.nl/4/G/r/Q/3/u/Fz9bqWCiKwb5WwSpzWeMyhCJGGn3DZUnDLo1Cdp/872x695x2368x1332-1024x576.webp"
-    },
-    {
-     "title": "Heracles overklast Roda JC en verstevigt koppositie, VVV verspeelt punten",
-     "link": "https://nos.nl/l/2638364",
-     "time": "2026-11-06T22:23:29+01:00",
-     "img": "https://images.cdn.nos.nl/5/3/S/V/C/B/2uENpWiVRT9UMLQwWeaFr3iLWqPhLLBn6G5TS4V/714x344x3280x1845-1024x576.webp"
-    },
-    {
-     "title": "Willem II en PEC geven spectaculaire start geen vervolg in stroef gelijkspel",
-     "link": "https://nos.nl/l/2638363",
-     "time": "2026-11-06T22:18:07+01:00",
-     "img": "https://images.cdn.nos.nl/1/9/c/n/9/3/wj8E79dfzymHMekRcJ3bXZ9j8t7ktwCbmqg7A7A/0x214x4000x2250-1024x576.webp"
     }
    ]
   },
@@ -194,10 +194,46 @@
    "name": "NU.nl",
    "items": [
     {
-     "title": "Video | Schoten klinken vanuit rijdende auto in Poolse Krakau",
-     "link": "https://www.nu.nl/332068/video/schoten-klinken-vanuit-rijdende-auto-in-poolse-krakau.html",
-     "time": "2026-11-07T16:55:57+01:00",
-     "img": "https://images.nu.nl/m/7rix9uuag9yk_sqr256/0/327/753/753/schoten-klinken-vanuit-rijdende-auto-in-poolse-krakau.jpg"
+     "title": "Binance kondigt vertrek financieel directeur aan na grootste cryptohack ooit",
+     "link": "https://www.nu.nl/tech/6415842/binance-kondigt-vertrek-financieel-directeur-aan-na-grootste-cryptohack-ooit.html",
+     "time": "2026-11-07T19:20:29+01:00",
+     "img": "https://images.nu.nl/m/c4qxsdjaopp7_sqr256/166/0/2666/2666/binance-kondigt-vertrek-financieel-directeur-aan-na-grootste-cryptohack-ooit.jpg"
+    },
+    {
+     "title": "Video | Schokkende beelden uit Krakau: agent schiet op liggende verdachte",
+     "link": "https://www.nu.nl/332071/video/schokkende-beelden-uit-krakau-agent-schiet-op-liggende-verdachte.html",
+     "time": "2026-11-07T19:01:54+01:00",
+     "img": "https://images.nu.nl/m/8gyxmo7aio0z_sqr256/12/2/1078/1078/schokkende-beelden-uit-krakau-agent-schiet-op-liggende-verdachte.jpg"
+    },
+    {
+     "title": "Steeds meer Russen verlaten het land om aan gehaktmolen te ontsnappen",
+     "link": "https://www.nu.nl/spanningen-oekraine/6415791/steeds-meer-russen-verlaten-het-land-om-aan-gehaktmolen-te-ontsnappen.html",
+     "time": "2026-11-07T19:00:49+01:00",
+     "img": "https://images.nu.nl/m/8z9x5n4ax11y_sqr256/430/0/4030/4030/steeds-meer-russen-verlaten-het-land-om-aan-gehaktmolen-te-ontsnappen.jpg"
+    },
+    {
+     "title": "Dodental schietpartij Krakau stijgt naar zes, schutter is Pools en handelde alleen",
+     "link": "https://www.nu.nl/buitenland/6415837/dodental-schietpartij-krakau-stijgt-naar-zes-schutter-is-pools-en-handelde-alleen.html",
+     "time": "2026-11-07T18:20:58+01:00",
+     "img": "https://images.nu.nl/m/jzmxo6fa8dc9_sqr256/992/886/2596/2596/dodental-schietpartij-krakau-stijgt-naar-zes-schutter-is-pools-en-handelde-alleen.jpg"
+    },
+    {
+     "title": "Niemand is blij na cruciaal jurybesluit bij EK veldrijden: 'Respectloos en oneerlijk'",
+     "link": "https://www.nu.nl/wielrennen/6415839/niemand-is-blij-na-cruciaal-jurybesluit-bij-ek-veldrijden-respectloos-en-oneerlijk.html",
+     "time": "2026-11-07T18:08:58+01:00",
+     "img": "https://images.nu.nl/m/0wvxxcdaasbf_sqr256/0/0/4666/4666/niemand-is-blij-na-cruciaal-jurybesluit-bij-ek-veldrijden-respectloos-en-oneerlijk.jpg"
+    },
+    {
+     "title": "Dode en gewonde bij schietpartij in woonwijk Schiedam, nog geen aanhoudingen",
+     "link": "https://www.nu.nl/binnenland/6415838/dode-en-gewonde-bij-schietpartij-in-woonwijk-schiedam-nog-geen-aanhoudingen.html",
+     "time": "2026-11-07T18:05:48+01:00",
+     "img": "https://images.nu.nl/m/eenx0k7aeft0_sqr256/1109/0/3168/3168/dode-en-gewonde-bij-schietpartij-in-woonwijk-schiedam-nog-geen-aanhoudingen.jpg"
+    },
+    {
+     "title": "De bever is geheim wapen tegen droogte: 'Anders zou hier geen druppel staan'",
+     "link": "https://www.nu.nl/klimaat/6415753/de-bever-is-geheim-wapen-tegen-droogte-anders-zou-hier-geen-druppel-staan.html",
+     "time": "2026-11-07T18:04:58+01:00",
+     "img": "https://images.nu.nl/m/b6vxdwya0lsx_sqr256/742/0/5314/5314/de-bever-is-geheim-wapen-tegen-droogte-anders-zou-hier-geen-druppel-staan.jpg"
     },
     {
      "title": "Verstappen klokt snelste tijd in laatste training GP São Paulo, problemen Hamilton",
@@ -224,6 +260,12 @@
      "img": "https://images.nu.nl/m/toqxxzcak8d2_sqr256/1103/0/2353/2353/lucinda-brand-na-straf-voor-luxemburgse-alsnog-europees-kampioene-veldrijden.jpg"
     },
     {
+     "title": "Live | Eredivisie | Sparta mist gigantische kansen op gelijkmaker tegen ADO",
+     "link": "https://www.nu.nl/sport/6415826/eredivisie-sparta-mist-gigantische-kansen-op-gelijkmaker-tegen-ado.html",
+     "time": "2026-11-07T16:02:11+01:00",
+     "img": "https://images.nu.nl/m/zlrxq71a6ele_sqr256/517/0/2362/2362/eredivisie-sparta-mist-gigantische-kansen-op-gelijkmaker-tegen-ado.jpg"
+    },
+    {
      "title": "Verstappen moet na motorwissel achteraan starten bij Grand Prix van São Paulo",
      "link": "https://www.nu.nl/formule-1/6415823/verstappen-moet-na-motorwissel-achteraan-starten-bij-grand-prix-van-sao-paulo.html",
      "time": "2026-11-07T15:30:43+01:00",
@@ -236,52 +278,10 @@
      "img": "https://images.nu.nl/m/8ppxcj1a1n01_sqr256/0/0/4024/4024/vrouw-opgepakt-voor-steekpartij-in-zaandam-waarbij-man-70-om-het-leven-kwam.jpg"
     },
     {
-     "title": "F1 | Rook in cockpit Hamilton, Verstappen snelst op softs in training Brazilië",
-     "link": "https://www.nu.nl/formule-1/6415821/f1-rook-in-cockpit-hamilton-verstappen-snelst-op-softs-in-training-brazilie.html",
+     "title": "F1 | Kwalificatie GP São Paulo ligt stil door regen, onduidelijkheid over hervatting",
+     "link": "https://www.nu.nl/formule-1/6415821/f1-kwalificatie-gp-sao-paulo-ligt-stil-door-regen-onduidelijkheid-over-hervatting.html",
      "time": "2026-11-07T15:10:06+01:00",
-     "img": "https://images.nu.nl/m/xcgxb63apbgn_sqr256/760/0/5464/5464/f1-rook-in-cockpit-hamilton-verstappen-snelst-op-softs-in-training-brazilie.jpg"
-    },
-    {
-     "title": "Het nabestaandenpensioen wordt gunstiger, maar je moet wel actie ondernemen",
-     "link": "https://www.nu.nl/economie/6415720/het-nabestaandenpensioen-wordt-gunstiger-maar-je-moet-wel-actie-ondernemen.html",
-     "time": "2026-11-07T14:45:57+01:00",
-     "img": "https://images.nu.nl/m/w9kxejqacrqv_sqr256/1057/1/3999/3999/het-nabestaandenpensioen-wordt-gunstiger-maar-je-moet-wel-actie-ondernemen.jpg"
-    },
-    {
-     "title": "Wachten in VS op laatste nek-aan-nekraces midterms: 'Kan lang duren'",
-     "link": "https://www.nu.nl/verkiezingen-vs/6415770/wachten-in-vs-op-laatste-nek-aan-nekraces-midterms-kan-lang-duren.html",
-     "time": "2026-11-07T14:15:45+01:00",
-     "img": "https://images.nu.nl/m/igwx3w3a1e4r_sqr256/32/1/682/682/wachten-in-vs-op-laatste-nek-aan-nekraces-midterms-kan-lang-duren.jpg"
-    },
-    {
-     "title": "Aanvaring tussen twee vrachtschepen op Maas bij Den Bosch",
-     "link": "https://www.nu.nl/binnenland/6415818/aanvaring-tussen-twee-vrachtschepen-op-maas-bij-den-bosch.html",
-     "time": "2026-11-07T14:12:17+01:00",
-     "img": "https://images.nu.nl/m/47wxkp1ap4op_sqr256/746/1/1079/1079/aanvaring-tussen-twee-vrachtschepen-op-maas-bij-den-bosch.jpg"
-    },
-    {
-     "title": "Tipgeld 'Bolle Jos' vertienvoudigd: 'Voert druk op Sierra Leone op'",
-     "link": "https://www.nu.nl/nujij/6415333/tipgeld-bolle-jos-vertienvoudigd-voert-druk-op-sierra-leone-op.html",
-     "time": "2026-11-07T13:47:34+01:00",
-     "img": "https://images.nu.nl/m/9soxzcia0xy8_sqr256/852/408/2272/2272/tipgeld-bolle-jos-vertienvoudigd-voert-druk-op-sierra-leone-op.jpg"
-    },
-    {
-     "title": "Sylvie Meis over eerste seksscènes op televisie: 'Was echt niet zo moeilijk'",
-     "link": "https://www.nu.nl/film/6415812/sylvie-meis-over-eerste-seksscenes-op-televisie-was-echt-niet-zo-moeilijk.html",
-     "time": "2026-11-07T12:55:51+01:00",
-     "img": "https://images.nu.nl/m/zekx0yxay3gr_sqr256/189/1/682/682/sylvie-meis-over-eerste-seksscenes-op-televisie-was-echt-niet-zo-moeilijk.jpg"
-    },
-    {
-     "title": "China neemt voor het eerst buitenlander mee naar eigen ruimtestation",
-     "link": "https://www.nu.nl/tech/6415809/china-neemt-voor-het-eerst-buitenlander-mee-naar-eigen-ruimtestation.html",
-     "time": "2026-11-07T12:44:20+01:00",
-     "img": "https://images.nu.nl/m/qh8xyrtafe1g_sqr256/192/0/682/682/china-neemt-voor-het-eerst-buitenlander-mee-naar-eigen-ruimtestation.jpg"
-    },
-    {
-     "title": "Meldkamer Oost-Nederland kon door krapte 112-telefoontjes niet beantwoorden",
-     "link": "https://www.nu.nl/binnenland/6415810/meldkamer-oost-nederland-kon-door-krapte-112-telefoontjes-niet-beantwoorden.html",
-     "time": "2026-11-07T12:09:43+01:00",
-     "img": "https://images.nu.nl/m/7ekxu87axj6k_sqr256/508/8/3696/3696/meldkamer-oost-nederland-kon-door-krapte-112-telefoontjes-niet-beantwoorden.jpg"
+     "img": "https://images.nu.nl/m/h3ax973az92l_sqr256/1035/0/3323/3323/f1-kwalificatie-gp-sao-paulo-ligt-stil-door-regen-onduidelijkheid-over-hervatting.jpg"
     }
    ]
   }
