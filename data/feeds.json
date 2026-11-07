@@ -4,6 +4,24 @@
    "name": "NOS",
    "items": [
     {
+     "title": "IJsbaan in Leeuwarden opnieuw dicht vanwege ammoniaklek",
+     "link": "https://nos.nl/l/2638509",
+     "time": "2026-11-07T23:34:24+01:00",
+     "img": "https://images.cdn.nos.nl/8/E/z/B/N/u/sdmNUXoNTTh2pVEvJansXN4hdh9gLKv6wZ47ttY/0x362x4000x2250-1024x576.webp"
+    },
+    {
+     "title": "Twee vrouwen en een man dood gevonden in huis schutter Krakau, vermoedelijk familie",
+     "link": "https://nos.nl/l/2638496",
+     "time": "2026-11-07T22:06:26+01:00",
+     "img": "https://images.cdn.nos.nl/1/1/3/z/Q/k/nmxyusY6zsRR2hEL92DURyGiCDer7SFne1yFq48/8x203x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Oppositieleider Eisenkot mag Israëlische regering vormen, maar staat voor lastige puzzel",
+     "link": "https://nos.nl/l/2638495",
+     "time": "2026-11-07T21:51:50+01:00",
+     "img": "https://images.cdn.nos.nl/8/X/v/W/U/a/WiZwhP4cYoho7VyEiwwzfXSSGuTX5KBzbmbwsP/1164x1484x2096x1179-1024x576.webp"
+    },
+    {
      "title": "Schietpartij in Schiedamse woonwijk: één dode, klopjacht op schutters",
      "link": "https://nos.nl/l/2638491",
      "time": "2026-11-07T21:03:28+01:00",
@@ -74,24 +92,6 @@
      "link": "https://nos.nl/l/2638441",
      "time": "2026-11-07T15:58:20+01:00",
      "img": "https://images.cdn.nos.nl/4/C/Y/y/U/D/SDEcuefgcXqKUBmu9fE9CjdiyKbPiPMQZt5LNw9/21x3x1856x1044-1024x576.webp"
-    },
-    {
-     "title": "Schepen botsen in dichte mist op de Maas bij Den Bosch",
-     "link": "https://nos.nl/l/2638431",
-     "time": "2026-11-07T15:11:11+01:00",
-     "img": "https://images.cdn.nos.nl/4/G/r/p/D/Q/idfTn3nnRiPuhJHy9Di7FaEUtZLvjR883HRpK4W/8x207x1904x1071-1024x576.webp"
-    },
-    {
-     "title": "EU-onderzoek naar mogelijke fraude subsidies voor spooronderhoud Spanje na ongeluk",
-     "link": "https://nos.nl/l/2638429",
-     "time": "2026-11-07T14:57:00+01:00",
-     "img": "https://images.cdn.nos.nl/7/A/4/M/j/K/Ge6Copd4gEUfVhdJeHQA3BiShgq3sR66FmnjrRS/8x212x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Cohen en Van Aartsen lopen mee met Rode Lijn: 'We moeten het genocide noemen'",
-     "link": "https://nos.nl/l/2638426",
-     "time": "2026-11-07T14:04:18+01:00",
-     "img": "https://images.cdn.nos.nl/8/G/c/6/K/4/o6unmakmGiQAdw3XYJuh8ZFoc7MkuidFN91a8Ha/0x0x1920x1080-1024x576.webp"
     }
    ]
   },
@@ -99,7 +99,31 @@
    "name": "NOS Sport",
    "items": [
     {
-     "title": "Norris is de snelste in verregende kwalificatie in São Paulo, voor foeterende Russell",
+     "title": "Real Madrid komt naast koploper Barcelona na eenvoudige zege op Valencia",
+     "link": "https://nos.nl/l/2638506",
+     "time": "2026-11-07T23:12:02+01:00",
+     "img": "https://images.cdn.nos.nl/4/8/D/r/e/u/Mnkc73VdCFjnEaypScJ7ZVTBdYDixuAHPZMM2Ui/8x10x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Topscorer Tengstedt matchwinner Eagles in oersaai duel bij Excelsior",
+     "link": "https://nos.nl/l/2638503",
+     "time": "2026-11-07T22:54:33+01:00",
+     "img": "https://images.cdn.nos.nl/3/E/6/4/b/r/GHtA9Aw9Gq7wvcdykvRee2x7EDqduX5R9z7VcF3/680x66x2448x1377-1024x576.webp"
+    },
+    {
+     "title": "AS Roma blijft meedoen in top Serie A na eenvoudige zege op Sassuolo",
+     "link": "https://nos.nl/l/2638501",
+     "time": "2026-11-07T22:45:10+01:00",
+     "img": "https://images.cdn.nos.nl/7/5/m/d/R/b/6FsRsL2guqdsyU6KSqpNKWYi1hFhsW3uwhWw6PK/325x60x1040x585-1024x576.webp"
+    },
+    {
+     "title": "Alcaraz gaat soepeltjes naar mastersfinale Parijs en treft comebackkoning Shelton",
+     "link": "https://nos.nl/l/2638497",
+     "time": "2026-11-07T22:24:14+01:00",
+     "img": "https://images.cdn.nos.nl/3/E/c/5/c/v/pdXZKsyeoPfLwZryw1QUmRMdp1NZP3A1uqMLRmV/0x0x1920x1080-1024x576.webp"
+    },
+    {
+     "title": "Norris is de snelste in kletsnatte kwalificatie in São Paulo, voor foeterende Russell",
      "link": "https://nos.nl/l/2638493",
      "time": "2026-11-07T21:29:58+01:00",
      "img": "https://images.cdn.nos.nl/1/B/o/L/x/F/cTg3eCFF1jmo4NEhScWckZXrgN5Z6hnNspdCjRV/8x214x3984x2241-1024x576.webp"
@@ -114,7 +138,7 @@
      "title": "Fortuna en Telstar spelen gelijk na enerverende eerste helft met koddig eigen doelpunt",
      "link": "https://nos.nl/l/2638474",
      "time": "2026-11-07T18:41:00+01:00",
-     "img": "https://images.cdn.nos.nl/3/4/R/A/c/a/hVtyhvrrV91dLnUo3DMkoCgaBhg9jgTtaajHBeS/8x4x3984x2241-1024x576.webp"
+     "img": "https://images.cdn.nos.nl/4/3/P/p/E/y/NHnto5jZ5xTqJHAuaemzVToZyCRQL7wxzvQo66r/0x303x4000x2250-1024x576.webp"
     },
     {
      "title": "Manchester City lijdt derde competitienederlaag op rij, koploper Arsenal profiteert",
@@ -163,30 +187,6 @@
      "link": "https://nos.nl/l/2638439",
      "time": "2026-11-07T15:45:00+01:00",
      "img": "https://images.cdn.nos.nl/6/9/x/K/H/i/WtGV3XoCMiCM1YkJTnixGRqsMCZ2VWnueesXA1H/401x439x3376x1899-1024x576.webp"
-    },
-    {
-     "title": "Steeds meer 35-plussers in de eredivisie: wat is hun geheim?",
-     "link": "https://nos.nl/l/2638416",
-     "time": "2026-11-07T12:06:55+01:00",
-     "img": "https://images.cdn.nos.nl/2/9/h/r/n/U/gZxzvMEKa183a2r9SMgd17Z4WXiGEz7rUN1tTza/5x136x3776x2124-1024x576.webp"
-    },
-    {
-     "title": "PEC Zwolle kiest met nieuwe trainer Pastoor voor kortetermijnoplossing",
-     "link": "https://nos.nl/l/2638407",
-     "time": "2026-11-07T10:29:51+01:00",
-     "img": "https://images.cdn.nos.nl/8/9/3/m/B/q/YueowkSk5KjVq3jcNN7tqtuxmZs6fwr9vj1nFvT/266x40x3264x1836-1024x576.webp"
-    },
-    {
-     "title": "Na tien jaar weer twee Brazilianen op F1-grid: 'Senna heeft me geïnspireerd'",
-     "link": "https://nos.nl/l/2638403",
-     "time": "2026-11-07T09:47:16+01:00",
-     "img": "https://images.cdn.nos.nl/7/7/N/k/Q/A/KuE3SEPb8aGPQ4FqvZcxS979QRC4TWwmhWirZJm/681x197x2576x1449-1024x576.webp"
-    },
-    {
-     "title": "99 treden pijn lijden voor Europese veldrittitel: 'De trap hoort bij Zeddam'",
-     "link": "https://nos.nl/l/2638386",
-     "time": "2026-11-07T06:00:02+01:00",
-     "img": "https://images.cdn.nos.nl/5/7/E/f/E/3/duASGVfiZCnx5kmetKhtjnjFEoRHtwhBo9r7yeq/0x0x1920x1080-1024x576.webp"
     }
    ]
   },
@@ -194,10 +194,28 @@
    "name": "NU.nl",
    "items": [
     {
-     "title": "Norris pakt pole in kletsnatte kwalificatie GP São Paulo, Verstappen stapt uit na Q1",
-     "link": "https://www.nu.nl/formule-1/6415852/norris-pakt-pole-in-kletsnatte-kwalificatie-gp-sao-paulo-verstappen-stapt-uit-na-q1.html",
+     "title": "Trump zegt UFC-baas te hebben gevraagd als nieuwe persvoorlichter Witte Huis",
+     "link": "https://www.nu.nl/buitenland/6415850/trump-zegt-ufc-baas-te-hebben-gevraagd-als-nieuwe-persvoorlichter-witte-huis.html",
+     "time": "2026-11-07T22:59:46+01:00",
+     "img": "https://images.nu.nl/m/30gxmtoao0ou_sqr256/1184/0/5404/5404/trump-zegt-ufc-baas-te-hebben-gevraagd-als-nieuwe-persvoorlichter-witte-huis.jpg"
+    },
+    {
+     "title": "Loes Haverkort leeft bewuster sinds hersentumor: 'Wil niet denken over de dood'",
+     "link": "https://www.nu.nl/entertainment/6415861/loes-haverkort-leeft-bewuster-sinds-hersentumor-wil-niet-denken-over-de-dood.html",
+     "time": "2026-11-07T22:46:23+01:00",
+     "img": "https://images.nu.nl/m/z5xxvuwam9zd_sqr256/1372/0/3648/3648/loes-haverkort-leeft-bewuster-sinds-hersentumor-wil-niet-denken-over-de-dood.jpg"
+    },
+    {
+     "title": "Drie doden aangetroffen in woning schutter Krakau, hoogstwaarschijnlijk familie",
+     "link": "https://www.nu.nl/buitenland/6415854/drie-doden-aangetroffen-in-woning-schutter-krakau-hoogstwaarschijnlijk-familie.html",
+     "time": "2026-11-07T21:46:07+01:00",
+     "img": "https://images.nu.nl/m/1sxxozfa3ga0_sqr256/1701/0/3375/3375/drie-doden-aangetroffen-in-woning-schutter-krakau-hoogstwaarschijnlijk-familie.jpg"
+    },
+    {
+     "title": "Norris op pole na kletsnatte kwalificatie GP São Paulo, Verstappen stapt uit na Q1",
+     "link": "https://www.nu.nl/formule-1/6415852/norris-op-pole-na-kletsnatte-kwalificatie-gp-sao-paulo-verstappen-stapt-uit-na-q1.html",
      "time": "2026-11-07T21:26:29+01:00",
-     "img": "https://images.nu.nl/m/sfcxrzmafem9_sqr256/677/0/3420/3420/norris-pakt-pole-in-kletsnatte-kwalificatie-gp-sao-paulo-verstappen-stapt-uit-na-q1.jpg"
+     "img": "https://images.nu.nl/m/ugpxk1nanzbs_sqr256/913/246/3328/3328/norris-op-pole-na-kletsnatte-kwalificatie-gp-sao-paulo-verstappen-stapt-uit-na-q1.jpg"
     },
     {
      "title": "Kans op nieuwe premierstermijn Netanyahu slinkt: rivaal krijgt eerste formatiekans",
@@ -206,10 +224,10 @@
      "img": "https://images.nu.nl/m/iznx4h0agj2l_sqr256/919/0/2867/2867/kans-op-nieuwe-premierstermijn-netanyahu-slinkt-rivaal-krijgt-eerste-formatiekans.jpg"
     },
     {
-     "title": "Koning houdt Belgische regering overeind, maar ‘afschuwelijk falen’ dreigt",
-     "link": "https://www.nu.nl/buitenland/6415822/koning-houdt-belgische-regering-overeind-maar-afschuwelijk-falen-dreigt.html",
+     "title": "Belgische situatie doet denken aan Franse problemen, 'afschuwelijk falen' dreigt",
+     "link": "https://www.nu.nl/buitenland/6415822/belgische-situatie-doet-denken-aan-franse-problemen-afschuwelijk-falen-dreigt.html",
      "time": "2026-11-07T20:27:13+01:00",
-     "img": "https://images.nu.nl/m/1h2xwe8agd2k_sqr256/603/0/1986/1986/koning-houdt-belgische-regering-overeind-maar-afschuwelijk-falen-dreigt.jpg"
+     "img": "https://images.nu.nl/m/1h2xwe8agd2k_sqr256/603/0/1986/1986/belgische-situatie-doet-denken-aan-franse-problemen-afschuwelijk-falen-dreigt.jpg"
     },
     {
      "title": "Trump laat Justitie Democraten onderzoeken om vermeende dreiging tot afzetting",
@@ -230,10 +248,10 @@
      "img": "https://images.nu.nl/m/c4qxsdjaopp7_sqr256/166/0/2666/2666/binance-kondigt-vertrek-financieel-directeur-aan-na-grootste-cryptohack-ooit.jpg"
     },
     {
-     "title": "Video | Schokkende beelden uit Krakau: agent schiet op liggende verdachte",
-     "link": "https://www.nu.nl/332071/video/schokkende-beelden-uit-krakau-agent-schiet-op-liggende-verdachte.html",
+     "title": "Video | Agent schiet van dichtbij op vermoedelijke dader schietpartij Polen",
+     "link": "https://www.nu.nl/332071/video/agent-schiet-van-dichtbij-op-vermoedelijke-dader-schietpartij-polen.html",
      "time": "2026-11-07T19:01:54+01:00",
-     "img": "https://images.nu.nl/m/8gyxmo7aio0z_sqr256/12/2/1078/1078/schokkende-beelden-uit-krakau-agent-schiet-op-liggende-verdachte.jpg"
+     "img": "https://images.nu.nl/m/8gyxmo7aio0z_sqr256/12/2/1078/1078/agent-schiet-van-dichtbij-op-vermoedelijke-dader-schietpartij-polen.jpg"
     },
     {
      "title": "Steeds meer Russen verlaten het land om aan gehaktmolen te ontsnappen",
@@ -264,24 +282,6 @@
      "link": "https://www.nu.nl/klimaat/6415753/de-bever-is-geheim-wapen-tegen-droogte-anders-zou-hier-geen-druppel-staan.html",
      "time": "2026-11-07T18:04:58+01:00",
      "img": "https://images.nu.nl/m/b6vxdwya0lsx_sqr256/742/0/5314/5314/de-bever-is-geheim-wapen-tegen-droogte-anders-zou-hier-geen-druppel-staan.jpg"
-    },
-    {
-     "title": "Verstappen klokt snelste tijd in laatste training GP São Paulo, problemen Hamilton",
-     "link": "https://www.nu.nl/formule-1/6415831/verstappen-klokt-snelste-tijd-in-laatste-training-gp-sao-paulo-problemen-hamilton.html",
-     "time": "2026-11-07T16:35:20+01:00",
-     "img": "https://images.nu.nl/m/lcixeo5a93p4_sqr256/1181/0/2078/2078/verstappen-klokt-snelste-tijd-in-laatste-training-gp-sao-paulo-problemen-hamilton.jpg"
-    },
-    {
-     "title": "K3 annuleert optreden: Hanne Verbruggen vervroegd met zwangerschapsverlof",
-     "link": "https://www.nu.nl/muziek/6415829/k3-annuleert-optreden-hanne-verbruggen-vervroegd-met-zwangerschapsverlof.html",
-     "time": "2026-11-07T16:16:37+01:00",
-     "img": "https://images.nu.nl/m/tpzxol0aw37h_sqr256/941/0/3285/3285/k3-annuleert-optreden-hanne-verbruggen-vervroegd-met-zwangerschapsverlof.jpg"
-    },
-    {
-     "title": "Vijf doden en meer dan tien gewonden na schoten vanuit auto op mensenmassa in Krakau",
-     "link": "https://www.nu.nl/buitenland/6415828/vijf-doden-en-meer-dan-tien-gewonden-na-schoten-vanuit-auto-op-mensenmassa-in-krakau.html",
-     "time": "2026-11-07T16:12:51+01:00",
-     "img": "https://images.nu.nl/m/5b2xi7da0mnh_sqr256/1285/1/3999/3999/vijf-doden-en-meer-dan-tien-gewonden-na-schoten-vanuit-auto-op-mensenmassa-in-krakau.jpg"
     }
    ]
   }
