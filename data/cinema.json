@@ -1,5 +1,5 @@
 {
- "day": "2026-11-06",
+ "day": "2026-11-07",
  "sources": [
   "LantarenVenster"
  ],
@@ -1360,20 +1360,6 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/makandra-verbinding/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
-   "title": "Maridalen",
-   "key": "maridalen",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/maridalen/",
      "day": null,
      "next": null,
      "until": null
