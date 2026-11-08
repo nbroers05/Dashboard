@@ -4,6 +4,24 @@
    "name": "NOS",
    "items": [
     {
+     "title": "Politie rukt groot uit in Kopenhagen vanwege verklede Comic Con-bezoekers",
+     "link": "https://nos.nl/l/2638637",
+     "time": "2026-11-08T21:18:21+01:00",
+     "img": "https://images.cdn.nos.nl/2/6/T/b/H/u/EMM29a4wCSaMg3aAbbR264MXTdjowyMXAZZkD3U/8x212x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Plein in Krakau weer geopend na aanslag, slachtoffers herdacht met bloemen en kaarsen",
+     "link": "https://nos.nl/l/2638635",
+     "time": "2026-11-08T21:12:08+01:00",
+     "img": "https://images.cdn.nos.nl/4/7/i/q/T/j/jMPsrkYV9ZADNmoYhD8cSEvru5mEvUjg7KfPK1E/8x419x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Verlies voor het ANC in Zuid-Afrikaanse steden",
+     "link": "https://nos.nl/l/2638629",
+     "time": "2026-11-08T20:35:59+01:00",
+     "img": "https://images.cdn.nos.nl/5/9/N/U/9/Q/ZdJTJewQhg98mui5mSgPCupQizf31WRytLMf1W3/8x82x3984x2241-1024x576.webp"
+    },
+    {
      "title": "Veel creativiteit en moeilijke politiek keuzes nodig, zegt Israëlische formateur Eisenkot",
      "link": "https://nos.nl/l/2638620",
      "time": "2026-11-08T19:16:18+01:00",
@@ -74,24 +92,6 @@
      "link": "https://nos.nl/l/2638545",
      "time": "2026-11-08T11:40:26+01:00",
      "img": "https://images.cdn.nos.nl/8/6/s/A/2/Q/haG2JXnNBaDXXAibKz2QPd5ZHrp2M1JsXkRCxkB/0x104x800x450-800x450.webp"
-    },
-    {
-     "title": "Ruim twintig gewonden bij aardbeving in Midden-Japan",
-     "link": "https://nos.nl/l/2638538",
-     "time": "2026-11-08T10:48:00+01:00",
-     "img": "https://images.cdn.nos.nl/4/F/o/D/x/4/Si52MNahNUaBUC8yCW1VUMSrCfTsXSkM5WoJEYv/0x0x1920x1080-1024x576.webp"
-    },
-    {
-     "title": "Parachutisten komen om na botsing in de lucht in Californië",
-     "link": "https://nos.nl/l/2638537",
-     "time": "2026-11-08T10:16:09+01:00",
-     "img": "https://images.cdn.nos.nl/3/B/H/f/Y/7/m7wALqtqH35GYriKG5izdjng6n1mamXZiMTSwB/8x212x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Meer details bekend over aanslagpleger Krakau, motief Michal O. nog onduidelijk",
-     "link": "https://nos.nl/l/2638535",
-     "time": "2026-11-08T09:57:36+01:00",
-     "img": "https://images.cdn.nos.nl/6/J/3/Z/7/6/eTaWaXQ6UyuZcZCQWhBtEL7PCZvMqvBTp13MCd5/8x305x3984x2241-1024x576.webp"
     }
    ]
   },
@@ -99,10 +99,34 @@
    "name": "NOS Sport",
    "items": [
     {
+     "title": "NEC beleeft prima week: ook winst in Utrecht mede door twee goals Tadic",
+     "link": "https://nos.nl/l/2638640",
+     "time": "2026-11-08T21:58:28+01:00",
+     "img": "https://images.cdn.nos.nl/3/A/H/j/c/Y/uSjB1UMsSC9iFhbzNMBdv9Jc7f7y2sANdhfAW62/2x784x3344x1881-1024x576.webp"
+    },
+    {
+     "title": "Jansen ontslagen bij New York na mislopen play-offs Major League Soccer",
+     "link": "https://nos.nl/l/2638638",
+     "time": "2026-11-08T21:20:45+01:00",
+     "img": "https://images.cdn.nos.nl/6/Q/P/r/F/e/PQCgR97jFA3bcqCBp7chqGug3xSrWDLuWJ5W8a/924x366x2784x1566-1024x576.webp"
+    },
+    {
+     "title": "Tweede plaats brengt Márquez dichter bij achtste wereldtitel, zege Bezzecchi",
+     "link": "https://nos.nl/l/2638636",
+     "time": "2026-11-08T21:13:51+01:00",
+     "img": "https://images.cdn.nos.nl/5/3/y/L/F/L/Y23eJhPuybV7uNrfJkcU6QHRtkbBU9XnAbC3dTP/0x264x3712x2088-1024x576.webp"
+    },
+    {
+     "title": "Meyer wint met indrukwekkend optreden ook tweede gevecht in MMA",
+     "link": "https://nos.nl/l/2638634",
+     "time": "2026-11-08T20:49:05+01:00",
+     "img": "https://images.cdn.nos.nl/2/A/n/8/2/y/2JZPUTxeApYxm14uZDh1wioaPvRZVjiFTUdMtR5/0x37x1200x675-1024x576.webp"
+    },
+    {
      "title": "Verstappen tweede in Brazilië na inhaalrace vanaf 21ste plaats, Norris wint",
      "link": "https://nos.nl/l/2638622",
      "time": "2026-11-08T19:39:23+01:00",
-     "img": "https://images.cdn.nos.nl/7/D/G/K/N/D/P9poJqLGxTzjB9AE1EYtTsxgR7tbd3jEgsixSgo/138x46x3552x1998-1024x576.webp"
+     "img": "https://images.cdn.nos.nl/1/G/g/A/k/x/KjNncJueSbxTsfcrWN45hMrKZTSzQEZp1Q3Rsms/526x811x2368x1332-1024x576.webp"
     },
     {
      "title": "Betwiste penalty helpt AZ langs Groningen, dat duel met negen man eindigt",
@@ -129,7 +153,7 @@
      "img": "https://images.cdn.nos.nl/2/3/G/B/L/g/ofp79vxykP1K1oiMfXaxqLCSRBUDrvnQoS5PZky/3x1x3536x1989-1024x576.webp"
     },
     {
-     "title": "Verbruggen en Wieffer klimmen met Brighton naar tweede plaats Premier League",
+     "title": "Verbruggen en Wieffer met Brighton tweede in Premier League, United in degradatiezone",
      "link": "https://nos.nl/l/2638602",
      "time": "2026-11-08T17:40:53+01:00",
      "img": "https://images.cdn.nos.nl/5/8/H/J/B/F/x5FsqhsFPufUc9ofmapn5ZQRpzBWpTrc4xJhevE/543x116x2784x1566-1024x576.webp"
@@ -163,30 +187,6 @@
      "link": "https://nos.nl/l/2638576",
      "time": "2026-11-08T15:49:06+01:00",
      "img": "https://images.cdn.nos.nl/8/2/a/j/b/j/1P2cdEexV1UjoVNjMrZypyX8iQMf5g1NKViBVok/447x293x3088x1737-1024x576.webp"
-    },
-    {
-     "title": "Feyenoord verspeelt koppositie eredivisie met terechte nederlaag in Heerenveen",
-     "link": "https://nos.nl/l/2638557",
-     "time": "2026-11-08T14:11:04+01:00",
-     "img": "https://images.cdn.nos.nl/8/6/M/U/y/X/YydPGn3VLThPD3AXoCkjPFQdBS98572mFTNgBzT/668x445x1888x1062-1024x576.webp"
-    },
-    {
-     "title": "KNVB noemt actie De Graafschap-supporters 'waanzinnig', sancties mogelijk",
-     "link": "https://nos.nl/l/2638554",
-     "time": "2026-11-08T13:11:36+01:00",
-     "img": "https://images.cdn.nos.nl/6/6/E/6/D/P/gN6ttYJDcsNXxTouDqSgov6u6y6AyR9M7yApDro/0x192x2048x1152-1024x576.webp"
-    },
-    {
-     "title": "Boze fans De Graafschap blokkeren eigen spelersbus, duel bij Vitesse gaat niet door",
-     "link": "https://nos.nl/l/2638547",
-     "time": "2026-11-08T11:44:44+01:00",
-     "img": "https://images.cdn.nos.nl/2/8/5/k/G/e/2QHmY47xqQCRwPpiXWMRdtEwDNAx7rbHTpd1Ybs/527x550x2752x1548-1024x576.webp"
-    },
-    {
-     "title": "Titel is vergeven, maar er staan nog tientallen miljoenen op het spel in F1",
-     "link": "https://nos.nl/l/2638541",
-     "time": "2026-11-08T11:02:18+01:00",
-     "img": "https://images.cdn.nos.nl/7/2/X/u/H/8/MLnP2WzRaNKtqjb6QYdSsQBsbMnmetKUNu6U3Cs/215x41x1520x855-1024x576.webp"
     }
    ]
   },
@@ -194,10 +194,46 @@
    "name": "NU.nl",
    "items": [
     {
-     "title": "Weghorst na Twente-Ajax met Tolu in gebed: 'Veel mooier om het samen te doen'",
-     "link": "https://www.nu.nl/voetbal/6415908/weghorst-na-twente-ajax-met-tolu-in-gebed-veel-mooier-om-het-samen-te-doen.html",
+     "title": "Norris dankt zege aan succesvolle McLaren-update: 'Anders had ik niet gewonnen'",
+     "link": "https://www.nu.nl/formule-1/6415927/norris-dankt-zege-aan-succesvolle-mclaren-update-anders-had-ik-niet-gewonnen.html",
+     "time": "2026-11-08T21:41:56+01:00",
+     "img": "https://images.nu.nl/m/cm7xxvmawm0c_sqr256/1406/548/3316/3316/norris-dankt-zege-aan-succesvolle-mclaren-update-anders-had-ik-niet-gewonnen.jpg"
+    },
+    {
+     "title": "Verstappen vermoedt schade na fraaie inhaalrace: 'Had misschien kunnen winnen'",
+     "link": "https://www.nu.nl/formule-1/6415926/verstappen-vermoedt-schade-na-fraaie-inhaalrace-had-misschien-kunnen-winnen.html",
+     "time": "2026-11-08T21:25:58+01:00",
+     "img": "https://images.nu.nl/m/eu0x3l2azhq5_sqr256/1041/0/3335/3335/verstappen-vermoedt-schade-na-fraaie-inhaalrace-had-misschien-kunnen-winnen.jpg"
+    },
+    {
+     "title": "Wegenwacht staakt maandag: wie niet in direct gevaar is, moet geduld hebben",
+     "link": "https://www.nu.nl/economie/6415729/wegenwacht-staakt-maandag-wie-niet-in-direct-gevaar-is-moet-geduld-hebben.html",
+     "time": "2026-11-08T21:14:29+01:00",
+     "img": "https://images.nu.nl/m/n5jxph7ag0v1_sqr256/428/0/4021/4021/wegenwacht-staakt-maandag-wie-niet-in-direct-gevaar-is-moet-geduld-hebben.jpg"
+    },
+    {
+     "title": "Video | Roy Meyer viert nieuwe MMA-winst met acrobatische moves en 'robot'",
+     "link": "https://www.nu.nl/332097/video/roy-meyer-viert-nieuwe-mma-winst-met-acrobatische-moves-en-robot.html",
+     "time": "2026-11-08T20:53:10+01:00",
+     "img": "https://images.nu.nl/m/7k5x1nxamf8e_sqr256/115/0/500/500/roy-meyer-viert-nieuwe-mma-winst-met-acrobatische-moves-en-robot.jpg"
+    },
+    {
+     "title": "Activist hangt Palestijnse vlag voor Rijksdag en gooit Duitse vlag op de grond",
+     "link": "https://www.nu.nl/buitenland/6415922/activist-hangt-palestijnse-vlag-voor-rijksdag-en-gooit-duitse-vlag-op-de-grond.html",
+     "time": "2026-11-08T20:46:33+01:00",
+     "img": "https://images.nu.nl/m/8w4x3ncahb0n_sqr256/1366/0/4005/4005/activist-hangt-palestijnse-vlag-voor-rijksdag-en-gooit-duitse-vlag-op-de-grond.jpg"
+    },
+    {
+     "title": "Dansende vechter Roy Meyer ook oppermachtig in tweede MMA-duel",
+     "link": "https://www.nu.nl/sport-overig/6415917/dansende-vechter-roy-meyer-ook-oppermachtig-in-tweede-mma-duel.html",
+     "time": "2026-11-08T20:32:40+01:00",
+     "img": "https://images.nu.nl/m/evhxyvda194n_sqr256/566/0/2359/2359/dansende-vechter-roy-meyer-ook-oppermachtig-in-tweede-mma-duel.jpg"
+    },
+    {
+     "title": "Weghorst in gebed met Tolu na Twente-Ajax: 'Veel mooier om het samen te doen'",
+     "link": "https://www.nu.nl/voetbal/6415908/weghorst-in-gebed-met-tolu-na-twente-ajax-veel-mooier-om-het-samen-te-doen.html",
      "time": "2026-11-08T20:01:13+01:00",
-     "img": "https://images.nu.nl/m/rjexxaaae096_sqr256/932/0/4547/4547/weghorst-na-twente-ajax-met-tolu-in-gebed-veel-mooier-om-het-samen-te-doen.jpg"
+     "img": "https://images.nu.nl/m/rjexxaaae096_sqr256/934/0/4547/4547/weghorst-in-gebed-met-tolu-na-twente-ajax-veel-mooier-om-het-samen-te-doen.jpg"
     },
     {
      "title": "Live | Oekraïne | 400.000 Russen gedood in oorlog volgens gehackte data",
@@ -209,7 +245,7 @@
      "title": "Verstappen tweede achter Norris na inhaalrace in deels natte GP São Paulo",
      "link": "https://www.nu.nl/formule-1/6415915/verstappen-tweede-achter-norris-na-inhaalrace-in-deels-natte-gp-sao-paulo.html",
      "time": "2026-11-08T19:39:51+01:00",
-     "img": "https://images.nu.nl/m/gvbxtsjadjqw_sqr256/344/452/1876/1876/verstappen-tweede-achter-norris-na-inhaalrace-in-deels-natte-gp-sao-paulo.jpg"
+     "img": "https://images.nu.nl/m/sflxo4qa5vr3_sqr256/845/674/2581/2581/verstappen-tweede-achter-norris-na-inhaalrace-in-deels-natte-gp-sao-paulo.jpg"
     },
     {
      "title": "Winnend PSV herovert koppositie in Eredivisie na missers Feyenoord en Ajax",
@@ -236,12 +272,6 @@
      "img": "https://images.nu.nl/m/wnnxm2raza2y_sqr256/1191/197/2345/2345/fc-twente-en-ajax-boos-op-arbitrage-scheidsrechter-kooij-trekt-boetekleed-aan.jpg"
     },
     {
-     "title": "Video | Meerdere wagons naast het spoor na dodelijke treinbotsing in Egypte",
-     "link": "https://www.nu.nl/332091/video/meerdere-wagons-naast-het-spoor-na-dodelijke-treinbotsing-in-egypte.html",
-     "time": "2026-11-08T17:27:03+01:00",
-     "img": "https://images.nu.nl/m/lgqx1nba0hyq_sqr256/300/0/1290/1290/meerdere-wagons-naast-het-spoor-na-dodelijke-treinbotsing-in-egypte.jpg"
-    },
-    {
      "title": "Verkiezingsupdate VS | De lange weg naar het Witte Huis",
      "link": "https://www.nu.nl/verkiezingsupdate-vs/6415749/de-lange-weg-naar-het-witte-huis.html",
      "time": "2026-11-08T16:59:54+01:00",
@@ -252,36 +282,6 @@
      "link": "https://www.nu.nl/formule-1/6415904/f1-verstappen-na-tweede-plek-in-brazilie-voelde-alsof-auto-schade-had.html",
      "time": "2026-11-08T16:51:33+01:00",
      "img": "https://images.nu.nl/m/qmjxvqaaxgy9_sqr256/704/6/2828/2828/f1-verstappen-na-tweede-plek-in-brazilie-voelde-alsof-auto-schade-had.jpg"
-    },
-    {
-     "title": "Zeker vier doden en tientallen gewonden na treinbotsing in Egypte",
-     "link": "https://www.nu.nl/buitenland/6415903/zeker-vier-doden-en-tientallen-gewonden-na-treinbotsing-in-egypte.html",
-     "time": "2026-11-08T16:36:50+01:00",
-     "img": "https://images.nu.nl/m/oczxayeakq0z_sqr256/1910/0/3840/3840/zeker-vier-doden-en-tientallen-gewonden-na-treinbotsing-in-egypte.jpg"
-    },
-    {
-     "title": "Ajax grijpt naast koppositie bij Twente na hoofdrol VAR en late penalty Weghorst",
-     "link": "https://www.nu.nl/voetbal/6415902/ajax-grijpt-naast-koppositie-bij-twente-na-hoofdrol-var-en-late-penalty-weghorst.html",
-     "time": "2026-11-08T16:29:50+01:00",
-     "img": "https://images.nu.nl/m/izyx6bualgky_sqr256/1047/373/2136/2136/ajax-grijpt-naast-koppositie-bij-twente-na-hoofdrol-var-en-late-penalty-weghorst.jpg"
-    },
-    {
-     "title": "Van Bronckhorst laakt instelling Feyenoord: 'We denken dat we heel goed zijn'",
-     "link": "https://www.nu.nl/voetbal/6415896/van-bronckhorst-laakt-instelling-feyenoord-we-denken-dat-we-heel-goed-zijn.html",
-     "time": "2026-11-08T16:22:12+01:00",
-     "img": "https://images.nu.nl/m/d8kxgzwa24ri_sqr256/134/0/4123/4123/van-bronckhorst-laakt-instelling-feyenoord-we-denken-dat-we-heel-goed-zijn.jpg"
-    },
-    {
-     "title": "Doodgeschoten man in Schiedam was negentien jaar",
-     "link": "https://www.nu.nl/misdaad/6415899/doodgeschoten-man-in-schiedam-was-negentien-jaar.html",
-     "time": "2026-11-08T16:16:22+01:00",
-     "img": "https://images.nu.nl/m/7kvxk8jasy1p_sqr256/979/0/4672/4672/doodgeschoten-man-in-schiedam-was-negentien-jaar.jpg"
-    },
-    {
-     "title": "Video | Céline Dion en Jack Black gaan los bij optreden van Metallica",
-     "link": "https://www.nu.nl/332088/video/celine-dion-en-jack-black-gaan-los-bij-optreden-van-metallica.html",
-     "time": "2026-11-08T16:03:34+01:00",
-     "img": "https://images.nu.nl/m/c9ux04xa2zqx_sqr256/1066/75/852/852/celine-dion-en-jack-black-gaan-los-bij-optreden-van-metallica.jpg"
     }
    ]
   }
