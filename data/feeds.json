@@ -4,6 +4,12 @@
    "name": "NOS",
    "items": [
     {
+     "title": "Pand in binnenstad Zutphen deels ingestort, meerdere huizen ontruimd",
+     "link": "https://nos.nl/l/2638514",
+     "time": "2026-11-08T00:21:36+01:00",
+     "img": "https://images.cdn.nos.nl/4/5/Z/c/J/g/T7KpPNeGA7BmZcbypuivkroKyqcGPai3CfK1kZK/8x217x2032x1143-1024x576.webp"
+    },
+    {
      "title": "IJsbaan in Leeuwarden opnieuw dicht vanwege ammoniaklek",
      "link": "https://nos.nl/l/2638509",
      "time": "2026-11-07T23:34:24+01:00",
@@ -86,12 +92,6 @@
      "link": "https://nos.nl/l/2638442",
      "time": "2026-11-07T15:58:46+01:00",
      "img": "https://images.cdn.nos.nl/8/A/d/H/9/f/3ytX5G5emAKHoe16WVrXmBzsdmukbfbrp2wkbGE/8x27x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Door provincie afgedwongen windmolens staan straks vaak uit",
-     "link": "https://nos.nl/l/2638441",
-     "time": "2026-11-07T15:58:20+01:00",
-     "img": "https://images.cdn.nos.nl/4/C/Y/y/U/D/SDEcuefgcXqKUBmu9fE9CjdiyKbPiPMQZt5LNw9/21x3x1856x1044-1024x576.webp"
     }
    ]
   },
@@ -150,7 +150,7 @@
      "title": "Brand wilde geen protest, woedende Schreiber boycot podium: 'Dit is zo oneerlijk'",
      "link": "https://nos.nl/l/2638470",
      "time": "2026-11-07T18:05:05+01:00",
-     "img": "https://images.cdn.nos.nl/3/7/f/1/H/v/xgYfAja82PQCbkYeZYDf4dViug8bWuJX8quMxfD/8x420x3984x2241-1024x576.webp"
+     "img": "https://images.cdn.nos.nl/8/E/y/S/w/Q/wEZM3kUMJxCE7NRtodTy8NUx7gKb3kb3qhAKmGy/0x0x4000x2250-1024x576.webp"
     },
     {
      "title": "Márquez op matchpoint in MotoGP-titelstrijd na sprintzege in Qatar, in veelbesproken grand prix",
@@ -390,132 +390,7 @@
   }
  ],
  "youtube": {
-  "channels": [
-   "Patrick (H) Willems",
-   "The Yard",
-   "Ken"
-  ],
-  "videos": [
-   {
-    "title": "evo giant buffed prince",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=_hk53Dms3_c",
-    "thumb": "https://i.ytimg.com/vi/_hk53Dms3_c/mqdefault.jpg",
-    "time": "2026-11-07T10:00:26+00:00",
-    "short": false
-   },
-   {
-    "title": "Ludwig reacts to our disguises.. #podcast #theyard #comedy",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/shorts/qssvEpRyncM",
-    "thumb": "https://i.ytimg.com/vi/qssvEpRyncM/mqdefault.jpg",
-    "time": "2026-11-06T23:03:07+00:00",
-    "short": true
-   },
-   {
-    "title": "chaos mega draft, but I pick buildings",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=SXmUx51aOeU",
-    "thumb": "https://i.ytimg.com/vi/SXmUx51aOeU/mqdefault.jpg",
-    "time": "2026-11-06T10:00:38+00:00",
-    "short": false
-   },
-   {
-    "title": "We Met Magnus Midtbø! | The Yard",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/watch?v=QmzPwp7m0R8",
-    "thumb": "https://i.ytimg.com/vi/QmzPwp7m0R8/mqdefault.jpg",
-    "time": "2026-11-05T17:51:47+00:00",
-    "short": false
-   },
-   {
-    "title": "2.6 goon cycle",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=9WSKL8Q1pgQ",
-    "thumb": "https://i.ytimg.com/vi/9WSKL8Q1pgQ/mqdefault.jpg",
-    "time": "2026-11-05T10:00:33+00:00",
-    "short": false
-   },
-   {
-    "title": "chaos mega draft, but I pick cheapest",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=UvkkFnQOxtw",
-    "thumb": "https://i.ytimg.com/vi/UvkkFnQOxtw/mqdefault.jpg",
-    "time": "2026-11-04T10:00:21+00:00",
-    "short": false
-   },
-   {
-    "title": "How Did Interstellar Become Every Dude's Favorite Movie?",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=f5iyzbgBTgA",
-    "thumb": "https://i.ytimg.com/vi/f5iyzbgBTgA/mqdefault.jpg",
-    "time": "2026-11-03T14:14:19+00:00",
-    "short": false
-   },
-   {
-    "title": "I love bullying",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=zujgPKfV-Mw",
-    "thumb": "https://i.ytimg.com/vi/zujgPKfV-Mw/mqdefault.jpg",
-    "time": "2026-11-03T10:00:25+00:00",
-    "short": false
-   },
-   {
-    "title": "The Halloween Episode was a disaster.. #podcast #theyard #comedy",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/shorts/BXbval-c8r8",
-    "thumb": "https://i.ytimg.com/vi/BXbval-c8r8/mqdefault.jpg",
-    "time": "2026-11-02T19:38:58+00:00",
-    "short": true
-   },
-   {
-    "title": "Halloween, But We're All Ludwig | The Yard",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/watch?v=9mFou52l7sw",
-    "thumb": "https://i.ytimg.com/vi/9mFou52l7sw/mqdefault.jpg",
-    "time": "2026-10-29T17:09:18+00:00",
-    "short": false
-   },
-   {
-    "title": "THAT WAS MY SPEECH!! #podcast #theyard #comedy",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/shorts/tr3Zow_Q8aQ",
-    "thumb": "https://i.ytimg.com/vi/tr3Zow_Q8aQ/mqdefault.jpg",
-    "time": "2026-10-28T20:04:12+00:00",
-    "short": true
-   },
-   {
-    "title": "Is This The Best Directed Movie Ever?",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=_t76HmE8ib4",
-    "thumb": "https://i.ytimg.com/vi/_t76HmE8ib4/mqdefault.jpg",
-    "time": "2026-09-15T13:11:42+00:00",
-    "short": false
-   },
-   {
-    "title": "Come See My New Film In Theaters",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=uuMbBWR-2Xg",
-    "thumb": "https://i.ytimg.com/vi/uuMbBWR-2Xg/mqdefault.jpg",
-    "time": "2026-09-04T22:53:08+00:00",
-    "short": false
-   },
-   {
-    "title": "We Need To Talk About How Weird HOOK Is",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=hXAWl_Ar6xA",
-    "thumb": "https://i.ytimg.com/vi/hXAWl_Ar6xA/mqdefault.jpg",
-    "time": "2026-08-06T14:38:38+00:00",
-    "short": false
-   },
-   {
-    "title": "Can video games be cinema? #videogames #movie #thelastofus #deathstranding",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/shorts/-GWrCLXTuwM",
-    "thumb": "https://i.ytimg.com/vi/-GWrCLXTuwM/mqdefault.jpg",
-    "time": "2026-07-01T16:17:55+00:00",
-    "short": true
-   }
-  ]
+  "channels": [],
+  "videos": []
  }
 }
