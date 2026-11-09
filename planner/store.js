@@ -141,6 +141,7 @@ window.PlannerStore = (() => {
   let pumping = false;
   let reloadWanted = false;
   let loadSeq = 0;
+  let ready = false;       // pas true na de eerste keer laden: dan weten we welke vakken er al zijn
 
   async function pump() {
     if (pumping) return;
@@ -158,8 +159,11 @@ window.PlannerStore = (() => {
           await wait(RETRY);
         } else {
           if (queue[0] === job) queue.shift();
-          emit('error', 'Een wijziging werd niet opgeslagen.');
-          console.warn('[planner] opslaan', e);
+          // 23505 = naam bestaat al, bijvoorbeeld als twee apparaten tegelijk een Canvas-vak aanmaken: geen probleem
+          if (String(e.code) !== '23505') {
+            emit('error', 'Een wijziging werd niet opgeslagen.');
+            console.warn('[planner] opslaan', e);
+          }
           reloadWanted = true;
         }
       }
@@ -180,6 +184,7 @@ window.PlannerStore = (() => {
       if (seq !== loadSeq) { reloadWanted = true; return; }   // intussen iets aangepast: dit antwoord is al oud
       data.tasks = fresh.tasks;
       data.subjects = fresh.subjects;
+      ready = true;
       if (status === 'offline') setStatus('saved');
       emit('change');
     } catch (e) {
@@ -263,5 +268,6 @@ window.PlannerStore = (() => {
     DEMO, configured, data, on, init, session, signIn, signOut, start, needFrom,
     addTask, updateTask, deleteTask, addSubject, updateSubject, deleteSubject,
     get status() { return status; },
+    get ready() { return ready; },
   };
 })();

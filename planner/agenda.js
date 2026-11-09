@@ -115,6 +115,72 @@ window.PlannerAgenda = (() => {
     const done = handedIn();
     return deadlinePool().filter((e) => !done.has(e.id)).map((e) => ({ id: e.id, due: dueOf(e), title: cleanDeadline(e.title), url: e.canvasUrl || e.link || null }));
   }
+  // Vakcodes uit de Canvas-agenda: "Essay week 6 [ESSB-MP6020]" geeft "ESSB-MP6020"
+  function courses() {
+    const found = new Set();
+    for (const e of events) {
+      if (!e.canvas) continue;
+      const m = (e.title || '').match(/\[([^\]]+)\]\s*$/);
+      if (m) found.add(m[1].trim());
+    }
+    return [...found].filter(Boolean).sort();
+  }
+
+  // ---------- Regen onderweg naar de dienst (zelfde bronnen en regenregel als DASH.radar op het dashboard) ----------
+  const HOME = { lat: 51.9225, lon: 4.4792 };   // Rotterdam
+  const FIVE = 5 * 60000;
+  const RAIN_MIN = 0.1;     // mm per uur: vanaf hier telt het als regen
+  const TRIP = 30 * 60000;  // hoe lang voor de dienst je onderweg bent
+  let radar = { at: 0, slots: null };
+
+  async function buienradar() {
+    const res = await fetch(`https://gpsgadget.buienradar.nl/data/raintext?lat=${HOME.lat.toFixed(2)}&lon=${HOME.lon.toFixed(2)}`, { signal: AbortSignal.timeout(10000) });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const now = Date.now();
+    const slots = [];
+    let prev = null;
+    for (const line of (await res.text()).trim().split(/\r?\n/)) {
+      const m = line.match(/^(\d+)\|(\d{1,2}):(\d{2})/);
+      if (!m) continue;
+      const d = new Date(now);
+      d.setHours(Number(m[2]), Number(m[3]), 0, 0);
+      let t = d.getTime();
+      if (prev == null) {
+        if (t - now > 12 * 3600000) t -= 86400000;
+        if (now - t > 12 * 3600000) t += 86400000;
+      } else {
+        while (t <= prev) t += 86400000;
+      }
+      prev = t;
+      const v = Number(m[1]);
+      slots.push({ start: t, end: t + FIVE, mmh: v ? 10 ** ((v - 109) / 32) : 0 });
+    }
+    if (slots.length < 6) throw new Error('Buienradar gaf geen bruikbare data');
+    return slots;
+  }
+  async function openMeteo() {
+    const qs = new URLSearchParams({ latitude: HOME.lat, longitude: HOME.lon, minutely_15: 'precipitation', forecast_minutely_15: 12, timezone: 'Europe/Amsterdam', timeformat: 'unixtime' });
+    const res = await fetch(`https://api.open-meteo.com/v1/forecast?${qs}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const m = (await res.json()).minutely_15;
+    return m.time.map((t, i) => ({ start: t * 1000 - 3 * FIVE, end: t * 1000, mmh: (m.precipitation[i] || 0) * 4 }));
+  }
+  function refreshRadar() {
+    radar.at = Date.now();
+    buienradar().catch(() => openMeteo())
+      .then((slots) => { radar.slots = slots; onChange(); })
+      .catch((e) => { radar.slots = null; console.warn('[planner] regen', e); });
+  }
+  // 'droog', 'regen' of null als het niet bekend is. Vraagt hooguit eens per 5 minuten nieuwe gegevens op.
+  function commute(start) {
+    if (Date.now() - radar.at > FIVE) refreshRadar();
+    if (!radar.slots) return null;
+    const from = Math.max(Date.now(), start - TRIP);
+    const trip = radar.slots.filter((s) => s.end > from && s.start < start);
+    if (!trip.length) return null;
+    return trip.some((s) => s.mmh >= RAIN_MIN) ? 'regen' : 'droog';
+  }
+
   const birthdays = () => events.filter((e) => e.birthday);
   // Wat er in de tijdlijn als gewoon blok hoort: geen deadlines, geen verjaardagen, geen verborgen agenda's
   const normal = () => {
@@ -270,7 +336,7 @@ window.PlannerAgenda = (() => {
   }
 
   return {
-    start, range, load, unlock, forget, label, isAH, isF1, deadlines, birthdays, normal,
+    start, range, load, unlock, forget, label, isAH, isF1, deadlines, birthdays, normal, courses, commute,
     get state() { return state; },
     get fetchedAt() { return fetchedAt; },
     get events() { return events; },

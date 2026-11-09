@@ -6,7 +6,8 @@
   <meta name="robots" content="noindex">
   <title>Planner</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231F1F1E'/%3E%3Cpath d='M9 11h14M9 16h14M9 21h8' stroke='%23fff' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
-  <link rel="stylesheet" href="planner.css?v=0.1.0">
+  <script>(function () { var t; try { t = localStorage.getItem('planner.theme'); } catch (e) {} document.documentElement.dataset.theme = t === 'dark' || (t !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light'; })();</script>
+  <link rel="stylesheet" href="planner.css?v=0.2.0">
 </head>
 <body>
   <!-- Inloggen -->
@@ -90,9 +91,10 @@
     </div>
 
     <footer class="foot-bar">
-      <button id="subjects-btn" class="link" type="button">Vakken</button>
+      <button id="theme-btn" class="link" type="button"></button>
+      <button id="subjects-btn" class="link" type="button">Vakken en kleuren</button>
       <button id="logout-btn" class="link" type="button">Uitloggen</button>
-      <span>Planner versie 0.1.0</span>
+      <span>Planner versie 0.2.0</span>
     </footer>
   </div>
 
@@ -138,21 +140,24 @@
 
   <!-- Vakken beheren -->
   <dialog id="subjects" class="dlg" aria-labelledby="subjects-title">
-    <h2 id="subjects-title">Vakken</h2>
+    <h2 id="subjects-title">Vakken en kleuren</h2>
+    <h3>Vakken</h3>
     <ul id="subjects-list" class="subject-list"></ul>
     <form id="subjects-form" class="new-subject">
       <input id="s-name" type="text" maxlength="40" placeholder="Nieuw vak" aria-label="Naam van het nieuwe vak" required>
       <div id="s-swatches" class="swatches"></div>
       <button class="btn" type="submit">Toevoegen</button>
     </form>
+    <h3 style="margin-top: 18px">Overige kleuren</h3>
+    <ul id="colors-list" class="subject-list"></ul>
     <div class="dlg-actions"><span class="grow"></span><button id="subjects-close" class="btn dark" type="button">Klaar</button></div>
   </dialog>
 
   <div id="toast" class="toast" role="status" hidden></div>
 
-  <script src="config.js?v=0.1.0"></script>
-  <script src="store.js?v=0.1.0"></script>
-  <script src="agenda.js?v=0.1.0"></script>
-  <script src="app.js?v=0.1.0"></script>
+  <script src="config.js?v=0.2.0"></script>
+  <script src="store.js?v=0.2.0"></script>
+  <script src="agenda.js?v=0.2.0"></script>
+  <script src="app.js?v=0.2.0"></script>
 </body>
 </html>

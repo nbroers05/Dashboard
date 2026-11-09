@@ -23,6 +23,9 @@ De planner leest je agenda alleen; er gaat niets terug naar Google. In een brows
 
 ## Goed om te weten
 
+- Licht of donker kies je per apparaat met de knop Thema onderaan. Op "automatisch" volgt de planner de instelling van je apparaat.
+- Vakken komen uit de Canvas-agenda, met de code die daar tussen haakjes staat. Geef ze bij **Vakken en kleuren** een eigen naam of verwijder ze; een hernoemd of verwijderd vak komt niet terug.
+- Kleuren staan in Supabase en gelden dus op al je apparaten. Ze staan bij de vakken in `planner_subjects`, als rijen waarvan de naam met @ begint.
 - De gratis versie van Supabase pauzeert een project als het ongeveer een week niet is gebruikt. Dan kun je het in het Supabase-scherm met één klik weer aanzetten.
 - Op het dashboard uitloggen wist alle opslag van de site in die browser, dus dan ben je daar ook uit de planner uitgelogd.
 - Je taken staan alleen in Supabase. In deze repo staat geen planner-data.

@@ -6,6 +6,18 @@
   const A = window.PlannerAgenda;
   const SNAP = 15;
   const COLORS = ['#7F77DD', '#1D9E75', '#378ADD', '#D4537E', '#D98A1F', '#E24B4A', '#6B6A66'];
+  // Kleuren voor wat geen vak is. Ze staan als rij in planner_subjects met een naam die met @ begint, zodat ze meesyncen
+  // en er geen nieuwe tabel nodig is. Die rijen tellen nergens als vak mee.
+  const CATS = [
+    { key: 'agenda', label: 'Google Agenda', color: '#378ADD' },
+    { key: 'ah', label: 'AH-dienst', color: '#00ADE6' },
+    { key: 'deadline', label: 'Canvas-deadline', color: '#E24B4A' },
+    { key: 'bday', label: 'Verjaardag', color: '#D4537E' },
+    { key: 'f1', label: 'F1', color: '#E10600' },
+    { key: 'block', label: 'Tijdblok zonder vak', color: '#7F77DD' },
+    { key: 'task', label: 'Taak zonder vak', color: '#7F77DD' },
+    { key: 'now', label: 'Lijn voor nu', color: '#378ADD' },
+  ];
 
   const $ = (id) => document.getElementById(id);
   function h(tag, attrs, ...kids) {
@@ -45,12 +57,61 @@
   const tasks = () => P.data.tasks;
   const task = (id) => tasks().find((t) => t.id === id);
   const subject = (id) => P.data.subjects.find((s) => s.id === id);
+  const vakken = () => P.data.subjects.filter((s) => !s.name.startsWith('@'));
+  const cleanName = (s) => s.trim().replace(/^@+\s*/, '');
   const phone = () => matchMedia('(max-width: 700px)').matches;
   const hourPx = () => parseFloat(document.documentElement.style.getPropertyValue('--hour')) || 48;
 
   function agendaRange() {
+    // Ruim: vakken uit Canvas moeten er ook staan als de eerstvolgende deadline nog ver weg is
     const t = today();
-    return [Math.min(dayStart(week), dayStart(t)), Math.max(dayStart(shift(week, 7)), dayStart(shift(t, 8)))];
+    return [Math.min(dayStart(week), dayStart(shift(t, -35))), Math.max(dayStart(shift(week, 7)), dayStart(shift(t, 90)))];
+  }
+
+  // ---------- Kleuren ----------
+  const catRow = (key) => P.data.subjects.find((s) => s.name === `@${key}`);
+  const catColor = (c) => { const r = catRow(c.key); return r ? r.color : c.color; };
+  function setCat(c, color) {
+    const r = catRow(c.key);
+    if (r) P.updateSubject(r.id, { color }); else P.addSubject(`@${c.key}`, color);
+  }
+  function inkOn(hex) {
+    const n = parseInt(hex.slice(1), 16);
+    const lum = (0.2126 * (n >> 16) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255)) / 255;
+    return lum > 0.62 ? '#111' : '#fff';
+  }
+  function applyColors() {
+    const root = document.documentElement.style;
+    for (const c of CATS) root.setProperty(`--c-${c.key}`, catColor(c));
+    root.setProperty('--c-ah-ink', inkOn(catColor(CATS[1])));
+  }
+
+  // ---------- Vakken uit Canvas ----------
+  // Elke vakcode wordt één keer een vak. De rij @canvas:<code> onthoudt dat, zodat een hernoemd of verwijderd vak niet terugkomt.
+  let importing = false;
+  function importCourses() {
+    if (importing || !P.ready || A.state !== 'ok') return;
+    importing = true;
+    for (const code of A.courses()) {
+      const mark = `@canvas:${code}`.slice(0, 40);
+      if (P.data.subjects.some((s) => s.name === mark)) continue;
+      P.addSubject(mark, '#6B6A66');
+      P.addSubject(code.slice(0, 40), COLORS[vakken().length % COLORS.length]);
+    }
+    importing = false;
+  }
+
+  // ---------- Licht of donker (per apparaat) ----------
+  const THEMES = { auto: 'automatisch', dark: 'donker', light: 'licht' };
+  const NEXT_THEME = { auto: 'dark', dark: 'light', light: 'auto' };
+  const darkMedia = matchMedia('(prefers-color-scheme: dark)');
+  function themeChoice() {
+    try { const t = localStorage.getItem('planner.theme'); return THEMES[t] ? t : 'auto'; } catch { return 'auto'; }
+  }
+  function applyTheme() {
+    const t = themeChoice();
+    document.documentElement.dataset.theme = t === 'dark' || (t === 'auto' && darkMedia.matches) ? 'dark' : 'light';
+    $('theme-btn').textContent = `Thema: ${THEMES[t]}`;
   }
 
   // ---------- Wat er op een dag staat ----------
@@ -79,6 +140,8 @@
   // ---------- Tekenen ----------
   function render() {
     if (drag) { dirty = true; return; }
+    importCourses();
+    applyColors();
     fit();
     renderHead();
     renderStrip();
@@ -252,9 +315,14 @@
     const ev = it.ev;
     const ah = A.isAH(ev);
     const dur = it.e - it.s;
-    const sub = ah ? `${fmtTime(ev.start)} – ${fmtTime(ev.end)}` : `${fmtTime(ev.start)} – ${fmtTime(ev.end)} · Google Agenda (alleen lezen)`;
+    let sub = `${fmtTime(ev.start)} – ${fmtTime(ev.end)}`;
+    if (!ah) sub += ' · Google Agenda (alleen lezen)';
+    else if (ev.start > nowMs && ev.start - nowMs <= 2 * 3600000) {
+      const way = A.commute(ev.start);
+      if (way) sub += ` · ${way} onderweg`;
+    }
     return h(ev.link ? 'a' : 'div', {
-      class: `ev${ah ? ' ah' : ''}${ev.end <= nowMs ? ' past' : ''}${isSmall(dur) ? ' small' : ''}`,
+      class: `ev${ah ? ' ah' : ''}${A.isF1(ev) ? ' f1' : ''}${ev.end <= nowMs ? ' past' : ''}${isSmall(dur) ? ' small' : ''}`,
       style: place(it), href: ev.link, target: ev.link && '_blank', rel: ev.link && 'noopener',
       title: `${ev.title} (${fmtTime(ev.start)} – ${fmtTime(ev.end)})`,
     }, h('span', { class: 't' }, ah ? 'Appie dienst' : A.label(ev)), h('span', { class: 's' }, sub));
@@ -350,13 +418,8 @@
       if (sel === lastToday) { sel = t; week = mondayOf(t); wantScroll = true; }
       lastToday = t;
       A.range(...agendaRange());
-      return render();
     }
-    const now = $('tl-now');
-    if (now && !drag) {
-      const d = new Date();
-      now.style.top = topCalc(d.getHours() * 60 + d.getMinutes());
-    }
+    render();   // lijn voor nu, afgelopen blokken, Binnenkort en "droog onderweg" blijven zo kloppen
   }
 
   // ---------- Dag kiezen ----------
@@ -518,19 +581,26 @@
 
   function renderFormSubjects() {
     const chips = [h('button', { type: 'button', class: `chip${formSubject == null ? ' sel' : ''}`, 'data-subject': '' }, 'Geen')];
-    for (const s of P.data.subjects) {
+    for (const s of vakken()) {
       chips.push(h('button', { type: 'button', class: `chip${formSubject === s.id ? ' sel' : ''}`, 'data-subject': s.id, style: `--c:${s.color}` }, h('span', { class: 'dot' }), s.name));
     }
     chips.push(h('button', { type: 'button', class: 'chip', 'data-subject-new': '' }, '+ Nieuw vak'));
     $('f-subjects').replaceChildren(...chips);
   }
 
-  function swatches(box, current, onPick) {
-    box.replaceChildren(...COLORS.map((c) => {
-      const b = h('button', { type: 'button', class: `swatch${c === current ? ' sel' : ''}`, style: `--c:${c}`, 'aria-label': `Kleur ${c}`, 'aria-pressed': String(c === current) });
+  // Vaste kleuren plus een eigen kleur naar keuze. standard = de oorspronkelijke kleur, als die niet in het rijtje staat.
+  function swatches(box, current, onPick, standard) {
+    const same = (a, b) => a.toLowerCase() === b.toLowerCase();
+    const list = standard && !COLORS.some((c) => same(c, standard)) ? [standard, ...COLORS] : COLORS;
+    const buttons = list.map((c) => {
+      const on = same(c, current);
+      const b = h('button', { type: 'button', class: `swatch${on ? ' sel' : ''}`, style: `--c:${c}`, 'aria-label': `Kleur ${c}`, 'aria-pressed': String(on) });
       b.addEventListener('click', () => onPick(c));
       return b;
-    }));
+    });
+    const picker = h('input', { type: 'color', class: 'picker', value: current.toLowerCase(), title: 'Eigen kleur kiezen', 'aria-label': 'Eigen kleur kiezen' });
+    picker.addEventListener('change', () => onPick(picker.value));
+    box.replaceChildren(...buttons, picker);
   }
   function renderFormSwatches() {
     swatches($('f-swatches'), formColor, (c) => { formColor = c; renderFormSwatches(); });
@@ -548,7 +618,7 @@
     if (![...dur.options].some((o) => Number(o.value) === v.duration_min)) dur.append(h('option', { value: v.duration_min }, `${v.duration_min} min`));
     dur.value = String(v.duration_min);
     formSubject = v.subject_id;
-    formColor = COLORS[P.data.subjects.length % COLORS.length];
+    formColor = COLORS[vakken().length % COLORS.length];
     $('f-new-subject').hidden = true;
     $('f-subject-name').value = '';
     renderFormSubjects();
@@ -563,7 +633,7 @@
   }
 
   function addFormSubject() {
-    const name = $('f-subject-name').value.trim();
+    const name = cleanName($('f-subject-name').value);
     if (!name) return;
     const s = P.addSubject(name, formColor);
     formSubject = s.id;
@@ -596,11 +666,16 @@
 
   // ---------- Dialoog: vakken ----------
   function renderSubjects() {
+    $('colors-list').replaceChildren(...CATS.map((c) => {
+      const box = h('div', { class: 'swatches' });
+      swatches(box, catColor(c), (color) => { setCat(c, color); renderSubjects(); }, c.color);
+      return h('li', null, h('span', { class: 'cat-name' }, c.label), box);
+    }));
     const list = $('subjects-list');
-    if (!P.data.subjects.length) { list.replaceChildren(h('li', { class: 'empty' }, 'Nog geen vakken.')); return; }
-    list.replaceChildren(...P.data.subjects.map((s) => {
+    if (!vakken().length) { list.replaceChildren(h('li', { class: 'empty' }, 'Nog geen vakken. Ze komen vanzelf uit Canvas zodra je agenda gekoppeld is.')); return; }
+    list.replaceChildren(...vakken().map((s) => {
       const name = h('input', { type: 'text', value: s.name, maxlength: 40, 'aria-label': `Naam van ${s.name}` });
-      name.addEventListener('change', () => { const v = name.value.trim(); if (v) P.updateSubject(s.id, { name: v }); else name.value = s.name; });
+      name.addEventListener('change', () => { const v = cleanName(name.value); if (v) P.updateSubject(s.id, { name: v }); else name.value = s.name; });
       const box = h('div', { class: 'swatches' });
       swatches(box, s.color, (c) => { P.updateSubject(s.id, { color: c }); renderSubjects(); });
       const del = h('button', { class: 'x', type: 'button', 'aria-label': `${s.name} verwijderen` }, '×');
@@ -685,7 +760,7 @@
     };
 
     $('subjects-btn').onclick = () => {
-      subjectColor = COLORS[P.data.subjects.length % COLORS.length];
+      subjectColor = COLORS[vakken().length % COLORS.length];
       renderSubjects();
       renderSubjectSwatches();
       $('subjects').showModal();
@@ -694,14 +769,21 @@
     $('subjects-form').addEventListener('submit', (e) => {
       e.preventDefault();
       const input = $('s-name');
-      const name = input.value.trim();
+      const name = cleanName(input.value);
       if (!name) return;
       P.addSubject(name, subjectColor);
       input.value = '';
-      subjectColor = COLORS[P.data.subjects.length % COLORS.length];
+      subjectColor = COLORS[vakken().length % COLORS.length];
       renderSubjects();
       renderSubjectSwatches();
     });
+
+    applyTheme();
+    darkMedia.addEventListener('change', applyTheme);
+    $('theme-btn').onclick = () => {
+      try { localStorage.setItem('planner.theme', NEXT_THEME[themeChoice()]); } catch {}
+      applyTheme();
+    };
 
     $('logout-btn').hidden = P.DEMO;
     $('logout-btn').onclick = async () => {
