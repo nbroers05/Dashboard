@@ -17,9 +17,9 @@
   --amber-bg: #faeeda;
   --amber-ink: #633806;
   --tint: 15%;
-  --on-tint: 55%;
+  --on-tint: 45%;
   --on-base: #111;
-  --sub-tint: 72%;
+  --sub-tint: 50%;
   /* Instelbaar via Vakken en kleuren; app.js overschrijft deze */
   --c-agenda: #378add;
   --c-ah: #00ade6;

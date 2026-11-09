@@ -18,7 +18,15 @@ window.PlannerAgenda = (() => {
     del(k) { try { localStorage.removeItem(k); } catch {} },
   };
 
+  // Kleur van een losse afspraak in Google (colorId), met de tinten die Google Agenda zelf laat zien
+  const EVENT_COLORS = {
+    1: '#7986CB', 2: '#33B679', 3: '#8E24AA', 4: '#E67C73', 5: '#F6BF26', 6: '#F4511E',
+    7: '#039BE5', 8: '#616161', 9: '#3F51B5', 10: '#0B8043', 11: '#D50000',
+  };
+  const validColor = (c) => (/^#[0-9a-f]{6}$/i.test(c || '') ? c : null);
+
   let events = [];
+  let calendars = [];
   let fetchedAt = 0;
   let state = 'loading';      // ok | locked | error
   let loaded = [0, 0];
@@ -61,6 +69,8 @@ window.PlannerAgenda = (() => {
       end: allDay ? parseDate(e.end.date) : Date.parse(e.end.dateTime),
       link: e.htmlLink || null,
       hidden: !(cal.selected || cal.primary),
+      cal: cal.id,
+      ...(EVENT_COLORS[e.colorId] ? { eventColor: EVENT_COLORS[e.colorId] } : {}),
       ...(birthday ? { birthday } : {}),
       ...(canvas ? { canvas: true, assignment: /assignment/i.test(e.iCalUID || ''), canvasUrl: canvasLink(e.description) } : {}),
     };
@@ -187,6 +197,12 @@ window.PlannerAgenda = (() => {
     const dead = new Set(deadlinePool().map((e) => e.id));
     return events.filter((e) => !e.hidden && !e.birthday && !dead.has(e.id));
   };
+  const calendarOf = (id) => calendars.find((c) => c.id === id) || null;
+  // De agenda's die in de tijdlijn hun eigen kleur gebruiken. Diensten en F1 hebben een eigen regel in het kleurenmenu.
+  function usedCalendars() {
+    const used = new Set(normal().filter((e) => !isAH(e) && !isF1(e) && !e.eventColor).map((e) => e.cal));
+    return calendars.filter((c) => used.has(c.id));
+  }
 
   // ---------- Toegang ----------
   function ownToken() {
@@ -274,7 +290,17 @@ window.PlannerAgenda = (() => {
   // ---------- Ophalen ----------
   async function load() {
     clearTimeout(timer);
-    if (DEMO) { events = demoEvents(); fetchedAt = Date.now(); state = 'ok'; return onChange(); }
+    if (DEMO) {
+      events = demoEvents();
+      calendars = [
+        { id: 'demo-rooster', name: 'Rooster', color: '#A58BC9' },
+        { id: 'demo-eigen', name: 'Hoofdagenda', color: '#4D96CF' },
+        { id: 'demo-geel', name: 'Gele agenda', color: '#FBE983' },
+      ];
+      fetchedAt = Date.now();
+      state = 'ok';
+      return onChange();
+    }
     const [from, to] = wanted;
     try {
       const cals = await api('/users/me/calendarList?minAccessRole=reader');
@@ -288,10 +314,11 @@ window.PlannerAgenda = (() => {
           .then((r) => (r.items || []).map((e) => simplify(e, cal)).filter(Boolean))
           .catch((e) => { if (e instanceof NoAccess) throw e; return []; })));
       events = lists.flat();
+      calendars = visible.map((c) => ({ id: c.id, name: c.primary ? 'Hoofdagenda' : c.summaryOverride || c.summary || 'Agenda', color: validColor(c.backgroundColor) }));
       fetchedAt = Date.now();
       loaded = [from, to];
       state = 'ok';
-      store.set(KEY.cache, { fetchedAt, events, loaded });
+      store.set(KEY.cache, { fetchedAt, events, calendars, loaded });
     } catch (e) {
       state = e instanceof NoAccess ? 'locked' : 'error';
       console.warn('[planner] agenda', e);
@@ -311,7 +338,7 @@ window.PlannerAgenda = (() => {
     onChange = cb;
     wanted = [from, to];
     const cache = store.get(KEY.cache);
-    if (cache && !DEMO) { events = cache.events || []; fetchedAt = cache.fetchedAt || 0; onChange(); }
+    if (cache && !DEMO) { events = cache.events || []; calendars = cache.calendars || []; fetchedAt = cache.fetchedAt || 0; onChange(); }
     load();
     document.addEventListener('visibilitychange', () => { if (!document.hidden && !DEMO && Date.now() - fetchedAt > 60000) load(); });
     window.addEventListener('online', () => { if (!DEMO) load(); });
@@ -324,19 +351,22 @@ window.PlannerAgenda = (() => {
     const t = startOfDay(Date.now());
     const at = (day, hh, mm = 0) => addDays(t, day) + (hh * 60 + mm) * 60000;
     return [
-      { id: 'a', title: 'College Data Science', allDay: false, start: at(0, 9), end: at(0, 10, 50) },
+      { id: 'a', title: 'College Data Science', allDay: false, start: at(0, 9), end: at(0, 10, 50), cal: 'demo-rooster' },
+      { id: 'h', title: 'Kapper', allDay: false, start: at(0, 15, 30), end: at(0, 16, 30), cal: 'demo-eigen' },
+      { id: 'i', title: 'Gele afspraak', allDay: false, start: at(0, 11), end: at(0, 12), cal: 'demo-geel' },
+      { id: 'j', title: 'Salaris', allDay: true, start: t, end: addDays(t, 1), cal: 'demo-eigen', eventColor: '#F4511E' },
       { id: 'b', title: 'AH Berkel', allDay: false, start: at(0, 17), end: at(0, 22) },
       { id: 'c', title: 'Paper inleveren [ESSB-DEMO]', allDay: false, start: at(2, 23, 59), end: at(2, 23, 59), canvas: true, assignment: true, hidden: true },
       { id: 'c2', title: 'Quiz hoofdstuk 3 [ESSB-DEMO]', allDay: false, start: at(0, 23, 59), end: at(0, 23, 59), canvas: true, assignment: true, hidden: true },
       { id: 'd', title: 'Verjaardag Persoon A', allDay: true, start: addDays(t, 3), end: addDays(t, 4), birthday: 'Persoon A', hidden: true },
       { id: 'e', title: 'AH Berkel', allDay: false, start: at(5, 8), end: at(5, 14) },
       { id: 'f', title: '🏁 FORMULA 1 DEMO GRAND PRIX 2026 - Race', allDay: false, start: at(6, 14), end: at(6, 16) },
-      { id: 'g', title: 'Werkgroep Cognitie', allDay: false, start: at(1, 11), end: at(1, 13) },
+      { id: 'g', title: 'Werkgroep Cognitie', allDay: false, start: at(1, 11), end: at(1, 13), cal: 'demo-rooster' },
     ];
   }
 
   return {
-    start, range, load, unlock, forget, label, isAH, isF1, deadlines, birthdays, normal, courses, commute,
+    start, range, load, unlock, forget, label, isAH, isF1, deadlines, birthdays, normal, courses, commute, calendarOf, usedCalendars,
     get state() { return state; },
     get fetchedAt() { return fetchedAt; },
     get events() { return events; },

@@ -75,6 +75,27 @@
     const r = catRow(c.key);
     if (r) P.updateSubject(r.id, { color }); else P.addSubject(`@${c.key}`, color);
   }
+  // Eigen kleur per Google-agenda: rij @cal:<code>, want het adres van een agenda past niet in de naam
+  function calCode(id) {
+    let n = 0;
+    for (const ch of id) n = (n * 31 + ch.charCodeAt(0)) >>> 0;
+    return n.toString(36);
+  }
+  const calRow = (c) => P.data.subjects.find((s) => s.name === `@cal:${calCode(c.id)}`);
+  const calDefault = (c) => c.color || CATS[0].color;
+  const calColor = (c) => { const r = calRow(c); return r ? r.color : calDefault(c); };
+  function setCal(c, color) {
+    const r = calRow(c);
+    if (r) P.updateSubject(r.id, { color }); else P.addSubject(`@cal:${calCode(c.id)}`, color);
+  }
+  // Een afspraak met een eigen kleur in Google houdt die; anders de kleur van zijn agenda
+  function googleColor(ev) {
+    if (ev.eventColor) return ev.eventColor;
+    const c = ev.cal ? A.calendarOf(ev.cal) : null;
+    return c ? calColor(c) : null;
+  }
+  const colorStyle = (ev) => { const c = googleColor(ev); return c ? `--c:${c};` : ''; };
+
   function inkOn(hex) {
     const n = parseInt(hex.slice(1), 16);
     const lum = (0.2126 * (n >> 16) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255)) / 255;
@@ -218,7 +239,7 @@
     box.hidden = !items.length;
     box.replaceChildren(...items.map((e) => e.birthday
       ? h('span', { class: 'chip-day bday' }, `Verjaardag ${e.birthday}`)
-      : h(e.link ? 'a' : 'span', { class: 'chip-day', href: e.link, target: e.link && '_blank', rel: e.link && 'noopener' }, A.label(e))));
+      : h(e.link ? 'a' : 'span', { class: 'chip-day', style: colorStyle(e), href: e.link, target: e.link && '_blank', rel: e.link && 'noopener' }, A.label(e))));
   }
 
   // Overlappende blokken naast elkaar (zelfde aanpak als de weekweergave van het dashboard)
@@ -323,7 +344,7 @@
     }
     return h(ev.link ? 'a' : 'div', {
       class: `ev${ah ? ' ah' : ''}${A.isF1(ev) ? ' f1' : ''}${ev.end <= nowMs ? ' past' : ''}${isSmall(dur) ? ' small' : ''}`,
-      style: place(it), href: ev.link, target: ev.link && '_blank', rel: ev.link && 'noopener',
+      style: `${place(it)}${ah || A.isF1(ev) ? '' : colorStyle(ev)}`, href: ev.link, target: ev.link && '_blank', rel: ev.link && 'noopener',
       title: `${ev.title} (${fmtTime(ev.start)} – ${fmtTime(ev.end)})`,
     }, h('span', { class: 't' }, ah ? 'Appie dienst' : A.label(ev)), h('span', { class: 's' }, sub));
   }
@@ -666,11 +687,17 @@
 
   // ---------- Dialoog: vakken ----------
   function renderSubjects() {
-    $('colors-list').replaceChildren(...CATS.map((c) => {
+    const cals = A.usedCalendars();
+    const colorRow = (label, current, pick, standard) => {
       const box = h('div', { class: 'swatches' });
-      swatches(box, catColor(c), (color) => { setCat(c, color); renderSubjects(); }, c.color);
-      return h('li', null, h('span', { class: 'cat-name' }, c.label), box);
-    }));
+      swatches(box, current, (color) => { pick(color); renderSubjects(); }, standard);
+      return h('li', null, h('span', { class: 'cat-name' }, label), box);
+    };
+    $('colors-list').replaceChildren(
+      ...cals.map((c) => colorRow(c.name, calColor(c), (color) => setCal(c, color), calDefault(c))),
+      // Eén regel "Google Agenda" alleen zolang de agenda's zelf nog niet bekend zijn
+      ...CATS.filter((c) => c.key !== 'agenda' || !cals.length).map((c) => colorRow(c.label, catColor(c), (color) => setCat(c, color), c.color)),
+    );
     const list = $('subjects-list');
     if (!vakken().length) { list.replaceChildren(h('li', { class: 'empty' }, 'Nog geen vakken. Ze komen vanzelf uit Canvas zodra je agenda gekoppeld is.')); return; }
     list.replaceChildren(...vakken().map((s) => {
