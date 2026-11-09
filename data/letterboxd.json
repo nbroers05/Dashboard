@@ -2,6 +2,28 @@
  "user": "nbroers05",
  "logs": [
   {
+   "title": "The Cabinet of Dr. Caligari",
+   "year": 1920,
+   "rating": 3.5,
+   "watched": "2026-11-08",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/nbroers05/film/the-cabinet-of-dr-caligari-1920/",
+   "tmdbId": "234",
+   "poster": "https://image.tmdb.org/t/p/w342/bktNGUv8x54gMlgiTp6qUOHzVh5.jpg"
+  },
+  {
+   "title": "The Golden Spurtle",
+   "year": 2025,
+   "rating": 3.5,
+   "watched": "2026-11-08",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/nbroers05/film/the-golden-spurtle/",
+   "tmdbId": "1425373",
+   "poster": "https://image.tmdb.org/t/p/w342/3nsFrrmaUGyoiqAMRolkqPPWv01.jpg"
+  },
+  {
    "title": "Godzilla Minus Zero",
    "year": 2026,
    "rating": 4.0,
@@ -198,28 +220,6 @@
    "link": "https://letterboxd.com/nbroers05/film/ghost-world/",
    "tmdbId": "1548",
    "poster": "https://image.tmdb.org/t/p/w342/uwKqnUPE4dSM0kKuMW0vXpURh2T.jpg"
-  },
-  {
-   "title": "Mean Girls",
-   "year": 2004,
-   "rating": 4.0,
-   "watched": "2026-08-26",
-   "rewatch": false,
-   "liked": true,
-   "link": "https://letterboxd.com/nbroers05/film/mean-girls/",
-   "tmdbId": "10625",
-   "poster": "https://image.tmdb.org/t/p/w342/2ZkuQXvVhh45uSvkBej4S7Ix1NJ.jpg"
-  },
-  {
-   "title": "Snatch",
-   "year": 2000,
-   "rating": 3.5,
-   "watched": "2026-08-25",
-   "rewatch": false,
-   "liked": false,
-   "link": "https://letterboxd.com/nbroers05/film/snatch/",
-   "tmdbId": "107",
-   "poster": "https://image.tmdb.org/t/p/w342/kIBMvdZ3qLUycHLbT6IFs7UtaCq.jpg"
   }
  ]
 }
