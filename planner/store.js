@@ -208,7 +208,8 @@ window.PlannerStore = (() => {
         } else {
           if (queue[0] === job) queue.shift();
           // 23505 = naam bestaat al, bijvoorbeeld als twee apparaten tegelijk een Canvas-vak aanmaken: geen probleem
-          if (String(e.code) !== '23505') {
+          // PGRST204 = kolom dismissed bestaat nog niet (supabase.sql nog niet opnieuw gedraaid): dan is er ook nog niets te tellen
+          if (!['23505', 'PGRST204'].includes(String(e.code))) {
             emit('error', 'Een wijziging werd niet opgeslagen.');
             console.warn('[planner] opslaan', e);
           }
@@ -360,7 +361,11 @@ window.PlannerStore = (() => {
   function clearGroceries() {
     data.groceries.filter((g) => g.done).forEach((g) => removeRow('groceries', GROCERIES, g.id));
   }
-  const deleteReply = (id) => removeRow('replies', REPLIES, id);
+  // Eerst markeren: zelf afhandelen met het kruisje telt in het archief niet als reactie
+  function deleteReply(id) {
+    enqueue({ table: REPLIES, op: 'update', id, patch: { dismissed: true } });
+    removeRow('replies', REPLIES, id);
+  }
 
   return {
     DEMO, configured, data, on, init, session, signIn, signOut, start, needFrom,

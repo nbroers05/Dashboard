@@ -177,3 +177,101 @@ begin
     end;
   end loop;
 end $$;
+
+-- ---------- Archief: aantallen en reactietijden per app per dag ----------
+-- Alleen getallen: geen namen en geen berichten. Regel erbij = ontvangen. Regel weg = gereageerd, met de tijd die dat duurde.
+-- Met het kruisje in de planner afgehandeld (dismissed) telt niet als reactie.
+alter table public.planner_replies add column if not exists dismissed boolean not null default false;
+
+create table if not exists public.planner_reply_stats (
+  user_id        uuid not null,
+  day            date not null,
+  app            text not null check (char_length(app) between 1 and 40),
+  received       integer not null default 0,
+  answered       integer not null default 0,
+  reply_seconds  integer[] not null default '{}',
+  primary key (user_id, day, app)
+);
+
+-- Vingerafdruk van de sleutel waarmee het archief de cijfers mag ophalen. Zie dashboard-data/scripts/setup/planner_export.py.
+create table if not exists public.planner_export_tokens (
+  token_hash  text primary key check (token_hash ~ '^[0-9a-f]{64}$')
+);
+
+alter table public.planner_reply_stats    enable row level security;
+alter table public.planner_export_tokens  enable row level security;
+revoke all on public.planner_reply_stats   from anon, authenticated;
+revoke all on public.planner_export_tokens from anon, authenticated;
+grant select on public.planner_reply_stats to authenticated;
+
+drop policy if exists planner_reply_stats_select on public.planner_reply_stats;
+create policy planner_reply_stats_select on public.planner_reply_stats
+  for select to authenticated using ((select auth.uid()) = user_id);
+
+create or replace function public.planner_reply_received()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  insert into public.planner_reply_stats as s (user_id, day, app, received)
+  values (new.user_id, (new.since at time zone 'Europe/Amsterdam')::date, new.app, 1)
+  on conflict (user_id, day, app) do update set received = s.received + 1;
+  return null;
+end;
+$$;
+
+create or replace function public.planner_reply_answered()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  seconds integer := greatest(0, extract(epoch from now() - old.since)::integer);
+begin
+  if old.dismissed then
+    return null;
+  end if;
+  insert into public.planner_reply_stats as s (user_id, day, app, answered, reply_seconds)
+  values (old.user_id, (now() at time zone 'Europe/Amsterdam')::date, old.app, 1, array[seconds])
+  on conflict (user_id, day, app) do update
+    set answered = s.answered + 1, reply_seconds = s.reply_seconds || seconds;
+  return null;
+end;
+$$;
+
+drop trigger if exists planner_replies_received on public.planner_replies;
+create trigger planner_replies_received after insert on public.planner_replies
+  for each row execute function public.planner_reply_received();
+
+drop trigger if exists planner_replies_answered on public.planner_replies;
+create trigger planner_replies_answered after delete on public.planner_replies
+  for each row execute function public.planner_reply_answered();
+
+-- Het archief haalt hiermee afgeronde dagen op. Zonder de juiste sleutel: niets.
+create or replace function public.planner_reply_stats_export(p_token text, p_since date)
+returns table (day date, app text, received integer, answered integer, reply_seconds integer[])
+language plpgsql
+stable
+security definer
+set search_path = ''
+as $$
+begin
+  if not exists (
+    select 1 from public.planner_export_tokens t
+    where t.token_hash = encode(sha256(convert_to(p_token, 'UTF8')), 'hex')
+  ) then
+    raise exception 'geen toegang' using errcode = '42501';
+  end if;
+  return query
+    select s.day, s.app, s.received, s.answered, s.reply_seconds
+    from public.planner_reply_stats s
+    where s.day >= p_since and s.day < (now() at time zone 'Europe/Amsterdam')::date
+    order by 1, 2;
+end;
+$$;
+
+revoke all on function public.planner_reply_stats_export(text, date) from public, authenticated;
+grant execute on function public.planner_reply_stats_export(text, date) to anon;
