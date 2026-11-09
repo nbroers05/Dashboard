@@ -60,6 +60,10 @@ Als Noah **"doe groot idee <naam>"** zegt: alleen beginnen als Wat en een Mockup
 
 De oude testmaten (1080×1920, 1916×912, 1366×768, 375×812) gelden niet meer. `?maat` toont linksonder de echte maat als hij ooit verandert.
 
+## Planner (`planner/`)
+
+Losse pagina met eigen opmaak, eigen versienummer en eigen `planner/CHANGELOG.md` (sinds 0.1.0, 9 nov 2026; `?v=` in `planner/index.html` meeverhogen). Wijzigingen daar veranderen het dashboardnummer niet. Data staat alleen in Supabase (`planner/supabase.sql`, RLS per gebruiker), nooit in de repo. Google Agenda alleen lezen. Testen zonder account: `planner/?demo`. Uitleg en stappen: `planner/README.md`. Let op bij lokaal testen: een oude service worker op poort 8000 kan `/planner/` als dashboard tonen.
+
 ## Lokaal testen
 
 ```

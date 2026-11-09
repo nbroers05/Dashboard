@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Planner</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231F1F1E'/%3E%3Cpath d='M9 11h14M9 16h14M9 21h8' stroke='%23fff' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="planner.css?v=0.1.0">
+</head>
+<body>
+  <!-- Inloggen -->
+  <main id="login" class="gate" hidden>
+    <form id="login-form" class="gate-card">
+      <h1>Planner</h1>
+      <p id="login-intro" class="muted">Log in met je mail en wachtwoord.</p>
+      <label>Mail <input id="login-mail" type="email" autocomplete="username" required></label>
+      <label>Wachtwoord <input id="login-pass" type="password" autocomplete="current-password" required></label>
+      <button class="btn dark" type="submit">Inloggen</button>
+      <p id="login-err" class="err" role="alert"></p>
+    </form>
+  </main>
+
+  <!-- Nog niet ingesteld -->
+  <main id="setup" class="gate" hidden>
+    <div class="gate-card">
+      <h1>Planner</h1>
+      <p>Supabase is nog niet ingevuld. Volg de stappen in <code>planner/README.md</code> en zet je gegevens in <code>planner/config.js</code>.</p>
+      <a class="btn dark" href="?demo">Bekijk met voorbeelddata</a>
+    </div>
+  </main>
+
+  <div id="app" class="page" hidden>
+    <p id="demo-bar" class="demo-bar" hidden>Voorbeelddata. Niets hiervan wordt opgeslagen.</p>
+
+    <header class="head">
+      <div class="head-text">
+        <h1 id="title"></h1>
+        <p id="subtitle" class="muted"></p>
+      </div>
+      <span id="sync" class="sync" role="status"></span>
+      <button id="new-btn" class="btn dark" type="button">+ Nieuw</button>
+    </header>
+
+    <div class="top">
+      <nav class="strip" aria-label="Week">
+        <button id="week-prev" class="arrow" type="button" aria-label="Vorige week">‹</button>
+        <div id="strip-days" class="strip-days"></div>
+        <button id="week-next" class="arrow" type="button" aria-label="Volgende week">›</button>
+        <button id="go-today" class="today-btn" type="button" hidden>Vandaag</button>
+      </nav>
+      <div class="later later-bar">Gewoontes <span>komt in ronde 2</span></div>
+    </div>
+
+    <div class="cols">
+      <section class="card tl" data-drop="timeline" aria-label="Tijdlijn">
+        <div id="agenda-note" class="agenda-note" hidden></div>
+        <div id="tl-allday" class="allday" hidden></div>
+        <div id="tl-scroll" class="tl-scroll">
+          <div id="tl-grid" class="tl-grid"></div>
+        </div>
+      </section>
+
+      <div class="col col-a">
+        <section class="card" id="card-today" data-drop="today">
+          <div class="card-head"><h2 id="today-title">Vandaag</h2><span id="today-count" class="hint"></span></div>
+          <ul id="today-list" class="tasks"></ul>
+          <p class="hint foot">sleep een taak naar de tijdlijn om hem in te plannen</p>
+        </section>
+
+        <section class="card" id="card-inbox" data-drop="inbox">
+          <div class="card-head"><h2>Inbox</h2><span class="hint">nog geen dag</span></div>
+          <ul id="inbox-list" class="tasks"></ul>
+          <form id="inbox-form" class="quick">
+            <input id="inbox-input" type="text" maxlength="200" placeholder="Snel iets toevoegen…" aria-label="Snel iets toevoegen aan de inbox" autocomplete="off">
+          </form>
+        </section>
+
+        <section class="card later" id="card-reply"><h2>Nog reageren</h2><span>komt in ronde 2</span></section>
+      </div>
+
+      <div class="col col-b">
+        <section class="card later" id="card-study"><h2>Studie deze week</h2><span>komt in ronde 2</span></section>
+        <section class="card later" id="card-shop"><h2>Boodschappen</h2><span>komt in ronde 2</span></section>
+        <section class="card" id="card-soon">
+          <div class="card-head"><h2>Binnenkort</h2><span class="hint">7 dagen</span></div>
+          <ul id="soon-list" class="soon"></ul>
+        </section>
+      </div>
+    </div>
+
+    <footer class="foot-bar">
+      <button id="subjects-btn" class="link" type="button">Vakken</button>
+      <button id="logout-btn" class="link" type="button">Uitloggen</button>
+      <span>Planner versie 0.1.0</span>
+    </footer>
+  </div>
+
+  <!-- Taak of tijdblok -->
+  <dialog id="edit" class="dlg" aria-labelledby="edit-title">
+    <form id="edit-form" method="dialog">
+      <h2 id="edit-title">Nieuw</h2>
+      <div class="seg" role="radiogroup" aria-label="Soort">
+        <label><input type="radio" name="kind" value="task" checked><span>Taak</span></label>
+        <label><input type="radio" name="kind" value="block"><span>Tijdblok</span></label>
+      </div>
+      <label>Titel <input id="f-title" type="text" maxlength="200" required autocomplete="off"></label>
+      <div class="field">
+        <span>Vak</span>
+        <div id="f-subjects" class="chips"></div>
+        <div id="f-new-subject" class="new-subject" hidden>
+          <input id="f-subject-name" type="text" maxlength="40" placeholder="Naam van het vak" aria-label="Naam van het nieuwe vak">
+          <div id="f-swatches" class="swatches"></div>
+          <button id="f-subject-add" class="btn" type="button">Toevoegen</button>
+        </div>
+      </div>
+      <div class="when">
+        <label>Dag <input id="f-day" type="date"></label>
+        <label>Tijd <input id="f-time" type="time" step="300"></label>
+        <label>Duur
+          <select id="f-dur">
+            <option value="15">15 min</option><option value="30">30 min</option><option value="45">45 min</option>
+            <option value="60">1 uur</option><option value="90">1,5 uur</option><option value="120">2 uur</option>
+            <option value="180">3 uur</option><option value="240">4 uur</option><option value="300">5 uur</option>
+          </select>
+        </label>
+      </div>
+      <p id="f-hint" class="hint">Geen dag = Inbox. Geen tijd = alleen in de lijst van die dag.</p>
+      <p id="f-err" class="err" role="alert"></p>
+      <div class="dlg-actions">
+        <button id="f-delete" class="btn danger" type="button" hidden>Verwijderen</button>
+        <span class="grow"></span>
+        <button id="f-cancel" class="btn" type="button">Annuleren</button>
+        <button class="btn dark" type="submit">Opslaan</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Vakken beheren -->
+  <dialog id="subjects" class="dlg" aria-labelledby="subjects-title">
+    <h2 id="subjects-title">Vakken</h2>
+    <ul id="subjects-list" class="subject-list"></ul>
+    <form id="subjects-form" class="new-subject">
+      <input id="s-name" type="text" maxlength="40" placeholder="Nieuw vak" aria-label="Naam van het nieuwe vak" required>
+      <div id="s-swatches" class="swatches"></div>
+      <button class="btn" type="submit">Toevoegen</button>
+    </form>
+    <div class="dlg-actions"><span class="grow"></span><button id="subjects-close" class="btn dark" type="button">Klaar</button></div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+
+  <script src="config.js?v=0.1.0"></script>
+  <script src="store.js?v=0.1.0"></script>
+  <script src="agenda.js?v=0.1.0"></script>
+  <script src="app.js?v=0.1.0"></script>
+</body>
+</html>
