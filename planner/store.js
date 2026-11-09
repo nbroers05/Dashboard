@@ -16,7 +16,16 @@ window.PlannerStore = (() => {
   const TASKS = 'planner_tasks';
   const SUBJECTS = 'planner_subjects';
 
-  const data = { tasks: [], subjects: [] };
+  const HABITS = 'planner_habits';
+  const CHECKS = 'planner_habit_checks';
+  const GROCERIES = 'planner_groceries';
+  const REPLIES = 'planner_replies';
+  const EXTRA_TABLES = [HABITS, CHECKS, GROCERIES, REPLIES];
+  const CHECK_DAYS = 125;   // zo ver terug worden afvinkingen opgehaald; langere reeksen tonen als 120+
+
+  const EMPTY_EXTRAS = { habits: [], checks: [], groceries: [], replies: [] };
+  // extrasOk = false: de tabellen van ronde 2 bestaan nog niet (supabase.sql nog niet opnieuw gedraaid). Taken blijven dan gewoon werken.
+  const data = { tasks: [], subjects: [], ...EMPTY_EXTRAS, extrasOk: false };
   const listeners = { change: new Set(), status: new Set(), error: new Set() };
   const emit = (name, arg) => listeners[name].forEach((f) => f(arg));
   function on(name, f) { listeners[name].add(f); }
@@ -35,9 +44,29 @@ window.PlannerStore = (() => {
   function demoLoad() {
     try {
       const saved = JSON.parse(sessionStorage.getItem(DEMO_KEY));
-      if (saved) return saved;
+      if (saved) return { ...demoExtras(), ...saved, extrasOk: true };
     } catch {}
-    return demoSeed();
+    return { ...demoSeed(), ...demoExtras(), extrasOk: true };
+  }
+  function demoExtras() {
+    const d = new Date();
+    const key = (n) => { const x = new Date(d.getFullYear(), d.getMonth(), d.getDate() + n); return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, '0')}-${String(x.getDate()).padStart(2, '0')}`; };
+    const ago = (min) => new Date(Date.now() - min * 60000).toISOString();
+    const row = (fields) => ({ id: uuid(), created_at: nowIso(), ...fields });
+    const water = row({ name: 'Water 2L' }), lezen = row({ name: 'Lezen' }), sport = row({ name: 'Sporten' }), slaap = row({ name: 'Voor 00:30 slapen' });
+    return {
+      habits: [water, lezen, sport, slaap],
+      checks: [
+        row({ habit_id: water.id, day: key(0) }), row({ habit_id: lezen.id, day: key(0) }),
+        ...[1, 2, 3, 4].map((n) => row({ habit_id: sport.id, day: key(-n) })),
+      ],
+      groceries: ['Melk', 'Pindakaas', 'Vuilniszakken'].map((title) => row({ title, done: false })),
+      replies: [
+        row({ person: 'Persoon A', app: 'WhatsApp', since: ago(3 * 24 * 60) }),
+        row({ person: 'Persoon B', app: 'Instagram', since: ago(5 * 60) }),
+        row({ person: 'Persoon C', app: 'Snapchat', since: ago(40) }),
+      ],
+    };
   }
   function demoSave() { try { sessionStorage.setItem(DEMO_KEY, JSON.stringify(data)); } catch {} }
   function demoSeed() {
@@ -106,6 +135,7 @@ window.PlannerStore = (() => {
   async function signOut() {
     queue.length = 0;
     if (channel) { sb.removeChannel(channel); channel = null; }
+    if (extraChannel) { sb.removeChannel(extraChannel); extraChannel = null; }
     if (sb) await sb.auth.signOut();
   }
 
@@ -114,10 +144,28 @@ window.PlannerStore = (() => {
     const tasks = sb.from(TASKS).select('id,kind,title,done,day,start_min,duration_min,subject_id,created_at')
       .or(`done.eq.false,day.gte.${fromDay}`).order('created_at');
     const subjects = sb.from(SUBJECTS).select('id,name,color,created_at').order('name');
-    const [t, s] = await Promise.all([tasks, subjects]);
+    const [t, s, extras] = await Promise.all([tasks, subjects, fetchExtras()]);
     if (t.error) throw t.error;
     if (s.error) throw s.error;
-    return { tasks: t.data, subjects: s.data };
+    return { tasks: t.data, subjects: s.data, ...(extras || EMPTY_EXTRAS), extrasOk: !!extras };
+  }
+
+  async function fetchExtras() {
+    const d = new Date();
+    d.setDate(d.getDate() - CHECK_DAYS);
+    const from = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    const [h, c, g, r] = await Promise.all([
+      sb.from(HABITS).select('id,name,created_at').order('created_at'),
+      sb.from(CHECKS).select('id,habit_id,day,created_at').gte('day', from).order('day', { ascending: false }),
+      sb.from(GROCERIES).select('id,title,done,created_at').order('created_at'),
+      sb.from(REPLIES).select('id,person,app,since,created_at').order('since'),
+    ]);
+    for (const res of [h, c, g, r]) {
+      if (!res.error) continue;
+      if (['PGRST205', '42P01'].includes(String(res.error.code))) return null;
+      throw res.error;
+    }
+    return { habits: h.data, checks: c.data, groceries: g.data, replies: r.data };
   }
 
   async function write(job) {
@@ -182,9 +230,9 @@ window.PlannerStore = (() => {
     try {
       const fresh = await fetchAll();
       if (seq !== loadSeq) { reloadWanted = true; return; }   // intussen iets aangepast: dit antwoord is al oud
-      data.tasks = fresh.tasks;
-      data.subjects = fresh.subjects;
+      Object.assign(data, fresh);
       ready = true;
+      if (data.extrasOk) liveExtras();
       if (status === 'offline') setStatus('saved');
       emit('change');
     } catch (e) {
@@ -207,6 +255,15 @@ window.PlannerStore = (() => {
     setInterval(() => { if (!document.hidden) reload(); }, POLL);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) reload(); });
     window.addEventListener('online', reload);
+  }
+
+  // Apart kanaal: een abonnement op een tabel die nog niet bestaat zou ook de live-updates van de taken breken
+  let extraChannel = null;
+  function liveExtras() {
+    if (DEMO || extraChannel) return;
+    extraChannel = sb.channel('planner-extra');
+    for (const table of EXTRA_TABLES) extraChannel.on('postgres_changes', { event: '*', schema: 'public', table }, changed);
+    extraChannel.subscribe();
   }
 
   async function start(firstDay) {
@@ -264,9 +321,51 @@ window.PlannerStore = (() => {
     enqueue({ table: SUBJECTS, op: 'delete', id });
   }
 
+  function insertRow(list, table, fields) {
+    const row = { id: uuid(), ...fields };
+    data[list].push({ ...row, created_at: nowIso() });
+    emit('change');
+    enqueue({ table, op: 'insert', row });
+    return row;
+  }
+  function patchRow(list, table, id, patch) {
+    const r = data[list].find((x) => x.id === id);
+    if (!r) return;
+    Object.assign(r, patch);
+    emit('change');
+    enqueue({ table, op: 'update', id, patch });
+  }
+  function removeRow(list, table, id) {
+    data[list] = data[list].filter((x) => x.id !== id);
+    emit('change');
+    enqueue({ table, op: 'delete', id });
+  }
+
+  const addHabit = (name) => {
+    if (data.habits.some((h) => h.name.toLowerCase() === name.toLowerCase())) return;
+    insertRow('habits', HABITS, { name });
+  };
+  const renameHabit = (id, name) => patchRow('habits', HABITS, id, { name });
+  function deleteHabit(id) {
+    data.checks = data.checks.filter((c) => c.habit_id !== id);
+    removeRow('habits', HABITS, id);
+  }
+  function toggleHabit(id, day) {
+    const check = data.checks.find((c) => c.habit_id === id && c.day === day);
+    if (check) removeRow('checks', CHECKS, check.id);
+    else insertRow('checks', CHECKS, { habit_id: id, day });
+  }
+  const addGrocery = (title) => insertRow('groceries', GROCERIES, { title, done: false });
+  const setGrocery = (id, done) => patchRow('groceries', GROCERIES, id, { done });
+  function clearGroceries() {
+    data.groceries.filter((g) => g.done).forEach((g) => removeRow('groceries', GROCERIES, g.id));
+  }
+  const deleteReply = (id) => removeRow('replies', REPLIES, id);
+
   return {
     DEMO, configured, data, on, init, session, signIn, signOut, start, needFrom,
     addTask, updateTask, deleteTask, addSubject, updateSubject, deleteSubject,
+    addHabit, renameHabit, deleteHabit, toggleHabit, addGrocery, setGrocery, clearGroceries, deleteReply,
     get status() { return status; },
     get ready() { return ready; },
   };

@@ -15,6 +15,8 @@ De knoppen in Supabase kunnen net iets anders heten dan hier staat.
 5. **Niemand anders laten inschrijven.** Ga naar **Authentication**, dan **Sign In / Providers**, en zet **Allow new users to sign up** uit.
 6. **Inloggen.** Wacht een minuut of twee en open de planner op de pc en op je telefoon. Log op beide in met je mail en wachtwoord.
 
+Komen er nieuwe onderdelen bij, dan moet je stap 2 nog een keer doen: plak het hele bestand opnieuw en klik **Run**. Je taken en vakken blijven gewoon staan.
+
 Wachtwoord vergeten: in Supabase bij **Authentication**, **Users** kun je het per gebruiker opnieuw instellen.
 
 ## Google Agenda

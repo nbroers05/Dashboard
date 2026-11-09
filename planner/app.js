@@ -17,7 +17,10 @@
     { key: 'block', label: 'Tijdblok zonder vak', color: '#7F77DD' },
     { key: 'task', label: 'Taak zonder vak', color: '#7F77DD' },
     { key: 'now', label: 'Lijn voor nu', color: '#378ADD' },
+    { key: 'habit', label: 'Gewoonte', color: '#639922' },
+    { key: 'reply', label: 'Nog reageren na 2 dagen', color: '#E24B4A' },
   ];
+  const SQL_NOTE = 'Nog één stap: draai supabase.sql opnieuw in Supabase (zie README).';
 
   const $ = (id) => document.getElementById(id);
   function h(tag, attrs, ...kids) {
@@ -172,6 +175,109 @@
     renderToday();
     renderInbox();
     renderSoon();
+    renderHabits();
+    renderStudy();
+    renderShop();
+    renderReplies();
+  }
+
+  // ---------- Ronde 2 ----------
+  const extrasMissing = () => P.ready && !P.data.extrasOk;
+
+  // Reeks: dagen op rij tot en met vandaag; vandaag nog niet afgevinkt breekt de reeks niet
+  function streak(id) {
+    const days = new Set(P.data.checks.filter((c) => c.habit_id === id).map((c) => c.day));
+    let k = today();
+    if (!days.has(k)) k = shift(k, -1);
+    let n = 0;
+    while (days.has(k)) { n++; k = shift(k, -1); }
+    return n;
+  }
+
+  function habitNodes() {
+    if (extrasMissing()) return [h('span', { class: 'hint' }, SQL_NOTE)];
+    const future = sel > today();
+    const chips = P.data.habits.map((x) => {
+      const on = P.data.checks.some((c) => c.habit_id === x.id && c.day === sel);
+      const n = streak(x.id);
+      const text = `${on ? '✓ ' : ''}${x.name}${n >= 2 ? ` · ${n >= 120 ? '120+' : n} dagen reeks` : ''}`;
+      return h('button', { type: 'button', class: `habit${on ? ' on' : ''}`, 'data-habit': x.id, 'aria-pressed': String(on), disabled: future }, text);
+    });
+    chips.push(h('button', { type: 'button', class: 'link hint', 'data-habits-edit': '' }, P.data.habits.length ? 'Instellen' : 'Gewoontes instellen'));
+    return chips;
+  }
+  function renderHabits() {
+    $('habits-top').replaceChildren(...habitNodes());
+    $('habits-card').replaceChildren(...habitNodes());
+  }
+
+  function renderStudy() {
+    const end = shift(week, 6);
+    const thisWeek = week === mondayOf(today());
+    $('study-title').textContent = thisWeek ? 'Studie deze week' : `Studie week van ${fromKey(week).getDate()} ${fromKey(week).toLocaleDateString('nl-NL', { month: 'short' }).replace('.', '')}`;
+    const inWeek = tasks().filter((t) => t.kind === 'task' && t.subject_id && t.day && t.day >= week && t.day <= end);
+    const rows = vakken().map((s) => {
+      const mine = inWeek.filter((t) => t.subject_id === s.id);
+      return { s, total: mine.length, done: mine.filter((t) => t.done).length };
+    }).filter((r) => r.total);
+    $('study-list').replaceChildren(...(rows.length ? rows.map((r) => h('li', { style: `--c:${r.s.color}` },
+      h('div', { class: 'study-line' }, h('span', { class: 'x', title: r.s.name }, r.s.name), h('span', null, `${r.done}/${r.total}`)),
+      h('div', { class: 'bar' }, h('i', { style: `width:${Math.round((r.done / r.total) * 100)}%` }))))
+      : [h('li', { class: 'empty' }, 'Nog geen taken met een vak in deze week.')]));
+  }
+
+  let shopOpen = false;
+  function renderShop() {
+    const missing = extrasMissing();
+    $('shop-form').hidden = missing;
+    const clear = $('shop-clear'), more = $('shop-more');
+    if (missing) {
+      $('shop-list').replaceChildren(h('li', { class: 'empty' }, SQL_NOTE));
+      clear.hidden = more.hidden = true;
+      return;
+    }
+    const all = [...P.data.groceries].sort((a, b) => a.done - b.done);
+    const LIMIT = 5;
+    const shown = shopOpen || all.length <= LIMIT + 1 ? all : all.slice(0, LIMIT);
+    $('shop-list').replaceChildren(...(shown.length ? shown.map((g) => h('li', { class: `item${g.done ? ' done' : ''}` },
+      h('label', null, h('input', { type: 'checkbox', 'data-grocery': g.id, checked: g.done }), h('span', null, g.title))))
+      : [h('li', { class: 'empty' }, 'Lijstje is leeg.')]));
+    clear.hidden = !all.some((g) => g.done);
+    more.hidden = shown.length === all.length;
+    more.textContent = `+${all.length - shown.length} meer`;
+  }
+
+  function waiting(iso) {
+    const min = Math.max(0, Math.floor((Date.now() - Date.parse(iso)) / 60000));
+    if (min < 60) return `${min} min`;
+    if (min < 24 * 60) return `${Math.floor(min / 60)} uur`;
+    const d = Math.floor(min / (24 * 60));
+    return `al ${d} ${d === 1 ? 'dag' : 'dagen'}`;
+  }
+  function renderReplies() {
+    const list = $('reply-list');
+    if (extrasMissing()) { list.replaceChildren(h('li', { class: 'empty' }, SQL_NOTE)); return; }
+    const rows = [...P.data.replies].sort((a, b) => a.since.localeCompare(b.since));
+    list.replaceChildren(...(rows.length ? rows.map((r) => {
+      const late = Date.now() - Date.parse(r.since) >= 2 * 24 * 3600000;
+      return h('li', { class: `reply${late ? ' late' : ''}` },
+        h('div', { class: 'reply-text' }, h('b', { title: r.person }, r.person), h('span', null, `${r.app} · ${waiting(r.since)}`)),
+        h('button', { type: 'button', class: 'reply-x', 'data-reply': r.id, 'aria-label': `${r.person} afhandelen`, title: 'Afhandelen' }, '×'));
+    }) : [h('li', { class: 'empty' }, 'Niemand wacht op je.')]));
+  }
+
+  function renderHabitsDialog() {
+    const list = $('habits-list');
+    if (!P.data.habits.length) { list.replaceChildren(h('li', { class: 'empty' }, 'Nog geen gewoontes.')); return; }
+    list.replaceChildren(...P.data.habits.map((x) => {
+      const name = h('input', { type: 'text', value: x.name, maxlength: 40, 'aria-label': `Naam van ${x.name}` });
+      name.addEventListener('change', () => { const v = name.value.trim(); if (v) P.renameHabit(x.id, v); else name.value = x.name; });
+      const del = h('button', { class: 'x', type: 'button', 'aria-label': `${x.name} verwijderen` }, '×');
+      del.addEventListener('click', () => {
+        if (confirm(`Gewoonte "${x.name}" verwijderen? De reeks gaat ook weg.`)) { P.deleteHabit(x.id); renderHabitsDialog(); }
+      });
+      return h('li', null, name, del);
+    }));
   }
 
   function renderHead() {
@@ -182,6 +288,8 @@
     const parts = [open === 0 ? 'geen open taken' : open === 1 ? '1 taak open' : `${open} taken open`];
     const shift0 = timedFor(sel).filter((x) => A.isAH(x.ev)).sort((a, b) => a.s - b.s)[0];
     if (shift0) parts.push(`dienst om ${fmtMin(shift0.s)}`);
+    const wait = P.data.replies.length;
+    if (wait) parts.push(wait === 1 ? '1 persoon wacht op je' : `${wait} mensen wachten op je`);
     $('subtitle').textContent = capital(parts.join(' · '));
   }
 
@@ -752,11 +860,39 @@
       input.value = '';
     });
 
+    $('shop-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const input = $('shop-input');
+      const title = input.value.trim();
+      if (!title) return;
+      P.addGrocery(title);
+      input.value = '';
+    });
+    $('shop-clear').onclick = () => P.clearGroceries();
+    $('shop-more').onclick = () => { shopOpen = true; renderShop(); };
+
+    $('habits-close').onclick = () => $('habits-dlg').close();
+    $('habits-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const input = $('h-name');
+      const name = input.value.trim();
+      if (!name) return;
+      P.addHabit(name);
+      input.value = '';
+      renderHabitsDialog();
+    });
+
     document.addEventListener('change', (e) => {
-      const id = e.target.dataset && e.target.dataset.check;
-      if (id) P.updateTask(id, { done: e.target.checked });
+      const ds = e.target.dataset || {};
+      if (ds.check) P.updateTask(ds.check, { done: e.target.checked });
+      if (ds.grocery) P.setGrocery(ds.grocery, e.target.checked);
     });
     document.addEventListener('click', (e) => {
+      const habit = e.target.closest('[data-habit]');
+      if (habit) { P.toggleHabit(habit.dataset.habit, sel); return; }
+      if (e.target.closest('[data-habits-edit]')) { renderHabitsDialog(); $('habits-dlg').showModal(); return; }
+      const reply = e.target.closest('[data-reply]');
+      if (reply) { P.deleteReply(reply.dataset.reply); return; }
       if (e.target.closest('input, a')) return;
       const n = e.target.closest('[data-edit]');
       if (n) { const t = task(n.dataset.edit); if (t) openEdit(t); }

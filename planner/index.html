@@ -7,7 +7,7 @@
   <title>Planner</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231F1F1E'/%3E%3Cpath d='M9 11h14M9 16h14M9 21h8' stroke='%23fff' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
   <script>(function () { var t; try { t = localStorage.getItem('planner.theme'); } catch (e) {} document.documentElement.dataset.theme = t === 'dark' || (t !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light'; })();</script>
-  <link rel="stylesheet" href="planner.css?v=0.2.1">
+  <link rel="stylesheet" href="planner.css?v=0.3.0">
 </head>
 <body>
   <!-- Inloggen -->
@@ -50,7 +50,7 @@
         <button id="week-next" class="arrow" type="button" aria-label="Volgende week">›</button>
         <button id="go-today" class="today-btn" type="button" hidden>Vandaag</button>
       </nav>
-      <div class="later later-bar">Gewoontes <span>komt in ronde 2</span></div>
+      <div id="habits-top" class="habits" aria-label="Gewoontes"></div>
     </div>
 
     <div class="cols">
@@ -77,12 +77,33 @@
           </form>
         </section>
 
-        <section class="card later" id="card-reply"><h2>Nog reageren</h2><span>komt in ronde 2</span></section>
+        <section class="card" id="card-reply">
+          <div class="card-head"><h2>Nog reageren</h2><span class="hint">van je telefoon</span></div>
+          <ul id="reply-list" class="replies"></ul>
+          <p class="hint foot">weg zodra je de chat opent, blijft bij alles wissen</p>
+        </section>
+
+        <!-- Alleen op de telefoon: daar blijft de tijdlijn bovenaan -->
+        <section class="card" id="card-habits">
+          <div class="card-head"><h2>Gewoontes</h2></div>
+          <div id="habits-card" class="habits"></div>
+        </section>
       </div>
 
       <div class="col col-b">
-        <section class="card later" id="card-study"><h2>Studie deze week</h2><span>komt in ronde 2</span></section>
-        <section class="card later" id="card-shop"><h2>Boodschappen</h2><span>komt in ronde 2</span></section>
+        <section class="card" id="card-study">
+          <div class="card-head"><h2 id="study-title">Studie deze week</h2></div>
+          <ul id="study-list" class="study"></ul>
+        </section>
+
+        <section class="card" id="card-shop">
+          <div class="card-head"><h2>Boodschappen</h2><button id="shop-clear" class="link hint" type="button" hidden>Afgevinkt weghalen</button></div>
+          <ul id="shop-list" class="items"></ul>
+          <button id="shop-more" class="link hint" type="button" hidden></button>
+          <form id="shop-form" class="quick">
+            <input id="shop-input" type="text" maxlength="120" placeholder="Iets toevoegen…" aria-label="Boodschap toevoegen" autocomplete="off">
+          </form>
+        </section>
         <section class="card" id="card-soon">
           <div class="card-head"><h2>Binnenkort</h2><span class="hint">7 dagen</span></div>
           <ul id="soon-list" class="soon"></ul>
@@ -94,7 +115,7 @@
       <button id="theme-btn" class="link" type="button"></button>
       <button id="subjects-btn" class="link" type="button">Vakken en kleuren</button>
       <button id="logout-btn" class="link" type="button">Uitloggen</button>
-      <span>Planner versie 0.2.1</span>
+      <span>Planner versie 0.3.0</span>
     </footer>
   </div>
 
@@ -153,11 +174,22 @@
     <div class="dlg-actions"><span class="grow"></span><button id="subjects-close" class="btn dark" type="button">Klaar</button></div>
   </dialog>
 
+  <!-- Gewoontes instellen -->
+  <dialog id="habits-dlg" class="dlg" aria-labelledby="habits-title">
+    <h2 id="habits-title">Gewoontes</h2>
+    <ul id="habits-list" class="subject-list"></ul>
+    <form id="habits-form" class="new-subject">
+      <input id="h-name" type="text" maxlength="40" placeholder="Nieuwe gewoonte" aria-label="Naam van de nieuwe gewoonte" required>
+      <button class="btn" type="submit">Toevoegen</button>
+    </form>
+    <div class="dlg-actions"><span class="grow"></span><button id="habits-close" class="btn dark" type="button">Klaar</button></div>
+  </dialog>
+
   <div id="toast" class="toast" role="status" hidden></div>
 
-  <script src="config.js?v=0.2.1"></script>
-  <script src="store.js?v=0.2.1"></script>
-  <script src="agenda.js?v=0.2.1"></script>
-  <script src="app.js?v=0.2.1"></script>
+  <script src="config.js?v=0.3.0"></script>
+  <script src="store.js?v=0.3.0"></script>
+  <script src="agenda.js?v=0.3.0"></script>
+  <script src="app.js?v=0.3.0"></script>
 </body>
 </html>
