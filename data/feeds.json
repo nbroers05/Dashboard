@@ -4,6 +4,18 @@
    "name": "NOS",
    "items": [
     {
+     "title": "Bijna 400.000 Russische doden in oorlog met Oekraïne, blijkt uit gehackte data",
+     "link": "https://nos.nl/l/2638660",
+     "time": "2026-11-09T03:36:36+01:00",
+     "img": "https://images.cdn.nos.nl/5/H/S/A/4/7/R14uXedLsU16BMnsMyLtgEGRJMvLMGMPzaZTdXg/8x403x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Code geel in delen van Drenthe, Groningen en Overijssel wegens dichte mist",
+     "link": "https://nos.nl/l/2638659",
+     "time": "2026-11-09T02:26:22+01:00",
+     "img": "https://images.cdn.nos.nl/8/5/o/3/8/j/XtmeNu2PW9i7eCrQssdc4knLktpJ6Pdv4xm84J7/0x0x4000x2250-1024x576.webp"
+    },
+    {
      "title": "Trump noemt aankondiging UFC-baas Dana White als perschef Witte Huis 'grap'",
      "link": "https://nos.nl/l/2638658",
      "time": "2026-11-09T01:47:10+01:00",
@@ -80,18 +92,6 @@
      "link": "https://nos.nl/l/2638582",
      "time": "2026-11-08T16:35:06+01:00",
      "img": "https://images.cdn.nos.nl/8/B/B/6/2/P/LsQbU7iSM9dQJ3j2gqCCU4H65y9Tpk1M5hQ3VnF/0x0x2560x1440-1024x576.webp"
-    },
-    {
-     "title": "Nederlandse (81) overleden na ongeluk waarbij camper kantelde op snelweg in België",
-     "link": "https://nos.nl/l/2638577",
-     "time": "2026-11-08T15:51:00+01:00",
-     "img": "https://images.cdn.nos.nl/1/5/r/G/S/b/5FvMo3aoAkQDf45rn7j2YDSwuQNcbTJe3mgmDUK/3x1x1392x783-1024x576.webp"
-    },
-    {
-     "title": "Kaapstad ruziet over plan om 'probleembavianen' op te sluiten",
-     "link": "https://nos.nl/l/2638573",
-     "time": "2026-11-08T15:42:11+01:00",
-     "img": "https://images.cdn.nos.nl/1/6/R/f/e/r/4eFvg7W5kDgddst2S6xoq8e2nEEvWQkPYzXrZ9c/769x400x2976x1674-1024x576.webp"
     }
    ]
   },
@@ -390,7 +390,50 @@
   }
  ],
  "youtube": {
-  "channels": [],
-  "videos": []
+  "channels": [
+   "Patrick (H) Willems"
+  ],
+  "videos": [
+   {
+    "title": "How Did Interstellar Become Every Dude's Favorite Movie?",
+    "channel": "Patrick (H) Willems",
+    "link": "https://www.youtube.com/watch?v=f5iyzbgBTgA",
+    "thumb": "https://i.ytimg.com/vi/f5iyzbgBTgA/mqdefault.jpg",
+    "time": "2026-11-03T14:14:19+00:00",
+    "short": false
+   },
+   {
+    "title": "Is This The Best Directed Movie Ever?",
+    "channel": "Patrick (H) Willems",
+    "link": "https://www.youtube.com/watch?v=_t76HmE8ib4",
+    "thumb": "https://i.ytimg.com/vi/_t76HmE8ib4/mqdefault.jpg",
+    "time": "2026-09-15T13:11:42+00:00",
+    "short": false
+   },
+   {
+    "title": "Come See My New Film In Theaters",
+    "channel": "Patrick (H) Willems",
+    "link": "https://www.youtube.com/watch?v=uuMbBWR-2Xg",
+    "thumb": "https://i.ytimg.com/vi/uuMbBWR-2Xg/mqdefault.jpg",
+    "time": "2026-09-04T22:53:08+00:00",
+    "short": false
+   },
+   {
+    "title": "We Need To Talk About How Weird HOOK Is",
+    "channel": "Patrick (H) Willems",
+    "link": "https://www.youtube.com/watch?v=hXAWl_Ar6xA",
+    "thumb": "https://i.ytimg.com/vi/hXAWl_Ar6xA/mqdefault.jpg",
+    "time": "2026-08-06T14:38:38+00:00",
+    "short": false
+   },
+   {
+    "title": "Can video games be cinema? #videogames #movie #thelastofus #deathstranding",
+    "channel": "Patrick (H) Willems",
+    "link": "https://www.youtube.com/shorts/-GWrCLXTuwM",
+    "thumb": "https://i.ytimg.com/vi/-GWrCLXTuwM/mqdefault.jpg",
+    "time": "2026-07-01T16:17:55+00:00",
+    "short": true
+   }
+  ]
  }
 }
