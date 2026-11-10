@@ -1,5 +1,5 @@
 {
- "day": "2026-11-09",
+ "day": "2026-11-10",
  "sources": [
   "LantarenVenster"
  ],
@@ -30,6 +30,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/a-talent-for-murder/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "A Talent For Murder - Film&Kerstontbijt",
+   "key": "atalentformurderfilmandkerstontbijt",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/a-talent-for-murder-filmkerstontbijt/",
      "day": null,
      "next": null,
      "until": null
@@ -74,7 +88,7 @@
      "url": "https://www.lantarenvenster.nl/programma/all-of-a-sudden/",
      "day": null,
      "next": null,
-     "until": "2026-11-11"
+     "until": "2026-11-18"
     }
    ]
   },
@@ -88,7 +102,7 @@
      "url": "https://www.lantarenvenster.nl/programma/amarga-navidad/",
      "day": null,
      "next": null,
-     "until": "2026-11-11"
+     "until": "2026-11-18"
     }
    ]
   },
@@ -130,7 +144,7 @@
      "url": "https://www.lantarenvenster.nl/programma/andiamo-a-bere-lultima/",
      "day": null,
      "next": null,
-     "until": "2026-11-11"
+     "until": "2026-11-17"
     }
    ]
   },
@@ -268,6 +282,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/bettie-serveert/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "BLKNWS: Terms & Conditions",
+   "key": "blknwstermsandconditions",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/blknws-terms-conditions/",
      "day": null,
      "next": null,
      "until": null
@@ -452,7 +480,7 @@
      "url": "https://www.lantarenvenster.nl/programma/coward/",
      "day": null,
      "next": null,
-     "until": "2026-11-11"
+     "until": "2026-11-17"
     }
    ]
   },
@@ -508,7 +536,21 @@
      "url": "https://www.lantarenvenster.nl/programma/de-manager/",
      "day": null,
      "next": null,
-     "until": "2026-11-10"
+     "until": "2026-11-18"
+    }
+   ]
+  },
+  {
+   "title": "Dekker",
+   "key": "dekker",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/dekker/",
+     "day": null,
+     "next": null,
+     "until": null
     }
    ]
   },
@@ -520,6 +562,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/dialq-filmquiz/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Dikkie Dik 3: Dikkie Dik krijgt bezoek (3+)",
+   "key": "dikkiedik3dikkiedikkrijgtbezoek3",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/dikkie-dik-3-dikkie-dik-krijgt-bezoek-3/",
      "day": null,
      "next": null,
      "until": null
@@ -681,8 +737,8 @@
    ]
   },
   {
-   "title": "Fay Claassen & Koosje",
-   "key": "fayclaassenandkoosje",
+   "title": "Fay & Koosje",
+   "key": "fayandkoosje",
    "poster": null,
    "shows": [
     {
@@ -779,6 +835,20 @@
    ]
   },
   {
+   "title": "FROM TIKTOK TO CINEMA AWARDS",
+   "key": "fromtiktoktocinemaawards",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/from-tiktok-to-cinema-awards/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "Gallowstreet",
    "key": "gallowstreet",
    "poster": null,
@@ -802,7 +872,7 @@
      "url": "https://www.lantarenvenster.nl/programma/het-geheim-van-hotel-new-york/",
      "day": null,
      "next": null,
-     "until": "2026-11-11"
+     "until": "2026-11-17"
     }
    ]
   },
@@ -845,20 +915,6 @@
      "day": null,
      "next": null,
      "until": null
-    }
-   ]
-  },
-  {
-   "title": "Imago",
-   "key": "imago",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/imago/",
-     "day": null,
-     "next": null,
-     "until": "2026-11-09"
     }
    ]
   },
@@ -1124,7 +1180,7 @@
      "url": "https://www.lantarenvenster.nl/programma/klara-and-the-sun/",
      "day": null,
      "next": null,
-     "until": "2026-11-11"
+     "until": "2026-11-17"
     }
    ]
   },
@@ -1136,6 +1192,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/kraak-smaak-27/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "La Bola Negra",
+   "key": "labolanegra",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/la-bola-negra/",
      "day": null,
      "next": null,
      "until": null
@@ -1320,7 +1390,7 @@
      "url": "https://www.lantarenvenster.nl/programma/maspalomas/",
      "day": null,
      "next": null,
-     "until": "2026-11-11"
+     "until": "2026-11-18"
     }
    ]
   },
@@ -1409,6 +1479,20 @@
    ]
   },
   {
+   "title": "Moppervis (5+)",
+   "key": "moppervis5",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/moppervis/",
+     "day": null,
+     "next": null,
+     "until": "2026-11-14"
+    }
+   ]
+  },
+  {
    "title": "Mulholland Drive (2001)",
    "key": "mulhollanddrive2001",
    "poster": null,
@@ -1446,7 +1530,7 @@
      "url": "https://www.lantarenvenster.nl/programma/naza/",
      "day": null,
      "next": null,
-     "until": "2026-11-11"
+     "until": "2026-11-18"
     }
    ]
   },
@@ -1479,6 +1563,20 @@
    ]
   },
   {
+   "title": "Once upon a Time in Harlem",
+   "key": "onceuponatimeinharlem",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/once-upon-a-time-in-harlem/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "One Cut of the Dead - NextGen Cinema",
    "key": "onecutofthedeadnextgencinema",
    "poster": null,
@@ -1500,6 +1598,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/paradox-jazz-orchestra-james-carter/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Peven Everett: Voice of a Generation",
+   "key": "peveneverettvoiceofageneration",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/peven-everett-voice-of-a-generation/",
      "day": null,
      "next": null,
      "until": null
@@ -1544,7 +1656,7 @@
      "url": "https://www.lantarenvenster.nl/programma/primetime/",
      "day": null,
      "next": null,
-     "until": "2026-11-11"
+     "until": "2026-11-18"
     }
    ]
   },
@@ -1558,21 +1670,7 @@
      "url": "https://www.lantarenvenster.nl/programma/queen-at-sea/",
      "day": null,
      "next": null,
-     "until": "2026-11-17"
-    }
-   ]
-  },
-  {
-   "title": "Queer Cinema x Queer & the City: Club Kid",
-   "key": "queercinemaxqueerandthecityclubkid",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/queer-cinema-x-queer-the-city-club-kid/",
-     "day": null,
-     "next": null,
-     "until": null
+     "until": "2026-11-18"
     }
    ]
   },
@@ -1717,6 +1815,20 @@
    ]
   },
   {
+   "title": "Shaun het Schaap: Het Beest van de Boerderij (6+)",
+   "key": "shaunhetschaaphetbeestvandeboerderij6",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/shaun-het-schaap-het-beest-van-de-boerderij/",
+     "day": null,
+     "next": null,
+     "until": "2026-11-15"
+    }
+   ]
+  },
+  {
    "title": "Shutter Island (2010)",
    "key": "shutterisland2010",
    "poster": null,
@@ -1768,7 +1880,7 @@
      "url": "https://www.lantarenvenster.nl/programma/sneakpreview/",
      "day": null,
      "next": null,
-     "until": "2026-11-09"
+     "until": "2026-11-16"
     }
    ]
   },
@@ -1838,7 +1950,7 @@
      "url": "https://www.lantarenvenster.nl/programma/the-beloved/",
      "day": null,
      "next": null,
-     "until": "2026-11-11"
+     "until": "2026-11-18"
     }
    ]
   },
@@ -1880,7 +1992,7 @@
      "url": "https://www.lantarenvenster.nl/programma/the-cycle-of-love/",
      "day": null,
      "next": null,
-     "until": "2026-11-11"
+     "until": "2026-11-18"
     }
    ]
   },
@@ -1892,6 +2004,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/the-debut/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "The Debut - Film&Kerstontbijt",
+   "key": "thedebutfilmandkerstontbijt",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/the-debut-filmkerstontbijt/",
      "day": null,
      "next": null,
      "until": null
@@ -2095,6 +2221,20 @@
    ]
   },
   {
+   "title": "Violette",
+   "key": "violette",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/violette/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "We Had a Plan",
    "key": "wehadaplan",
    "poster": null,
@@ -2146,7 +2286,7 @@
      "url": "https://www.lantarenvenster.nl/programma/wicker/",
      "day": null,
      "next": null,
-     "until": "2026-11-11"
+     "until": "2026-11-18"
     }
    ]
   },
@@ -2160,21 +2300,21 @@
      "url": "https://www.lantarenvenster.nl/programma/wild-horse-nine/",
      "day": null,
      "next": null,
-     "until": "2026-11-11"
+     "until": "2026-11-18"
     }
    ]
   },
   {
-   "title": "Yellow Letters",
-   "key": "yellowletters",
+   "title": "Wild Horse Nine - Film&Ontbijt",
+   "key": "wildhorseninefilmandontbijt",
    "poster": null,
    "shows": [
     {
      "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/yellow-letters/",
+     "url": "https://www.lantarenvenster.nl/programma/wild-horse-nine-filmontbijt/",
      "day": null,
      "next": null,
-     "until": "2026-11-09"
+     "until": "2026-11-15"
     }
    ]
   },
@@ -2216,7 +2356,7 @@
      "url": "https://www.lantarenvenster.nl/programma/youri/",
      "day": null,
      "next": null,
-     "until": "2026-11-11"
+     "until": "2026-11-18"
     }
    ]
   },

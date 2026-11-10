@@ -15,6 +15,20 @@
  ],
  "logs": [
   {
+   "title": "Freedom Writers",
+   "year": 2007,
+   "rating": 5.0,
+   "watched": "2026-11-09",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/loekatheactor/film/freedom-writers/",
+   "slug": "freedom-writers",
+   "tmdbId": "1646",
+   "poster": "https://image.tmdb.org/t/p/w342/81AdeUQT99N0xPg3j6RVh0YGOTk.jpg",
+   "user": "loekatheactor",
+   "name": "Loeka"
+  },
+  {
    "title": "KPop Demon Hunters",
    "year": 2025,
    "rating": 3.5,
@@ -263,20 +277,6 @@
    "slug": "incoming-2024",
    "tmdbId": "1008953",
    "poster": "https://a.ltrbxd.com/resized/film-poster/9/0/8/6/8/9/908689-incoming-0-600-0-900-crop.jpg?v=c11234276e",
-   "user": "loekatheactor",
-   "name": "Loeka"
-  },
-  {
-   "title": "Nerve",
-   "year": 2016,
-   "rating": 3.0,
-   "watched": "2026-09-06",
-   "rewatch": false,
-   "liked": false,
-   "link": "https://letterboxd.com/loekatheactor/film/nerve-2016/",
-   "slug": "nerve-2016",
-   "tmdbId": "328387",
-   "poster": "https://a.ltrbxd.com/resized/film-poster/2/5/5/9/0/0/255900-nerve-0-600-0-900-crop.jpg?v=149e8ebb3e",
    "user": "loekatheactor",
    "name": "Loeka"
   },
