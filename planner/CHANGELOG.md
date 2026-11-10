@@ -2,6 +2,12 @@
 
 Eigen versienummer, los van het dashboard. Nieuwste bovenaan.
 
+## 10-11-2026
+
+| Versie | Wat |
+|---|---|
+| 0.3.2 | Nog reageren in vier tabjes met teller: WhatsApp, Snap, Insta en Dating (Hinge, Tinder, Bumble). Standaard open: het tabje met de oudste wachtende. Per tabje oudste bovenaan, maximaal 4 en de rest achter "+ meer". Tabje met iets roods krijgt een rood puntje. Andere apps staan onder Overig, een tabje dat er alleen is als er iets in staat. |
+
 ## 09-11-2026
 
 | Versie | Wat |

@@ -63,8 +63,15 @@ window.PlannerStore = (() => {
       groceries: ['Melk', 'Pindakaas', 'Vuilniszakken'].map((title) => row({ title, done: false })),
       replies: [
         row({ person: 'Persoon A', app: 'WhatsApp', since: ago(3 * 24 * 60) }),
+        row({ person: 'Persoon D', app: 'WhatsApp', since: ago(20 * 60) }),
+        row({ person: 'Persoon E', app: 'WhatsApp', since: ago(9 * 60) }),
+        row({ person: 'Persoon F', app: 'WhatsApp', since: ago(4 * 60) }),
+        row({ person: 'Persoon G', app: 'WhatsApp', since: ago(90) }),
+        row({ person: 'Persoon H', app: 'WhatsApp', since: ago(15) }),
         row({ person: 'Persoon B', app: 'Instagram', since: ago(5 * 60) }),
         row({ person: 'Persoon C', app: 'Snapchat', since: ago(40) }),
+        row({ person: 'Persoon I', app: 'Hinge', since: ago(50 * 60) }),
+        row({ person: 'Persoon J', app: 'Bumble', since: ago(2 * 60) }),
       ],
     };
   }

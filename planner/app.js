@@ -254,16 +254,51 @@
     const d = Math.floor(min / (24 * 60));
     return `al ${d} ${d === 1 ? 'dag' : 'dagen'}`;
   }
+  // De app-namen zijn de labels uit CHAT_APPS in de Android-app. Andere apps die daar aan staan komen onder Overig,
+  // een tabje dat er alleen is als er iets in staat.
+  const REPLY_TABS = [
+    { key: 'whatsapp', label: 'WhatsApp', apps: ['WhatsApp', 'WhatsApp Business'] },
+    { key: 'snap', label: 'Snap', apps: ['Snapchat'] },
+    { key: 'insta', label: 'Insta', apps: ['Instagram'] },
+    { key: 'dating', label: 'Dating', apps: ['Hinge', 'Tinder', 'Bumble'] },
+  ];
+  const REPLY_OTHER = { key: 'other', label: 'Overig' };
+  const REPLY_LIMIT = 4;
+  const replyTabOf = (app) => (REPLY_TABS.find((t) => t.apps.includes(app)) || REPLY_OTHER).key;
+  const replyLate = (r) => Date.now() - Date.parse(r.since) >= 2 * 24 * 3600000;
+  let replyTab = null;      // zelf gekozen tabje; zolang dat er niet is: het tabje met de oudste wachtende
+  let replyOpen = false;    // "+ meer" uitgeklapt
+
   function renderReplies() {
-    const list = $('reply-list');
-    if (extrasMissing()) { list.replaceChildren(h('li', { class: 'empty' }, SQL_NOTE)); return; }
+    const list = $('reply-list'), tabs = $('reply-tabs'), more = $('reply-more');
+    if (extrasMissing()) {
+      tabs.hidden = more.hidden = true;
+      list.replaceChildren(h('li', { class: 'empty' }, SQL_NOTE));
+      return;
+    }
     const rows = [...P.data.replies].sort((a, b) => a.since.localeCompare(b.since));
-    list.replaceChildren(...(rows.length ? rows.map((r) => {
-      const late = Date.now() - Date.parse(r.since) >= 2 * 24 * 3600000;
-      return h('li', { class: `reply${late ? ' late' : ''}` },
-        h('div', { class: 'reply-text' }, h('b', { title: r.person }, r.person), h('span', null, `${r.app} · ${waiting(r.since)}`)),
-        h('button', { type: 'button', class: 'reply-x', 'data-reply': r.id, 'aria-label': `${r.person} afhandelen`, title: 'Afhandelen' }, '×'));
-    }) : [h('li', { class: 'empty' }, 'Niemand wacht op je.')]));
+    const groups = REPLY_TABS.map((t) => ({ ...t, rows: rows.filter((r) => replyTabOf(r.app) === t.key) }));
+    const other = rows.filter((r) => replyTabOf(r.app) === REPLY_OTHER.key);
+    if (other.length) groups.push({ ...REPLY_OTHER, rows: other });
+    const oldest = rows.length ? replyTabOf(rows[0].app) : groups[0].key;
+    const open = groups.find((g) => g.key === replyTab) || groups.find((g) => g.key === oldest);
+
+    tabs.hidden = false;
+    tabs.replaceChildren(...groups.map((g) => {
+      const red = g.rows.some(replyLate);
+      return h('button', {
+        type: 'button', class: `reply-tab${g === open ? ' sel' : ''}`, 'data-reply-tab': g.key, 'aria-pressed': String(g === open),
+        'aria-label': `${g.label}, ${g.rows.length} wachtend${red ? ', iemand wacht al 2 dagen of langer' : ''}`,
+      }, g.label, h('span', { class: 'reply-count' }, String(g.rows.length)), red ? h('i', { class: 'reply-dot' }) : null);
+    }));
+
+    const shown = replyOpen ? open.rows : open.rows.slice(0, REPLY_LIMIT);
+    list.replaceChildren(...(shown.length ? shown.map((r) => h('li', { class: `reply${replyLate(r) ? ' late' : ''}` },
+      h('div', { class: 'reply-text' }, h('b', { title: r.person }, r.person), h('span', null, `${r.app} · ${waiting(r.since)}`)),
+      h('button', { type: 'button', class: 'reply-x', 'data-reply': r.id, 'aria-label': `${r.person} afhandelen`, title: 'Afhandelen' }, '×')))
+      : [h('li', { class: 'empty' }, 'Niemand wacht op je.')]));
+    more.hidden = shown.length === open.rows.length;
+    more.textContent = `+ ${open.rows.length - shown.length} meer`;
   }
 
   function renderHabitsDialog() {
@@ -893,6 +928,19 @@
       if (e.target.closest('[data-habits-edit]')) { renderHabitsDialog(); $('habits-dlg').showModal(); return; }
       const reply = e.target.closest('[data-reply]');
       if (reply) { P.deleteReply(reply.dataset.reply); return; }
+      const replyTabBtn = e.target.closest('[data-reply-tab]');
+      if (replyTabBtn) {
+        replyTab = replyTabBtn.dataset.replyTab;
+        replyOpen = false;
+        renderReplies();
+        $('reply-tabs').querySelector('[aria-pressed="true"]').focus();
+        return;
+      }
+      if (e.target.closest('#reply-more')) {
+        replyOpen = true;
+        renderReplies();
+        return;
+      }
       if (e.target.closest('input, a')) return;
       const n = e.target.closest('[data-edit]');
       if (n) { const t = task(n.dataset.edit); if (t) openEdit(t); }

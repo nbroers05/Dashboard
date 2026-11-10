@@ -248,6 +248,16 @@ input[type="checkbox"] { flex: none; width: 17px; height: 17px; margin: 0; accen
 .bar { height: 6px; border-radius: 3px; background: var(--hair); overflow: hidden; }
 .bar i { display: block; height: 100%; border-radius: 3px; background: var(--c); }
 
+.reply-tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+.reply-tab {
+  position: relative; flex: 1 1 auto; display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+  min-height: 36px; padding: 4px 10px; background: var(--bg); border: 0; border-radius: 8px; color: var(--muted); font-size: 13px; white-space: nowrap;
+}
+.reply-tab:hover { background: var(--hair); }
+.reply-tab.sel { background: var(--blue-bg); color: var(--blue-ink); font-weight: 600; }
+.reply-count { font-size: 12px; font-variant-numeric: tabular-nums; }
+.reply-dot { position: absolute; top: 5px; right: 5px; width: 7px; height: 7px; border-radius: 50%; background: var(--c-reply); }
+#reply-more { margin-top: 4px; }
 .replies { display: flex; flex-direction: column; gap: 8px; }
 .reply { display: flex; align-items: center; gap: 8px; padding: 7px 8px 7px 12px; border-radius: 8px; background: var(--bg); }
 .reply-text { flex: 1; min-width: 0; }
@@ -357,6 +367,7 @@ body.dragging, body.dragging * { cursor: grabbing !important; }
   #card-study { order: 7; }
   #card-shop { order: 8; }
   .item { min-height: 40px; }
+  .reply-tab { min-height: 40px; }
   .task { min-height: 42px; }
   .ev { padding: 4px 8px; }
   .when { grid-template-columns: 1fr 1fr; }
