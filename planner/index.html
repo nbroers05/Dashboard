@@ -7,7 +7,7 @@
   <title>Planner</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231F1F1E'/%3E%3Cpath d='M9 11h14M9 16h14M9 21h8' stroke='%23fff' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
   <script>(function () { var t; try { t = localStorage.getItem('planner.theme'); } catch (e) {} document.documentElement.dataset.theme = t === 'dark' || (t !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light'; })();</script>
-  <link rel="stylesheet" href="planner.css?v=0.3.4">
+  <link rel="stylesheet" href="planner.css?v=0.3.5">
 </head>
 <body>
   <!-- Inloggen -->
@@ -77,19 +77,6 @@
           </form>
         </section>
 
-        <section class="card" id="card-reply">
-          <div class="card-head"><h2>Nog reageren</h2><span class="hint">van je telefoon</span></div>
-          <div id="reply-tabs" class="reply-tabs" aria-label="Per app"></div>
-          <ul id="reply-list" class="replies"></ul>
-          <button id="reply-more" class="link hint" type="button" hidden></button>
-          <p class="hint foot">weg zodra je de chat opent, blijft bij alles wissen</p>
-        </section>
-
-        <!-- Alleen op de telefoon: daar blijft de tijdlijn bovenaan -->
-        <section class="card" id="card-habits">
-          <div class="card-head"><h2>Gewoontes</h2></div>
-          <div id="habits-card" class="habits"></div>
-        </section>
       </div>
 
       <div class="col col-b">
@@ -111,13 +98,28 @@
           <ul id="soon-list" class="soon"></ul>
         </section>
       </div>
+
+      <section class="card" id="card-reply">
+        <div class="card-head"><h2>Nog reageren</h2><span class="hint">van je telefoon</span></div>
+        <div id="reply-cols" class="reply-cols" hidden></div>
+        <div id="reply-tabs" class="reply-tabs" aria-label="Per app"></div>
+        <ul id="reply-list" class="replies"></ul>
+        <button id="reply-more" class="link hint" type="button" hidden></button>
+        <p class="hint foot">weg zodra je de chat opent, blijft bij alles wissen</p>
+      </section>
+
+      <!-- Alleen op de telefoon: daar blijft de tijdlijn bovenaan -->
+      <section class="card" id="card-habits">
+        <div class="card-head"><h2>Gewoontes</h2></div>
+        <div id="habits-card" class="habits"></div>
+      </section>
     </div>
 
     <footer class="foot-bar">
       <button id="theme-btn" class="link" type="button"></button>
       <button id="subjects-btn" class="link" type="button">Vakken en kleuren</button>
       <button id="logout-btn" class="link" type="button">Uitloggen</button>
-      <span>Planner versie 0.3.4</span>
+      <span>Planner versie 0.3.5</span>
     </footer>
   </div>
 
@@ -189,9 +191,9 @@
 
   <div id="toast" class="toast" role="status" hidden></div>
 
-  <script src="config.js?v=0.3.4"></script>
-  <script src="store.js?v=0.3.4"></script>
-  <script src="agenda.js?v=0.3.4"></script>
-  <script src="app.js?v=0.3.4"></script>
+  <script src="config.js?v=0.3.5"></script>
+  <script src="store.js?v=0.3.5"></script>
+  <script src="agenda.js?v=0.3.5"></script>
+  <script src="app.js?v=0.3.5"></script>
 </body>
 </html>

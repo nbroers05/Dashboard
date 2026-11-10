@@ -63,6 +63,7 @@
   const vakken = () => P.data.subjects.filter((s) => !s.name.startsWith('@'));
   const cleanName = (s) => s.trim().replace(/^@+\s*/, '');
   const phone = () => matchMedia('(max-width: 700px)').matches;
+  const wide = matchMedia('(min-width: 1100px)');   // pc: Nog reageren in kolommen, kleine vakken in twee kolommen
   const hourPx = () => parseFloat(document.documentElement.style.getPropertyValue('--hour')) || 48;
 
   function agendaRange() {
@@ -166,12 +167,10 @@
     if (drag) { dirty = true; return; }
     importCourses();
     applyColors();
-    fit();
     renderHead();
     renderStrip();
     renderNote();
     renderAllday();
-    renderTimeline();
     renderToday();
     renderInbox();
     renderSoon();
@@ -179,6 +178,36 @@
     renderStudy();
     renderShop();
     renderReplies();
+    balanceBoxes();
+    fit();
+    renderTimeline();
+  }
+
+  // De vijf kleine vakken over twee kolommen, zo dat die ongeveer even hoog eindigen. Vandaag staat altijd links.
+  // Alleen verplaatsen als het duidelijk beter wordt, en niet terwijl je in een van de vakken typt.
+  const BOXES = ['card-today', 'card-inbox', 'card-study', 'card-shop', 'card-soon'];
+  const BOX_GAP = 16;
+  function measured(read) {
+    const cols = document.querySelector('.cols');
+    cols.classList.add('measuring');
+    const out = read();
+    cols.classList.remove('measuring');
+    return out;
+  }
+  function balanceBoxes() {
+    if (!wide.matches || document.activeElement?.closest('.col')) return;
+    const a = document.querySelector('.col-a'), b = document.querySelector('.col-b');
+    const heights = measured(() => BOXES.map((id) => $(id).offsetHeight));
+    const gapOf = (mask) => {
+      let left = -BOX_GAP, right = -BOX_GAP;
+      heights.forEach((x, i) => { if (mask & (1 << i)) left += x + BOX_GAP; else right += x + BOX_GAP; });
+      return Math.abs(left - right);
+    };
+    const now = BOXES.reduce((m, id, i) => ($(id).parentElement === a ? m | (1 << i) : m), 0);
+    let best = now;
+    for (let m = 1; m < 31; m += 2) if (gapOf(m) < gapOf(best)) best = m;
+    if (best === now || gapOf(best) + 40 >= gapOf(now)) return;
+    BOXES.forEach((id, i) => (best & (1 << i) ? a : b).append($(id)));
   }
 
   // ---------- Ronde 2 ----------
@@ -269,10 +298,19 @@
   let replyTab = null;      // zelf gekozen tabje; zolang dat er niet is: het tabje met de oudste wachtende
   let replyOpen = false;    // "+ meer" uitgeklapt
 
+  function replyRow(r, withApp) {
+    return h('li', { class: `reply${replyLate(r) ? ' late' : ''}` },
+      h('div', { class: 'reply-text' }, h('b', { title: r.person }, r.person),
+        r.last_message ? h('p', { class: 'reply-msg', title: r.last_message }, r.last_message) : null,
+        h('span', null, withApp ? `${r.app} · ${waiting(r.since)}` : waiting(r.since))),
+      h('button', { type: 'button', class: 'reply-x', 'data-reply': r.id, 'aria-label': `${r.person} afhandelen`, title: 'Afhandelen' }, '×'));
+  }
+
   function renderReplies() {
-    const list = $('reply-list'), tabs = $('reply-tabs'), more = $('reply-more');
+    const list = $('reply-list'), tabs = $('reply-tabs'), more = $('reply-more'), cols = $('reply-cols');
     if (extrasMissing()) {
-      tabs.hidden = more.hidden = true;
+      tabs.hidden = more.hidden = cols.hidden = true;
+      list.hidden = false;
       list.replaceChildren(h('li', { class: 'empty' }, SQL_NOTE));
       return;
     }
@@ -280,10 +318,25 @@
     const groups = REPLY_TABS.map((t) => ({ ...t, rows: rows.filter((r) => replyTabOf(r.app) === t.key) }));
     const other = rows.filter((r) => replyTabOf(r.app) === REPLY_OTHER.key);
     if (other.length) groups.push({ ...REPLY_OTHER, rows: other });
+
+    // Pc: alle apps naast elkaar. De kolommen worden steeds opnieuw getekend, dus de scrollstand gaat mee.
+    const board = wide.matches;
+    cols.hidden = !board;
+    tabs.hidden = list.hidden = board;
+    if (board) {
+      more.hidden = true;
+      const scroll = new Map([...cols.querySelectorAll('[data-reply-scroll]')].map((u) => [u.dataset.replyScroll, u.scrollTop]));
+      cols.replaceChildren(...groups.map((g) => h('section', { class: 'reply-col', 'data-reply-col': g.key },
+        h('div', { class: 'reply-col-head' }, h('b', null, g.label), g.rows.some(replyLate) ? h('i', { class: 'reply-dot', title: 'Iemand wacht al 2 dagen of langer' }) : null, h('span', { class: 'reply-count' }, String(g.rows.length))),
+        h('ul', { class: 'replies', 'data-reply-scroll': g.key }, ...(g.rows.length
+          ? g.rows.map((r) => replyRow(r, !g.apps || g.key === 'dating'))
+          : [h('li', { class: 'empty' }, 'Niemand wacht op je.')])))));
+      cols.querySelectorAll('[data-reply-scroll]').forEach((u) => { u.scrollTop = scroll.get(u.dataset.replyScroll) || 0; });
+      return;
+    }
+
     const oldest = rows.length ? replyTabOf(rows[0].app) : groups[0].key;
     const open = groups.find((g) => g.key === replyTab) || groups.find((g) => g.key === oldest);
-
-    tabs.hidden = false;
     tabs.replaceChildren(...groups.map((g) => {
       const red = g.rows.some(replyLate);
       return h('button', {
@@ -291,14 +344,8 @@
         'aria-label': `${g.label}, ${g.rows.length} wachtend${red ? ', iemand wacht al 2 dagen of langer' : ''}`,
       }, g.label, h('span', { class: 'reply-count' }, String(g.rows.length)), red ? h('i', { class: 'reply-dot' }) : null);
     }));
-
     const shown = replyOpen ? open.rows : open.rows.slice(0, REPLY_LIMIT);
-    list.replaceChildren(...(shown.length ? shown.map((r) => h('li', { class: `reply${replyLate(r) ? ' late' : ''}` },
-      h('div', { class: 'reply-text' }, h('b', { title: r.person }, r.person),
-        r.last_message ? h('p', { class: 'reply-msg', title: r.last_message }, r.last_message) : null,
-        h('span', null, `${r.app} · ${waiting(r.since)}`)),
-      h('button', { type: 'button', class: 'reply-x', 'data-reply': r.id, 'aria-label': `${r.person} afhandelen`, title: 'Afhandelen' }, '×')))
-      : [h('li', { class: 'empty' }, 'Niemand wacht op je.')]));
+    list.replaceChildren(...(shown.length ? shown.map((r) => replyRow(r, true)) : [h('li', { class: 'empty' }, 'Niemand wacht op je.')]));
     more.hidden = shown.length === open.rows.length;
     more.textContent = `+ ${open.rows.length - shown.length} meer`;
   }
@@ -422,7 +469,9 @@
     const tl = document.querySelector('.tl');
     if (!phone()) {
       const top = tl.getBoundingClientRect().top + scrollY;
-      root.setProperty('--tl-h', `${Math.max(460, Math.floor(innerHeight - top - 66))}px`);
+      // Pc: de kleine vakken bovenaan plus minstens 300 px voor Nog reageren moeten erin passen
+      const boxes = wide.matches ? measured(() => Math.max(...[...document.querySelectorAll('.col')].map((c) => c.offsetHeight))) + BOX_GAP + 300 : 0;
+      root.setProperty('--tl-h', `${Math.max(460, boxes, Math.floor(innerHeight - top - 66))}px`);
     }
     const scroller = $('tl-scroll');
     const px = Math.max(phone() ? 46 : 36, Math.floor((scroller.clientHeight - 3) / (24 - tlStart)));
