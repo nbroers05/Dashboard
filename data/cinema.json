@@ -1,5 +1,5 @@
 {
- "day": "2026-11-10",
+ "day": "2026-11-11",
  "sources": [
   "LantarenVenster"
  ],
@@ -317,6 +317,20 @@
    ]
   },
   {
+   "title": "Camembert (Family Quiz)",
+   "key": "camembertfamilyquiz",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/camembert-family-quiz/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "Caoilfhionn Rose",
    "key": "caoilfhionnrose",
    "poster": null,
@@ -450,20 +464,6 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/club-kid/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
-   "title": "Compañía María La Serrana",
-   "key": "companiamarialaserrana",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/compania-maria-la-serrana-26/",
      "day": null,
      "next": null,
      "until": null
@@ -1768,7 +1768,7 @@
      "url": "https://www.lantarenvenster.nl/programma/rotterdams-open-doek/",
      "day": null,
      "next": null,
-     "until": null
+     "until": "2027-05-11"
     }
    ]
   },
@@ -1796,7 +1796,7 @@
      "url": "https://www.lantarenvenster.nl/programma/salvation/",
      "day": null,
      "next": null,
-     "until": null
+     "until": "2026-11-18"
     }
    ]
   },
