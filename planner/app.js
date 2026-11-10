@@ -4,6 +4,7 @@
 (() => {
   const P = window.PlannerStore;
   const A = window.PlannerAgenda;
+  const W = window.PlannerWeek;
   const SNAP = 15;
   const COLORS = ['#7F77DD', '#1D9E75', '#378ADD', '#D4537E', '#D98A1F', '#E24B4A', '#6B6A66'];
   // Kleuren voor wat geen vak is. Ze staan als rij in planner_subjects met een naam die met @ begint, zodat ze meesyncen
@@ -60,6 +61,7 @@
   const tasks = () => P.data.tasks;
   const task = (id) => tasks().find((t) => t.id === id);
   const subject = (id) => P.data.subjects.find((s) => s.id === id);
+  const moduleOf = (id) => P.data.modules.find((m) => m.id === id);
   const vakken = () => P.data.subjects.filter((s) => !s.name.startsWith('@'));
   const cleanName = (s) => s.trim().replace(/^@+\s*/, '');
   const phone = () => matchMedia('(max-width: 700px)').matches;
@@ -159,8 +161,9 @@
   }
   const scheduledFor = (k) => tasks().filter((t) => t.day === k && t.start_min != null);
   const looseFor = (k) => tasks().filter((t) => t.day === k && t.start_min == null && t.kind === 'task');
-  const overdue = () => tasks().filter((t) => t.kind === 'task' && !t.done && t.day && t.day < today());
-  const inbox = () => tasks().filter((t) => t.day == null && t.kind === 'task');
+  // Een blok uit de Standaardweek dat voorbij is stapelt niet op: volgende week komt het vanzelf terug
+  const overdue = () => tasks().filter((t) => t.kind === 'task' && !t.done && t.day && t.day < today() && !t.slot_key);
+  const inbox = () => tasks().filter((t) => t.day == null && t.kind === 'task' && t.module_state !== 'skipped');
 
   // ---------- Tekenen ----------
   function render() {
@@ -181,6 +184,9 @@
     balanceBoxes();
     fit();
     renderTimeline();
+    renderWeekBanner();
+    if ($('week-dlg').open) renderWeekGrid();
+    queuePlan();
   }
 
   // De vijf kleine vakken over twee kolommen, zo dat die ongeveer even hoog eindigen. Vandaag staat altijd links.
@@ -244,7 +250,9 @@
     const end = shift(week, 6);
     const thisWeek = week === mondayOf(today());
     $('study-title').textContent = thisWeek ? 'Studie deze week' : `Studie week van ${fromKey(week).getDate()} ${fromKey(week).toLocaleDateString('nl-NL', { month: 'short' }).replace('.', '')}`;
-    const inWeek = tasks().filter((t) => t.kind === 'task' && t.subject_id && t.day && t.day >= week && t.day <= end);
+    // Een leesblok hoort bij de week van zijn college, ook als het op de zondag ervoor staat of nog geen plek heeft
+    const weekOf = (t) => t.module_week || t.day;
+    const inWeek = tasks().filter((t) => t.kind === 'task' && t.subject_id && t.module_state !== 'skipped' && weekOf(t) && weekOf(t) >= week && weekOf(t) <= end);
     const rows = vakken().map((s) => {
       const mine = inWeek.filter((t) => t.subject_id === s.id);
       return { s, total: mine.length, done: mine.filter((t) => t.done).length };
@@ -547,11 +555,13 @@
     const t = it.task;
     const s = subject(t.subject_id);
     const dur = it.e - it.s;
-    const what = t.kind === 'block' ? 'tijdblok' : 'taak ingepland';
+    const m = moduleOf(t.module_id);
+    const what = t.module_state === 'auto' ? 'automatisch' : t.module_state === 'pinned' ? 'vastgezet' : t.kind === 'block' ? 'tijdblok' : 'taak ingepland';
     const sub = [`${fmtMin(it.s)} – ${fmtMin(it.e)}`, what, s && s.name].filter(Boolean).join(' · ');
+    const color = s ? s.color : m ? m.color : null;
     return h('div', {
-      class: `ev mine${t.kind === 'block' ? ' block' : ''}${t.done ? ' done' : ''}${isSmall(dur) ? ' small' : ''}`,
-      style: `${place(it)}${s ? `--c:${s.color};` : ''}`, 'data-task': t.id, 'data-edit': t.id,
+      class: `ev mine${t.kind === 'block' ? ' block' : ''}${t.done ? ' done' : ''}${isSmall(dur) ? ' small' : ''}${t.module_state ? ` ${t.module_state}` : ''}`,
+      style: `${place(it)}${color ? `--c:${color};` : ''}`, 'data-task': t.id, 'data-edit': t.id,
     },
     h('div', { class: 'ev-row' },
       t.kind === 'task' ? h('input', { type: 'checkbox', 'data-check': t.id, checked: t.done, 'aria-label': `${t.title} afvinken` }) : null,
@@ -588,7 +598,7 @@
   }
 
   function renderInbox() {
-    const rows = inbox().map((t) => taskRow(t, { check: false }));
+    const rows = inbox().map((t) => taskRow(t, t.module_state === 'auto' ? { check: false, note: 'paste niet', noteClass: 'late' } : { check: false }));
     $('inbox-list').replaceChildren(...(rows.length ? rows : [h('li', { class: 'empty' }, 'Inbox is leeg.')]));
   }
 
@@ -767,6 +777,8 @@
     else if (value === 'today') patch = { day: sel, start_min: null };
     else if (value === 'inbox') patch = { day: null, start_min: null, done: false };
     else if (value && value.startsWith('day:')) patch = { day: value.slice(4) };
+    // Slepen zet een gestippeld blok vast
+    if (patch && t.module_state === 'auto') patch.module_state = 'pinned';
     if (patch) P.updateTask(t.id, patch);
     else if (dirty) render();
     dirty = false;
@@ -875,6 +887,8 @@
       subject_id: formSubject,
     };
     if (kind === 'block') fields.done = false;
+    const was = editing ? task(editing) : null;
+    if (was && was.module_state === 'auto' && Object.keys(fields).some((f) => (was[f] ?? null) !== fields[f])) fields.module_state = 'pinned';
     if (editing) P.updateTask(editing, fields); else P.addTask(fields);
     $('edit').close();
   }
@@ -909,6 +923,219 @@
   let subjectColor = COLORS[0];
   function renderSubjectSwatches() {
     swatches($('s-swatches'), subjectColor, (c) => { subjectColor = c; renderSubjectSwatches(); });
+  }
+
+  // ---------- Standaardweek ----------
+  let planTimer = null;
+  let lastPlan = { key: '', at: 0 };
+  let conflicts = [];
+  let moves = [];
+  const freshModules = new Set();     // net aangepast: deze modules mogen opnieuw een plek zoeken, ook als de oude nog past
+  const slotText = (day, start) => `${weekday(day)} ${fmtMin(start)}`;
+  const roosterEvents = () => A.normal().filter((e) => !e.allDay).map((e) => W.classify(e, (A.calendarOf(e.cal) || {}).name, A.isAH(e)));
+  const planWeeks = () => {
+    const me = mondayOf(today());
+    const list = [me, shift(me, 7)];
+    if (week > me && !list.includes(week)) list.push(week);
+    return list;
+  };
+
+  function queuePlan() {
+    if (planTimer) return;
+    planTimer = setTimeout(() => { planTimer = null; runPlan(); }, 1200);
+  }
+
+  function runPlan() {
+    if (!P.ready || !P.data.modulesOk) return;
+    if (!P.data.settings) { P.seedModules(W.BEGIN, W.DEFAULTS); return; }
+    // Alleen op een volledig en vers beeld van de agenda, anders zou een blok op een college kunnen belanden
+    if (drag || !P.idle || A.state !== 'ok' || !A.complete) return;
+    const weeks = planWeeks().filter((w) => A.covers(dayStart(shift(w, -2)), dayStart(shift(w, 7))));
+    const res = W.plan({ modules: P.data.modules, settings: P.data.settings, subjects: P.data.subjects, tasks: tasks(), events: roosterEvents(), weeks, now: Date.now(), fresh: freshModules });
+    freshModules.clear();
+    const before = JSON.stringify(conflicts.map((c) => [c.row.id, c.suggestion]));
+    conflicts = res.conflicts;
+    const changed = res.inserts.length + res.updates.length + res.deletes.length;
+    if (res.moves.length) moves = [...moves.filter((m) => !res.moves.some((x) => x.title === m.title)), ...res.moves].slice(-6);
+    if (!changed) {
+      if (before !== JSON.stringify(conflicts.map((c) => [c.row.id, c.suggestion]))) renderWeekBanner();
+      return;
+    }
+    // Weigert de database iets, dan niet blijven herhalen
+    const key = JSON.stringify([res.inserts.map((x) => x.slot_key), res.updates, res.deletes]);
+    if (key === lastPlan.key && Date.now() - lastPlan.at < 60000) return;
+    lastPlan = { key, at: Date.now() };
+    P.applyPlan(res);
+  }
+
+  function bannerNodes() {
+    const items = conflicts.map((c) => {
+      const name = c.event.shift ? 'Dienst' : A.label(c.event);
+      const when = `${weekday(keyOf(new Date(c.event.start)))} ${fmtTime(c.event.start)} - ${fmtTime(c.event.end)}`;
+      const place = c.suggestion ? slotText(c.suggestion.day, c.suggestion.start) : null;
+      const id = c.row.id;
+      return h('div', { class: 'wb-item' },
+        h('p', null, `${name} ${when}. ${c.row.title} (vastgezet) botst${place ? `: verplaatsen naar ${place}?` : '.'}`),
+        h('div', { class: 'wb-actions' },
+          place ? h('button', { type: 'button', class: 'btn wb-yes', 'data-conflict': 'move', 'data-id': id }, `Ja, ${place}`) : null,
+          h('button', { type: 'button', class: 'btn', 'data-conflict': 'self', 'data-id': id }, 'Zelf verplaatsen'),
+          h('button', { type: 'button', class: 'btn', 'data-conflict': 'skip', 'data-id': id }, 'Deze week niet')));
+    });
+    const moved = moves.map((m) => h('p', { class: 'wb-moved' }, m.day ? `${m.title} schoof vanzelf naar ${slotText(m.day, m.start)}.` : `${m.title} past niet meer en staat in de Inbox.`));
+    if (!items.length && !moved.length) return [];
+    return [
+      h('h2', { class: 'wb-title' }, 'Rooster veranderd'), ...items, ...moved,
+      moved.length ? h('button', { type: 'button', class: 'link hint', 'data-moves-ok': '' }, 'Gezien') : null,
+    ].filter(Boolean);
+  }
+  function renderWeekBanner() {
+    for (const id of ['week-banner', 'week-banner-panel']) {
+      const nodes = bannerNodes();
+      $(id).replaceChildren(...nodes);
+      $(id).hidden = !nodes.length;
+    }
+  }
+  function answerConflict(what, id) {
+    const c = conflicts.find((x) => x.row.id === id);
+    if (!c) return;
+    conflicts = conflicts.filter((x) => x !== c);
+    if (what === 'move') P.updateTask(id, { day: c.suggestion.day, start_min: c.suggestion.start });
+    else if (what === 'skip') P.updateTask(id, { module_state: 'skipped', day: null, start_min: null });
+    else {
+      if ($('week-dlg').open) $('week-dlg').close();
+      goTo(c.row.day);
+      openEdit(task(id));
+    }
+    renderWeekBanner();
+  }
+
+  function renderWeekGrid() {
+    const first = fromKey(week);
+    $('week-label').textContent = `Week van ${first.getDate()} ${first.toLocaleDateString('nl-NL', { month: 'short' }).replace('.', '')}`;
+    const startH = 7;
+    const span = (24 - startH) * 60;
+    const pos = (s, e) => `top:${(((Math.max(s, startH * 60) - startH * 60) / span) * 100).toFixed(2)}%;height:${(((e - Math.max(s, startH * 60)) / span) * 100).toFixed(2)}%;`;
+    const head = [h('span')];
+    const cols = [h('div', { class: 'wg-hours' }, ...[8, 12, 16, 20].map((x) => h('span', { style: `top:${(((x - startH) * 60) / span) * 100}%` }, pad(x))))];
+    for (let i = 0; i < 7; i++) {
+      const k = shift(week, i);
+      head.push(h('span', { class: k === today() ? 'is-today' : null }, `${weekday(k)} ${fromKey(k).getDate()}`));
+      const items = [];
+      for (const { ev, s, e } of timedFor(k)) {
+        const ah = A.isAH(ev);
+        items.push(h('div', { class: `wg-item${ah ? ' ah' : ''}`, style: `${pos(s, e)}${ah ? '' : colorStyle(ev)}`, title: A.label(ev) }, ah ? 'Dienst' : A.label(ev)));
+      }
+      for (const t of scheduledFor(k)) {
+        const sub = subject(t.subject_id), m = moduleOf(t.module_id);
+        const color = sub ? sub.color : m ? m.color : null;
+        items.push(h('div', { class: `wg-item mine${t.module_state ? ` ${t.module_state}` : ''}`, style: `${pos(t.start_min, Math.min(1440, t.start_min + t.duration_min))}${color ? `--c:${color};` : ''}`, title: `${t.title} (${fmtMin(t.start_min)})` }, t.title));
+      }
+      cols.push(h('div', { class: 'wg-day', style: `--lines:${24 - startH}` }, ...items));
+    }
+    $('week-grid').replaceChildren(h('div', { class: 'wg-head' }, ...head), h('div', { class: 'wg-body' }, ...cols));
+  }
+
+  function renderModules() {
+    const list = $('mod-list');
+    list.replaceChildren(...P.data.modules.map((m) => {
+      const on = h('input', { type: 'checkbox', checked: m.enabled, 'aria-label': `${m.name} aan of uit` });
+      on.addEventListener('change', () => P.updateModule(m.id, { enabled: on.checked }));
+      const open = h('button', { type: 'button', class: 'mod-open' }, h('b', null, m.name), h('span', null, W.describe(m)));
+      open.addEventListener('click', () => openModule(m));
+      return h('li', { class: `mod${m.enabled ? '' : ' off'}`, style: `--c:${m.color}` }, on, open);
+    }));
+  }
+
+  function renderCourses() {
+    const seen = new Map();
+    const events = roosterEvents();
+    for (const w of planWeeks()) for (const c of W.weekCourses(events, w)) if (!seen.has(c.code)) seen.set(c.code, c);
+    const map = P.data.settings.course_map || {};
+    const box = $('course-list');
+    if (!seen.size) { box.replaceChildren(h('li', { class: 'empty' }, 'Nog geen colleges gevonden in deze weken.')); return; }
+    box.replaceChildren(...[...seen.values()].map((c) => {
+      const select = h('select', { 'aria-label': `Vak voor ${c.name}` },
+        h('option', { value: '' }, 'Automatisch'),
+        h('option', { value: 'skip' }, 'Niet lezen'),
+        ...vakken().map((s) => h('option', { value: s.id }, s.name)));
+      select.value = map[c.code] || '';
+      select.addEventListener('change', () => {
+        const next = { ...map };
+        if (select.value) next[c.code] = select.value; else delete next[c.code];
+        P.setSettings({ course_map: next });
+        P.data.modules.filter((m) => (m.rules || []).includes('per_course')).forEach((m) => freshModules.add(m.id));
+        renderCourses();
+      });
+      return h('li', null, h('span', { title: c.code }, c.name), select);
+    }));
+  }
+
+  function fillSettings() {
+    const s = P.data.settings;
+    $('set-travel').value = s.eur_travel_min;
+    $('set-start').value = fmtMin(s.day_start_min);
+    $('set-dinner').value = fmtMin(s.dinner_min);
+  }
+  const timeValue = (input) => { const [a, b] = input.value.split(':').map(Number); return a * 60 + b; };
+
+  function openWeek() {
+    const ready = P.data.modulesOk && !!P.data.settings;
+    $('week-missing').hidden = ready;
+    $('week-missing').textContent = P.data.modulesOk ? 'Even geduld, de beginmodules worden klaargezet.' : SQL_NOTE;
+    $('week-body').hidden = !ready;
+    if (ready) { renderModules(); renderCourses(); fillSettings(); renderWeekGrid(); }
+    $('week-dlg').showModal();
+  }
+
+  let editingModule = null;
+  let moduleColor = COLORS[0];
+  function renderModuleSwatches() {
+    swatches($('m-swatches'), moduleColor, (c) => { moduleColor = c; renderModuleSwatches(); });
+  }
+  function moduleFreqChanged() { $('m-times-box').hidden = $('m-freq').value !== 'weekly'; }
+  function openModule(m) {
+    editingModule = m ? m.id : null;
+    const v = m || { name: '', duration_min: 60, freq: 'weekly', times: 1, pref: 'any', rules: [], subject_id: null, alternate: '', color: '#4fa8ff' };
+    $('mod-title').textContent = m ? 'Module aanpassen' : 'Nieuwe module';
+    $('m-name').value = v.name;
+    $('m-dur').value = v.duration_min;
+    $('m-freq').value = v.freq;
+    $('m-times').value = v.times;
+    $('m-pref').value = v.pref;
+    $('m-alt').value = v.alternate || '';
+    $('m-subject').replaceChildren(h('option', { value: '' }, 'Geen'), ...vakken().map((s) => h('option', { value: s.id }, s.name)));
+    $('m-subject').value = v.subject_id || '';
+    $('m-rules').replaceChildren(...W.RULES.map((r) => h('label', null, h('input', { type: 'checkbox', value: r.key, checked: (v.rules || []).includes(r.key) }), h('span', null, r.label))));
+    moduleColor = v.color;
+    renderModuleSwatches();
+    moduleFreqChanged();
+    $('m-err').textContent = '';
+    const del = $('m-delete');
+    del.hidden = !m;
+    del.textContent = 'Verwijderen';
+    delete del.dataset.sure;
+    $('mod-edit').showModal();
+    if (!m) $('m-name').focus();
+  }
+  function saveModule(e) {
+    e.preventDefault();
+    const name = $('m-name').value.trim();
+    const duration = Number($('m-dur').value);
+    if (!name) { $('m-err').textContent = 'Geef de module een naam.'; return; }
+    if (!(duration >= 5 && duration <= 1440)) { $('m-err').textContent = 'De duur moet tussen 5 en 1440 minuten liggen.'; return; }
+    const fields = {
+      name, duration_min: duration, freq: $('m-freq').value,
+      times: Math.min(7, Math.max(1, Number($('m-times').value) || 1)),
+      pref: $('m-pref').value,
+      rules: [...$('m-rules').querySelectorAll('input:checked')].map((x) => x.value),
+      subject_id: $('m-subject').value || null,
+      alternate: $('m-alt').value.trim() || null,
+      color: moduleColor,
+    };
+    if (editingModule) { P.updateModule(editingModule, fields); freshModules.add(editingModule); }
+    else P.addModule({ ...fields, enabled: true, sort: Math.max(0, ...P.data.modules.map((m) => m.sort)) + 1 });
+    $('mod-edit').close();
+    renderModules();
   }
 
   // ---------- Meldingen en status ----------
@@ -974,6 +1201,9 @@
       if (ds.grocery) P.setGrocery(ds.grocery, e.target.checked);
     });
     document.addEventListener('click', (e) => {
+      const answer = e.target.closest('[data-conflict]');
+      if (answer) { answerConflict(answer.dataset.conflict, answer.dataset.id); return; }
+      if (e.target.closest('[data-moves-ok]')) { moves = []; renderWeekBanner(); return; }
       const habit = e.target.closest('[data-habit]');
       if (habit) { P.toggleHabit(habit.dataset.habit, sel); return; }
       if (e.target.closest('[data-habits-edit]')) { renderHabitsDialog(); $('habits-dlg').showModal(); return; }
@@ -1017,7 +1247,9 @@
     $('f-delete').onclick = (e) => {
       const b = e.currentTarget;
       if (!b.dataset.sure) { b.dataset.sure = '1'; b.textContent = 'Zeker weten?'; return; }
-      P.deleteTask(editing);
+      // Een blok uit de Standaardweek zou anders vanzelf terugkomen: dat wordt "deze week niet"
+      if (task(editing).slot_key) P.updateTask(editing, { module_state: 'skipped', day: null, start_min: null });
+      else P.deleteTask(editing);
       $('edit').close();
     };
 
@@ -1028,6 +1260,29 @@
       $('subjects').showModal();
     };
     $('subjects-close').onclick = () => $('subjects').close();
+
+    $('week-btn').onclick = openWeek;
+    $('week-close').onclick = () => $('week-dlg').close();
+    $('week-prev2').onclick = () => { goTo(shift(sel, -7)); renderCourses(); };
+    $('week-next2').onclick = () => { goTo(shift(sel, 7)); renderCourses(); };
+    $('mod-add').onclick = () => openModule(null);
+    $('m-freq').addEventListener('change', moduleFreqChanged);
+    $('mod-form').addEventListener('submit', saveModule);
+    $('m-cancel').onclick = () => $('mod-edit').close();
+    $('m-delete').onclick = (e) => {
+      const b = e.currentTarget;
+      if (!b.dataset.sure) { b.dataset.sure = '1'; b.textContent = 'Zeker weten?'; return; }
+      P.deleteModule(editingModule);
+      $('mod-edit').close();
+      renderModules();
+    };
+    $('set-travel').addEventListener('change', (e) => {
+      const n = Math.round(Number(e.target.value));
+      if (n >= 0 && n <= 240) P.setSettings({ eur_travel_min: n }); else fillSettings();
+    });
+    for (const [id, field] of [['set-start', 'day_start_min'], ['set-dinner', 'dinner_min']]) {
+      $(id).addEventListener('change', (e) => { if (e.target.value) P.setSettings({ [field]: timeValue(e.target) }); else fillSettings(); });
+    }
     $('subjects-form').addEventListener('submit', (e) => {
       e.preventDefault();
       const input = $('s-name');

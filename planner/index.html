@@ -7,7 +7,7 @@
   <title>Planner</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231F1F1E'/%3E%3Cpath d='M9 11h14M9 16h14M9 21h8' stroke='%23fff' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
   <script>(function () { var t; try { t = localStorage.getItem('planner.theme'); } catch (e) {} document.documentElement.dataset.theme = t === 'dark' || (t !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light'; })();</script>
-  <link rel="stylesheet" href="planner.css?v=0.3.5">
+  <link rel="stylesheet" href="planner.css?v=0.4.0">
 </head>
 <body>
   <!-- Inloggen -->
@@ -52,6 +52,8 @@
       </nav>
       <div id="habits-top" class="habits" aria-label="Gewoontes"></div>
     </div>
+
+    <section id="week-banner" class="week-banner" hidden></section>
 
     <div class="cols">
       <section class="card tl" data-drop="timeline" aria-label="Tijdlijn">
@@ -117,9 +119,10 @@
 
     <footer class="foot-bar">
       <button id="theme-btn" class="link" type="button"></button>
+      <button id="week-btn" class="link" type="button">Standaardweek</button>
       <button id="subjects-btn" class="link" type="button">Vakken en kleuren</button>
       <button id="logout-btn" class="link" type="button">Uitloggen</button>
-      <span>Planner versie 0.3.5</span>
+      <span>Planner versie 0.4.0</span>
     </footer>
   </div>
 
@@ -189,11 +192,80 @@
     <div class="dlg-actions"><span class="grow"></span><button id="habits-close" class="btn dark" type="button">Klaar</button></div>
   </dialog>
 
+  <!-- Standaardweek -->
+  <dialog id="week-dlg" class="dlg week-dlg" aria-labelledby="week-title">
+    <div class="week-top">
+      <div>
+        <h2 id="week-title">Standaardweek</h2>
+        <p class="hint">Modules plaatsen zichzelf om college en diensten heen. Gestippeld = automatisch, vol = vastgezet door jou.</p>
+      </div>
+      <button id="week-close" class="btn dark" type="button">Klaar</button>
+    </div>
+    <p id="week-missing" class="hint" hidden></p>
+    <div id="week-body" class="week-body">
+      <div class="week-side">
+        <h3>Modules</h3>
+        <ul id="mod-list" class="mod-list"></ul>
+        <button id="mod-add" class="mod-add" type="button">+ module</button>
+        <h3>Vaste regels</h3>
+        <div class="week-settings">
+          <label>Reistijd naar de EUR (min) <input id="set-travel" type="number" min="0" max="240" step="5"></label>
+          <label>Vroegste begin <input id="set-start" type="time" step="900"></label>
+          <label>Na het eten, vanaf <input id="set-dinner" type="time" step="900"></label>
+        </div>
+        <p class="hint">Altijd: niet over afspraken heen, 25 min fietsen naar een dienst, niks binnen een half uur na een dienst, niks na 23:00.</p>
+        <h3>Vakken uit het rooster</h3>
+        <ul id="course-list" class="course-list"></ul>
+      </div>
+      <div class="week-main">
+        <div class="week-nav">
+          <button id="week-prev2" class="arrow" type="button" aria-label="Vorige week">‹</button>
+          <span id="week-label"></span>
+          <button id="week-next2" class="arrow" type="button" aria-label="Volgende week">›</button>
+        </div>
+        <div class="week-scroll"><div id="week-grid" class="week-grid"></div></div>
+        <section id="week-banner-panel" class="week-banner" hidden></section>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Module aanpassen -->
+  <dialog id="mod-edit" class="dlg" aria-labelledby="mod-title">
+    <form id="mod-form" method="dialog">
+      <h2 id="mod-title">Module</h2>
+      <label>Naam <input id="m-name" type="text" maxlength="80" required autocomplete="off"></label>
+      <div class="when mod-when">
+        <label>Duur (min) <input id="m-dur" type="number" min="5" max="1440" step="5" required></label>
+        <label>Hoe vaak
+          <select id="m-freq"><option value="daily">Elke dag</option><option value="weekly">x per week</option><option value="biweekly">Om de week</option></select>
+        </label>
+        <label id="m-times-box">Keer per week <input id="m-times" type="number" min="1" max="7"></label>
+      </div>
+      <div class="when mod-when">
+        <label>Voorkeur
+          <select id="m-pref"><option value="any">Maakt niet uit</option><option value="morning">Ochtend</option><option value="afternoon">Middag</option><option value="evening">Avond</option></select>
+        </label>
+        <label>Vak <select id="m-subject"></select></label>
+        <label>Om de week erbij <input id="m-alt" type="text" maxlength="40" placeholder="bijv. bed" autocomplete="off"></label>
+      </div>
+      <div class="field"><span>Regels</span><div id="m-rules" class="mod-rules"></div></div>
+      <div class="field"><span>Kleur</span><div id="m-swatches" class="swatches"></div></div>
+      <p id="m-err" class="err" role="alert"></p>
+      <div class="dlg-actions">
+        <button id="m-delete" class="btn danger" type="button" hidden>Verwijderen</button>
+        <span class="grow"></span>
+        <button id="m-cancel" class="btn" type="button">Annuleren</button>
+        <button class="btn dark" type="submit">Opslaan</button>
+      </div>
+    </form>
+  </dialog>
+
   <div id="toast" class="toast" role="status" hidden></div>
 
-  <script src="config.js?v=0.3.5"></script>
-  <script src="store.js?v=0.3.5"></script>
-  <script src="agenda.js?v=0.3.5"></script>
-  <script src="app.js?v=0.3.5"></script>
+  <script src="config.js?v=0.4.0"></script>
+  <script src="store.js?v=0.4.0"></script>
+  <script src="agenda.js?v=0.4.0"></script>
+  <script src="week.js?v=0.4.0"></script>
+  <script src="app.js?v=0.4.0"></script>
 </body>
 </html>

@@ -30,6 +30,7 @@ window.PlannerAgenda = (() => {
   let fetchedAt = 0;
   let state = 'loading';      // ok | locked | error
   let loaded = [0, 0];
+  let complete = false;       // false als een agenda deze ronde niet laadde: dan niets inplannen op een half beeld
   let wanted = [0, 0];
   let timer = null;
   let badDashToken = null;
@@ -299,6 +300,7 @@ window.PlannerAgenda = (() => {
       ];
       fetchedAt = Date.now();
       state = 'ok';
+      complete = true;
       return onChange();
     }
     const [from, to] = wanted;
@@ -309,10 +311,22 @@ window.PlannerAgenda = (() => {
         singleEvents: 'true', orderBy: 'startTime', maxResults: '250',
       });
       const visible = cals.items.filter((c) => c.selected || c.primary || isCanvasCal(c) || isBirthdayCal(c));
+      let allLoaded = true;
+      const pages = async (cal) => {
+        const items = [];
+        let token = '';
+        do {
+          const r = await api(`/calendars/${encodeURIComponent(cal.id)}/events?${qs}${token ? `&pageToken=${encodeURIComponent(token)}` : ''}`);
+          items.push(...(r.items || []));
+          token = r.nextPageToken || '';
+        } while (token && items.length < 2500);
+        return items;
+      };
       const lists = await Promise.all(visible.map((cal) =>
-        api(`/calendars/${encodeURIComponent(cal.id)}/events?${qs}`)
-          .then((r) => (r.items || []).map((e) => simplify(e, cal)).filter(Boolean))
-          .catch((e) => { if (e instanceof NoAccess) throw e; return []; })));
+        pages(cal)
+          .then((items) => items.map((e) => simplify(e, cal)).filter(Boolean))
+          .catch((e) => { if (e instanceof NoAccess) throw e; allLoaded = false; return []; })));
+      complete = allLoaded;
       events = lists.flat();
       calendars = visible.map((c) => ({ id: c.id, name: c.primary ? 'Hoofdagenda' : c.summaryOverride || c.summary || 'Agenda', color: validColor(c.backgroundColor) }));
       fetchedAt = Date.now();
@@ -362,12 +376,19 @@ window.PlannerAgenda = (() => {
       { id: 'e', title: 'AH Berkel', allDay: false, start: at(5, 8), end: at(5, 14) },
       { id: 'f', title: '🏁 FORMULA 1 DEMO GRAND PRIX 2026 - Race', allDay: false, start: at(6, 14), end: at(6, 16) },
       { id: 'g', title: 'Werkgroep Cognitie', allDay: false, start: at(1, 11), end: at(1, 13), cal: 'demo-rooster' },
+      { id: 'k', title: 'ESSB-DEMO1 - Statistiek', allDay: false, start: at(2, 13), end: at(2, 15), cal: 'demo-rooster' },
+      { id: 'l', title: 'ESSB-DEMO2 - Filosofie', allDay: false, start: at(3, 10), end: at(3, 12), cal: 'demo-rooster' },
+      { id: 'm', title: 'AH Berkel', allDay: false, start: at(3, 17), end: at(3, 21) },
+      { id: 'n', title: 'ESSB-DEMO1 - Statistiek', allDay: false, start: at(8, 13), end: at(8, 15), cal: 'demo-rooster' },
+      { id: 'o', title: 'AH Berkel', allDay: false, start: at(9, 12), end: at(9, 18) },
     ];
   }
 
   return {
     start, range, load, unlock, forget, label, isAH, isF1, deadlines, birthdays, normal, courses, commute, calendarOf, usedCalendars,
     get state() { return state; },
+    get complete() { return complete; },
+    covers: (from, to) => DEMO || (from >= loaded[0] && to <= loaded[1]),
     get fetchedAt() { return fetchedAt; },
     get events() { return events; },
   };

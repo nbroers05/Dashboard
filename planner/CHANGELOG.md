@@ -6,6 +6,7 @@ Eigen versienummer, los van het dashboard. Nieuwste bovenaan.
 
 | Versie | Wat |
 |---|---|
+| 0.4.0 | Standaardweek: modules die zichzelf inplannen rond college en diensten. Gestippeld = automatisch en schuift mee met het rooster, slepen zet een blok vast. Botst een vastgezet blok, dan vraagt de planner wat je wilt. Past iets nergens, dan staat het in de Inbox met "paste niet". Lezen per vak voor het eerste college van de week, en Studie telt die leesblokken. Knop Standaardweek onderaan. supabase.sql moet opnieuw gedraaid worden. |
 | 0.3.5 | Nog reageren groter op de pc: over de breedte van de twee rechterkolommen tot de onderkant van de tijdlijn, met vier kolommen naast elkaar die elk apart scrollen. De vijf kleine vakken verdelen zichzelf zodat beide kolommen even hoog eindigen. Op de telefoon blijven de tabjes. |
 | 0.3.4 | Kleurrijker, net als het dashboard: elk vak een eigen kleur met verloop, rand en kopje in hoofdletters. Nog reageren krijgt per app een accentkleur, gewoontes zijn gekleurde chips. Agendablokken en de AH-dienst blijven zoals ze waren. |
 | 0.3.3 | Laatste bericht onder de naam bij Nog reageren, als de app de tekst meestuurt. Per persoon alleen het laatste bericht, gewist zodra de regel weg is; de cijfers voor het archief veranderen niet. supabase.sql moet opnieuw gedraaid worden. |

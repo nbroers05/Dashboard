@@ -62,7 +62,7 @@ De oude testmaten (1080×1920, 1916×912, 1366×768, 375×812) gelden niet meer.
 
 ## Planner (`planner/`)
 
-Losse pagina met eigen opmaak, eigen versienummer en eigen `planner/CHANGELOG.md` (sinds 0.1.0, 9 nov 2026; `?v=` in `planner/index.html` meeverhogen). Wijzigingen daar veranderen het dashboardnummer niet. Data staat alleen in Supabase (`planner/supabase.sql`, RLS per gebruiker), nooit in de repo. Google Agenda alleen lezen. Testen zonder account: `planner/?demo`. Uitleg en stappen: `planner/README.md`. Let op bij lokaal testen: een oude service worker op poort 8000 kan `/planner/` als dashboard tonen.
+Losse pagina met eigen opmaak, eigen versienummer en eigen `planner/CHANGELOG.md` (sinds 0.1.0, 9 nov 2026; `?v=` in `planner/index.html` meeverhogen). Wijzigingen daar veranderen het dashboardnummer niet. Data staat alleen in Supabase (`planner/supabase.sql`, RLS per gebruiker), nooit in de repo. Google Agenda alleen lezen. Testen zonder account: `planner/?demo`. Uitleg en stappen: `planner/README.md`. Let op bij lokaal testen: een oude service worker op poort 8000 kan `/planner/` als dashboard tonen. **Standaardweek** (sinds 0.4.0): `planner/week.js` rekent alleen (`plan()` geeft inserts, updates, deletes, conflicts, moves); blokken zijn gewone rijen in `planner_tasks` met `slot_key` (uniek, voorkomt dubbele rijen tussen apparaten) en `module_state` (auto, pinned, skipped). `app.js` draait het plan alleen op een volledig geladen agenda (`A.complete`).
 
 ## Lokaal testen
 

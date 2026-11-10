@@ -21,11 +21,18 @@ window.PlannerStore = (() => {
   const GROCERIES = 'planner_groceries';
   const REPLIES = 'planner_replies';
   const EXTRA_TABLES = [HABITS, CHECKS, GROCERIES, REPLIES];
+  const MODULES = 'planner_modules';
+  const SETTINGS = 'planner_settings';
+  const MISSING_TABLE = ['PGRST205', '42P01'];
+  const MISSING_COLUMN = ['42703', 'PGRST204'];
+  const TASK_FIELDS = 'id,kind,title,done,day,start_min,duration_min,subject_id,created_at';
   const CHECK_DAYS = 125;   // zo ver terug worden afvinkingen opgehaald; langere reeksen tonen als 120+
 
   const EMPTY_EXTRAS = { habits: [], checks: [], groceries: [], replies: [] };
+  const EMPTY_MODULES = { modules: [], settings: null };
   // extrasOk = false: de tabellen van ronde 2 bestaan nog niet (supabase.sql nog niet opnieuw gedraaid). Taken blijven dan gewoon werken.
-  const data = { tasks: [], subjects: [], ...EMPTY_EXTRAS, extrasOk: false };
+  // modulesOk = false: de tabellen van de Standaardweek bestaan nog niet; de rest werkt dan gewoon.
+  const data = { tasks: [], subjects: [], ...EMPTY_EXTRAS, ...EMPTY_MODULES, extrasOk: false, modulesOk: false };
   const listeners = { change: new Set(), status: new Set(), error: new Set() };
   const emit = (name, arg) => listeners[name].forEach((f) => f(arg));
   function on(name, f) { listeners[name].add(f); }
@@ -44,9 +51,9 @@ window.PlannerStore = (() => {
   function demoLoad() {
     try {
       const saved = JSON.parse(sessionStorage.getItem(DEMO_KEY));
-      if (saved) return { ...demoExtras(), ...saved, extrasOk: true };
+      if (saved) return { ...demoExtras(), ...saved, extrasOk: true, modulesOk: true };
     } catch {}
-    return { ...demoSeed(), ...demoExtras(), extrasOk: true };
+    return { ...demoSeed(), ...demoExtras(), extrasOk: true, modulesOk: true };
   }
   function demoExtras() {
     const d = new Date();
@@ -55,6 +62,7 @@ window.PlannerStore = (() => {
     const row = (fields) => ({ id: uuid(), created_at: nowIso(), ...fields });
     const water = row({ name: 'Water 2L' }), lezen = row({ name: 'Lezen' }), sport = row({ name: 'Sporten' }), slaap = row({ name: 'Voor 00:30 slapen' });
     return {
+      ...EMPTY_MODULES,
       habits: [water, lezen, sport, slaap],
       checks: [
         row({ habit_id: water.id, day: key(0) }), row({ habit_id: lezen.id, day: key(0) }),
@@ -143,24 +151,43 @@ window.PlannerStore = (() => {
     queue.length = 0;
     if (channel) { sb.removeChannel(channel); channel = null; }
     if (extraChannel) { sb.removeChannel(extraChannel); extraChannel = null; }
+    if (moduleChannel) { sb.removeChannel(moduleChannel); moduleChannel = null; }
     if (sb) await sb.auth.signOut();
   }
 
   async function fetchAll() {
     if (DEMO) return demoLoad();
-    const tasks = sb.from(TASKS).select('id,kind,title,done,day,start_min,duration_min,subject_id,created_at')
-      .or(`done.eq.false,day.gte.${fromDay}`).order('created_at');
     const subjects = sb.from(SUBJECTS).select('id,name,color,created_at').order('name');
-    const [t, s, extras] = await Promise.all([tasks, subjects, fetchExtras()]);
+    const [t, s, extras, mods] = await Promise.all([fetchTasks(), subjects, fetchExtras(), fetchModules()]);
     if (t.error) throw t.error;
     if (s.error) throw s.error;
-    return { tasks: t.data, subjects: s.data, ...(extras || EMPTY_EXTRAS), extrasOk: !!extras };
+    return { tasks: t.data, subjects: s.data, ...(extras || EMPTY_EXTRAS), extrasOk: !!extras, ...(mods || EMPTY_MODULES), modulesOk: !!mods };
+  }
+
+  // Staan de kolommen van de Standaardweek er nog niet (supabase.sql nog niet opnieuw gedraaid), dan gewoon de taken
+  async function fetchTasks() {
+    const get = (fields) => sb.from(TASKS).select(fields).or(`done.eq.false,day.gte.${fromDay}`).order('created_at');
+    const res = await get(`${TASK_FIELDS},module_id,slot_key,module_week,module_state`);
+    return MISSING_COLUMN.includes(String(res.error?.code)) ? get(TASK_FIELDS) : res;
+  }
+
+  async function fetchModules() {
+    const [m, s] = await Promise.all([
+      sb.from(MODULES).select('*').order('sort'),
+      sb.from(SETTINGS).select('*').limit(1),
+    ]);
+    for (const res of [m, s]) {
+      if (!res.error) continue;
+      if (MISSING_TABLE.includes(String(res.error.code))) return null;
+      throw res.error;
+    }
+    return { modules: m.data, settings: s.data[0] || null };
   }
 
   // Staat de kolom last_message er nog niet (supabase.sql nog niet opnieuw gedraaid), dan gewoon zonder laatste bericht
   async function fetchReplies() {
     const res = await sb.from(REPLIES).select('id,person,app,since,created_at,last_message').order('since');
-    if (!['42703', 'PGRST204'].includes(String(res.error?.code))) return res;
+    if (!MISSING_COLUMN.includes(String(res.error?.code))) return res;
     return sb.from(REPLIES).select('id,person,app,since,created_at').order('since');
   }
 
@@ -248,6 +275,7 @@ window.PlannerStore = (() => {
       Object.assign(data, fresh);
       ready = true;
       if (data.extrasOk) liveExtras();
+      if (data.modulesOk) liveModules();
       if (status === 'offline') setStatus('saved');
       emit('change');
     } catch (e) {
@@ -279,6 +307,14 @@ window.PlannerStore = (() => {
     extraChannel = sb.channel('planner-extra');
     for (const table of EXTRA_TABLES) extraChannel.on('postgres_changes', { event: '*', schema: 'public', table }, changed);
     extraChannel.subscribe();
+  }
+
+  let moduleChannel = null;
+  function liveModules() {
+    if (DEMO || moduleChannel) return;
+    moduleChannel = sb.channel('planner-modules');
+    for (const table of [MODULES, SETTINGS]) moduleChannel.on('postgres_changes', { event: '*', schema: 'public', table }, changed);
+    moduleChannel.subscribe();
   }
 
   async function start(firstDay) {
@@ -381,11 +417,51 @@ window.PlannerStore = (() => {
     removeRow('replies', REPLIES, id);
   }
 
+  // ---------- Standaardweek ----------
+  const addModule = (fields) => insertRow('modules', MODULES, fields);
+  const updateModule = (id, patch) => patchRow('modules', MODULES, id, patch);
+  const deleteModule = (id) => removeRow('modules', MODULES, id);
+  function setSettings(patch) {
+    if (!data.settings) return;
+    Object.assign(data.settings, patch);
+    emit('change');
+    enqueue({ table: SETTINGS, op: 'update', id: data.settings.id, patch });
+  }
+  // Eén keer per account. De beginmodules hebben vaste id's: doen twee apparaten dit tegelijk, dan weigert de database de tweede.
+  function seedModules(begin, defaults) {
+    const row = { id: uuid(), ...defaults };
+    data.settings = { ...row };
+    data.modules = begin.map((m) => ({ ...m }));
+    emit('change');
+    enqueue({ table: SETTINGS, op: 'insert', row });
+    begin.forEach((m) => enqueue({ table: MODULES, op: 'insert', row: m }));
+  }
+  // De uitkomst van PlannerWeek.plan in één keer: één keer hertekenen, de wachtrij doet de rest
+  function applyPlan(p) {
+    for (const fields of p.inserts) {
+      const row = { id: uuid(), ...fields };
+      data.tasks.push({ ...row, created_at: nowIso() });
+      queue.push({ table: TASKS, op: 'insert', row });
+    }
+    for (const { id, patch } of p.updates) {
+      const t = data.tasks.find((x) => x.id === id);
+      if (t) Object.assign(t, patch);
+      queue.push({ table: TASKS, op: 'update', id, patch });
+    }
+    for (const id of p.deletes) queue.push({ table: TASKS, op: 'delete', id });
+    if (p.deletes.length) data.tasks = data.tasks.filter((t) => !p.deletes.includes(t.id));
+    loadSeq++;
+    emit('change');
+    pump();
+  }
+
   return {
     DEMO, configured, data, on, init, session, signIn, signOut, start, needFrom,
     addTask, updateTask, deleteTask, addSubject, updateSubject, deleteSubject,
     addHabit, renameHabit, deleteHabit, toggleHabit, addGrocery, setGrocery, clearGroceries, deleteReply,
+    addModule, updateModule, deleteModule, setSettings, seedModules, applyPlan,
     get status() { return status; },
     get ready() { return ready; },
+    get idle() { return !queue.length && !pumping; },
   };
 })();

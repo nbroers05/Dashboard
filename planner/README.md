@@ -31,6 +31,7 @@ De planner leest je agenda alleen; er gaat niets terug naar Google. In een brows
 - De gratis versie van Supabase pauzeert een project als het ongeveer een week niet is gebruikt. Dan kun je het in het Supabase-scherm met één klik weer aanzetten.
 - Op het dashboard uitloggen wist alle opslag van de site in die browser, dus dan ben je daar ook uit de planner uitgelogd.
 - Je taken staan alleen in Supabase. In deze repo staat geen planner-data.
+- Standaardweek: de knop staat onderaan. Reistijd naar de EUR, het vroegste begin en het eten zijn voorlopige waarden die je daar zelf aanpast. Een gestippeld blok schuift vanzelf mee; sleep je het, dan staat het vast. Verwijder je een blok, dan komt het die week niet meer terug.
 
 ## Bestanden
 
@@ -41,6 +42,7 @@ De planner leest je agenda alleen; er gaat niets terug naar Google. In een brows
 | `app.js` | Scherm, slepen, dialogen |
 | `store.js` | Opslag: Supabase, live bijwerken, nepdata voor `?demo` |
 | `agenda.js` | Google Agenda lezen, herkennen van diensten, deadlines, verjaardagen en F1 |
+| `week.js` | Standaardweek: rekent uit waar de modules komen, alleen rekenen |
 | `config.js` | Supabase-adres en anon key |
 | `supabase.sql` | Tabellen en Row Level Security |
 | `CHANGELOG.md` | Versies van de planner |

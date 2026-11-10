@@ -281,3 +281,71 @@ grant execute on function public.planner_reply_stats_export(text, date) to anon;
 -- Zelfde Row Level Security als de rest van planner_replies. De triggers en de export hierboven lezen dit veld niet,
 -- dus het komt nooit in planner_reply_stats of in het archief.
 alter table public.planner_replies add column if not exists last_message text check (char_length(last_message) <= 500);
+
+-- ---------- Standaardweek: modules die zichzelf inplannen ----------
+create table if not exists public.planner_modules (
+  id            uuid primary key default gen_random_uuid(),
+  user_id       uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  name          text not null check (char_length(name) between 1 and 80),
+  duration_min  smallint not null default 60 check (duration_min between 5 and 1440),
+  freq          text not null default 'weekly' check (freq in ('daily', 'weekly', 'biweekly')),
+  times         smallint not null default 1 check (times between 1 and 7),
+  pref          text not null default 'any' check (pref in ('any', 'morning', 'afternoon', 'evening')),
+  rules         text[] not null default '{}',
+  subject_id    uuid references public.planner_subjects (id) on delete set null,
+  alternate     text check (char_length(alternate) <= 40),
+  color         text not null default '#4fa8ff' check (color ~ '^#[0-9A-Fa-f]{6}$'),
+  enabled       boolean not null default true,
+  sort          integer not null default 0,
+  created_at    timestamptz not null default now(),
+  updated_at    timestamptz not null default now()
+);
+
+create table if not exists public.planner_settings (
+  id              uuid primary key default gen_random_uuid(),
+  user_id         uuid not null unique default auth.uid() references auth.users (id) on delete cascade,
+  eur_travel_min  smallint not null default 30 check (eur_travel_min between 0 and 240),
+  day_start_min   smallint not null default 480 check (day_start_min between 0 and 1380),
+  dinner_min      smallint not null default 1170 check (dinner_min between 0 and 1380),
+  course_map      jsonb not null default '{}',
+  created_at      timestamptz not null default now(),
+  updated_at      timestamptz not null default now()
+);
+
+-- Een blok uit de Standaardweek is een gewone taak met deze extra velden.
+-- slot_key: welke plek van welke module in welke week. Uniek, zodat twee apparaten nooit hetzelfde blok dubbel maken.
+-- module_state: auto = gestippeld, pinned = vastgezet, skipped = deze week niet.
+alter table public.planner_tasks add column if not exists module_id uuid references public.planner_modules (id) on delete set null;
+alter table public.planner_tasks add column if not exists slot_key text;
+alter table public.planner_tasks add column if not exists module_week date;
+alter table public.planner_tasks add column if not exists module_state text check (module_state in ('auto', 'pinned', 'skipped'));
+create unique index if not exists planner_tasks_slot on public.planner_tasks (user_id, slot_key) where slot_key is not null;
+
+do $$
+declare
+  t text;
+begin
+  foreach t in array array['planner_modules', 'planner_settings'] loop
+    execute format('drop trigger if exists %I on public.%I', t || '_touch', t);
+    execute format('create trigger %I before update on public.%I for each row execute function public.planner_touch()', t || '_touch', t);
+
+    execute format('alter table public.%I enable row level security', t);
+    execute format('revoke all on public.%I from anon', t);
+    execute format('grant select, insert, update, delete on public.%I to authenticated', t);
+
+    execute format('drop policy if exists %I on public.%I', t || '_select', t);
+    execute format('drop policy if exists %I on public.%I', t || '_insert', t);
+    execute format('drop policy if exists %I on public.%I', t || '_update', t);
+    execute format('drop policy if exists %I on public.%I', t || '_delete', t);
+
+    execute format('create policy %I on public.%I for select to authenticated using ((select auth.uid()) = user_id)', t || '_select', t);
+    execute format('create policy %I on public.%I for insert to authenticated with check ((select auth.uid()) = user_id)', t || '_insert', t);
+    execute format('create policy %I on public.%I for update to authenticated using ((select auth.uid()) = user_id) with check ((select auth.uid()) = user_id)', t || '_update', t);
+    execute format('create policy %I on public.%I for delete to authenticated using ((select auth.uid()) = user_id)', t || '_delete', t);
+
+    begin
+      execute format('alter publication supabase_realtime add table public.%I', t);
+    exception when duplicate_object then null;
+    end;
+  end loop;
+end $$;
