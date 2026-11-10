@@ -262,6 +262,7 @@ input[type="checkbox"] { flex: none; width: 17px; height: 17px; margin: 0; accen
 .reply { display: flex; align-items: center; gap: 8px; padding: 7px 8px 7px 12px; border-radius: 8px; background: var(--bg); }
 .reply-text { flex: 1; min-width: 0; }
 .reply-text b { display: block; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.reply-msg { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; font-size: 13px; }
 .reply-text span { display: block; color: var(--muted); font-size: 12px; }
 .reply.late {
   --c: var(--c-reply);

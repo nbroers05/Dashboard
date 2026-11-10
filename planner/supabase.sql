@@ -136,7 +136,7 @@ create table if not exists public.planner_groceries (
   updated_at  timestamptz not null default now()
 );
 
--- Wie je nog moet antwoorden. Alleen naam, app en sinds wanneer: er is bewust geen kolom voor de berichttekst.
+-- Wie je nog moet antwoorden: naam, app en sinds wanneer. Kolom last_message staat verderop.
 create table if not exists public.planner_replies (
   id          uuid primary key default gen_random_uuid(),
   user_id     uuid not null default auth.uid() references auth.users (id) on delete cascade,
@@ -275,3 +275,9 @@ $$;
 
 revoke all on function public.planner_reply_stats_export(text, date) from public, authenticated;
 grant execute on function public.planner_reply_stats_export(text, date) to anon;
+
+-- ---------- Laatste bericht onder de naam ----------
+-- Eén veld per regel: een nieuw bericht overschrijft het en het verdwijnt samen met de regel (gereageerd of het kruisje).
+-- Zelfde Row Level Security als de rest van planner_replies. De triggers en de export hierboven lezen dit veld niet,
+-- dus het komt nooit in planner_reply_stats of in het archief.
+alter table public.planner_replies add column if not exists last_message text check (char_length(last_message) <= 500);

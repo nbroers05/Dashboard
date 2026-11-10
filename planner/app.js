@@ -294,7 +294,9 @@
 
     const shown = replyOpen ? open.rows : open.rows.slice(0, REPLY_LIMIT);
     list.replaceChildren(...(shown.length ? shown.map((r) => h('li', { class: `reply${replyLate(r) ? ' late' : ''}` },
-      h('div', { class: 'reply-text' }, h('b', { title: r.person }, r.person), h('span', null, `${r.app} · ${waiting(r.since)}`)),
+      h('div', { class: 'reply-text' }, h('b', { title: r.person }, r.person),
+        r.last_message ? h('p', { class: 'reply-msg', title: r.last_message }, r.last_message) : null,
+        h('span', null, `${r.app} · ${waiting(r.since)}`)),
       h('button', { type: 'button', class: 'reply-x', 'data-reply': r.id, 'aria-label': `${r.person} afhandelen`, title: 'Afhandelen' }, '×')))
       : [h('li', { class: 'empty' }, 'Niemand wacht op je.')]));
     more.hidden = shown.length === open.rows.length;

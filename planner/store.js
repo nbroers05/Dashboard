@@ -62,8 +62,8 @@ window.PlannerStore = (() => {
       ],
       groceries: ['Melk', 'Pindakaas', 'Vuilniszakken'].map((title) => row({ title, done: false })),
       replies: [
-        row({ person: 'Persoon A', app: 'WhatsApp', since: ago(3 * 24 * 60) }),
-        row({ person: 'Persoon D', app: 'WhatsApp', since: ago(20 * 60) }),
+        row({ person: 'Persoon A', app: 'WhatsApp', since: ago(3 * 24 * 60), last_message: 'Voorbeeldbericht dat lang genoeg is om te laten zien wat er gebeurt als de tekst niet op één regel past in dit vak, ook op een smalle telefoon.' }),
+        row({ person: 'Persoon D', app: 'WhatsApp', since: ago(20 * 60), last_message: 'Kort voorbeeldbericht' }),
         row({ person: 'Persoon E', app: 'WhatsApp', since: ago(9 * 60) }),
         row({ person: 'Persoon F', app: 'WhatsApp', since: ago(4 * 60) }),
         row({ person: 'Persoon G', app: 'WhatsApp', since: ago(90) }),
@@ -157,6 +157,13 @@ window.PlannerStore = (() => {
     return { tasks: t.data, subjects: s.data, ...(extras || EMPTY_EXTRAS), extrasOk: !!extras };
   }
 
+  // Staat de kolom last_message er nog niet (supabase.sql nog niet opnieuw gedraaid), dan gewoon zonder laatste bericht
+  async function fetchReplies() {
+    const res = await sb.from(REPLIES).select('id,person,app,since,created_at,last_message').order('since');
+    if (!['42703', 'PGRST204'].includes(String(res.error?.code))) return res;
+    return sb.from(REPLIES).select('id,person,app,since,created_at').order('since');
+  }
+
   async function fetchExtras() {
     const d = new Date();
     d.setDate(d.getDate() - CHECK_DAYS);
@@ -165,7 +172,7 @@ window.PlannerStore = (() => {
       sb.from(HABITS).select('id,name,created_at').order('created_at'),
       sb.from(CHECKS).select('id,habit_id,day,created_at').gte('day', from).order('day', { ascending: false }),
       sb.from(GROCERIES).select('id,title,done,created_at').order('created_at'),
-      sb.from(REPLIES).select('id,person,app,since,created_at').order('since'),
+      fetchReplies(),
     ]);
     for (const res of [h, c, g, r]) {
       if (!res.error) continue;
