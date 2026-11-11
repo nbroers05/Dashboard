@@ -4,7 +4,13 @@
    "name": "NOS",
    "items": [
     {
-     "title": "Datalek bij beheersysteem sportclubs: gegevens van leden gestolen",
+     "title": "Voorlopig geen afzettingsprocedure tegen Amerikaanse defensieminister Hegseth",
+     "link": "https://nos.nl/l/2638946",
+     "time": "2026-11-11T01:39:05+01:00",
+     "img": "https://images.cdn.nos.nl/7/A/a/U/s/x/1GoSyHZ68ziyqiuwt8npEsS4Xv4iR9N45kaBDVT/8x341x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Gegevens sportverenigingen op straat door datalek bij beheersysteem",
      "link": "https://nos.nl/l/2638945",
      "time": "2026-11-11T00:13:51+01:00",
      "img": "https://images.cdn.nos.nl/2/A/n/8/e/h/JnsEXaKzcUCW4wf7Na4UFdYmE4YpgswBHncsFRk/8x163x3984x2241-1024x576.webp"
@@ -86,12 +92,6 @@
      "link": "https://nos.nl/l/2638918",
      "time": "2026-11-10T19:29:50+01:00",
      "img": "https://images.cdn.nos.nl/4/D/6/V/x/8/EQZxVww7k1zfi1cKFJxHtBzj8PjFAsHRxsNo55p/3x71x3696x2079-1024x576.webp"
-    },
-    {
-     "title": "Amsterdam begint 'offensief tegen drugsoverlast': miljoenen voor opvang en zorg",
-     "link": "https://nos.nl/l/2638917",
-     "time": "2026-11-10T19:05:29+01:00",
-     "img": "https://images.cdn.nos.nl/5/4/Z/6/4/c/mtWysCLxJ3rx5rDZKFkqi8Qv8q68M8nxS33hG6o/8x409x3984x2241-1024x576.webp"
     }
    ]
   },
@@ -194,6 +194,12 @@
    "name": "NU.nl",
    "items": [
     {
+     "title": "Republikeinen in Huis VS houden afzettingsprocedure Hegseth tegen",
+     "link": "https://www.nu.nl/verkiezingen-vs/6416181/republikeinen-in-huis-vs-houden-afzettingsprocedure-hegseth-tegen.html",
+     "time": "2026-11-11T00:30:42+01:00",
+     "img": "https://images.nu.nl/m/aufxzwtafzzt_sqr256/622/0/2512/2512/republikeinen-in-huis-vs-houden-afzettingsprocedure-hegseth-tegen.jpg"
+    },
+    {
      "title": "Gegevens van amateursporters buitgemaakt na datalek bij AllUnited",
      "link": "https://www.nu.nl/binnenland/6416179/gegevens-van-amateursporters-buitgemaakt-na-datalek-bij-allunited.html",
      "time": "2026-11-10T23:41:57+01:00",
@@ -276,12 +282,6 @@
      "link": "https://www.nu.nl/klimaat/6416143/co2-uitstoot-door-fossiele-brandstoffen-daalt-licht-turkije-wil-daling-doorzetten.html",
      "time": "2026-11-10T16:58:37+01:00",
      "img": "https://images.nu.nl/m/y0qx9woapscf_sqr256/528/0/2620/2620/co2-uitstoot-door-fossiele-brandstoffen-daalt-licht-turkije-wil-daling-doorzetten.jpg"
-    },
-    {
-     "title": "Tientallen influencers en (ex-)topsporters misleiden volgers over supplementen",
-     "link": "https://www.nu.nl/gezondheid/6416134/tientallen-influencers-en-ex-topsporters-misleiden-volgers-over-supplementen.html",
-     "time": "2026-11-10T16:52:30+01:00",
-     "img": "https://images.nu.nl/m/pbhxpzwamz3h_sqr256/1479/3/4909/4909/tientallen-influencers-en-ex-topsporters-misleiden-volgers-over-supplementen.jpg"
     }
    ]
   }
@@ -390,132 +390,7 @@
   }
  ],
  "youtube": {
-  "channels": [
-   "Patrick (H) Willems",
-   "The Yard",
-   "Ken"
-  ],
-  "videos": [
-   {
-    "title": "House Arrest | Yard D&D | S1E66",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/watch?v=w-dQ56D5cX4",
-    "thumb": "https://i.ytimg.com/vi/w-dQ56D5cX4/mqdefault.jpg",
-    "time": "2026-11-10T17:10:21+00:00",
-    "short": false
-   },
-   {
-    "title": "chaos mega draft, but I pick spells",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=NSlEIvcfuTg",
-    "thumb": "https://i.ytimg.com/vi/NSlEIvcfuTg/mqdefault.jpg",
-    "time": "2026-11-10T10:00:14+00:00",
-    "short": false
-   },
-   {
-    "title": "Ludwig asks Magnus to guess his body fat... #podcast #theyard #comedy",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/shorts/35csV09qPZQ",
-    "thumb": "https://i.ytimg.com/vi/35csV09qPZQ/mqdefault.jpg",
-    "time": "2026-11-09T17:24:58+00:00",
-    "short": true
-   },
-   {
-    "title": "I actually cooked",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=3ZS3x26ZbKg",
-    "thumb": "https://i.ytimg.com/vi/3ZS3x26ZbKg/mqdefault.jpg",
-    "time": "2026-11-09T10:00:02+00:00",
-    "short": false
-   },
-   {
-    "title": "chaos mega draft, but I pick expensive",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=c86ooa8R_OI",
-    "thumb": "https://i.ytimg.com/vi/c86ooa8R_OI/mqdefault.jpg",
-    "time": "2026-11-08T10:00:35+00:00",
-    "short": false
-   },
-   {
-    "title": "evo giant buffed prince",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=_hk53Dms3_c",
-    "thumb": "https://i.ytimg.com/vi/_hk53Dms3_c/mqdefault.jpg",
-    "time": "2026-11-07T10:00:26+00:00",
-    "short": false
-   },
-   {
-    "title": "Ludwig reacts to our disguises.. #podcast #theyard #comedy",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/shorts/qssvEpRyncM",
-    "thumb": "https://i.ytimg.com/vi/qssvEpRyncM/mqdefault.jpg",
-    "time": "2026-11-06T23:03:07+00:00",
-    "short": true
-   },
-   {
-    "title": "chaos mega draft, but I pick buildings",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=SXmUx51aOeU",
-    "thumb": "https://i.ytimg.com/vi/SXmUx51aOeU/mqdefault.jpg",
-    "time": "2026-11-06T10:00:38+00:00",
-    "short": false
-   },
-   {
-    "title": "We Met Magnus Midtbø! | The Yard",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/watch?v=QmzPwp7m0R8",
-    "thumb": "https://i.ytimg.com/vi/QmzPwp7m0R8/mqdefault.jpg",
-    "time": "2026-11-05T17:51:47+00:00",
-    "short": false
-   },
-   {
-    "title": "How Did Interstellar Become Every Dude's Favorite Movie?",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=f5iyzbgBTgA",
-    "thumb": "https://i.ytimg.com/vi/f5iyzbgBTgA/mqdefault.jpg",
-    "time": "2026-11-03T14:14:19+00:00",
-    "short": false
-   },
-   {
-    "title": "The Halloween Episode was a disaster.. #podcast #theyard #comedy",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/shorts/BXbval-c8r8",
-    "thumb": "https://i.ytimg.com/vi/BXbval-c8r8/mqdefault.jpg",
-    "time": "2026-11-02T19:38:58+00:00",
-    "short": true
-   },
-   {
-    "title": "Is This The Best Directed Movie Ever?",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=_t76HmE8ib4",
-    "thumb": "https://i.ytimg.com/vi/_t76HmE8ib4/mqdefault.jpg",
-    "time": "2026-09-15T13:11:42+00:00",
-    "short": false
-   },
-   {
-    "title": "Come See My New Film In Theaters",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=uuMbBWR-2Xg",
-    "thumb": "https://i.ytimg.com/vi/uuMbBWR-2Xg/mqdefault.jpg",
-    "time": "2026-09-04T22:53:08+00:00",
-    "short": false
-   },
-   {
-    "title": "We Need To Talk About How Weird HOOK Is",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=hXAWl_Ar6xA",
-    "thumb": "https://i.ytimg.com/vi/hXAWl_Ar6xA/mqdefault.jpg",
-    "time": "2026-08-06T14:38:38+00:00",
-    "short": false
-   },
-   {
-    "title": "Can video games be cinema? #videogames #movie #thelastofus #deathstranding",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/shorts/-GWrCLXTuwM",
-    "thumb": "https://i.ytimg.com/vi/-GWrCLXTuwM/mqdefault.jpg",
-    "time": "2026-07-01T16:17:55+00:00",
-    "short": true
-   }
-  ]
+  "channels": [],
+  "videos": []
  }
 }
