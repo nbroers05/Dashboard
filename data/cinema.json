@@ -1,5 +1,5 @@
 {
- "day": "2026-11-11",
+ "day": "2026-11-12",
  "sources": [
   "LantarenVenster"
  ],
@@ -289,6 +289,20 @@
    ]
   },
   {
+   "title": "Bill Frisell Trio",
+   "key": "billfriselltrio",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/bill-frisell-trio-27/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "BLKNWS: Terms & Conditions",
    "key": "blknwstermsandconditions",
    "poster": null,
@@ -485,6 +499,20 @@
    ]
   },
   {
+   "title": "Dag van de korte film 2026 – Kids (6+)",
+   "key": "dagvandekortefilm2026kids6",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/?post_type=wp_theatre_prod&p=182853",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "Dave Douglas Quartet",
    "key": "davedouglasquartet",
    "poster": null,
@@ -506,6 +534,34 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/de-breibios-wild-horse-nine/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "De dag van de korte film 2025",
+   "key": "dedagvandekortefilm2025",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/de-dag-van-de-korte-film/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "De Dag van de Korte Film 2026 – Kids (4+)",
+   "key": "dedagvandekortefilm2026kids4",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/de-dag-van-de-korte-film-kids/",
      "day": null,
      "next": null,
      "until": null
@@ -786,6 +842,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/filmconcert-metropolis/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Filmcursus: Rewind: hoe filmmakers spelen met tijd en perspectief",
+   "key": "filmcursusrewindhoefilmmakersspelenmettijdenperspectief",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/filmcursus-rewind-hoe-filmmakers-spelen-met-tijd-en-perspectief/",
      "day": null,
      "next": null,
      "until": null
@@ -1577,20 +1647,6 @@
    ]
   },
   {
-   "title": "One Cut of the Dead - NextGen Cinema",
-   "key": "onecutofthedeadnextgencinema",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/one-cut-of-the-dead/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
    "title": "Paradox Jazz Orchestra & James Carter spelen John Coltrane",
    "key": "paradoxjazzorchestraandjamescarterspelenjohncoltrane",
    "poster": null,
@@ -1671,6 +1727,20 @@
      "day": null,
      "next": null,
      "until": "2026-11-18"
+    }
+   ]
+  },
+  {
+   "title": "Queen at Sea - Aanschuiftafel",
+   "key": "queenatseaaanschuiftafel",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/queen-at-sea-aanschuiftafel/",
+     "day": null,
+     "next": null,
+     "until": null
     }
    ]
   },
@@ -1797,20 +1867,6 @@
      "day": null,
      "next": null,
      "until": "2026-11-18"
-    }
-   ]
-  },
-  {
-   "title": "Sense and Sensibility",
-   "key": "senseandsensibility",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/sense-and-sensibility/",
-     "day": null,
-     "next": null,
-     "until": "2026-11-11"
     }
    ]
   },
@@ -2130,20 +2186,6 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/the-year-of-the-ghost/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
-   "title": "The Zawose Queens",
-   "key": "thezawosequeens",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/the-zawose-queens/",
      "day": null,
      "next": null,
      "until": null

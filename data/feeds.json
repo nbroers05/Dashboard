@@ -4,6 +4,12 @@
    "name": "NOS",
    "items": [
     {
+     "title": "Ook historische uitslag Mississippi, Democraat wint Senaatszetel in dieprode staat",
+     "link": "https://nos.nl/l/2639091",
+     "time": "2026-11-12T00:32:39+01:00",
+     "img": "https://images.cdn.nos.nl/5/B/W/3/w/9/g5hXLi437LAMRL1owGPrbFb4zswSJDoDDJwVX9h/3x1x2176x1224-1024x576.webp"
+    },
+    {
      "title": "Iconisch schip dat beroemde Amerikanen vervoerde moet populaire duikattractie worden",
      "link": "https://nos.nl/l/2639086",
      "time": "2026-11-11T23:17:18+01:00",
@@ -86,12 +92,6 @@
      "link": "https://nos.nl/l/2639030",
      "time": "2026-11-11T16:46:09+01:00",
      "img": "https://images.cdn.nos.nl/3/9/o/c/8/a/TBupurapSXFV36Ux5rbFntrLqA1PmnAzKrn3z3g/8x557x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Oekraïne en Rusland eens over gevangenenruil, maar doorbraak blijft uit",
-     "link": "https://nos.nl/l/2639029",
-     "time": "2026-11-11T16:42:04+01:00",
-     "img": "https://images.cdn.nos.nl/3/G/D/Y/p/D/oDjNtBxTis5TXDa9uxM9nUM2qeBN3PuWDJoku32/1x68x3456x1944-1024x576.webp"
     }
    ]
   },
@@ -194,6 +194,12 @@
    "name": "NU.nl",
    "items": [
     {
+     "title": "Defensieminister Hegseth aangesproken op respectloos gedrag bij oorlogsmonument",
+     "link": "https://www.nu.nl/buitenland/6416292/defensieminister-hegseth-aangesproken-op-respectloos-gedrag-bij-oorlogsmonument.html",
+     "time": "2026-11-12T00:03:58+01:00",
+     "img": "https://images.nu.nl/m/sp3xrbsai07y_sqr256/9/0/446/446/defensieminister-hegseth-aangesproken-op-respectloos-gedrag-bij-oorlogsmonument.jpg"
+    },
+    {
      "title": "Psychologisch onderzoek voor man die op politiemedewerker schoot in Schoonhoven",
      "link": "https://www.nu.nl/binnenland/6416281/psychologisch-onderzoek-voor-man-die-op-politiemedewerker-schoot-in-schoonhoven.html",
      "time": "2026-11-11T23:47:48+01:00",
@@ -276,12 +282,6 @@
      "link": "https://www.nu.nl/binnenland/6416265/drukte-in-zuidelijke-steden-bij-aftrap-carnavalsseizoen.html",
      "time": "2026-11-11T18:59:46+01:00",
      "img": "https://images.nu.nl/m/pvexce2alp8m_sqr256/794/0/5456/5456/drukte-in-zuidelijke-steden-bij-aftrap-carnavalsseizoen.jpg"
-    },
-    {
-     "title": "VVD-top bijeen na belastingdeal D66 en CDA met links blok, kabinetscrisis dreigt",
-     "link": "https://www.nu.nl/politiek/6416264/vvd-top-bijeen-na-belastingdeal-d66-en-cda-met-links-blok-kabinetscrisis-dreigt.html",
-     "time": "2026-11-11T18:09:48+01:00",
-     "img": "https://images.nu.nl/m/4gkxv5eagxvy_sqr256/2278/821/3722/3722/vvd-top-bijeen-na-belastingdeal-d66-en-cda-met-links-blok-kabinetscrisis-dreigt.jpg"
     }
    ]
   }
@@ -390,132 +390,7 @@
   }
  ],
  "youtube": {
-  "channels": [
-   "Patrick (H) Willems",
-   "The Yard",
-   "Ken"
-  ],
-  "videos": [
-   {
-    "title": "Pattern recognition.. #podcast #theyard #comedy",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/shorts/-thV2kIrPWM",
-    "thumb": "https://i.ytimg.com/vi/-thV2kIrPWM/mqdefault.jpg",
-    "time": "2026-11-11T20:16:33+00:00",
-    "short": true
-   },
-   {
-    "title": "this is hard",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=enEv7HgyA1s",
-    "thumb": "https://i.ytimg.com/vi/enEv7HgyA1s/mqdefault.jpg",
-    "time": "2026-11-11T10:00:35+00:00",
-    "short": false
-   },
-   {
-    "title": "House Arrest | Yard D&D | S1E66",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/watch?v=w-dQ56D5cX4",
-    "thumb": "https://i.ytimg.com/vi/w-dQ56D5cX4/mqdefault.jpg",
-    "time": "2026-11-10T17:10:21+00:00",
-    "short": false
-   },
-   {
-    "title": "chaos mega draft, but I pick spells",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=NSlEIvcfuTg",
-    "thumb": "https://i.ytimg.com/vi/NSlEIvcfuTg/mqdefault.jpg",
-    "time": "2026-11-10T10:00:14+00:00",
-    "short": false
-   },
-   {
-    "title": "Ludwig asks Magnus to guess his body fat... #podcast #theyard #comedy",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/shorts/35csV09qPZQ",
-    "thumb": "https://i.ytimg.com/vi/35csV09qPZQ/mqdefault.jpg",
-    "time": "2026-11-09T17:24:58+00:00",
-    "short": true
-   },
-   {
-    "title": "I actually cooked",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=3ZS3x26ZbKg",
-    "thumb": "https://i.ytimg.com/vi/3ZS3x26ZbKg/mqdefault.jpg",
-    "time": "2026-11-09T10:00:02+00:00",
-    "short": false
-   },
-   {
-    "title": "chaos mega draft, but I pick expensive",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=c86ooa8R_OI",
-    "thumb": "https://i.ytimg.com/vi/c86ooa8R_OI/mqdefault.jpg",
-    "time": "2026-11-08T10:00:35+00:00",
-    "short": false
-   },
-   {
-    "title": "evo giant buffed prince",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=_hk53Dms3_c",
-    "thumb": "https://i.ytimg.com/vi/_hk53Dms3_c/mqdefault.jpg",
-    "time": "2026-11-07T10:00:26+00:00",
-    "short": false
-   },
-   {
-    "title": "Ludwig reacts to our disguises.. #podcast #theyard #comedy",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/shorts/qssvEpRyncM",
-    "thumb": "https://i.ytimg.com/vi/qssvEpRyncM/mqdefault.jpg",
-    "time": "2026-11-06T23:03:07+00:00",
-    "short": true
-   },
-   {
-    "title": "We Met Magnus Midtbø! | The Yard",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/watch?v=QmzPwp7m0R8",
-    "thumb": "https://i.ytimg.com/vi/QmzPwp7m0R8/mqdefault.jpg",
-    "time": "2026-11-05T17:51:47+00:00",
-    "short": false
-   },
-   {
-    "title": "How Did Interstellar Become Every Dude's Favorite Movie?",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=f5iyzbgBTgA",
-    "thumb": "https://i.ytimg.com/vi/f5iyzbgBTgA/mqdefault.jpg",
-    "time": "2026-11-03T14:14:19+00:00",
-    "short": false
-   },
-   {
-    "title": "Is This The Best Directed Movie Ever?",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=_t76HmE8ib4",
-    "thumb": "https://i.ytimg.com/vi/_t76HmE8ib4/mqdefault.jpg",
-    "time": "2026-09-15T13:11:42+00:00",
-    "short": false
-   },
-   {
-    "title": "Come See My New Film In Theaters",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=uuMbBWR-2Xg",
-    "thumb": "https://i.ytimg.com/vi/uuMbBWR-2Xg/mqdefault.jpg",
-    "time": "2026-09-04T22:53:08+00:00",
-    "short": false
-   },
-   {
-    "title": "We Need To Talk About How Weird HOOK Is",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=hXAWl_Ar6xA",
-    "thumb": "https://i.ytimg.com/vi/hXAWl_Ar6xA/mqdefault.jpg",
-    "time": "2026-08-06T14:38:38+00:00",
-    "short": false
-   },
-   {
-    "title": "Can video games be cinema? #videogames #movie #thelastofus #deathstranding",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/shorts/-GWrCLXTuwM",
-    "thumb": "https://i.ytimg.com/vi/-GWrCLXTuwM/mqdefault.jpg",
-    "time": "2026-07-01T16:17:55+00:00",
-    "short": true
-   }
-  ]
+  "channels": [],
+  "videos": []
  }
 }
