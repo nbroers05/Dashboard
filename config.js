@@ -55,9 +55,9 @@ window.DASHBOARD_CONFIG = {
   // gebruikt, want dit bestand is openbaar. Nooit de service_role/secret key of een wachtwoord hier plakken.
   // Zolang hier _HIER staat werkt alles zoals vóór 1.1.0 (alles per browser).
   supabase: {
-    url: 'SUPABASE_URL_HIER',
-    anonKey: 'SUPABASE_ANON_KEY_HIER',
-    email: 'SUPABASE_EMAIL_HIER',
+    url: 'https://pakweewdaxaaxupdpfyu.supabase.co',
+    anonKey: 'sb_publishable_htAR8KMBf2SJaQJ-qY9AUw_hxtzTaDR',
+    email: 'broersnoah@gmail.com',
   },
   // Privé data-archief (check-ins en het Data-overzicht). Het token staat alleen in je browser, nooit hier.
   dataRepo: 'nbroers05/dashboard-data',

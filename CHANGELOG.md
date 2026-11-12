@@ -10,6 +10,7 @@ Onder de lijst staat per ronde de uitgebreide toelichting zoals die toen geschre
 
 | Versie | Wat |
 |---|---|
+| 1.1.1 | Supabase ingevuld (project `pakweewdaxaaxupdpfyu`): het dashboard kan nu gekoppeld worden (Instellingen › Inloggen › Supabase koppelen). |
 | 1.1.0 | **Snelle sync via Supabase, fase 1.** Eigen Supabase-project "dashboard" (los van de planner; tabellen en Row Level Security in `supabase.sql`, stappen in README 16). Inloggen hoort bij de bestaande inlog: het Supabase-wachtwoord wordt afgeleid uit de wachtzin, dus geen tweede inlogscherm; browsers die al ingelogd waren koppel je één keer in Instellingen › Inloggen. Verlopen sessie = zelf opnieuw inloggen, nooit een scherm. **Canvas-afvinken** staat nu in Supabase (bestaande vinkjes worden eenmalig overgezet; het archief krijgt elke dag een kopie). **Gelijk op elk apparaat**: eigen snelkoppelingen, stappendoel en to-do. Zonder Supabase (nog niet ingesteld of geen internet) werkt alles zoals eerst. Mensen blijft op pauze (fase 2). |
 | 1.0.0 | **1.0.** Geen nieuwe functies: dit is 0.60.2 na een testweek (5 t/m 12 november) zonder problemen. 1.0 betekent: op het staande scherm (tall) staat alles wat Noah wil zien zonder klik, en het scherm houdt zichzelf in de lucht (geen Vernieuwen-knop, inlogscherm of foutmelding die hem nodig heeft; herstelt vanzelf na slaapstand of zonder internet). Vanaf nu is het nummer `1.MINOR.PATCH`. |
 
