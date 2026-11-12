@@ -49,6 +49,16 @@ window.DASHBOARD_CONFIG = {
     { symbol: 'AAPL', name: 'Apple' },
     { symbol: 'BTC', name: 'Bitcoin', coingecko: 'bitcoin' },
   ],
+  // Snelle sync (sinds 1.1.0, sync.js): eigen Supabase-project "dashboard", los van de planner. README "Supabase".
+  // url en anonKey uit Supabase › Project Settings › API (de anon/publishable key is bedoeld om openbaar te zijn; de
+  // beveiliging zit in supabase.sql). email = het account van het dashboard; mag een adres zijn dat je nergens anders
+  // gebruikt, want dit bestand is openbaar. Nooit de service_role/secret key of een wachtwoord hier plakken.
+  // Zolang hier _HIER staat werkt alles zoals vóór 1.1.0 (alles per browser).
+  supabase: {
+    url: 'SUPABASE_URL_HIER',
+    anonKey: 'SUPABASE_ANON_KEY_HIER',
+    email: 'SUPABASE_EMAIL_HIER',
+  },
   // Privé data-archief (check-ins en het Data-overzicht). Het token staat alleen in je browser, nooit hier.
   dataRepo: 'nbroers05/dashboard-data',
   // Gezondheid (Google Health): je dagelijkse stappendoel

@@ -258,6 +258,36 @@ Een eigen venster zonder Firefox-balken, met een titelbalk die het dashboard zel
 
 Sluiten (✕) zet hem in het systeemvak; echt afsluiten via rechtsklik op het icoon › **Afsluiten**. **F11** = schermvullend. Links naar andere sites openen in Firefox. De extensies **Episodes Left** en **Sterrenvoorspeller** werken (nog) niet in de app. Meer uitleg in de README van `dashboard-app`.
 
+## 16. Supabase: zelfde instellingen en Canvas-vinkjes op elk apparaat
+
+Sinds 1.1.0. Eigen snelkoppelingen, stappendoel, to-do en de Canvas-vinkjes staan dan op één plek en zijn op elk apparaat
+binnen een paar minuten gelijk. Zolang je dit niet doet, werkt alles zoals eerst (per browser). Je hebt de planner al in
+Supabase; dit wordt een **tweede, apart project**, zodat later accounts van anderen (Mensen) nooit bij de planner kunnen.
+
+1. Ga naar https://supabase.com/dashboard en klik **New project**. Naam: `dashboard`. Regio: Frankfurt (Central EU).
+   Database-wachtwoord: klik op "Generate a password" en bewaar het in je wachtwoordmanager (het dashboard heeft het niet nodig).
+2. Wacht tot het project klaar is. Ga naar **SQL Editor** › **New query**, plak de hele inhoud van `supabase.sql`
+   (in deze repo) en klik **Run**. Er moet "Success" staan.
+3. Ga naar **Authentication** › **Sign In / Providers** › **Email**: laat Email aan, zet **Confirm email uit** en sla op.
+   Laat "Allow new users to sign up" (bij Authentication › Settings / Sign In) voorlopig **aan**.
+4. Ga naar **Project Settings** › **API Keys** (of **API**) en pak de **Project URL** en de **publishable/anon key**.
+   Die zijn niet geheim. Kies ook een e-mailadres voor het account (mag een adres zijn dat je nergens anders gebruikt:
+   het komt in het openbare `config.js` te staan; er wordt geen mail naartoe gestuurd).
+   Zet de drie in `config.js` bij `supabase` (of geef ze aan Claude: "vul de Supabase-gegevens in"). Nooit de
+   service_role/secret key of een wachtwoord daar plakken.
+5. Een paar minuten later staat het online. Op het **staande scherm**: Instellingen (tandwiel) › **Inloggen** › bovenaan
+   "Supabase": typ je **wachtzin** (dezelfde als bij het inloggen op het dashboard) en klik **Supabase koppelen**.
+   De eerste keer maakt het dashboard zelf het account aan. In Supabase › Authentication › Users staat nu 1 gebruiker.
+6. Zet nu **"Allow new users to sign up" uit**. Daarna kan niemand anders een account maken.
+7. Doe stap 5 op elk ander apparaat (laptop, telefoon, de pc-app). Wie later opnieuw inlogt met de wachtzin, is meteen
+   ook gekoppeld. Daarna hoef je nooit meer iets: verloopt de sessie, dan logt het dashboard zelf opnieuw in.
+8. Dagelijkse kopie van de Canvas-vinkjes naar het archief: open een terminal in `dashboard-data` en draai
+   `python scripts/setup/dashboard_export.py`. Het plakt één regel op je klembord: plak die in Supabase › SQL Editor ›
+   New query › Run, en druk dan Enter in de terminal.
+
+Nieuwe wachtzin (nieuwe bundel in Instellingen › Inloggen): het dashboard zet het Supabase-wachtwoord dan mee om. Andere
+apparaten blijven ingelogd zolang hun sessie loopt; lukt het daar niet meer, koppel ze dan opnieuw (stap 5).
+
 ## Problemen
 
 - **"INVALID_CLIENT: Invalid redirect URI"**: de URL in de adresbalk komt niet exact overeen met een Redirect URI. Let op `/` aan het eind.

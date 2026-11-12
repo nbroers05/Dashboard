@@ -2625,6 +2625,11 @@ body.agenda-open .tall-rot > .tile { visibility: hidden !important; }
 .vault-list { margin: 10px 0; padding-left: 20px; font-size: .9rem; }
 .vault-list .ok { color: #5bd38a; }
 .vault-list .nee { color: var(--muted); }
+/* Supabase-koppeling bovenin Instellingen › Inloggen (sync.js, sinds 1.1.0) */
+.sb-part { margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid rgba(255, 255, 255, .1); }
+.sb-head { margin: 0 0 6px; font-size: 1rem; }
+.sb-part .sb-bad { color: #ff8a5c; }
+.sb-part .w-btn { background: var(--st, #b48cff); }
 
 /* ---------- Instellingen › Mensen (mensen.js, sinds 0.50.0) ---------- */
 html.mn-check body { visibility: hidden; }

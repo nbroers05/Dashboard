@@ -73,6 +73,8 @@
   handle.addEventListener('click', fadeEdge);
   document.addEventListener('click', (e) => { if (!e.target.closest('.tb-links')) links.classList.remove('open'); });
 
+  // Eigen lijst van een ander apparaat binnengekomen (sync.js, sinds 1.1.0)
+  window.addEventListener('dash:synced', (e) => { if (e.detail.key === LINKS_KEY) renderLinks(); });
   function renderLinks() {
     tray.replaceChildren();
     for (const { name, url, icon } of current()) {

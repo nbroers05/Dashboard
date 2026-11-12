@@ -86,5 +86,6 @@ DASH.widget('w-todo', (card, body, guard) => {
 
   // Ander tabblad met het dashboard? Dan ook hier bijwerken
   window.addEventListener('storage', guard((e) => { if (e.key === KEY) render(); }));
+  window.addEventListener('dash:synced', guard((e) => { if (e.detail.key === KEY) render(); }));   // van een ander apparaat (sync.js)
   render();
 });

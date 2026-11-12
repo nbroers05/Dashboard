@@ -75,6 +75,8 @@ DASH.widget('w-health', (card, body, guard) => {
   // ---------- Tonen ----------
 
   let last = null;
+  // Dagdoel van een ander apparaat binnengekomen (sync.js, sinds 1.1.0)
+  window.addEventListener('dash:synced', (e) => { if (e.detail.key === 'health.goal' && last) render(last); });
   function render(d) {
     last = d;
     // Voor de telefoon (phone.js): stappen vandaag en laatste slaap

@@ -61,9 +61,43 @@ DASH.widget('w-canvas', (card, body, guard) => {
     return changed;
   }
   let syncTimer = null, syncing = false;
+  // Sinds 1.1.0: is deze browser gekoppeld aan Supabase (sync.js), dan leest en schrijft hij alleen de tabel
+  // dashboard_canvas_done (één rij per opdracht). De dagelijkse kopie naar state/canvas-done.json maakt het archief zelf
+  // (dashboard-data, scripts/canvas_copy.py). Eenmalig worden de vinkjes uit het archief overgezet (vlag _canvas.imported).
+  // Niet gekoppeld of Supabase nog niet ingesteld: zoals vóór 1.1.0 via het archief.
+  const SB = () => window.DASH_SB && DASH_SB.linked() ? DASH_SB : null;
+  let imported = false;
+  async function syncSupabase(sb) {
+    const local = doneMap();
+    if (!imported && !(imported = !!(await sb.flag('_canvas.imported')))) {
+      const D = window.DASH_DATA;
+      if (D && D.token()) {
+        const f = await D.read(SYNC_PATH).catch(() => null);
+        if (f) merge(local, JSON.parse(f.text).items || {});
+      }
+      const all = Object.entries(local).map(([id, v]) => ({ item_id: id, done: v[0] === 1, changed_at: v[1] }));
+      for (let i = 0; i < all.length; i += 200) await sb.upsert('dashboard_canvas_done', all.slice(i, i + 200), 'user_id,item_id');
+      await sb.flag('_canvas.imported', new Date().toISOString());
+      imported = true;
+      saveMap(local);
+    }
+    const rows = await sb.rest('dashboard_canvas_done?select=item_id,done,changed_at');
+    const remote = Object.fromEntries((rows || []).map((r) => [r.item_id, [r.done ? 1 : 0, Number(r.changed_at)]]));
+    if (merge(local, remote)) { saveMap(local); render(); }
+    const newer = Object.entries(local).filter(([id, v]) => !remote[id] || v[1] > remote[id][1])
+      .map(([id, v]) => ({ item_id: id, done: v[0] === 1, changed_at: v[1] }));
+    if (newer.length) await sb.upsert('dashboard_canvas_done', newer, 'user_id,item_id');
+  }
   async function sync() {
     const D = window.DASH_DATA;
-    if (DASH.DEMO || syncing || !D || !D.token()) return;
+    if (DASH.DEMO || syncing) return;
+    const sb = SB();
+    if (sb) {
+      syncing = true;
+      try { await syncSupabase(sb); } catch (e) { sb.fail(e); } finally { syncing = false; }
+      return;
+    }
+    if (!D || !D.token()) return;
     syncing = true;
     try {
       const f = await D.read(SYNC_PATH);
@@ -82,8 +116,10 @@ DASH.widget('w-canvas', (card, body, guard) => {
     }
   }
   window.addEventListener('dash:data-token', () => sync());
+  window.addEventListener('dash:sb-linked', () => sync());
   setTimeout(sync, 3000);   // datarepo.js laadt na dit bestand
-  DASH.every(10 * 60 * 1000, () => sync());
+  DASH.every(5 * 60 * 1000, () => sync());
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) sync(); });
 
   // ---------- Model ----------
   function items() {

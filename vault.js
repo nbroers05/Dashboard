@@ -90,6 +90,8 @@ window.DASH_VAULT = (() => {
     const s = store();
     for (const [k, v] of Object.entries(payload.keys || {})) if (typeof v === 'string') s.setItem(k, v);
     s.setItem(MARK, JSON.stringify({ at: new Date().toISOString(), remember: !!remember }));
+    // Supabase hoort bij dezelfde inlog (sync.js, sinds 1.1.0): wachtwoord afleiden uit de wachtzin, zelf inloggen na herladen
+    try { if (window.DASH_SB) await DASH_SB.prepare(password); } catch (e) { console.warn('[vault] supabase', e); }
     location.reload();
   }
 
@@ -194,6 +196,7 @@ window.DASH_VAULT = (() => {
 
   function settingsTab(root) {
     const h = DASH.h;
+    if (window.DASH_SB) DASH_SB.settingsPart(root);
     root.append(h('p', 'w-note', 'Maak hier de versleutelde bundel met de sleutels van deze browser. Daarna kun je op elke computer inloggen met alleen je wachtwoord. Kies een lange wachtzin (4+ woorden): iedereen kan de bundel downloaden en proberen te raden.'));
     const list = h('ul', 'vault-list');
     for (const k of KEYS) list.append(h('li', has(k) ? 'ok' : 'nee', `${k}: ${has(k) ? 'staat in deze browser' : 'ontbreekt hier'}`));
@@ -239,7 +242,12 @@ window.DASH_VAULT = (() => {
           const r = await fetch(HELPER, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(box) });
           const res = await r.json().catch(() => ({}));
           if (!r.ok) throw new Error(res.error || `Fout ${r.status}`);
-          out.textContent = `Klaar: ${Object.keys(keys).length} sleutels versleuteld${res.pushed ? ' en online gezet (over een minuut of twee live)' : ', maar pushen lukte niet: ' + (res.error || '?')}.`;
+          // Nieuwe wachtzin = ook een nieuw Supabase-wachtwoord (afgeleid, sync.js); deze browser zet het om
+          let sbNote = '';
+          if (res.pushed && window.DASH_SB && DASH_SB.linked()) {
+            sbNote = await DASH_SB.changePassphrase(pw1.value).then(() => ' Supabase-wachtwoord omgezet.', (e) => ` Supabase-wachtwoord omzetten lukte niet (${e.message}): koppel Supabase op elk apparaat opnieuw.`);
+          }
+          out.textContent = `Klaar: ${Object.keys(keys).length} sleutels versleuteld${res.pushed ? ' en online gezet (over een minuut of twee live)' : ', maar pushen lukte niet: ' + (res.error || '?')}.${sbNote}`;
           pw1.value = pw2.value = '';
         } catch (x) {
           out.textContent = `Mislukt: ${x.message}`;
