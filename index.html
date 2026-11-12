@@ -4,19 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0e0e0f">
-  <link rel="manifest" href="manifest.webmanifest?v=1.4.1">
+  <link rel="manifest" href="manifest.webmanifest?v=1.5.0">
   <title>Dashboard</title>
   <!-- Eigen logo: het dashboard in het klein -->
-  <link rel="icon" href="favicon.svg?v=1.4.1" type="image/svg+xml">
-  <link rel="icon" href="favicon-32.png?v=1.4.1" type="image/png" sizes="32x32">
-  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=1.4.1">
+  <link rel="icon" href="favicon.svg?v=1.5.0" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png?v=1.5.0" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=1.5.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400..800&family=Source+Serif+4:opsz,wght@8..60,400..700&family=VT323&family=DotGothic16&family=Shippori+Mincho+B1:wght@700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap">
   <!-- ?v=0.MINOR.PATCH: ophogen bij elke wijziging (zie CLAUDE.md); de rest krijgt hetzelfde nummer via dash.js -->
-  <link rel="stylesheet" href="style.css?v=1.4.1">
-  <link rel="stylesheet" href="y2k.css?v=1.4.1">
-  <link rel="stylesheet" href="huisstijl.css?v=1.4.1">
+  <link rel="stylesheet" href="style.css?v=1.5.0">
+  <link rel="stylesheet" href="y2k.css?v=1.5.0">
+  <link rel="stylesheet" href="huisstijl.css?v=1.5.0">
   <!-- Stijl (Instellingen › Thema): meteen zetten, anders flitst eerst de gewone stijl. Huisstijl is de standaard sinds 1.2.0
        (oude opgeslagen instellingen zonder styleV gaan ook naar de huisstijl); de stand hier is een eerste gok, huisstijl.js rekent hem precies uit -->
   <script>try { var d = document.documentElement, s = JSON.parse(localStorage.getItem('theme.settings') || '{}'), p = new URLSearchParams(location.search), q = p.get('stijl'), st = q || (s.styleV === 2 ? s.style : 'huisstijl'); if (st === 'y2k') d.classList.add('y2k'); if (st === 'huisstijl') { d.classList.add('nh-want'); if (innerWidth > 700) d.classList.add('nh'); var hr = new Date().getHours(), so = p.get('stand') || (s.stand && s.stand !== 'auto' ? s.stand : null); d.setAttribute('data-stand', so || (innerWidth > 700 && innerHeight > innerWidth ? (hr >= 7 && hr < 12 ? 'digital' : hr >= 12 && hr < 17 ? 'poster' : 'titel') : 'poster')); } } catch (e) {}</script>
@@ -24,8 +24,8 @@
   <script>try { var a = new URLSearchParams(location.search).get('app'); if (a === 'pc') sessionStorage.setItem('dash.app', 'pc'); if (sessionStorage.getItem('dash.app') === 'pc') document.documentElement.classList.add('app'); } catch (e) {}</script>
 </head>
 <body>
-  <script src="appbar.js?v=1.4.1"></script>
-  <script src="kamer.js?v=1.4.1"></script>
+  <script src="appbar.js?v=1.5.0"></script>
+  <script src="kamer.js?v=1.5.0"></script>
   <main class="dashboard">
 
     <!-- Topbalk: klok, datum, snelkoppelingen, zoeken -->
@@ -286,26 +286,26 @@
 
   <div id="toast" role="status"></div>
 
-  <script src="config.js?v=1.4.1"></script>
-  <script src="vault.js?v=1.4.1"></script>
-  <script src="dash.js?v=1.4.1"></script>
-  <script src="sync.js?v=1.4.1"></script>
-  <script src="topbar.js?v=1.4.1"></script>
-  <script src="settings.js?v=1.4.1"></script>
-  <script src="mensen.js?v=1.4.1"></script>
-  <script src="huisstijl.js?v=1.4.1"></script>
-  <script src="themes.js?v=1.4.1"></script>
-  <script src="focus.js?v=1.4.1"></script>
-  <script src="feeds.js?v=1.4.1"></script>
-  <script src="mydata.js?v=1.4.1"></script>
-  <script src="games.js?v=1.4.1"></script>
+  <script src="config.js?v=1.5.0"></script>
+  <script src="vault.js?v=1.5.0"></script>
+  <script src="dash.js?v=1.5.0"></script>
+  <script src="sync.js?v=1.5.0"></script>
+  <script src="topbar.js?v=1.5.0"></script>
+  <script src="settings.js?v=1.5.0"></script>
+  <script src="mensen.js?v=1.5.0"></script>
+  <script src="huisstijl.js?v=1.5.0"></script>
+  <script src="themes.js?v=1.5.0"></script>
+  <script src="focus.js?v=1.5.0"></script>
+  <script src="feeds.js?v=1.5.0"></script>
+  <script src="mydata.js?v=1.5.0"></script>
+  <script src="games.js?v=1.5.0"></script>
   <!-- De rest laadt dash.js in deze volgorde: meteen, of met ?mini=1 pas als je het volledige dashboard opent -->
   <script>
     DASH.boot([
       'phone.js', 'rail.js', 'desk.js', 'motion.js', 'spotify.js', 'https://accounts.google.com/gsi/client', 'calendar.js',
       'widgets/media.js', 'widgets/lyrics.js', 'widgets/weather.js', 'widgets/f1.js', 'widgets/rain.js', 'widgets/ah.js',
       'widgets/canvas.js', 'widgets/stars.js', 'widgets/episodes.js', 'widgets/letterboxd.js', 'widgets/friends.js', 'widgets/spotify-top.js', 'widgets/todo.js', 'widgets/wishes.js',
-      'widgets/mail.js', 'widgets/health.js', 'datarepo.js', 'datastatus.js', 'datarun.js', 'ghfile.js', 'widgets/checkin.js', 'widgets/memory.js', 'widgets/episodes-log.js', 'widgets/alerts.js',
+      'widgets/mail.js', 'widgets/health.js', 'datarepo.js', 'datastatus.js', 'datarun.js', 'ghfile.js', 'widgets/checkin.js', 'widgets/memory.js', 'widgets/episodes-log.js', 'widgets/alerts.js', 'telefoon.js',
     ]);
   </script>
 </body>

@@ -62,6 +62,12 @@ DASH.widget('w-ah', (card, body, guard) => {
       DASH.store.set('ah.loon', l);
       CFG = parseLoon(l);
       loonState = 'ok';
+      // Telefoon-app (sinds 1.5.0, Noahs keuze): het loon ook in de Supabase van het dashboard (alleen zijn account),
+      // zodat de app zelf de netto kan uitrekenen. Alleen bij een verandering.
+      const json = JSON.stringify(l);
+      if (window.DASH_SB && DASH_SB.linked() && DASH.store.get('ah.loon.pushed') !== json) {
+        DASH_SB.flag('_telefoon.loon', l).then(() => DASH.store.set('ah.loon.pushed', json)).catch((e) => DASH_SB.fail(e));
+      }
     } catch (e) {
       console.warn('[ah] loon', e);
       if (loonState !== 'ok') loonState = 'fout';    // eerder gelezen loon blijft dan gewoon staan
