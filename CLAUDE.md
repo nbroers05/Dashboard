@@ -5,7 +5,7 @@ Statische site: vanilla HTML/CSS/JS, geen build-stap, geen server. Hangt altijd 
 
 ## Over de gebruiker
 
-### Richting: 1.0 (sinds 5 nov 2026)
+### Richting: 1.0 (sinds 5 nov 2026, 1.0.0 uitgebracht op 12 nov 2026)
 
 Doel (uit het 1.0-plan bovenaan WENSEN.md): **één scherm op het staande pc-scherm (1350 × 2294, tall) waar Noah alles op ziet zonder ermee te hoeven interacteren.** Het archief verzamelt op de achtergrond. Al het andere leidt af.
 
@@ -13,10 +13,10 @@ Doel (uit het 1.0-plan bovenaan WENSEN.md): **één scherm op het staande pc-sch
 - **Niks wat een klik nodig heeft**: alles wat hij wil zien staat op tall zonder tabjes, pop-ups of Meer-balk. Roteren mag (gaat vanzelf).
 - **Zelfherstel**: een knop "Vernieuwen", een inlogscherm of "hulpprogramma niet bereikbaar" is een bug. Na slaapstand of internet weg herstelt het vanzelf. 's Nachts niks nodig (pc en scherm gaan uit).
 - Nieuwe dingen alleen als ze vanzelf veranderen en niks vragen (Memory Lane is de enige kandidaat).
-- **Bevroren tot na 1.0**: Y2K en thema's, spelletjes, focusmodus, Feeds. Ze blijven werken, er komt niks bij.
+- **Bevriezing voorbij (sinds 1.0.0)**: Y2K en thema's, spelletjes, focusmodus en Feeds waren bevroren tot na 1.0; dat is opgeheven. De ideeën onder "Na 1.0" in WENSEN.md blijven wel geparkeerd tot Noah er zelf één naar boven haalt: niet zelf aan beginnen.
 - Tall draait in **Firefox (web app)**, niet in de Tauri-app (die heeft geen zoom en Episodes Left werkt er niet). App-aanpassingen zijn niet nodig.
 - **Keuzes van Noah (5 nov 2026, 0.59.0)**: speler en songtekst blijven (favoriet), met knop voor een dunne speler; rij weer/F1/AH blijft zoals hij is; agenda mag onder de rand staan (verder testen); Meer-balk mag blijven, "een paar klikken is niet erg, maar geen doolhof van tabjes"; mail als melding (later ook Outlook-mail van school); to-do weg van tall; Canvas-afvinken blijft, maar gedeeld tussen apparaten; Episodes-melding blijft; Mensen op pauze; de knop "Nu herladen" in vakken blijft. Overzicht: `Claude eigen mapje/wensen/1.0-overzicht.md`.
-- **Testweek: van 5 t/m 12 november 2026 niks aan het dashboard aanpassen** (afspraak met Noah; versie 0.60.2 (laatste fix vlak voor de start: songtekst in de dunne speler) blijft staan, het nummer gaat niet naar 0.99). Problemen schrijft hij onder "Te doen" met "(na de testweek)"; alleen fixen als het scherm echt onbruikbaar is. Na een goede week wordt het **1.0.0** (de "twee weken zonder fix" uit het oorspronkelijke plan vervalt).
+- **1.0.0 uitgebracht op 12-11-2026** na een testweek (5 t/m 12 november, versie 0.60.2) zonder problemen.
 - **"Na 1.0" in WENSEN.md niet bouwen** (ook Kamer, App fase 2/3, Jaaroverzicht), tenzij Noah het zelf weer vraagt.
 
 - Schrijf in het **Nederlands**, **kort en direct**.
@@ -33,7 +33,7 @@ Doel (uit het 1.0-plan bovenaan WENSEN.md): **één scherm op het staande pc-sch
 
 **Nieuwe-tabpagina:** Noah gebruikt `https://nbroers05.github.io/Dashboard/?mini=1` in Firefox (New Tab Override). `?mini=1` start altijd minimaal, schrijft `dash.minimal` niet weg (uitklappen/terug alleen voor dat tabblad), zet focus op de zoekbalk en laadt Spotify/agenda/vakken pas bij uitklappen (`DASH.loadAll`). Tijdens het laden staat `body.booting` (vakken onzichtbaar) tot motion.js de inschuif-animatie start. Spotify-redirect is `origin + pathname` (zonder query), Google gaat via pop-up/hulpprogramma: geen van beide raakt de parameter.
 
-**Versie (afspraak met Noah, vanaf 28 okt 2026):** `0.MINOR.PATCH`. Grote opdracht = MINOR omhoog (PATCH terug naar 0), kleine fix = PATCH omhoog. Het nummer staat als `?v=0.MINOR.PATCH` achter `style.css`, config, dash en topbar in `index.html` (alle andere scripts krijgen het via dash.js) en onderaan als "Dashboard versie …". Altijd ophogen bij een wijziging, anders mengt de browser oude en nieuwe bestanden. Huidige: 0.60.2. Elke versie staat in `CHANGELOG.md` (nieuwste bovenaan, per dag een tabel; bij elke nieuwe versie een regel toevoegen).
+**Versie (afspraak met Noah, vanaf 28 okt 2026; sinds 1.0.0 op 12 nov 2026):** `1.MINOR.PATCH` (daarvoor `0.MINOR.PATCH`). Grote opdracht = MINOR omhoog (PATCH terug naar 0), kleine fix = PATCH omhoog. Het nummer staat als `?v=1.MINOR.PATCH` achter `style.css`, config, dash en topbar in `index.html` (alle andere scripts krijgen het via dash.js) en onderaan als "Dashboard versie …". Altijd ophogen bij een wijziging, anders mengt de browser oude en nieuwe bestanden. Huidige: 1.0.0. Elke versie staat in `CHANGELOG.md` (nieuwste bovenaan, per dag een tabel; bij elke nieuwe versie een regel toevoegen).
 
 ## Wensenlijst
 

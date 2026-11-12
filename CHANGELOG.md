@@ -1,9 +1,16 @@
 # Wijzigingen
 
 Alle versies van het dashboard, nieuwste bovenaan, met terugwerkende kracht aangevuld uit de git-geschiedenis (29 okt 2026).
-Tot en met versie 26 was het nummer één getal (`?v=26`); vanaf 0.27.0 is het `0.MINOR.PATCH` (grote opdracht = MINOR, kleine fix = PATCH).
+Tot en met versie 26 was het nummer één getal (`?v=26`); vanaf 0.27.0 is het `0.MINOR.PATCH` (grote opdracht = MINOR, kleine fix = PATCH), vanaf 1.0.0 `1.MINOR.PATCH`.
 Daarom staan de oude nummers hier als 0.N.0. Nummer 19 en 24 zijn nooit uitgebracht (overgeslagen tijdens het werk).
 Onder de lijst staat per ronde de uitgebreide toelichting zoals die toen geschreven is.
+
+
+## 12 november 2026
+
+| Versie | Wat |
+|---|---|
+| 1.0.0 | **1.0.** Geen nieuwe functies: dit is 0.60.2 na een testweek (5 t/m 12 november) zonder problemen. 1.0 betekent: op het staande scherm (tall) staat alles wat Noah wil zien zonder klik, en het scherm houdt zichzelf in de lucht (geen Vernieuwen-knop, inlogscherm of foutmelding die hem nodig heeft; herstelt vanzelf na slaapstand of zonder internet). Vanaf nu is het nummer `1.MINOR.PATCH`. |
 
 
 ## 5 november 2026
