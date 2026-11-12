@@ -266,6 +266,7 @@
       start: allDay ? parseDate(e.start.date) : Date.parse(e.start.dateTime),
       end: allDay ? parseDate(e.end.date) : Date.parse(e.end.dateTime),
       color: cal.backgroundColor || null,
+      calName: cal.summaryOverride || cal.summary || '',   // voor de dagtijdlijn (huisstijl): rooster = college
       link: e.htmlLink || null,
       hidden: !(cal.selected || cal.primary),
       ...(birthdayName(e, cal) ? { birthday: birthdayName(e, cal) } : {}),
@@ -389,7 +390,10 @@
     const now = Date.now();
     const today = startOfDay(now);
     el.today.textContent = fmtLong(today);
-    if (view === 'week') renderWeek(now, today);
+    const day = dayMode();
+    card.classList.toggle('cal-dayview', day);
+    if (day) renderDay(now, today);
+    else if (view === 'week') renderWeek(now, today);
     else renderList(now, today);
     el.updated.textContent = fetchedAt ? `Bijgewerkt ${fmtTime(fetchedAt)}` : '';
     card.dataset.state = 'main';
@@ -447,8 +451,104 @@
     el.list.replaceChildren(frag);
   }
 
-  // ---------- Weekweergave: 7 kolommen met tijdlijn ----------
+  // ---------- Dagtijdlijn (sinds 1.3.0, huisstijl op tall; design system › AgendaWeek en MockupDashboard) ----------
+  // Alleen vandaag, zonder klik: uren links in pixel, colleges eva, appie AH-blauw, de rest papier, nu-lijn rood.
+  // Venster van uren: van 2 uur vóór nu (min 07, max 15) tot 24:00. Uurhoogte vult de ruimte tot onderaan het scherm
+  // (min 44px; meer uren dan dat = de agenda loopt onder de rand door, mag van Noah).
   const HOUR_MS = 3600000;
+  const dayMode = () => document.documentElement.classList.contains('nh') && document.documentElement.classList.contains('tall-mode');
+  const COLLEGE = /rooster|timetable|erasmus|\beur\b|college|lecture|werkgroep|tutorial/i;
+  function kindOf(ev) {
+    if (/\bAH\b/.test(ev.title)) return 'ah';
+    if (COLLEGE.test(ev.calName || '') || COLLEGE.test(ev.title) || (/\bESSB\b/.test(ev.title) && !ev.canvas)) return 'college';
+    return 'eigen';
+  }
+  let dayHours = 0;
+  function renderDay(now, today) {
+    const end = addDays(today, 1);
+    const nowH = (now - today) / HOUR_MS;
+    const first = Math.min(15, Math.max(7, Math.floor(nowH) - 2)), last = 24;
+    const shown = events.filter((e) => !e.hidden && e.start < end && e.end > today);
+    const timed = [];
+    for (const ev of shown.filter((e) => !e.allDay)) {
+      let s = Math.max(ev.start, today), e = Math.min(ev.end, end);
+      const top = today + first * HOUR_MS;
+      if (e <= top) continue;   // al voorbij vóór het venster
+      if (s < top) s = top;
+      if (e - s < HOUR_MS / 4) e = s + HOUR_MS / 4;
+      timed.push({ ev, s, e });
+    }
+    const at = (hours) => `calc(var(--hour) * ${hours})`;
+    const wrap = h('div', 'dy');
+    const allDay = shown.filter((e) => e.allDay);
+    if (allDay.length) {
+      const row = h('div', 'dy-allday');
+      for (const ev of allDay) row.append(block(ev, 'dy-chip', ev.birthday ? `${ev.birthday} jarig` : label(ev)));
+      wrap.append(row);
+    }
+    const grid = h('div', 'dy-grid');
+    grid.style.height = at(last - first);
+    for (let hr = first; hr < last; hr++) {
+      const r = h('div', 'dy-hour', String(hr).padStart(2, '0'));
+      r.style.top = at(hr - first);
+      grid.append(r);
+    }
+    const lanesEl = h('div', 'dy-lanes');
+    for (const t of lanes(timed)) {
+      const b = block(t.ev, `dy-ev k-${kindOf(t.ev)}`);
+      const dur = (t.e - t.s) / HOUR_MS;
+      const when = `${fmtTime(t.ev.start)} - ${fmtTime(t.ev.end)}`;
+      b.append(h('b', 'clip', kindOf(t.ev) === 'ah' ? 'Appie' : label(t.ev)), h('span', 'clip', t.ev.location ? `${when} · ${t.ev.location}` : when));
+      b.style.top = at((t.s - today) / HOUR_MS - first);
+      b.style.height = `calc(var(--hour) * ${dur} - 3px)`;
+      b.style.left = `${(t.lane / t.lanes) * 100}%`;
+      b.style.width = `calc(${100 / t.lanes}% - 6px)`;
+      b.dataset.dur = dur;
+      if (t.ev.end <= now) b.classList.add('past');
+      else if (t.ev.start <= now) b.classList.add('now');
+      lanesEl.append(b);
+    }
+    grid.append(lanesEl);
+    if (nowH >= first && nowH < last) {
+      const line = h('div', 'dy-now');
+      line.style.top = at(nowH - first);
+      grid.append(line);
+    }
+    if (!timed.some((t) => t.ev.end > now)) {
+      const empty = h('p', 'dy-empty', 'NIKS MEER GEPLAND. VERDACHT.');
+      grid.append(empty);
+    }
+    wrap.append(grid);
+    el.list.replaceChildren(wrap);
+    dayHours = last - first;
+    fitDay();
+  }
+  function fitDay() {
+    const grid = el.list.querySelector('.dy-grid');
+    if (!grid || !dayHours) return;
+    // offsetTop in plaats van getBoundingClientRect: de inschuif-animatie (transform) telt dan niet mee
+    let top = 0;
+    for (let n = grid; n; n = n.offsetParent) top += n.offsetTop;
+    const more = document.querySelector('.desk-more');
+    const bottomGap = (more ? more.getBoundingClientRect().height : 0) + 64;   // Meer-balk + rand van het venster
+    const avail = innerHeight - top - bottomGap;
+    const hourPx = Math.max(44, Math.floor(avail / dayHours));
+    el.list.style.setProperty('--hour', `${hourPx}px`);
+    grid.querySelectorAll('.dy-ev').forEach((b) => b.classList.toggle('tight', b.dataset.dur * hourPx < 46));
+  }
+  window.addEventListener('resize', () => { if (dayMode() && card.dataset.state === 'main') fitDay(); });
+  // Wat erboven staat verandert van hoogte (vakken laden, roterend vak, inschuif-animatie): opnieuw meten.
+  // Hangt alleen af van waar de tijdlijn begint, niet van zijn eigen hoogte, dus geen lus.
+  let fitQueued = false;
+  new ResizeObserver(() => {
+    if (fitQueued || !dayMode()) return;
+    fitQueued = true;
+    requestAnimationFrame(() => { fitQueued = false; fitDay(); });
+  }).observe(document.querySelector('.dashboard') || document.body);
+  // Stand of indeling gewisseld (huisstijl aan/uit, tall ↔ desk): opnieuw tekenen
+  for (const ev of ['dash:stand', 'dash:layout']) window.addEventListener(ev, () => { if (card.dataset.state === 'main') render(); });
+
+  // ---------- Weekweergave: 7 kolommen met tijdlijn ----------
 
   // Week die je bekijkt: maandag t/m zondag, verschuift met vorige/volgende week
   let weekOffset = 0;
@@ -818,6 +918,8 @@
     const at = (day, hh, mm = 0) => addDays(t, day) + (hh * 60 + mm) * 60000;
     const now = Date.now();
     return [
+      { id: '21', title: 'Practical Programming Experiments', location: 'Mandeville T4-95A', allDay: false, start: at(0, 9), end: at(0, 11, 45), color: '#039be5', calName: 'Rooster EUR' },
+      { id: '22', title: 'AH BERKEL EN RODENRIJS', location: 'Westerwater', allDay: false, start: at(0, 17), end: at(0, 21, 30), color: '#3f51b5' },
       { id: '1', title: 'Ontbijt met Sam', location: 'Café de Hoek', allDay: false, start: at(0, 8, 30), end: at(0, 9, 30), color: '#f6bf26' },
       { id: '2', title: 'Werkblok', location: '', allDay: false, start: now - 20 * 60000, end: now + 40 * 60000, color: '#7986cb' },
       { id: '3', title: 'Tandarts', location: 'Hoofdstraat 12', allDay: false, start: now + 95 * 60000, end: now + 125 * 60000, color: '#e67c73' },
