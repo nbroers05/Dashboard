@@ -10,7 +10,8 @@ html.nh {
   --paper: #efe9dc; --paper-raised: #f8f4ea; --ink: #16130f; --nh-muted: #5e574c;
   --line: #16130f; --line-soft: #d3c9b6;
   --eva: #1b2a8c; --sky: #8cc0e8; --red: #d7261e; --titlebar: var(--eva);
-  --on-eva: #fff; --ah-c: #00ade6; --on-ah: #04263a; --feest: var(--red); --focus: #d7261e;
+  --on-eva: #fff; --ah-c: #00ade6; --on-ah: #04263a; --focus: #d7261e;
+  --feest: var(--feest-p, var(--red));   /* feestkleur van het thema (themes.js zet --feest-p / --feest-t), anders red */
   --shadow-window: 4px 4px 0 #16130f; --shadow-control: 2px 2px 0 #16130f;
   --font-display: "Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
   --font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
@@ -38,6 +39,7 @@ html.nh[data-stand="titel"] {
   --line: #5c5852; --line-soft: #2a2a30;
   --eva: #1b2a8c; --sky: #1c2e52; --red: #e3241b; --titlebar: #000; --focus: #e3241b;
   --shadow-window: none; --shadow-control: none;
+  --feest: var(--feest-t, var(--red));
   color-scheme: dark;
 }
 
@@ -496,6 +498,29 @@ html.nh .dy-now::before { content: ""; position: absolute; left: -5px; top: -4px
 html.nh .dy-empty { position: absolute; left: 64px; right: 12px; bottom: 16px; margin: 0; font: 900 1.1rem/1.3 var(--font-body); letter-spacing: .01em; color: var(--nh-muted); }
 html.nh[data-stand="titel"] .dy-ev.k-college { background: var(--eva); }
 html.nh[data-stand="digital"] .dy-ev.k-college { background: linear-gradient(180deg, rgba(255, 255, 255, .25), rgba(255, 255, 255, 0) 40%), var(--eva); }
+
+/* ---------- Feestdagen en seizoenen (sinds 1.4.0; design system › Feestdagen) ----------
+   Het thema zet alleen --feest, een teken, een slinger, hooguit drie hoeken en wat deeltjes. Geen achtergrond, geen gekleurde topbalk. */
+html.nh .tb-dayline, html.nh[data-theme]:not([data-theme-soft]) .tb-dayline { color: var(--nh-muted) !important; }
+html.nh .tb-greet, html.nh[data-theme="verjaardag"] .tb-greet { color: var(--feest) !important; font: 700 1em/1.3 var(--font-body); }
+html.nh .tb-greet.small { font-size: .9em; }
+html.nh .nh-teken { margin-right: 10px; font: 800 1.35em/1 var(--font-display); color: var(--feest); letter-spacing: .06em; vertical-align: -0.08em; }
+html.nh .nh-teken[hidden] { display: none; }
+html.nh .th-top, html.nh .th-drops { display: none; }
+html.nh .nh-slinger-wrap { position: absolute; left: 0; right: 0; top: -20px; height: 22px; pointer-events: none; z-index: 1; overflow: hidden; color: var(--ink); }
+html.nh .nh-slinger-wrap svg { display: block; width: 100%; height: 22px; }
+html.nh .nh-slinger .vlag { fill: var(--feest); }
+html.nh[data-stand="titel"] .nh-slinger-wrap { opacity: .75; }
+html.nh .th-deco.nh-hoek { color: var(--ink); }
+html.nh .th-deco.nh-hoek .vul { fill: var(--feest); }
+html.nh[data-stand="titel"] .th-deco.nh-hoek { opacity: .75; }
+/* F1-raceweekend: geblokte rand om het F1-venster */
+html.nh .th-deco.nh-geblokt { inset: -1px; border: 5px solid transparent; border-image: repeating-linear-gradient(90deg, var(--ink) 0 5px, var(--paper-raised) 5px 10px) 5; }
+/* Instellingen: themakaartjes met het teken in plaats van emoji, effen feestkleur */
+html.nh .th-card { background: var(--a); border: 1px solid var(--line); }
+html.nh .th-card-icon.nh-teken { margin: 0; font-size: 1.4rem; color: #fff; }
+html.nh .th-card-name { color: #fff; }
+html.nh .th-parts { opacity: .9; }
 
 /* ---------- Desk: zijbalk en tabjes ---------- */
 html.nh .rail { background: var(--paper-raised); border-right: 1px solid var(--line); box-shadow: none; }

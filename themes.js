@@ -431,6 +431,78 @@ window.DASH_THEMES = (() => {
     draw(ctx, p, s) { ctx.strokeStyle = '#a9c8ff'; ctx.lineWidth = 1.2 * s; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, p.size * s); ctx.stroke(); },
   });
 
+  // ---------- Huisstijl (sinds 1.4.0): deeltjes, teken en slinger ----------
+  // Deeltjes als lijntekening of pixel in --feest en --ink (kleuren één keer per refresh uit de stijl gelezen)
+  const NHC = { feest: '#d7261e', ink: '#16130f' };
+  function nhColors() {
+    const cs = getComputedStyle(root);
+    NHC.feest = cs.getPropertyValue('--feest').trim() || NHC.feest;
+    NHC.ink = cs.getPropertyValue('--ink').trim() || NHC.ink;
+  }
+  const NH_KINDS = ['sneeuw', 'blad', 'bloesem', 'hartje', 'confetti', 'regen'];
+  const nhInit = (p, size, vy) => { p.size = size + Math.random() * size * 0.6; p.vy = vy + Math.random() * vy * 0.6; p.vx = (Math.random() - 0.5) * 0.3; p.amp = 0.4; p.a = 0.9; p.c = Math.random() < 0.6 ? 'feest' : 'ink'; };
+  kind('nh-sneeuw', {   // pixelvlokje: plusje van vier blokjes
+    init(p) { nhInit(p, 2, 0.45); p.vr = 0; p.r = 0; p.c = 'ink'; },
+    draw(ctx, p, s) { const z = Math.round(p.size * s); ctx.fillStyle = NHC.ink; ctx.fillRect(-z / 2, -z * 1.5, z, z * 3); ctx.fillRect(-z * 1.5, -z / 2, z * 3, z); },
+  });
+  kind('nh-blad', {
+    init(p) { nhInit(p, 7, 0.5); p.vr = (Math.random() - 0.5) * 0.04; p.amp = 0.9; p.sw = 0.025; },
+    draw(ctx, p, s) {
+      const z = p.size * s;
+      ctx.strokeStyle = NHC[p.c]; ctx.lineWidth = 1.4 * s;
+      ctx.beginPath(); ctx.moveTo(0, -z); ctx.quadraticCurveTo(z * 0.9, -z * 0.3, 0, z); ctx.quadraticCurveTo(-z * 0.9, -z * 0.3, 0, -z); ctx.moveTo(0, -z * 0.6); ctx.lineTo(0, z * 1.2); ctx.stroke();
+    },
+  });
+  kind('nh-bloesem', {
+    init(p) { nhInit(p, 4, 0.35); p.vx = 0.2; p.amp = 0.7; },
+    draw(ctx, p, s) { ctx.strokeStyle = NHC[p.c]; ctx.lineWidth = 1.4 * s; ctx.beginPath(); ctx.arc(0, 0, p.size * s, 0, 6.28); ctx.stroke(); },
+  });
+  kind('nh-hartje', {
+    init(p) { nhInit(p, 6, 0.4); p.vr = (Math.random() - 0.5) * 0.02; },
+    draw(ctx, p, s) {
+      const z = p.size * s;
+      ctx.strokeStyle = NHC[p.c]; ctx.lineWidth = 1.4 * s;
+      ctx.beginPath(); ctx.moveTo(0, z * 0.9);
+      ctx.bezierCurveTo(-z * 1.4, -z * 0.1, -z * 0.6, -z * 1.1, 0, -z * 0.35);
+      ctx.bezierCurveTo(z * 0.6, -z * 1.1, z * 1.4, -z * 0.1, 0, z * 0.9); ctx.stroke();
+    },
+  });
+  kind('nh-confetti', {
+    init(p) { nhInit(p, 4, 0.8); p.vr = (Math.random() - 0.5) * 0.15; },
+    draw(ctx, p, s) { ctx.fillStyle = NHC[p.c]; ctx.fillRect(-p.size * s / 2, -p.size * s / 4, p.size * s, p.size * s / 2); },
+  });
+  kind('nh-regen', {
+    init(p) { p.size = 10 + Math.random() * 8; p.vy = 7 + Math.random() * 4; p.vx = -0.6; p.amp = 0; p.r = 0.08; p.a = 0.35; },
+    draw(ctx, p, s) { ctx.strokeStyle = NHC.ink; ctx.lineWidth = 1 * s; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, p.size * s); ctx.stroke(); },
+  });
+  kind('nh-stip', {   // alles waar geen eigen huisstijlversie van is (pepernoten, eitjes, sterretjes): een pixelblokje
+    init(p) { nhInit(p, 3, 0.6); p.vr = 0; p.r = 0; },
+    draw(ctx, p, s) { const z = Math.round(p.size * s); ctx.fillStyle = NHC[p.c]; ctx.fillRect(-z / 2, -z / 2, z, z); },
+  });
+  // Teken (Japans woord van het thema) vóór de groet, en de slinger boven de topbalk
+  let nhTekenEl = null, nhSlingerEl = null, nhSlingerKey = '';
+  function nhTop(F, slinger) {
+    if (dayEl && !nhTekenEl && greet) {
+      nhTekenEl = h('span', 'nh-teken');
+      nhTekenEl.hidden = true;
+      dayEl.insertBefore(nhTekenEl, greet);
+    }
+    if (nhTekenEl) {
+      nhTekenEl.hidden = !F;
+      if (F && nhTekenEl.textContent !== F.teken) nhTekenEl.textContent = F.teken;
+    }
+    const width = slinger && bar ? Math.round(bar.getBoundingClientRect().width) : 0;
+    const key = slinger ? `${width}` : '';
+    if (key === nhSlingerKey) return;
+    nhSlingerKey = key;
+    if (nhSlingerEl) { nhSlingerEl.remove(); nhSlingerEl = null; }
+    if (slinger && width > 0) {
+      nhSlingerEl = h('div', 'nh-slinger-wrap');
+      nhSlingerEl.innerHTML = window.DASH_HUISSTIJL.slingerSvg(width);
+      bar.append(nhSlingerEl);
+    }
+  }
+
   // ---------- Versiering op de vakken ----------
   // Spec in een thema: { type: 'corner', id, svg, size | w+h, max, corners: ['tr', ...], inset: [x, y], mirror, card, if(data) }
   //                   { type: 'cap', svg, h }  (rand bovenop elk vak)   { type: 'edge', cls, card? }  (alleen de rand zelf)
@@ -480,7 +552,8 @@ window.DASH_THEMES = (() => {
       if (spec.type === 'cap') { for (const c of pool) if (free(c, rectFor(c, spec))) plan.push({ card: c, spec, corner: 'band' }); continue; }
       const r = rng(`${decoSeed}|${spec.id}`);
       // Vakken die je nu ziet eerst (niet in de dichte Meer-lade, niet ver onder beeld)
-      const seen = (c) => !c.closest('.desk-more:not(.open)') && c.getBoundingClientRect().top < innerHeight * 1.5;
+      // (en in het roterende vak op tall alleen het onderdeel dat nu voorkomt)
+      const seen = (c) => !c.closest('.desk-more:not(.open)') && !(c.closest('.tall-rot') && !c.classList.contains('on')) && c.getBoundingClientRect().top < innerHeight * 1.5;
       const order = pool.map((c) => [r() + (seen(c) ? 0 : 1), c]).sort((a, b) => a[0] - b[0]).map((x) => x[1]);
       let n = spec.max || 1;
       for (const card of order) {
@@ -532,7 +605,8 @@ window.DASH_THEMES = (() => {
     const ctx = cv.getContext('2d');
     const W = (cv.width = innerWidth * devicePixelRatio), H = (cv.height = innerHeight * devicePixelRatio);
     const s = devicePixelRatio;
-    const colors = kindName === 'confetti' ? ['#b48cff', '#ff7aa8', '#ffcf5c', '#7ad7ff', '#9cff8a'] : ['#f5c542', '#ff7a59', '#7ad7ff', '#ffffff', '#ff5f8f'];
+    let colors = kindName === 'confetti' ? ['#b48cff', '#ff7aa8', '#ffcf5c', '#7ad7ff', '#9cff8a'] : ['#f5c542', '#ff7a59', '#7ad7ff', '#ffffff', '#ff5f8f'];
+    if (window.DASH_HUISSTIJL && DASH_HUISSTIJL.active()) { nhColors(); colors = [NHC.feest, NHC.feest, NHC.ink]; }   // huisstijl: feestkleur en ink
     let parts = [];
     if (kindName === 'confetti') {
       parts = Array.from({ length: 160 }, () => ({ x: Math.random() * W, y: -Math.random() * H * 0.5, vx: (Math.random() - 0.5) * 2 * s, vy: (2 + Math.random() * 3) * s,
@@ -584,6 +658,13 @@ window.DASH_THEMES = (() => {
     const day = cur.test || cur.fixed ? cur.day : now;
     const wx = on && s.weather && (!viewIso() || WX_TEST) ? wxState() : null;
     if (on && s.weather && !viewIso()) loadWx();
+    // Huisstijl (sinds 1.4.0): het thema zet alleen --feest, een Japans teken, een slinger, lijntekening-hoeken en
+    // kleine deeltjes in feestkleur. Geen emoji, geen eigen achtergrond, geen gekleurde topbalk (design system › Feestdagen).
+    const NHS = window.DASH_HUISSTIJL, nh = !!(NHS && NHS.active());
+    const feestT = nh && on ? top.find((t) => NHS.FEEST[t.id]) : null, F = feestT ? NHS.FEEST[feestT.id] : null;
+    if (F) { root.style.setProperty('--feest-p', F.feest); root.style.setProperty('--feest-t', F.feestTitel); }
+    else { root.style.removeProperty('--feest-p'); root.style.removeProperty('--feest-t'); }
+    nhTop(nh && F, nh && F && F.slinger && s.topbar && !phone);
 
     // Topbalk: kleur van het belangrijkste thema met een topbalkstijl
     const main = top.find((t) => t.topbar);
@@ -606,15 +687,16 @@ window.DASH_THEMES = (() => {
       if (g) break;
     }
     if (greet) {
-      const text = g && (typeof g === 'string' ? g : g.text);
+      let text = g && (typeof g === 'string' ? g : g.text);
+      if (nh && text) text = NHS.plain(text);
       greet.hidden = !text;
       if (text && greet.textContent !== text) greet.textContent = text;
       greet.classList.toggle('small', !!(g && g.small));
       const v = viewIso();
       viewChip.hidden = !v || !!urlDay;
-      if (v) viewChip.textContent = `👁 ${noon(v).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short', year: 'numeric' })} · terug`;
+      if (v) viewChip.textContent = `${nh ? 'bekijk' : '👁'} ${noon(v).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short', year: 'numeric' })} · terug`;
     }
-    const icon = firstWith('dayIcon');
+    const icon = nh ? null : firstWith('dayIcon');
     root.classList.toggle('th-icon', !!icon);
     if (icon) root.style.setProperty('--th-icon', `"${icon.dayIcon} "`);
 
@@ -622,17 +704,25 @@ window.DASH_THEMES = (() => {
     const bgT = on && s.bg ? firstWith('bg') : null;
     let bg = bgT ? (typeof bgT.bg === 'function' ? bgT.bg(day) : bgT.bg) : '';
     if (on && s.bg && wx && wx.kind === 'zon' && !(bgT && bgT.noSun)) bg = `radial-gradient(40% 35% at 92% 0%, rgba(255,214,120,.16), transparent 70%)${bg ? `, ${bg}` : ''}`;
-    background(bg);
+    background(nh ? '' : bg);
 
-    // Topbalk-versiering (niet op de telefoon)
-    const td = on && s.topbar && !phone ? firstWith('topDeco') : null;
-    topDeco(td && td.topDeco, !!(on && s.topbar && !phone && wx && wx.kind === 'regen'));
+    // Topbalk-versiering (niet op de telefoon; in de huisstijl de slinger uit nhTop)
+    const td = on && s.topbar && !phone && !nh ? firstWith('topDeco') : null;
+    topDeco(td && td.topDeco, !!(on && s.topbar && !phone && !nh && wx && wx.kind === 'regen'));
 
     // Vakversiering (niet op de telefoon en niet in de minimale modus)
     const amount = AMOUNT[s.amount] || AMOUNT.normaal;
     const holiday = layers.some((t) => t.tier !== 'seizoen' && t.deco);
     let specs = [];
-    if (on && s.deco && !phone && !minimal) {
+    if (nh) {
+      // Huisstijl: één soort hoek (lijntekening van het belangrijkste thema) op hooguit drie vensters, onderin zodat hij
+      // nooit over de titelbalk valt; F1-raceweekend: geblokte rand om het F1-venster
+      if (F && s.deco && !phone && !minimal) {
+        specs.push({ type: 'corner', id: `nh-${F.hoek}`, cls: 'nh-hoek', size: 46, inset: [8, 8], corners: ['br', 'bl'], turn: 0,
+          max: Math.min(3, Math.max(1, Math.round(3 * amount.deco))), svg: NHS.hoekSvg(F.hoek) });
+        if (layers.some((t) => t.id === 'f1')) specs.push({ type: 'edge', id: 'nh-geblokt', cls: 'nh-geblokt', card: 'w-f1' });
+      }
+    } else if (on && s.deco && !phone && !minimal) {
       for (const t of top) {
         for (const spec of t.deco || []) {
           if (spec.if && !spec.if(data, wx, cur.day)) continue;
@@ -659,7 +749,13 @@ window.DASH_THEMES = (() => {
       if (wx && wx.kind === 'sneeuw') mix.push({ kind: 'sneeuw', weight: 0.8 });
       if (wx && wx.kind === 'regen') mix.push({ kind: 'regen', weight: 0.6 });
     }
-    const target = Math.min(amount.parts, Math.round(mix.reduce((a, m) => a + m.weight, 0) * amount.parts));
+    let target = Math.min(amount.parts, Math.round(mix.reduce((a, m) => a + m.weight, 0) * amount.parts));
+    if (nh) {
+      // Huisstijl: hooguit 12, klein, als lijntekening of pixel in feestkleur/ink (soorten nh-* hieronder)
+      for (const m of mix) m.kind = NH_KINDS.includes(m.kind) ? `nh-${m.kind}` : 'nh-stip';
+      target = Math.min(12, target);
+      nhColors();
+    }
     particles(mix, target);
 
     // Eenmalig effect: één keer per dag per browser (bij testen met ?datum/?thema altijd)
@@ -698,6 +794,7 @@ window.DASH_THEMES = (() => {
     for (const f of FILES) load(f, true);
     DASH.every(60 * 1000, refresh);                        // om middernacht vanzelf om
     window.addEventListener('dash:calendar', refresh);     // verjaardag en tentamens uit de agenda komen later binnen
+    window.addEventListener('dash:stand', refresh);        // huisstijl: andere stand = andere feestkleur voor de deeltjes
     phoneMq.addEventListener('change', refresh);
     reduced.addEventListener('change', refresh);
     // Minimale modus aan/uit (topbar.js zet body.minimal)
@@ -764,10 +861,12 @@ window.DASH_THEMES = (() => {
       const t = byId[id], b = h('button', 'th-card');
       b.type = 'button';
       b.title = `${t.name} vastzetten`;
-      b.style.setProperty('--a', t.c1);
-      b.style.setProperty('--b', t.c2);
+      // Huisstijl: het Japanse teken en de feestkleur in plaats van emoji en verloop
+      const NF = window.DASH_HUISSTIJL && DASH_HUISSTIJL.active() ? DASH_HUISSTIJL.FEEST[id] || { teken: '', feest: '#1b2a8c' } : null;
+      b.style.setProperty('--a', NF ? NF.feest : t.c1);
+      b.style.setProperty('--b', NF ? NF.feest : t.c2);
       b.setAttribute('aria-pressed', String(s.choice === id));
-      b.append(h('span', 'th-card-icon', t.icon), h('span', 'th-card-name', t.name));
+      b.append(h('span', `th-card-icon${NF ? ' nh-teken' : ''}`, NF ? NF.teken : t.icon), h('span', 'th-card-name', t.name));
       b.onclick = () => change('choice', id);
       grid.append(b);
     }

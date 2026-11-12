@@ -256,9 +256,12 @@
       if (days <= 0) todayBday = `🎂 ${e.birthday} is vandaag jarig!`;
       else add('bday', `🎂 ${e.birthday} ${days === 1 ? 'morgen' : `over ${days} dagen`} jarig`);
     }
-    const text = parts.join(' · ');
     window.DASH_DAYLINE = { items: todayBday ? [{ k: 'bday', t: todayBday, today: true }, ...items] : items, rain };
     window.dispatchEvent(new CustomEvent('dash:dayline'));
+    // Huisstijl: geen emoji in de topbalk (de telefoon krijgt DASH_DAYLINE hierboven ongewijzigd)
+    const plain = (t) => (window.DASH_HUISSTIJL ? DASH_HUISSTIJL.plain(t) : t);
+    const text = plain(parts.join(' · '));
+    if (todayBday) todayBday = plain(todayBday);
     const key = `${todayBday || ''}|${text}`;
     if (dayLineEl.dataset.key !== key) {
       dayLineEl.dataset.key = key;
@@ -270,6 +273,7 @@
   }
   const loadRain = () => DASH.radar().then((r) => { rain = r; dayLine(); }).catch(() => {});
   window.addEventListener('dash:calendar', dayLine);
+  window.addEventListener('dash:stand', dayLine);
   DASH.every(60 * 1000, dayLine);
   DASH.every(5 * 60 * 1000, loadRain);
   dayLine();
