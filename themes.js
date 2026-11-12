@@ -107,12 +107,19 @@ window.DASH_THEMES = (() => {
   const kind = (name, def) => { kinds[name] = def; };
 
   // ---------- Instellingen ----------
-  const DEFAULTS = { choice: 'auto', all: true, particles: true, deco: true, topbar: true, bg: true, weather: true, fx: true, amount: 'normaal', serif: true, style: 'modern' };
+  // style: 'huisstijl' (sinds 1.2.0 standaard, huisstijl.css + huisstijl.js), 'modern' of 'y2k'; stand: 'auto' | 'digital' | 'poster' | 'titel'
+  const DEFAULTS = { choice: 'auto', all: true, particles: true, deco: true, topbar: true, bg: true, weather: true, fx: true, amount: 'normaal', serif: true, style: 'huisstijl', stand: 'auto' };
   const AMOUNT = { rustig: { parts: 10, deco: 0.5 }, normaal: { parts: 30, deco: 1 }, feestje: { parts: 60, deco: 1.6 } };
-  const settings = () => ({ ...DEFAULTS, ...(store.get('theme.settings') || {}) });
+  // Opgeslagen instellingen van vóór 1.2.0 hebben altijd style: 'modern' (de oude standaard) zonder styleV: die gaan naar de huisstijl
+  const settings = () => {
+    const saved = store.get('theme.settings') || {}, s = { ...DEFAULTS, ...saved };
+    if (saved.styleV !== 2) s.style = 'huisstijl';
+    return s;
+  };
   function set(key, value) {
     const s = settings();
     s[key] = value;
+    s.styleV = 2;
     store.set('theme.settings', s);
     serif();
     style();
@@ -122,9 +129,12 @@ window.DASH_THEMES = (() => {
   const serif = () => root.classList.toggle('serif-nums', settings().serif !== false);
   serif();
   // Stijl (html.y2k, opmaak in y2k.css): los van het thema, dus seizoenen en feestdagen blijven werken. ?stijl=y2k|modern om te testen
-  const urlStyle = /^(y2k|modern)$/.test(params.get('stijl') || '') ? params.get('stijl') : null;
+  const urlStyle = /^(y2k|modern|huisstijl)$/.test(params.get('stijl') || '') ? params.get('stijl') : null;
   const style = () => {
-    root.classList.toggle('y2k', (urlStyle || settings().style) === 'y2k');
+    const st = urlStyle || settings().style;
+    root.classList.toggle('y2k', st === 'y2k');
+    root.classList.toggle('nh-want', st === 'huisstijl');   // huisstijl.js zet html.nh (nog niet op de telefoon)
+    window.DASH_HUISSTIJL?.refresh();
     window.dispatchEvent(new Event('resize'));   // vensterranden en titelbalken veranderen de maten: indelingen opnieuw laten meten
   };
   style();
@@ -717,15 +727,29 @@ window.DASH_THEMES = (() => {
     head('Stijl');
     const styleRow = h('div', 'th-sw th-amount');
     const styleSeg = h('div', 'seg');
-    for (const [k, label] of [['modern', 'Modern'], ['y2k', 'Y2K (2003)']]) {
+    for (const [k, label] of [['huisstijl', 'Huisstijl'], ['modern', 'Modern'], ['y2k', 'Y2K (2003)']]) {
       const b = h('button', null, label);
       b.type = 'button';
-      b.setAttribute('aria-pressed', String((s.style || 'modern') === k));
+      b.setAttribute('aria-pressed', String(s.style === k));
       b.onclick = () => change('style', k);
       styleSeg.append(b);
     }
     styleRow.append(h('span', 'th-sw-txt', 'Uiterlijk van de vakken'), styleSeg);
     el.append(styleRow);
+    if (s.style === 'huisstijl') {
+      const standRow = h('div', 'th-sw th-amount'), standSeg = h('div', 'seg');
+      for (const [k, label] of [['auto', 'Vanzelf'], ['digital', 'Digital Future'], ['poster', 'Poster'], ['titel', 'Titelkaart']]) {
+        const b = h('button', null, label);
+        b.type = 'button';
+        b.setAttribute('aria-pressed', String((s.stand || 'auto') === k));
+        b.onclick = () => change('stand', k);
+        standSeg.append(b);
+      }
+      const standTxt = h('span', 'th-sw-txt', 'Stand');
+      if (window.DASH_HUISSTIJL) standTxt.append(h('small', null, `nu: ${window.DASH_HUISSTIJL.describe()}`));
+      standRow.append(standTxt, standSeg);
+      el.append(standRow);
+    }
     if (urlStyle) el.append(h('p', 'th-set-note', `Nu vastgezet via de link (?stijl=${urlStyle}).`));
 
     head('Kies thema');
