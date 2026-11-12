@@ -15,6 +15,20 @@
  ],
  "logs": [
   {
+   "title": "Trainspotting",
+   "year": 1996,
+   "rating": 3.5,
+   "watched": "2026-11-12",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/marrie01/film/trainspotting/",
+   "slug": "trainspotting",
+   "tmdbId": "627",
+   "poster": "https://image.tmdb.org/t/p/w342/1jUC02qsqS2NxBMFarbIhcQtazV.jpg",
+   "user": "Marrie01",
+   "name": "Margriet"
+  },
+  {
    "title": "Freedom Writers",
    "year": 2007,
    "rating": 5.0,
@@ -305,20 +319,6 @@
    "slug": "the-last-house-2026",
    "tmdbId": "1284041",
    "poster": "https://a.ltrbxd.com/resized/film-poster/1/1/6/7/6/7/4/1167674-the-last-house-2026-0-600-0-900-crop.jpg?v=cb3208a300",
-   "user": "Marrie01",
-   "name": "Margriet"
-  },
-  {
-   "title": "A Child of My Own",
-   "year": 2026,
-   "rating": 3.0,
-   "watched": "2026-08-17",
-   "rewatch": false,
-   "liked": false,
-   "link": "https://letterboxd.com/marrie01/film/a-child-of-my-own/",
-   "slug": "a-child-of-my-own",
-   "tmdbId": "1616131",
-   "poster": "https://a.ltrbxd.com/resized/film-poster/1/4/8/5/8/0/4/1485804-a-child-of-my-own-0-600-0-900-crop.jpg?v=207d0acd7f",
    "user": "Marrie01",
    "name": "Margriet"
   },
