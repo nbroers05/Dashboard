@@ -56,6 +56,12 @@ DASH.widget('w-stars', async (card, body, guard) => {
         return null;
       },
       norm,
+      // Voor de telefoon-app (telefoon.js, sinds 1.6.0): film van vanavond met verwacht cijfer en poster
+      async top() {
+        const f = topFilm();
+        if (!f) return null;
+        return { title: f.film, year: f.jaar || null, slug: f.slug, predicted: Math.round(predict(f) * 10) / 10, poster: await poster(f).catch(() => null) };
+      },
     };
     window.dispatchEvent(new CustomEvent('dash:watchlist'));
   }

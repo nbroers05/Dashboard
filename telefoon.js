@@ -46,10 +46,21 @@
     return { day: new Date().toLocaleDateString('sv'), count: DASH_CHECKIN.today() };   // JJJJ-MM-DD
   }
 
+  // Sinds 1.6.0 (fase B): film van vanavond (Sterrenvoorspeller-extensie) en Spotify-maand (Spotify-inlog van deze browser)
+  async function filmPart() {
+    if (!window.DASH_FILM || !DASH_FILM.top) return null;
+    try { return await DASH_FILM.top(); } catch { return null; }
+  }
+  function spotifyPart() {
+    const t = store.get('spotify.top');
+    if (!t || !t.at) return null;
+    return { updatedAt: t.at, tracks: (t.tracks || []).slice(0, 5), artists: (t.artists || []).slice(0, 5) };
+  }
+
   async function publish() {
     timer = null;
     if (!SB.linked()) return;
-    const parts = { canvas: canvasPart(), episodes: episodesPart(), mail: mailPart(), checkin: checkinPart() };
+    const parts = { canvas: canvasPart(), episodes: episodesPart(), mail: mailPart(), checkin: checkinPart(), film: await filmPart(), spotify: spotifyPart() };
     const mine = JSON.stringify(parts);
     if (mine === lastSent) return;
     const now = Date.now();
@@ -62,6 +73,7 @@
         if (!v) continue;
         // Episodes: de stand van de extensie zelf telt (updatedAt), niet wanneer dit apparaat hem doorgaf
         if (k === 'episodes' && old.episodes && old.episodes.updatedAt && Date.parse(old.episodes.updatedAt) > Date.parse(v.updatedAt)) continue;
+        if (k === 'spotify' && old.spotify && old.spotify.updatedAt > v.updatedAt) continue;
         out[k] = { at: now, ...v };
       }
       await SB.flag(KEY, out);
@@ -72,7 +84,7 @@
   }
   const soon = () => { if (!timer) timer = setTimeout(publish, 5000); };
 
-  for (const ev of ['dash:calendar', 'dash:mail', 'dash:alerts', 'dash:sb-linked', 'storage']) window.addEventListener(ev, soon);
+  for (const ev of ['dash:calendar', 'dash:mail', 'dash:alerts', 'dash:sb-linked', 'dash:watchlist', 'storage']) window.addEventListener(ev, soon);
   DASH.every(5 * 60000, soon);
   setTimeout(soon, 8000);
 })();
