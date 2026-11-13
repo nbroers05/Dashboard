@@ -10,13 +10,12 @@
 // stays (so the laptop without the extension doesn't overwrite Episodes).
 // widgets/ah.js puts the AH wage settings in `_phone.wage` itself (Noah's choice, 12 Nov 2026). Canvas check marks are already in
 // dashboard_canvas_done. At most once per 2 minutes, and only when something changed. Not in demo.
-// Until phone app 0.8.0 is installed everywhere, the old key `_telefoon.stand` (with `nieuw`) is written too; remove LEGACY after that.
+// The old key `_telefoon.stand` (with `nieuw`) for app versions before 0.8.0 is no longer written since 1.7.1.
 (() => {
   const SB = window.DASH_SB;
   if (!SB || !SB.configured || DASH.DEMO) return;
   const { store } = DASH;
   const KEY = '_phone.status';
-  const LEGACY = '_telefoon.stand';
   const MIN_GAP = 2 * 60000;
   let lastSent = '', lastAt = 0, timer = null;
 
@@ -79,10 +78,6 @@
         out[k] = { at: now, ...v };
       }
       await SB.flag(KEY, out);
-      // Old app versions read the old key and `nieuw`
-      const legacy = { ...out };
-      if (out.episodes) legacy.episodes = { ...out.episodes, rows: out.episodes.rows.map((r) => ({ ...r, nieuw: r.new })) };
-      await SB.flag(LEGACY, legacy).catch(() => {});
       lastSent = mine;
     } catch (e) {
       SB.fail(e);

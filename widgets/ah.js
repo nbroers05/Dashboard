@@ -91,11 +91,10 @@ DASH.widget('w-ah', (card, body, guard) => {
       CFG = parseWage(l);
       wageState = 'ok';
       // Phone app (since 1.5.0, Noah's choice): the wage settings also in the dashboard's Supabase (only his account),
-      // so the app can calculate the net pay itself. Only on a change. `_telefoon.loon` (old format) for app versions before 0.8.0.
+      // so the app can calculate the net pay itself. Only on a change. (The old `_telefoon.loon` isn't written since 1.7.1.)
       const json = JSON.stringify(l);
       if (window.DASH_SB && DASH_SB.linked() && DASH.store.get('ah.loon.pushed') !== json) {
         DASH_SB.flag('_phone.wage', l)
-          .then(() => (cfg.ahLoon ? DASH_SB.flag('_telefoon.loon', cfg.ahLoon).catch(() => {}) : null))
           .then(() => DASH.store.set('ah.loon.pushed', json)).catch((e) => DASH_SB.fail(e));
       }
     } catch (e) {
