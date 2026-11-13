@@ -1,12 +1,11 @@
-"""Spotify-koppeling voor de inlogbundel ("Alles met één inlog").
+"""Spotify link for the login bundle ("Everything with one login").
 
-De gewone Spotify-inlog van het dashboard (PKCE) geeft een refresh token dat bij gebruik vervangen wordt: in een bundel
-die op meerdere computers wordt gebruikt gaat dat mis. Daarom hier een koppeling met de Client Secret (Authorization
-Code), die een blijvende sleutel geeft. Die gaat alleen versleuteld in de bundel (vault.js); het hulpprogramma zelf
-gebruikt hem niet.
+The dashboard's normal Spotify sign-in (PKCE) gives a refresh token that is replaced when used: in a bundle that is
+used on several computers that goes wrong. So here is a link with the Client Secret (Authorization Code), which gives
+a lasting key. It only goes into the bundle encrypted (vault.js); the helper itself doesn't use it.
 
-Eenmalig: Client Secret plakken op http://127.0.0.1:8765/koppel (staat daarna in spotify-client.json, gitignored),
-en http://127.0.0.1:8765/spotify-oauth als Redirect URI in je Spotify-app zetten (README stap 13).
+Once: paste the Client Secret at http://127.0.0.1:8765/link (then stored in spotify-client.json, gitignored),
+and add http://127.0.0.1:8765/spotify-oauth as a Redirect URI in your Spotify app (README step 1).
 """
 
 import base64
@@ -18,12 +17,12 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-import google_token   # post(), lees_tokens(), bewaar_tokens(), lock: dezelfde tokens.json
+import google_token   # post(), read_tokens(), save_tokens(), lock: the same tokens.json
 
-HIER = os.path.dirname(os.path.abspath(__file__))
-CLIENT_FILE = os.path.join(HIER, "spotify-client.json")
-CLIENT_ID = "4da05ad75fe84a41859a6a18ef2eef70"   # dezelfde app als het dashboard (config.js)
-# Zelfde scopes als spotify.js
+HERE = os.path.dirname(os.path.abspath(__file__))
+CLIENT_FILE = os.path.join(HERE, "spotify-client.json")
+CLIENT_ID = "4da05ad75fe84a41859a6a18ef2eef70"   # the same app as the dashboard (config.js)
+# Same scopes as spotify.js
 SCOPES = "user-read-currently-playing user-read-playback-state user-modify-playback-state user-library-read user-library-modify user-top-read"
 
 pending = set()
@@ -41,12 +40,12 @@ def secret():
         return None
 
 
-def bewaar_secret(waarde):
-    waarde = (waarde or "").strip()
-    if not (len(waarde) == 32 and all(c in "0123456789abcdef" for c in waarde)):
-        raise TokenError("Dat lijkt geen Client Secret (32 tekens, 0-9 en a-f)")
+def save_secret(value):
+    value = (value or "").strip()
+    if not (len(value) == 32 and all(c in "0123456789abcdef" for c in value)):
+        raise TokenError("That doesn't look like a Client Secret (32 characters, 0-9 and a-f)")
     with open(CLIENT_FILE, "w", encoding="utf-8") as f:
-        json.dump({"client_secret": waarde}, f)
+        json.dump({"client_secret": value}, f)
 
 
 def redirect_uri(port):
@@ -55,7 +54,7 @@ def redirect_uri(port):
 
 def login_url(port):
     if not secret():
-        raise TokenError("Plak eerst de Client Secret op /koppel")
+        raise TokenError("First paste the Client Secret on /link")
     state = secrets.token_urlsafe(16)
     pending.add(state)
     return "https://accounts.spotify.com/authorize?" + urllib.parse.urlencode({
@@ -68,7 +67,7 @@ def callback(params, port):
     if params.get("error"):
         raise TokenError(f"Spotify: {params['error']}")
     if params.get("state") not in pending:
-        raise TokenError("Deze inlogpoging is verlopen. Probeer het opnieuw via /koppel.")
+        raise TokenError("This sign-in attempt has expired. Try again via /link.")
     pending.discard(params["state"])
     auth = base64.b64encode(f"{CLIENT_ID}:{secret()}".encode()).decode()
     req = urllib.request.Request("https://accounts.spotify.com/api/token", method="POST",
@@ -78,22 +77,22 @@ def callback(params, port):
         with urllib.request.urlopen(req, timeout=20) as res:
             data = json.loads(res.read())
     except urllib.error.HTTPError as e:
-        raise TokenError(f"Spotify weigert ({e.code}): staat de Redirect URI {redirect_uri(port)} in je app, en klopt de Client Secret?")
+        raise TokenError(f"Spotify refuses ({e.code}): is the Redirect URI {redirect_uri(port)} in your app, and is the Client Secret right?")
     if not data.get("refresh_token"):
-        raise TokenError("Spotify gaf geen blijvende sleutel")
+        raise TokenError("Spotify gave no lasting key")
     with google_token.lock:
-        tokens = google_token.lees_tokens()
+        tokens = google_token.read_tokens()
         tokens["spotify"] = {"refresh_token": data["refresh_token"], "scope": data.get("scope", ""), "linked_at": int(time.time())}
-        google_token.bewaar_tokens(tokens)
+        google_token.save_tokens(tokens)
 
 
 def status():
-    return {"secret": bool(secret()), "linked": bool(google_token.lees_tokens().get("spotify"))}
+    return {"secret": bool(secret()), "linked": bool(google_token.read_tokens().get("spotify"))}
 
 
-def bundel():
-    """Wat er van Spotify in de inlogbundel gaat (of None als het nog niet gekoppeld is)."""
-    t = google_token.lees_tokens().get("spotify")
+def bundle():
+    """What goes into the login bundle from Spotify (or None if it isn't linked yet)."""
+    t = google_token.read_tokens().get("spotify")
     s = secret()
     if not t or not s:
         return None

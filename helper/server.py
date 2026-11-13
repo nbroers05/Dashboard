@@ -1,13 +1,17 @@
-"""Hulpprogramma: geeft de Windows-meldingen (ook die van je telefoon via Phone Link) door aan het dashboard.
+"""Helper: passes the Windows notifications (including your phone's, via Phone Link) on to the dashboard.
 
-Draait op je eigen pc en luistert alleen op 127.0.0.1 (niet bereikbaar vanaf andere apparaten).
-Alleen het dashboard (github.io en de lokale testversie) mag de meldingen lezen.
-Geeft het dashboard ook nieuwe Google-tokens (google_token.py), zodat "Vernieuwen" niet meer nodig is.
-Starten: dubbelklik op start.bat in deze map. Zie README, stap 9.
+Runs on your own PC and only listens on 127.0.0.1 (not reachable from other devices).
+Only the dashboard (github.io and the local test version) may read the notifications.
+Also gives the dashboard fresh Google tokens (google_token.py), so "Refresh" is no longer needed.
+Start: double-click start.bat in this folder. See README, step 8.
 
-Houdt ook een logboek bij (meldingen-log.csv, alleen op deze pc): per nieuwe melding de tijd en de app, ZONDER inhoud.
-Het meldingencentrum wordt elke 10 s op de achtergrond gelezen (Windows doet daar zelf ~3 s over); /meldingen antwoordt uit dat geheugen.
-De dagelijkse taak van de privé repo dashboard-data telt daaruit het aantal meldingen per app per uur.
+Also keeps a log (notifications-log.csv, only on this PC): per new notification the time and the app, WITHOUT content.
+The notification center is read every 10 s in the background (Windows itself takes ~3 s for that); /notifications answers
+from that memory. The daily task of the private repo dashboard-data counts the notifications per app per hour from it.
+
+Endpoints: /notifications, /dismiss/<id>, /link (Google and Spotify linking page). The old Dutch names /meldingen,
+/weg/<id> and /koppel still work as aliases for one version (dashboard 1.7.x); remove them after that.
+/oauth and /spotify-oauth keep their names: they are registered redirect URIs.
 """
 
 import asyncio
@@ -29,28 +33,28 @@ import spotify_token
 import vault
 import wishes
 
-# Media (wat er afspeelt): als dat deel niet laadt, werkt de rest gewoon door
+# Media (what's playing): if that part doesn't load, the rest keeps working
 try:
     import media
-except Exception as e:  # bijv. pakket nog niet geïnstalleerd
+except Exception as e:  # e.g. package not installed yet
     media = None
-    MEDIA_FOUT = str(e)
+    MEDIA_ERROR = str(e)
 
 PORT = 8765
-# Alleen meldingen van je telefoon (Phone Link). Zet op False om alle Windows-meldingen te tonen.
-ALLEEN_TELEFOON = True
-TELEFOON_APPS = {"Phone Link", "Telefoonkoppeling", "Your Phone", "Je telefoon"}
+# Only notifications from your phone (Phone Link). Set to False to show all Windows notifications.
+PHONE_ONLY = True
+PHONE_APPS = {"Phone Link", "Telefoonkoppeling", "Your Phone", "Je telefoon"}
 MAX = 30
-TOEGESTAAN = {"https://nbroers05.github.io", "http://127.0.0.1:8000"}
+ALLOWED = {"https://nbroers05.github.io", "http://127.0.0.1:8000"}
 
 listener = UserNotificationListener.current
-lock = threading.Lock()          # media (wat er afspeelt, bedienen)
-meld_lock = threading.Lock()     # meldingencentrum (los, zodat een trage leesronde de mediaknoppen niet ophoudt)
+lock = threading.Lock()          # media (what's playing, controls)
+notif_lock = threading.Lock()    # notification center (separate, so a slow read doesn't hold up the media buttons)
 
 
-async def lees():
-    """Eén keer het meldingencentrum lezen, voor het dashboard én het logboek. Windows doet hier zelf al ~3 s over
-    (gemeten 31 okt 2026, 30 meldingen), daarom gebeurt dit alleen in ververs_lus() en niet per vraag van het dashboard."""
+async def read_center():
+    """Read the notification center once, for the dashboard and the log. Windows itself already takes ~3 s for this
+    (measured 31 Oct 2026, 30 notifications), so it only happens in refresh_loop() and not per dashboard request."""
     if listener.get_access_status() != UserNotificationListenerAccessStatus.ALLOWED:
         status = await listener.request_access_async()
         if status != UserNotificationListenerAccessStatus.ALLOWED:
@@ -60,66 +64,74 @@ async def lees():
         try:
             app = n.app_info.display_info.display_name
         except Exception:
-            app = "Onbekend"
+            app = "Unknown"
         t = int(n.creation_time.timestamp() * 1000)
         try:
             binding = n.notification.visual.get_binding(KnownNotificationBindings.toast_generic)
-            teksten = [x.text for x in binding.get_text_elements()] if binding else []
+            texts = [x.text for x in binding.get_text_elements()] if binding else []
         except Exception:
-            teksten = []
-        # Logboek: bij Phone Link is de eerste regel de naam van de app op de telefoon (bijv. "WhatsApp"); de rest is
-        # inhoud en wordt niet bewaard
-        log.append((n.id, t, app, (teksten[0].strip() if app in TELEFOON_APPS and teksten and teksten[0].strip() else app)[:60]))
-        if ALLEEN_TELEFOON and app not in TELEFOON_APPS:
+            texts = []
+        # Log: with Phone Link the first line is the name of the app on the phone (e.g. "WhatsApp"); the rest is
+        # content and is not kept
+        log.append((n.id, t, app, (texts[0].strip() if app in PHONE_APPS and texts and texts[0].strip() else app)[:60]))
+        if PHONE_ONLY and app not in PHONE_APPS:
             continue
-        teksten = [x for x in teksten if x and x.strip()]
-        if not teksten:
+        texts = [x for x in texts if x and x.strip()]
+        if not texts:
             continue
-        items.append({"id": n.id, "app": app, "telefoon": app in TELEFOON_APPS, "title": teksten[0], "body": " · ".join(teksten[1:]), "time": t})
+        items.append({"id": n.id, "app": app, "phone": app in PHONE_APPS, "title": texts[0], "body": " · ".join(texts[1:]), "time": t})
     items.sort(key=lambda x: x["time"], reverse=True)
     return items[:MAX], log
 
 
-# ---------- Logboek: alleen tijd en app per melding, geen inhoud ----------
-LOG_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "meldingen-log.csv")
-VERVERS = 10          # seconden tussen twee keer het meldingencentrum lezen (dat duurt zelf al ~3 s)
-cache = {"items": None, "geen_toegang": False, "klaar": threading.Event()}
-gezien = set()         # (tijd, app) die al in het logboek staan, zodat een melding maar één keer telt (ook na herstarten)
+# ---------- Log: only time and app per notification, no content ----------
+HERE = os.path.dirname(os.path.abspath(__file__))
+LOG_FILE = os.path.join(HERE, "notifications-log.csv")
+OLD_LOG_FILE = os.path.join(HERE, "meldingen-log.csv")   # name before dashboard 1.7.1
+REFRESH = 10          # seconds between two reads of the notification center (that itself already takes ~3 s)
+cache = {"items": None, "no_access": False, "ready": threading.Event()}
+seen = set()           # (time, app) already in the log, so a notification only counts once (also after a restart)
 
 
-def ververs_lus():
-    """Meldingen op de achtergrond bijhouden (voor /meldingen, dat dan meteen antwoordt) en het logboek bijwerken."""
-    nieuw_bestand = not os.path.exists(LOG_FILE)
-    if not nieuw_bestand:
+def refresh_loop():
+    """Keep the notifications up to date in the background (for /notifications, which then answers at once) and update the log."""
+    # Old log name: rename it once, so the history continues in one file
+    if os.path.exists(OLD_LOG_FILE) and not os.path.exists(LOG_FILE):
+        try:
+            os.replace(OLD_LOG_FILE, LOG_FILE)
+        except OSError as e:
+            print(f"Renaming the log: {e}", file=sys.stderr)
+    new_file = not os.path.exists(LOG_FILE)
+    if not new_file:
         with open(LOG_FILE, encoding="utf-8", newline="") as f:
             for r in list(csv.DictReader(f))[-5000:]:
-                gezien.add((int(r["time_ms"]), r["app"]))
+                seen.add((int(r["time_ms"]), r["app"]))
     while True:
         try:
-            with meld_lock:
-                items, log = asyncio.run(lees())
-            cache["items"], cache["geen_toegang"] = items or [], items is None
-            cache["klaar"].set()
-            nieuw = [x for x in log if (x[1], x[3]) not in gezien]
-            if nieuw:
+            with notif_lock:
+                items, log = asyncio.run(read_center())
+            cache["items"], cache["no_access"] = items or [], items is None
+            cache["ready"].set()
+            new = [x for x in log if (x[1], x[3]) not in seen]
+            if new:
                 with open(LOG_FILE, "a", encoding="utf-8", newline="") as f:
                     w = csv.writer(f)
-                    if nieuw_bestand:
+                    if new_file:
                         w.writerow(["time_ms", "windows_app", "app"])
-                        nieuw_bestand = False
-                    for nid, t, win_app, app in nieuw:
+                        new_file = False
+                    for nid, t, win_app, app in new:
                         w.writerow([t, win_app, app])
-                        gezien.add((t, app))
-            if len(gezien) > 20000:
-                houden = sorted(gezien)[-10000:]   # alleen de nieuwste onthouden (oude staan niet meer in het meldingencentrum)
-                gezien.clear()
-                gezien.update(houden)
+                        seen.add((t, app))
+            if len(seen) > 20000:
+                keep = sorted(seen)[-10000:]   # only remember the newest (old ones are no longer in the notification center)
+                seen.clear()
+                seen.update(keep)
         except Exception as e:
-            print(f"Meldingen lezen: {e}", file=sys.stderr)
-        time.sleep(VERVERS)
+            print(f"Reading notifications: {e}", file=sys.stderr)
+        time.sleep(REFRESH)
 
 
-def weg(nid):
+def dismiss(nid):
     listener.remove_notification(nid)
     if cache["items"]:
         cache["items"] = [x for x in cache["items"] if x["id"] != nid]
@@ -128,15 +140,15 @@ def weg(nid):
 class Handler(BaseHTTPRequestHandler):
     def cors(self):
         origin = self.headers.get("Origin")
-        if origin in TOEGESTAAN:
+        if origin in ALLOWED:
             self.send_header("Access-Control-Allow-Origin", origin)
             self.send_header("Vary", "Origin")
             self.send_header("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
             self.send_header("Access-Control-Allow-Headers", "Content-Type")
-            # Chrome vraagt dit als een https-site met je eigen pc praat
+            # Chrome asks for this when an https site talks to your own PC
             self.send_header("Access-Control-Allow-Private-Network", "true")
 
-    def antwoord(self, code, data):
+    def reply(self, code, data):
         body = json.dumps(data, ensure_ascii=False).encode("utf-8")
         self.send_response(code)
         self.cors()
@@ -151,102 +163,109 @@ class Handler(BaseHTTPRequestHandler):
         self.cors()
         self.end_headers()
 
-    def pagina(self, code, titel, inhoud):
+    def page(self, code, title, content):
         body = f"""<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{titel}</title><style>body{{font-family:system-ui,sans-serif;background:#121214;color:#eee;max-width:560px;margin:60px auto;padding:0 20px;line-height:1.5}}
+<title>{title}</title><style>body{{font-family:system-ui,sans-serif;background:#121214;color:#eee;max-width:560px;margin:60px auto;padding:0 20px;line-height:1.5}}
 a.k{{display:inline-block;margin:6px 8px 6px 0;padding:12px 20px;border-radius:999px;background:#1ed760;color:#06210f;font-weight:700;text-decoration:none}}
-.ok{{color:#5bd38a}}.nee{{color:#ff8a5c}}code{{background:#222;padding:2px 6px;border-radius:6px}}</style>
-<h1>{titel}</h1>{inhoud}""".encode("utf-8")
+.ok{{color:#5bd38a}}.no{{color:#ff8a5c}}code{{background:#222;padding:2px 6px;border-radius:6px}}</style>
+<h1>{title}</h1>{content}""".encode("utf-8")
         self.send_response(code)
         self.send_header("Content-Type", "text/html; charset=utf-8")
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
 
-    def koppel(self):
+    def redirect(self, url, code=302):
+        self.send_response(code)
+        self.send_header("Location", url)
+        self.end_headers()
+
+    def link_page(self):
         st = google_token.status()
         if not st["client"]:
-            return self.pagina(200, "Google koppelen", "<p class='nee'>Eerst <code>google-client.json</code> in de map <code>helper</code> zetten (README stap 9). Daarna deze pagina vernieuwen.</p>")
-        regels = "".join(
-            f"<p>{google_token.NAMEN[w]}: {'<span class=ok>gekoppeld ✓</span>' if st[w] else '<span class=nee>nog niet gekoppeld</span>'}<br>"
-            f"<a class='k' href='/koppel/{w}'>{'Opnieuw koppelen' if st[w] else 'Koppelen'}</a></p>"
+            return self.page(200, "Link Google", "<p class='no'>First put <code>google-client.json</code> in the <code>helper</code> folder (README step 8). Then reload this page.</p>")
+        rows = "".join(
+            f"<p>{google_token.NAMES[w]}: {'<span class=ok>linked ✓</span>' if st[w] else '<span class=no>not linked yet</span>'}<br>"
+            f"<a class='k' href='/link/{w}'>{'Link again' if st[w] else 'Link'}</a></p>"
             for w in google_token.SCOPES
         )
         sp = spotify_token.status()
         uri = spotify_token.redirect_uri(PORT)
-        spotify = ("<h2>Spotify (voor de inlogbundel)</h2>"
-                   "<p>Alleen nodig voor <b>Alles met één inlog</b> (README stap 13). Zet eerst <code>" + uri + "</code> als Redirect URI in je Spotify-app.</p>"
-                   "<form method='post' action='/spotify-secret'><p>Client Secret: " + ("<span class=ok>staat erin ✓</span>" if sp["secret"] else "<span class=nee>nog niet</span>") + "<br>"
-                   "<input name='secret' type='password' autocomplete='off' placeholder='plak hier de Client Secret' style='width:300px;padding:8px;border-radius:8px;border:1px solid #444;background:#222;color:#eee'> "
-                   "<button style='padding:8px 14px;border-radius:999px;border:0'>Bewaren</button></p></form>"
-                   + (f"<p>Spotify: {'<span class=ok>gekoppeld ✓</span>' if sp['linked'] else '<span class=nee>nog niet gekoppeld</span>'}<br>"
-                      f"<a class='k' href='/koppel/spotify'>{'Opnieuw koppelen' if sp['linked'] else 'Koppelen'}</a></p>" if sp["secret"] else ""))
-        self.pagina(200, "Google koppelen", "<p>Koppel allebei. Daarna haalt het dashboard zelf elk uur een nieuwe toegang op.</p>" + regels + spotify)
+        spotify = ("<h2>Spotify (for the login bundle)</h2>"
+                   "<p>Only needed for <b>Everything with one login</b> (README). First add <code>" + uri + "</code> as a Redirect URI in your Spotify app.</p>"
+                   "<form method='post' action='/spotify-secret'><p>Client Secret: " + ("<span class=ok>saved ✓</span>" if sp["secret"] else "<span class=no>not yet</span>") + "<br>"
+                   "<input name='secret' type='password' autocomplete='off' placeholder='paste the Client Secret here' style='width:300px;padding:8px;border-radius:8px;border:1px solid #444;background:#222;color:#eee'> "
+                   "<button style='padding:8px 14px;border-radius:999px;border:0'>Save</button></p></form>"
+                   + (f"<p>Spotify: {'<span class=ok>linked ✓</span>' if sp['linked'] else '<span class=no>not linked yet</span>'}<br>"
+                      f"<a class='k' href='/link/spotify'>{'Link again' if sp['linked'] else 'Link'}</a></p>" if sp["secret"] else ""))
+        self.page(200, "Link Google", "<p>Link both. After that the dashboard gets new access by itself every hour.</p>" + rows + spotify)
+
+    def failed(self, e, back=True):
+        return self.page(400, "Linking failed", f"<p class='no'>{html.escape(str(e))}</p>" + ("<p><a class='k' href='/link'>Back</a></p>" if back else ""))
 
     def do_GET(self):
-        pad, _, query = self.path.partition("?")
+        path, _, query = self.path.partition("?")
         params = dict(urllib.parse.parse_qsl(query))
-        if pad == "/koppel":
-            return self.koppel()
-        if pad == "/vault" and self.headers.get("Origin") in TOEGESTAAN:
-            return self.antwoord(200, vault.status())
-        if pad == "/koppel/spotify":
+        # Old Dutch paths (before dashboard 1.7.1): same pages for one version
+        if path == "/koppel" or path.startswith("/koppel/"):
+            path = "/link" + path[len("/koppel"):]
+        if path == "/meldingen":
+            path = "/notifications"
+        if path == "/link":
+            return self.link_page()
+        if path == "/vault" and self.headers.get("Origin") in ALLOWED:
+            return self.reply(200, vault.status())
+        if path == "/link/spotify":
             try:
                 url = spotify_token.login_url(PORT)
             except spotify_token.TokenError as e:
-                return self.pagina(400, "Koppelen lukt niet", f"<p class='nee'>{html.escape(str(e))}</p><p><a class='k' href='/koppel'>Terug</a></p>")
-            self.send_response(302)
-            self.send_header("Location", url)
-            self.end_headers()
-            return
-        if pad == "/spotify-oauth":
+                return self.failed(e)
+            return self.redirect(url)
+        if path == "/spotify-oauth":
             try:
                 spotify_token.callback(params, PORT)
             except spotify_token.TokenError as e:
-                return self.pagina(400, "Koppelen lukt niet", f"<p class='nee'>{html.escape(str(e))}</p><p><a class='k' href='/koppel'>Terug</a></p>")
-            return self.pagina(200, "Spotify gekoppeld ✓", "<p>Maak nu de bundel opnieuw: dashboard → tandwiel → Inloggen.</p><p><a class='k' href='/koppel'>Terug naar koppelen</a></p>")
-        if pad == "/vault/keys" and self.headers.get("Origin") in TOEGESTAAN:
-            # Alleen voor Instellingen › Inloggen: de blijvende sleutels, die daar versleuteld in de bundel gaan
-            return self.antwoord(200, {"google": google_token.bundel(), "spotify": spotify_token.bundel()})
-        if pad.startswith("/koppel/"):
+                return self.failed(e)
+            return self.page(200, "Spotify linked ✓", "<p>Now make the bundle again: dashboard → gear → Log in.</p><p><a class='k' href='/link'>Back to linking</a></p>")
+        if path == "/vault/keys" and self.headers.get("Origin") in ALLOWED:
+            # Only for Settings › Log in: the lasting keys, which go into the bundle there, encrypted
+            return self.reply(200, {"google": google_token.bundle(), "spotify": spotify_token.bundle()})
+        if path.startswith("/link/"):
             try:
-                url = google_token.login_url(pad.rsplit("/", 1)[1], PORT)
+                url = google_token.login_url(path.rsplit("/", 1)[1], PORT)
             except google_token.TokenError as e:
-                return self.pagina(400, "Koppelen lukt niet", f"<p class='nee'>{html.escape(str(e))}</p>")
-            self.send_response(302)
-            self.send_header("Location", url)
-            self.end_headers()
-            return
-        if pad == "/oauth":
+                return self.failed(e, back=False)
+            return self.redirect(url)
+        if path == "/oauth":
             try:
-                naam, missing = google_token.callback(params, PORT)
+                name, missing = google_token.callback(params, PORT)
             except google_token.TokenError as e:
-                return self.pagina(400, "Koppelen lukt niet", f"<p class='nee'>{html.escape(str(e))}</p><p><a class='k' href='/koppel'>Terug</a></p>")
-            waarschuwing = f"<p class='nee'>Niet alle vinkjes stonden aan; ontbreekt: {html.escape(', '.join(m.rsplit('/', 1)[1] for m in missing))}</p>" if missing else ""
-            return self.pagina(200, f"{naam} gekoppeld ✓", waarschuwing + "<p>Je kunt dit tabblad sluiten.</p><p><a class='k' href='/koppel'>Terug naar koppelen</a></p>")
-        if pad == "/token":
-            # Alleen het dashboard mag een token krijgen
-            if self.headers.get("Origin") not in TOEGESTAAN:
-                return self.antwoord(403, {"error": "niet toegestaan"})
+                return self.failed(e)
+            warning = f"<p class='no'>Not all boxes were ticked; missing: {html.escape(', '.join(m.rsplit('/', 1)[1] for m in missing))}</p>" if missing else ""
+            return self.page(200, f"{name} linked ✓", warning + "<p>You can close this tab.</p><p><a class='k' href='/link'>Back to linking</a></p>")
+        if path == "/token":
+            # Only the dashboard may get a token
+            if self.headers.get("Origin") not in ALLOWED:
+                return self.reply(403, {"error": "not allowed"})
             try:
                 t = google_token.access_token(params.get("which", ""))
             except google_token.TokenError as e:
-                return self.antwoord(409, {"error": str(e)})
+                return self.reply(409, {"error": str(e)})
             except OSError as e:
-                return self.antwoord(502, {"error": f"Google niet bereikbaar: {e}"})
-            return self.antwoord(200, {"access_token": t["access_token"], "expires_in": int(t["expires_at"] - time.time()), "scope": t["scope"]})
-        if pad == "/media":
-            if self.headers.get("Origin") not in TOEGESTAAN:
-                return self.antwoord(403, {"error": "niet toegestaan"})
+                return self.reply(502, {"error": f"Google not reachable: {e}"})
+            return self.reply(200, {"access_token": t["access_token"], "expires_in": int(t["expires_at"] - time.time()), "scope": t["scope"]})
+        if path == "/media":
+            if self.headers.get("Origin") not in ALLOWED:
+                return self.reply(403, {"error": "not allowed"})
             if media is None:
-                return self.antwoord(503, {"error": f"media niet beschikbaar: {MEDIA_FOUT}"})
+                return self.reply(503, {"error": f"media not available: {MEDIA_ERROR}"})
             with lock:
-                items = asyncio.run(media.lijst())
-            return self.antwoord(200, {"items": items})
-        if pad == "/media/thumb":
+                items = asyncio.run(media.list_sessions())
+            return self.reply(200, {"items": items})
+        if path == "/media/thumb":
             t = media.thumb(params.get("k", "")) if media else None
             if not t:
-                return self.antwoord(404, {"error": "geen hoes"})
+                return self.reply(404, {"error": "no cover"})
             self.send_response(200)
             self.cors()
             self.send_header("Content-Type", t[0])
@@ -255,78 +274,75 @@ a.k{{display:inline-block;margin:6px 8px 6px 0;padding:12px 20px;border-radius:9
             self.end_headers()
             self.wfile.write(t[1])
             return
-        if pad in ("/wishes", "/wensen"):
+        if path in ("/wishes", "/wensen"):
             # Wish list (WISHES.md next to the repos), read-only and only for the dashboard
-            if self.headers.get("Origin") not in TOEGESTAAN:
-                return self.antwoord(403, {"error": "niet toegestaan"})
+            if self.headers.get("Origin") not in ALLOWED:
+                return self.reply(403, {"error": "not allowed"})
             data = wishes.read()
-            return self.antwoord(200, data) if data else self.antwoord(404, {"error": "WISHES.md not found"})
-        if pad != "/meldingen":
-            return self.antwoord(404, {"error": "niet gevonden"})
-        # Andere sites mogen niets lezen
-        if self.headers.get("Origin") not in TOEGESTAAN | {None}:
-            return self.antwoord(403, {"error": "niet toegestaan"})
-        cache["klaar"].wait(8)   # alleen vlak na het starten hoeft dit te wachten
-        items = None if cache["geen_toegang"] else (cache["items"] or [])
+            return self.reply(200, data) if data else self.reply(404, {"error": "WISHES.md not found"})
+        if path != "/notifications":
+            return self.reply(404, {"error": "not found"})
+        # Other sites may not read anything
+        if self.headers.get("Origin") not in ALLOWED | {None}:
+            return self.reply(403, {"error": "not allowed"})
+        cache["ready"].wait(8)   # only right after starting does this need to wait
+        items = None if cache["no_access"] else (cache["items"] or [])
         if items is None:
-            return self.antwoord(403, {"error": "Windows geeft geen toegang tot meldingen. Zet het aan bij Instellingen > Privacy en beveiliging > Meldingen."})
-        self.antwoord(200, {"items": items})
+            return self.reply(403, {"error": "Windows gives no access to notifications. Turn it on in Settings > Privacy & security > Notifications."})
+        self.reply(200, {"items": items})
 
     def do_POST(self):
-        # /spotify-secret: formulier op /koppel (alleen vanaf de koppelpagina zelf)
+        # /spotify-secret: form on /link (only from the linking page itself)
         if self.path == "/spotify-secret":
             if self.headers.get("Origin") != f"http://127.0.0.1:{PORT}":
-                return self.antwoord(403, {"error": "niet toegestaan"})
-            lengte = min(int(self.headers.get("Content-Length") or 0), 2000)
-            velden = dict(urllib.parse.parse_qsl(self.rfile.read(lengte).decode("utf-8", "replace")))
+                return self.reply(403, {"error": "not allowed"})
+            length = min(int(self.headers.get("Content-Length") or 0), 2000)
+            fields = dict(urllib.parse.parse_qsl(self.rfile.read(length).decode("utf-8", "replace")))
             try:
-                spotify_token.bewaar_secret(velden.get("secret"))
+                spotify_token.save_secret(fields.get("secret"))
             except spotify_token.TokenError as e:
-                return self.pagina(400, "Niet bewaard", f"<p class='nee'>{html.escape(str(e))}</p><p><a class='k' href='/koppel'>Terug</a></p>")
-            self.send_response(303)
-            self.send_header("Location", "/koppel")
-            self.end_headers()
-            return
-        # /vault: versleutelde inlogbundel van Instellingen › Inloggen opslaan en pushen (vault.py)
-        if self.path == "/vault" and self.headers.get("Origin") in TOEGESTAAN:
+                return self.page(400, "Not saved", f"<p class='no'>{html.escape(str(e))}</p><p><a class='k' href='/link'>Back</a></p>")
+            return self.redirect("/link", 303)
+        # /vault: save and push the encrypted login bundle from Settings › Log in (vault.py)
+        if self.path == "/vault" and self.headers.get("Origin") in ALLOWED:
             try:
-                lengte = int(self.headers.get("Content-Length") or 0)
-                if not 0 < lengte < 200000:
-                    raise vault.VaultError("bundel te groot of leeg")
-                return self.antwoord(200, vault.bewaar(json.loads(self.rfile.read(lengte))))
+                length = int(self.headers.get("Content-Length") or 0)
+                if not 0 < length < 200000:
+                    raise vault.VaultError("bundle too large or empty")
+                return self.reply(200, vault.save(json.loads(self.rfile.read(length))))
             except (vault.VaultError, ValueError) as e:
-                return self.antwoord(400, {"error": str(e)})
-        # /media/playpause|next|prev?id=...: media bedienen
-        if self.path.startswith("/media/") and self.headers.get("Origin") in TOEGESTAAN and media is not None:
-            pad, _, query = self.path.partition("?")
+                return self.reply(400, {"error": str(e)})
+        # /media/playpause|next|prev?id=...: control media
+        if self.path.startswith("/media/") and self.headers.get("Origin") in ALLOWED and media is not None:
+            path, _, query = self.path.partition("?")
             try:
                 with lock:
-                    ok = asyncio.run(media.bedien(dict(urllib.parse.parse_qsl(query)).get("id", ""), pad.rsplit("/", 1)[1]))
-                return self.antwoord(200, {"ok": bool(ok)})
+                    ok = asyncio.run(media.control(dict(urllib.parse.parse_qsl(query)).get("id", ""), path.rsplit("/", 1)[1]))
+                return self.reply(200, {"ok": bool(ok)})
             except (KeyError, ValueError) as e:
-                return self.antwoord(404, {"error": str(e)})
-        # /weg/123: melding weghalen (ook uit het Windows-meldingencentrum)
-        if not self.path.startswith("/weg/") or self.headers.get("Origin") not in TOEGESTAAN:
-            return self.antwoord(403, {"error": "niet toegestaan"})
+                return self.reply(404, {"error": str(e)})
+        # /dismiss/123 (old: /weg/123): remove a notification (also from the Windows notification center)
+        if not (self.path.startswith("/dismiss/") or self.path.startswith("/weg/")) or self.headers.get("Origin") not in ALLOWED:
+            return self.reply(403, {"error": "not allowed"})
         try:
-            with meld_lock:
-                weg(int(self.path.split("/")[2]))
-            self.antwoord(200, {"ok": True})
+            with notif_lock:
+                dismiss(int(self.path.split("/")[2]))
+            self.reply(200, {"ok": True})
         except (ValueError, IndexError):
-            self.antwoord(400, {"error": "ongeldig id"})
+            self.reply(400, {"error": "invalid id"})
 
     def log_message(self, *args):
-        pass  # niet elke vraag in beeld zetten
+        pass  # don't print every request
 
 
 def main():
     try:
         server = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
     except OSError:
-        print(f"Poort {PORT} is al in gebruik: draait het hulpprogramma al?", file=sys.stderr)
+        print(f"Port {PORT} is already in use: is the helper already running?", file=sys.stderr)
         return
-    threading.Thread(target=ververs_lus, daemon=True).start()
-    print(f"Meldingen: http://127.0.0.1:{PORT}/meldingen · Google koppelen: http://127.0.0.1:{PORT}/koppel (Ctrl+C om te stoppen)")
+    threading.Thread(target=refresh_loop, daemon=True).start()
+    print(f"Notifications: http://127.0.0.1:{PORT}/notifications · Link Google: http://127.0.0.1:{PORT}/link (Ctrl+C to stop)")
     server.serve_forever()
 
 

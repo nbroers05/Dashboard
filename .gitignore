@@ -5,8 +5,10 @@ helper/tokens.json.tmp
 helper/google-client.json
 helper/spotify-client.json
 helper/client_secret*.json
+helper/notifications-log.csv
 helper/meldingen-log.csv
 
-# Obsidian-vault en screenshots van de wensenlijst horen nooit in een repo
+# The Obsidian vault and wish-list screenshots never belong in a repo
 .obsidian/
 wensen/
+wishes/

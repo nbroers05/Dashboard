@@ -1,14 +1,14 @@
-"""Google-tokens voor het dashboard, zodat je niet elk uur op "Vernieuwen" hoeft te klikken.
+"""Google tokens for the dashboard, so you don't have to click "Refresh" every hour.
 
-Eenmalig koppelen op http://127.0.0.1:8765/koppel. Google geeft dan een blijvende sleutel (refresh token),
-die alleen op deze pc staat (tokens.json, staat niet op GitHub). Daarmee haalt dit programma telkens een nieuw
-toegangstoken van 1 uur op als het dashboard erom vraagt.
+Link once at http://127.0.0.1:8765/link. Google then gives a lasting key (refresh token), which is only stored on
+this PC (tokens.json, not on GitHub). With it this program gets a new 1-hour access token whenever the dashboard
+asks for one.
 
-Twee aparte koppelingen, omdat Google Health geen token accepteert waar ook agenda/Gmail in zitten:
-  main   = agenda + Gmail (lezen)
-  health = stappen, slaap, hartslag (lezen)
+Two separate links, because Google Health doesn't accept a token that also holds calendar/Gmail:
+  main   = calendar + Gmail (read)
+  health = steps, sleep, heart rate (read)
 
-Nodig: google-client.json in deze map (een "Desktop app"-client uit Google Cloud, zie README stap 9).
+Needed: google-client.json in this folder (a "Desktop app" client from Google Cloud, see README step 8).
 """
 
 import base64
@@ -22,9 +22,9 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
-HIER = os.path.dirname(os.path.abspath(__file__))
-CLIENT_FILE = os.path.join(HIER, "google-client.json")
-TOKENS_FILE = os.path.join(HIER, "tokens.json")
+HERE = os.path.dirname(os.path.abspath(__file__))
+CLIENT_FILE = os.path.join(HERE, "google-client.json")
+TOKENS_FILE = os.path.join(HERE, "tokens.json")
 
 SCOPES = {
     "main": [
@@ -37,7 +37,7 @@ SCOPES = {
         "https://www.googleapis.com/auth/googlehealth.health_metrics_and_measurements.readonly",
     ],
 }
-NAMEN = {"main": "Agenda en Gmail", "health": "Gezondheid"}
+NAMES = {"main": "Calendar and Gmail", "health": "Health"}
 
 lock = threading.Lock()
 cache = {}      # which -> {"access_token", "expires_at", "scope"}
@@ -53,14 +53,14 @@ def client():
         with open(CLIENT_FILE, encoding="utf-8") as f:
             data = json.load(f)
     except FileNotFoundError:
-        raise TokenError("google-client.json ontbreekt in de map helper (README stap 9)")
+        raise TokenError("google-client.json is missing in the helper folder (README step 8)")
     c = data.get("installed") or data.get("web") or data
     if not c.get("client_id") or not c.get("client_secret"):
-        raise TokenError("google-client.json klopt niet: client_id of client_secret ontbreekt")
+        raise TokenError("google-client.json is wrong: client_id or client_secret is missing")
     return c
 
 
-def lees_tokens():
+def read_tokens():
     try:
         with open(TOKENS_FILE, encoding="utf-8") as f:
             return json.load(f)
@@ -68,7 +68,7 @@ def lees_tokens():
         return {}
 
 
-def bewaar_tokens(data):
+def save_tokens(data):
     tmp = TOKENS_FILE + ".tmp"
     with open(tmp, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=1)
@@ -93,9 +93,9 @@ def redirect_uri(port):
 
 
 def login_url(which, port):
-    """Adres van het Google-inlogscherm voor één koppeling (met PKCE)."""
+    """Address of the Google sign-in screen for one link (with PKCE)."""
     if which not in SCOPES:
-        raise TokenError("onbekende koppeling")
+        raise TokenError("unknown link")
     c = client()
     verifier = secrets.token_urlsafe(64)
     challenge = base64.urlsafe_b64encode(hashlib.sha256(verifier.encode()).digest()).rstrip(b"=").decode()
@@ -106,8 +106,8 @@ def login_url(which, port):
         "redirect_uri": redirect_uri(port),
         "response_type": "code",
         "scope": " ".join(SCOPES[which]),
-        "access_type": "offline",     # geeft de blijvende sleutel
-        "prompt": "consent",          # ook bij opnieuw koppelen een nieuwe sleutel
+        "access_type": "offline",     # gives the lasting key
+        "prompt": "consent",          # a new key also when linking again
         "include_granted_scopes": "false",
         "state": state,
         "code_challenge": challenge,
@@ -116,12 +116,12 @@ def login_url(which, port):
 
 
 def callback(params, port):
-    """Google stuurt je hierheen terug na het inloggen. Geeft de naam van de koppeling terug."""
+    """Google sends you back here after signing in. Returns the name of the link."""
     if params.get("error"):
         raise TokenError(f"Google: {params['error']}")
     p = pending.pop(params.get("state", ""), None)
     if not p:
-        raise TokenError("Deze inlogpoging is verlopen. Probeer het opnieuw via /koppel.")
+        raise TokenError("This sign-in attempt has expired. Try again via /link.")
     c = client()
     data = post("https://oauth2.googleapis.com/token", {
         "code": params.get("code", ""),
@@ -132,29 +132,29 @@ def callback(params, port):
         "code_verifier": p["verifier"],
     })
     if not data.get("refresh_token"):
-        raise TokenError("Google gaf geen blijvende sleutel. Haal de toegang weg op myaccount.google.com/permissions en koppel opnieuw.")
+        raise TokenError("Google gave no lasting key. Remove the access at myaccount.google.com/permissions and link again.")
     granted = set((data.get("scope") or "").split())
     missing = [s for s in SCOPES[p["which"]] if s not in granted]
     with lock:
-        tokens = lees_tokens()
+        tokens = read_tokens()
         tokens[p["which"]] = {"refresh_token": data["refresh_token"], "scope": data.get("scope", ""), "linked_at": int(time.time())}
-        bewaar_tokens(tokens)
+        save_tokens(tokens)
         cache[p["which"]] = {"access_token": data["access_token"], "expires_at": time.time() + int(data.get("expires_in", 3600)), "scope": data.get("scope", "")}
-    return NAMEN[p["which"]], missing
+    return NAMES[p["which"]], missing
 
 
 def access_token(which):
-    """Geldig toegangstoken (uit het geheugen, of vernieuwd met de blijvende sleutel)."""
+    """A valid access token (from memory, or renewed with the lasting key)."""
     if which not in SCOPES:
-        raise TokenError("onbekende koppeling")
+        raise TokenError("unknown link")
     with lock:
         hit = cache.get(which)
         if hit and hit["expires_at"] - time.time() > 300:
             return hit
-        tokens = lees_tokens()
+        tokens = read_tokens()
         t = tokens.get(which)
         if not t:
-            raise TokenError(f"{NAMEN[which]} is nog niet gekoppeld: open http://127.0.0.1:8765/koppel")
+            raise TokenError(f"{NAMES[which]} is not linked yet: open http://127.0.0.1:8765/link")
         c = client()
         try:
             data = post("https://oauth2.googleapis.com/token", {
@@ -165,19 +165,19 @@ def access_token(which):
             })
         except TokenError as e:
             if "invalid_grant" in str(e) or "expired" in str(e).lower() or "revoked" in str(e).lower():
-                # Sleutel verlopen of ingetrokken: weggooien, opnieuw koppelen nodig
+                # Key expired or revoked: throw it away, linking again is needed
                 tokens.pop(which, None)
-                bewaar_tokens(tokens)
-                raise TokenError(f"De koppeling voor {NAMEN[which]} is verlopen: koppel opnieuw via http://127.0.0.1:8765/koppel")
+                save_tokens(tokens)
+                raise TokenError(f"The link for {NAMES[which]} has expired: link again via http://127.0.0.1:8765/link")
             raise
         hit = {"access_token": data["access_token"], "expires_at": time.time() + int(data.get("expires_in", 3600)), "scope": data.get("scope", t.get("scope", ""))}
         cache[which] = hit
         return hit
 
 
-def bundel():
-    """Wat er van Google in de inlogbundel gaat (vault.js): client + beide blijvende sleutels, of None."""
-    tokens = lees_tokens()
+def bundle():
+    """What goes into the login bundle from Google (vault.js): client + both lasting keys, or None."""
+    tokens = read_tokens()
     try:
         c = client()
     except TokenError:
@@ -189,10 +189,10 @@ def bundel():
 
 
 def status():
-    tokens = lees_tokens()
+    tokens = read_tokens()
     try:
         client()
-        heeft_client = True
+        has_client = True
     except TokenError:
-        heeft_client = False
-    return {"client": heeft_client, **{w: bool(tokens.get(w)) for w in SCOPES}}
+        has_client = False
+    return {"client": has_client, **{w: bool(tokens.get(w)) for w in SCOPES}}

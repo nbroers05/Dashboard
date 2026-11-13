@@ -16,7 +16,7 @@ Open the app **Dashboard** → **Settings** → **Edit**:
   - `https://nbroers05.github.io/Dashboard/`
   - `https://nbroers05.github.io/dashboard/`
   - `http://127.0.0.1:8000/`
-  - `http://127.0.0.1:8765/spotify-oauth` (for the helper, step 9)
+  - `http://127.0.0.1:8765/spotify-oauth` (for the helper, step 8)
 - **APIs used**: Web API ticked.
 - **User Management**: your own Spotify email address (Development mode only allows these users).
 - **Save**.
@@ -71,7 +71,7 @@ A small program on your PC passes on what a website can't reach itself: phone no
 
 1. Open the folder `dashboard\helper` and double-click **start.bat**. The first time it installs what it needs. After that it runs invisibly.
 2. If Windows asks for access to notifications: **Settings** → **Privacy & security** → **Notifications** → allow apps access.
-3. Linking Google and Spotify: open `http://127.0.0.1:8765/koppel` and click the link buttons. For Spotify, paste the Client Secret (Spotify app → **Settings** → **View client secret**) first.
+3. Linking Google and Spotify: open `http://127.0.0.1:8765/link` and click the link buttons. For Spotify, paste the Client Secret (Spotify app → **Settings** → **View client secret**) first.
 4. Start with Windows: **Windows key + R** → `shell:startup` → Enter. Right-click **start.bat** → **Create shortcut** and drag the shortcut into that folder.
 
 After the helper is updated: double-click **start.bat** again (it stops the old one first).

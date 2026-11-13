@@ -1,7 +1,7 @@
-"""Wat er op deze pc afspeelt (YouTube in de browser, de Spotify-app, VLC, ...), via de mediabediening van Windows.
+"""What is playing on this PC (YouTube in the browser, the Spotify app, VLC, ...), via the Windows media controls.
 
-Dezelfde lijst als achter de mediaknoppen op je toetsenbord. Het dashboard toont ze als kaarten in de mediastapel
-en kan ze bedienen (afspelen/pauzeren, vorige, volgende).
+The same list as behind the media keys on your keyboard. The dashboard shows them as cards in the media stack
+and can control them (play/pause, previous, next).
 """
 
 import hashlib
@@ -12,11 +12,11 @@ from winrt.windows.storage.streams import Buffer, DataReader, InputStreamOptions
 
 try:
     from winrt.windows.applicationmodel import AppInfo
-except ImportError:  # oudere winrt: dan alleen de bekende namen hieronder
+except ImportError:  # older winrt: then only the known names below
     AppInfo = None
 
-# Bekende apps, als Windows zelf geen naam geeft
-NAMEN = {
+# Known apps, when Windows gives no name itself
+NAMES = {
     "308046B0AF4A39CB": "Firefox",
     "Chrome": "Chrome",
     "MSEdge": "Edge",
@@ -25,11 +25,11 @@ NAMEN = {
     "vlc": "VLC",
 }
 
-thumbs = {}  # sleutel -> (content_type, bytes)
+thumbs = {}  # key -> (content_type, bytes)
 
 
-def app_naam(aumid):
-    for k, v in NAMEN.items():
+def app_name(aumid):
+    for k, v in NAMES.items():
         if aumid == k or aumid.lower().startswith(k.lower()):
             return v
     if "spotify" in aumid.lower():
@@ -47,7 +47,7 @@ async def _sessions():
     out = []
     seen = {}
     for s in mgr.get_sessions():
-        aumid = s.source_app_user_model_id or "onbekend"
+        aumid = s.source_app_user_model_id or "unknown"
         n = seen.get(aumid, 0)
         seen[aumid] = n + 1
         out.append((f"{aumid}#{n}", s))
@@ -70,7 +70,7 @@ async def _thumb(props):
     return (stream.content_type or "image/jpeg", bytes(data))
 
 
-async def lijst():
+async def list_sessions():
     items = []
     for sid, s in await _sessions():
         try:
@@ -89,7 +89,7 @@ async def lijst():
                 updated = int(tl.last_updated_time.timestamp() * 1000)
             except Exception:
                 updated = None
-        # Hoes: alleen opnieuw lezen als het nummer verandert
+        # Cover: only read again when the track changes
         key = hashlib.sha1(f"{sid}|{props.title}|{props.artist}".encode()).hexdigest()[:16]
         if key not in thumbs:
             try:
@@ -102,7 +102,7 @@ async def lijst():
         c = info.controls
         items.append({
             "id": sid,
-            "app": app_naam(sid.split("#")[0]),
+            "app": app_name(sid.split("#")[0]),
             "title": props.title or "",
             "artist": props.artist or props.album_artist or "",
             "album": props.album_title or "",
@@ -115,7 +115,7 @@ async def lijst():
             "canPrev": bool(c.is_previous_enabled),
             "canPlayPause": bool(c.is_play_pause_toggle_enabled or c.is_play_enabled or c.is_pause_enabled),
         })
-    # Wat speelt eerst
+    # What is playing comes first
     items.sort(key=lambda x: not x["playing"])
     return items
 
@@ -124,15 +124,15 @@ def thumb(key):
     return thumbs.get(key)
 
 
-async def bedien(sid, actie):
+async def control(sid, action):
     for s_id, s in await _sessions():
         if s_id != sid:
             continue
-        if actie == "playpause":
+        if action == "playpause":
             return await s.try_toggle_play_pause_async()
-        if actie == "next":
+        if action == "next":
             return await s.try_skip_next_async()
-        if actie == "prev":
+        if action == "prev":
             return await s.try_skip_previous_async()
-        raise ValueError("onbekende actie")
-    raise KeyError("sessie niet gevonden")
+        raise ValueError("unknown action")
+    raise KeyError("session not found")
