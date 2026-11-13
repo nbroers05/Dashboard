@@ -121,7 +121,7 @@ html.nh #lyrics > .w-row {
   gap: 8px;
   height: var(--nh-bar);
   margin: 0 -16px 12px;
-  padding: 0 70px 0 10px;
+  padding: 0 56px 0 10px;
   background: var(--titlebar);
   border-bottom: 1px solid var(--line);
   color: var(--on-eva);
@@ -149,12 +149,12 @@ html.nh :is(.tile > .eyebrow, #lyrics .eyebrow)[data-nh-kanji]::after {
   letter-spacing: .1em;
   opacity: .85;
 }
-/* Three buttons on the right: decoration, they do nothing */
+/* Three small flat squares on the right: decoration only (1.7.6: smaller, no outline, so they don't look like buttons to click) */
 html.nh .tile > .eyebrow,
 html.nh :is(.player, #calendar) {
-  --nh-ctl: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='16'%3E%3Cg fill='none' stroke='%23fff'%3E%3Crect x='.5' y='.5' width='16' height='15'/%3E%3Crect x='19.5' y='.5' width='16' height='15'/%3E%3Crect x='38.5' y='.5' width='16' height='15'/%3E%3C/g%3E%3C/svg%3E");
+  --nh-ctl: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='38' height='10'%3E%3Cg fill='%23fff' fill-opacity='.38'%3E%3Crect width='10' height='10'/%3E%3Crect x='14' width='10' height='10'/%3E%3Crect x='28' width='10' height='10'/%3E%3C/g%3E%3C/svg%3E");
 }
-html.nh .tile > .eyebrow { background: var(--nh-ctl) right 6px center / 56px 16px no-repeat, var(--titlebar); }
+html.nh .tile > .eyebrow { background: var(--nh-ctl) right 8px center / 38px 10px no-repeat, var(--titlebar); }
 
 /* Player and agenda have no heading-as-bar: title bar via ::before, Japanese word + buttons via ::after */
 html.nh :is(.player, #calendar) { position: relative; padding-top: calc(var(--nh-bar) + 16px) !important; overflow: hidden; }
@@ -181,16 +181,16 @@ html.nh :is(.player, #calendar)::after {
   inset: 0 6px auto auto;
   z-index: 4;
   height: var(--nh-bar);
-  padding-right: 66px;
+  padding-right: 52px;
   display: flex;
   align-items: center;
-  background: var(--nh-ctl) right center / 56px 16px no-repeat;
+  background: var(--nh-ctl) right 2px center / 38px 10px no-repeat;
   color: var(--on-eva);
   font: 800 15px/1 var(--font-display);
   letter-spacing: .1em;
 }
 
-/* Digital Future: a glossy title bar, buttons with round corners and a red close button */
+/* Digital Future: a glossy title bar; the decoration squares have round corners, the last one red */
 html.nh[data-mood="digital"] .tile > .eyebrow,
 html.nh[data-mood="digital"] #lyrics > .w-row,
 html.nh[data-mood="digital"] :is(.player, #calendar)::before {
@@ -198,9 +198,9 @@ html.nh[data-mood="digital"] :is(.player, #calendar)::before {
 }
 html.nh[data-mood="digital"] .tile > .eyebrow,
 html.nh[data-mood="digital"] :is(.player, #calendar) {
-  --nh-ctl: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='16'%3E%3Cdefs%3E%3ClinearGradient id='g' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23fff' stop-opacity='.55'/%3E%3Cstop offset='1' stop-color='%23fff' stop-opacity='.1'/%3E%3C/linearGradient%3E%3ClinearGradient id='r' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23f08a76'/%3E%3Cstop offset='1' stop-color='%23de2f1f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg stroke='%23fff' stroke-opacity='.85'%3E%3Crect x='.5' y='.5' width='16' height='15' rx='3' fill='url(%23g)'/%3E%3Crect x='19.5' y='.5' width='16' height='15' rx='3' fill='url(%23g)'/%3E%3Crect x='38.5' y='.5' width='16' height='15' rx='3' fill='url(%23r)'/%3E%3C/g%3E%3C/svg%3E");
+  --nh-ctl: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='38' height='10'%3E%3Crect width='10' height='10' rx='2' fill='%23fff' fill-opacity='.5'/%3E%3Crect x='14' width='10' height='10' rx='2' fill='%23fff' fill-opacity='.5'/%3E%3Crect x='28' width='10' height='10' rx='2' fill='%23f08a76'/%3E%3C/svg%3E");
 }
-html.nh[data-mood="digital"] .tile > .eyebrow { background: var(--nh-ctl) right 6px center / 56px 16px no-repeat, linear-gradient(180deg, rgba(255, 255, 255, .42) 0%, rgba(255, 255, 255, .08) 48%, rgba(0, 0, 0, 0) 52%), var(--titlebar); }
+html.nh[data-mood="digital"] .tile > .eyebrow { background: var(--nh-ctl) right 8px center / 38px 10px no-repeat, linear-gradient(180deg, rgba(255, 255, 255, .42) 0%, rgba(255, 255, 255, .08) 48%, rgba(0, 0, 0, 0) 52%), var(--titlebar); }
 
 /* Title card: a black bar, the name without .exe in capitals in the serif font, the Japanese word red, no buttons */
 html.nh[data-mood="titlecard"] .tile > .eyebrow,

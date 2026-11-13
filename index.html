@@ -4,19 +4,19 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0e0e0f">
-  <link rel="manifest" href="manifest.webmanifest?v=1.7.5">
+  <link rel="manifest" href="manifest.webmanifest?v=1.7.6">
   <title>Dashboard</title>
   <!-- Own logo: the dashboard in small -->
-  <link rel="icon" href="favicon.svg?v=1.7.5" type="image/svg+xml">
-  <link rel="icon" href="favicon-32.png?v=1.7.5" type="image/png" sizes="32x32">
-  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=1.7.5">
+  <link rel="icon" href="favicon.svg?v=1.7.6" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png?v=1.7.6" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=1.7.6">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400..800&family=Source+Serif+4:opsz,wght@8..60,400..700&family=VT323&family=DotGothic16&family=Shippori+Mincho+B1:wght@700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap">
   <!-- ?v=1.MINOR.PATCH: bump on every change (see CLAUDE.md); everything else gets the same number via dash.js -->
-  <link rel="stylesheet" href="style.css?v=1.7.5">
-  <link rel="stylesheet" href="y2k.css?v=1.7.5">
-  <link rel="stylesheet" href="housestyle.css?v=1.7.5">
+  <link rel="stylesheet" href="style.css?v=1.7.6">
+  <link rel="stylesheet" href="y2k.css?v=1.7.6">
+  <link rel="stylesheet" href="housestyle.css?v=1.7.6">
   <!-- One-time conversion of saved settings from before 1.7.0 (Dutch names and values became English).
        Runs on every load but only changes something once; both storages because "don't remember" uses sessionStorage. -->
   <script>window.DASH_OLD_THEME_IDS = { standaard: 'default', herfst: 'autumn', lente: 'spring', zomer: 'summer', kerst: 'christmas', oudennieuw: 'newyear', valentijn: 'valentine', pasen: 'easter', koningsdag: 'kingsday', bevrijdingsdag: 'liberationday', verjaardag: 'birthday', tentamen: 'exams' };
@@ -51,8 +51,8 @@
   <script>try { var a = new URLSearchParams(location.search).get('app'); if (a === 'pc') sessionStorage.setItem('dash.app', 'pc'); if (sessionStorage.getItem('dash.app') === 'pc') document.documentElement.classList.add('app'); } catch (e) {}</script>
 </head>
 <body>
-  <script src="appbar.js?v=1.7.5"></script>
-  <script src="room.js?v=1.7.5"></script>
+  <script src="appbar.js?v=1.7.6"></script>
+  <script src="room.js?v=1.7.6"></script>
   <main class="dashboard">
 
     <!-- Top bar: clock, date, shortcuts, search -->
@@ -308,18 +308,18 @@
 
   <div id="toast" role="status"></div>
 
-  <script src="config.js?v=1.7.5"></script>
-  <script src="vault.js?v=1.7.5"></script>
-  <script src="dash.js?v=1.7.5"></script>
-  <script src="sync.js?v=1.7.5"></script>
-  <script src="topbar.js?v=1.7.5"></script>
-  <script src="settings.js?v=1.7.5"></script>
-  <script src="housestyle.js?v=1.7.5"></script>
-  <script src="themes.js?v=1.7.5"></script>
-  <script src="focus.js?v=1.7.5"></script>
-  <script src="feeds.js?v=1.7.5"></script>
-  <script src="mydata.js?v=1.7.5"></script>
-  <script src="games.js?v=1.7.5"></script>
+  <script src="config.js?v=1.7.6"></script>
+  <script src="vault.js?v=1.7.6"></script>
+  <script src="dash.js?v=1.7.6"></script>
+  <script src="sync.js?v=1.7.6"></script>
+  <script src="topbar.js?v=1.7.6"></script>
+  <script src="settings.js?v=1.7.6"></script>
+  <script src="housestyle.js?v=1.7.6"></script>
+  <script src="themes.js?v=1.7.6"></script>
+  <script src="focus.js?v=1.7.6"></script>
+  <script src="feeds.js?v=1.7.6"></script>
+  <script src="mydata.js?v=1.7.6"></script>
+  <script src="games.js?v=1.7.6"></script>
   <!-- dash.js loads the rest in this order: right away, or with ?mini=1 only when you open the full dashboard -->
   <script>
     DASH.boot([
