@@ -556,7 +556,9 @@ html.nh .rail-btn, html.nh .rail :is(a, button) { color: var(--ink); border-radi
 html.nh .rail-btn:hover, html.nh :is(.rail-btn[aria-current="page"], .rail-btn[aria-pressed="true"]) { background: var(--eva); color: var(--on-eva); }
 html.nh .rail-dot { border-radius: 0; background: var(--red); }
 html.nh .desk-tabs { border-radius: 0; border: 1px solid var(--line); background: var(--paper-raised); box-shadow: var(--shadow-window); }
-html.nh .desk-tabs > .tile { border: 0 !important; box-shadow: none; }
+html.nh .desk-tabs > .tile { border: 0 !important; box-shadow: none; padding-top: 12px !important; }
+/* The tab bar is the title bar: no second title bar (friends.exe) under the FRIENDS tab (1.7.5) */
+html.nh .desk-tabs > .tile > .eyebrow { display: none; }
 html.nh .desk-tabbar { border-bottom: 1px solid var(--line); background: var(--titlebar); gap: 0; padding: 0; }
 html.nh .desk-tabbar button { border: 0; border-right: 1px solid color-mix(in srgb, var(--on-eva) 25%, transparent); border-radius: 0; background: transparent; color: var(--on-eva); font-family: var(--font-pixel); opacity: .75; }
 html.nh .desk-tabbar button[aria-selected="true"] { background: var(--paper-raised); color: var(--ink); opacity: 1; }

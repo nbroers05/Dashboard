@@ -8,6 +8,7 @@ Everything before 1.0.0 (versions 1 to 0.60.2): `docs/archive/CHANGELOG-pre-1.0.
 
 | Version | What |
 |---|---|
+| 1.7.5 | **One heading in the tabbed window on the laptop/desk.** Under the FILM TONIGHT, LAST WATCHED and FRIENDS tabs there is no second title bar (film.exe, friends.exe) any more; the tab bar is the title bar. |
 | 1.7.4 | **Notifications fill their window on the laptop/desk.** In the house style every notification there is one line (title, then the rest in grey) and the number is smaller, so three fit instead of one. |
 | 1.7.3 | **The date next to the clock is never cut off.** When there isn't enough room for it (the serif font in the house style is wide), the date gets a smaller font size until it fits. |
 | 1.7.2 | **Readable agenda blocks.** In the house style the week view's blocks are ink on paper with a stripe in the category color; AH is solid AH blue and lectures solid blue, like the day timeline. Past blocks no longer turn see-through (the grey text on the blue Appie block on the portrait screen was too faint). "Bijgewerkt" under the agenda is now "Updated". |
