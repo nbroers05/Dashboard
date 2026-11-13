@@ -1,13 +1,13 @@
--- Dashboard: snelle sync via Supabase (sinds 1.1.0). Eigen project "dashboard", los van het planner-project.
--- Plakken in Supabase › SQL Editor › New query › Run. Opnieuw draaien mag (alles is "if not exists" / "or replace").
+-- Dashboard: fast sync via Supabase (since 1.1.0). Own project "dashboard", separate from the planner project.
+-- Paste into Supabase › SQL Editor › New query › Run. Running it again is fine (everything is "if not exists" / "or replace").
 --
--- Row Level Security: elk account leest en schrijft alleen zijn eigen rijen (user_id = auth.uid()).
--- Er is maar één account (Noah, gemaakt door het dashboard zelf; README "Supabase"). Fase 2 (Mensen) voegt later
--- accounts toe: die kunnen dankzij dezelfde regels nooit bij deze rijen.
+-- Row Level Security: each account only reads and writes its own rows (user_id = auth.uid()).
+-- There is only one account (Noah, created by the dashboard itself; README "Supabase"). Should more accounts ever be
+-- added, the same rules mean they can never reach these rows.
 
--- ---------- Gedeelde instellingen (sync.js) ----------
--- Eén rij per sleutel, bijv. dash.links (eigen snelkoppelingen). value = dezelfde JSON als in localStorage.
--- Sleutels die met _ beginnen zijn interne vlaggen (bijv. _canvas.imported).
+-- ---------- Shared settings (sync.js) ----------
+-- One row per key, e.g. dash.links (own shortcuts). value = the same JSON as in localStorage.
+-- Keys starting with _ are internal flags (e.g. _canvas.imported, _phone.status).
 create table if not exists public.dashboard_settings (
   user_id     uuid not null default auth.uid() references auth.users (id) on delete cascade,
   key         text not null check (key ~ '^[a-z_][a-z0-9._-]{0,63}$'),
@@ -17,8 +17,8 @@ create table if not exists public.dashboard_settings (
   check (pg_column_size(value) <= 65536)
 );
 
--- ---------- Canvas: ingeleverd (widgets/canvas.js) ----------
--- Eén rij per opdracht (id uit de Canvas-agenda). changed_at = moment van afvinken in ms; nieuwste wint.
+-- ---------- Canvas: handed in (widgets/canvas.js) ----------
+-- One row per assignment (id from the Canvas calendar). changed_at = moment of checking off in ms; newest wins.
 create table if not exists public.dashboard_canvas_done (
   user_id     uuid not null default auth.uid() references auth.users (id) on delete cascade,
   item_id     text not null check (char_length(item_id) between 1 and 300),
@@ -27,8 +27,8 @@ create table if not exists public.dashboard_canvas_done (
   primary key (user_id, item_id)
 );
 
--- ---------- Nieuwste wint, ook als twee apparaten tegelijk schrijven ----------
--- Een upsert met een oudere tijd dan wat er al staat laat de bestaande rij staan.
+-- ---------- Newest wins, also when two devices write at the same time ----------
+-- An upsert with an older time than what is already there leaves the existing row as it is.
 create or replace function public.dashboard_keep_newest_setting()
 returns trigger language plpgsql set search_path = '' as $$
 begin
@@ -51,7 +51,7 @@ drop trigger if exists dashboard_canvas_newest on public.dashboard_canvas_done;
 create trigger dashboard_canvas_newest before update on public.dashboard_canvas_done
   for each row execute function public.dashboard_keep_newest_canvas();
 
--- ---------- Rechten ----------
+-- ---------- Permissions ----------
 alter table public.dashboard_settings    enable row level security;
 alter table public.dashboard_canvas_done enable row level security;
 revoke all on public.dashboard_settings    from anon, authenticated;
@@ -71,10 +71,11 @@ create policy dashboard_canvas_own on public.dashboard_canvas_done
   using ((select auth.uid()) = user_id)
   with check ((select auth.uid()) = user_id);
 
--- ---------- Dagelijkse kopie naar het archief ----------
--- Het archief (dashboard-data, scripts/canvas_copy.py) haalt één keer per dag de Canvas-vinkjes op met een eigen sleutel.
--- Hier staat alleen een vingerafdruk van die sleutel plus van welk account de rijen zijn.
--- Sleutel maken: python scripts/setup/dashboard_export.py in dashboard-data (geeft één regel om hier te plakken).
+-- ---------- Daily copy to the archive ----------
+-- The archive (dashboard-data, scripts/canvas_copy.py) fetches the Canvas check marks once a day with its own key.
+-- Only a fingerprint of that key is stored here, plus which account the rows belong to.
+-- Making the key: python scripts/setup/dashboard_export.py in dashboard-data (gives one line to paste here).
+-- (The error text 'geen toegang' below means "no access"; it is left as it is so the function doesn't change.)
 create table if not exists public.dashboard_export_tokens (
   token_hash  text primary key check (token_hash ~ '^[0-9a-f]{64}$'),
   user_id     uuid not null references auth.users (id) on delete cascade
