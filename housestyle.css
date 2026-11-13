@@ -16,6 +16,8 @@ html.nh {
   --font-display: "Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
   --font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
   --font-pixel: "DotGothic16", "MS Gothic", ui-monospace, monospace;
+  /* Window names in the title bars (1.7.7): VT323, because in DotGothic16 an i looks like an l ("appie.exe" read as "apple.exe") */
+  --font-bar: "VT323", var(--font-pixel);
   --nh-bar: 30px;
   --nh-gap: 14px;
 
@@ -134,8 +136,8 @@ html.nh #lyrics > .w-row { padding-right: 6px; }
 html.nh #lyrics > .w-row .eyebrow { margin: 0; font-size: 0; color: var(--on-eva); flex: 1; display: flex; align-items: center; gap: 8px; min-width: 0; }
 html.nh :is(.tile > .eyebrow, #lyrics .eyebrow)[data-nh-exe]::before {
   content: attr(data-nh-exe);
-  font: 400 16px/1 var(--font-pixel);
-  letter-spacing: .02em;
+  font: 400 20px/1 var(--font-bar);
+  letter-spacing: .03em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -170,8 +172,8 @@ html.nh :is(.player, #calendar)::before {
   background: var(--titlebar);
   border-bottom: 1px solid var(--line);
   color: var(--on-eva);
-  font: 400 16px/var(--nh-bar) var(--font-pixel);
-  letter-spacing: .02em;
+  font: 400 20px/var(--nh-bar) var(--font-bar);
+  letter-spacing: .03em;
   filter: none;
   transform: none;
 }
