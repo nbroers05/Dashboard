@@ -4,6 +4,24 @@
    "name": "NOS",
    "items": [
     {
+     "title": "FBI: Noord-Korea gebruikte deepfakes om honderden miljoenen aan crypto te stelen",
+     "link": "https://nos.nl/l/2639239",
+     "time": "2026-11-13T03:00:03+01:00",
+     "img": "https://images.cdn.nos.nl/4/2/s/z/6/7/YADKm2UPPpUcKneQ4iTJMdvH1rBfR4NaEo7QUCe/34x26x1264x711-1024x576.webp"
+    },
+    {
+     "title": "Nog eens zes vrouwen beschuldigen Russell Brand van seksueel wangedrag",
+     "link": "https://nos.nl/l/2639238",
+     "time": "2026-11-13T02:57:25+01:00",
+     "img": "https://images.cdn.nos.nl/1/8/1/X/o/s/XGQvVHraKQAu5pWA2e1MH4RT4L5QzwNjutXVY9B/2x19x3296x1854-1024x576.webp"
+    },
+    {
+     "title": "Defensieminister VS geeft medaille aan militair die hem tot orde riep",
+     "link": "https://nos.nl/l/2639237",
+     "time": "2026-11-13T01:24:30+01:00",
+     "img": "https://images.cdn.nos.nl/5/B/2/6/D/Y/LtdAecutc8vFpVEJP1imthxW4bUa8NEnoFPw24j/0x0x1024x576-1024x576.webp"
+    },
+    {
      "title": "Miljoenen voor saffier uit Russische kroonjuwelen",
      "link": "https://nos.nl/l/2639236",
      "time": "2026-11-13T01:19:16+01:00",
@@ -74,24 +92,6 @@
      "link": "https://nos.nl/l/2639194",
      "time": "2026-11-12T17:29:51+01:00",
      "img": "https://images.cdn.nos.nl/5/J/C/3/4/W/d4j456TG9S7rqESjBQBeZPTd2qn9rizr6QNEoF/0x0x1920x1080-1024x576.webp"
-    },
-    {
-     "title": "Vicepresident Indonesië stapt op na diplomaschandaal en oplopende spanningen",
-     "link": "https://nos.nl/l/2639193",
-     "time": "2026-11-12T16:57:48+01:00",
-     "img": "https://images.cdn.nos.nl/3/A/L/V/Z/7/hYtW72uHSmVtj25A7HCEs9ev53q6gx7ZB16KrXv/8x202x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Ruim 1800 Italiaanse scholen opnieuw opgeschrikt door bommeldingen",
-     "link": "https://nos.nl/l/2639192",
-     "time": "2026-11-12T16:26:56+01:00",
-     "img": "https://images.cdn.nos.nl/3/4/u/s/q/J/M5Ppz2gqEg6TC37wLPzNJQbAM7DZWU7K8EsPm9h/8x212x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Doden bij schietpartij Washington D.C., schutter had huurgeschil",
-     "link": "https://nos.nl/l/2639190",
-     "time": "2026-11-12T16:12:14+01:00",
-     "img": "https://images.cdn.nos.nl/1/H/C/a/A/A/M8FWFFNjnmBoiygYRj9h6vHH3cjbn4RU7t6nXmG/7x419x3984x2241-1024x576.webp"
     }
    ]
   },
@@ -215,7 +215,7 @@
      "title": "Alle ogen gericht op VVD: coalitiepartners roepen partij op in kabinet te blijven",
      "link": "https://www.nu.nl/politiek/6416414/alle-ogen-gericht-op-vvd-coalitiepartners-roepen-partij-op-in-kabinet-te-blijven.html",
      "time": "2026-11-12T21:56:24+01:00",
-     "img": "https://images.nu.nl/m/3xcxsuranq5n_sqr256/666/0/4410/4410/alle-ogen-gericht-op-vvd-coalitiepartners-roepen-partij-op-in-kabinet-te-blijven.jpg"
+     "img": "https://images.nu.nl/m/3xcxsuranq5n_sqr256/667/0/4410/4410/alle-ogen-gericht-op-vvd-coalitiepartners-roepen-partij-op-in-kabinet-te-blijven.jpg"
     },
     {
      "title": "Zes doden en meerdere gewonden door Israëlische aanval op ziekenhuis in Gaza",
@@ -390,132 +390,7 @@
   }
  ],
  "youtube": {
-  "channels": [
-   "Patrick (H) Willems",
-   "The Yard",
-   "Ken"
-  ],
-  "videos": [
-   {
-    "title": "Torturing Scam Callers | The Yard",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/watch?v=n5ZWA9MQzg0",
-    "thumb": "https://i.ytimg.com/vi/n5ZWA9MQzg0/mqdefault.jpg",
-    "time": "2026-11-12T18:52:05+00:00",
-    "short": false
-   },
-   {
-    "title": "the accidental buff",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=__77PSlo2II",
-    "thumb": "https://i.ytimg.com/vi/__77PSlo2II/mqdefault.jpg",
-    "time": "2026-11-12T10:00:39+00:00",
-    "short": false
-   },
-   {
-    "title": "Pattern recognition.. #podcast #theyard #comedy",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/shorts/-thV2kIrPWM",
-    "thumb": "https://i.ytimg.com/vi/-thV2kIrPWM/mqdefault.jpg",
-    "time": "2026-11-11T20:16:33+00:00",
-    "short": true
-   },
-   {
-    "title": "this is hard",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=enEv7HgyA1s",
-    "thumb": "https://i.ytimg.com/vi/enEv7HgyA1s/mqdefault.jpg",
-    "time": "2026-11-11T10:00:35+00:00",
-    "short": false
-   },
-   {
-    "title": "House Arrest | Yard D&D | S1E66",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/watch?v=w-dQ56D5cX4",
-    "thumb": "https://i.ytimg.com/vi/w-dQ56D5cX4/mqdefault.jpg",
-    "time": "2026-11-10T17:10:21+00:00",
-    "short": false
-   },
-   {
-    "title": "chaos mega draft, but I pick spells",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=NSlEIvcfuTg",
-    "thumb": "https://i.ytimg.com/vi/NSlEIvcfuTg/mqdefault.jpg",
-    "time": "2026-11-10T10:00:14+00:00",
-    "short": false
-   },
-   {
-    "title": "Ludwig asks Magnus to guess his body fat... #podcast #theyard #comedy",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/shorts/35csV09qPZQ",
-    "thumb": "https://i.ytimg.com/vi/35csV09qPZQ/mqdefault.jpg",
-    "time": "2026-11-09T17:24:58+00:00",
-    "short": true
-   },
-   {
-    "title": "I actually cooked",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=3ZS3x26ZbKg",
-    "thumb": "https://i.ytimg.com/vi/3ZS3x26ZbKg/mqdefault.jpg",
-    "time": "2026-11-09T10:00:02+00:00",
-    "short": false
-   },
-   {
-    "title": "chaos mega draft, but I pick expensive",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=c86ooa8R_OI",
-    "thumb": "https://i.ytimg.com/vi/c86ooa8R_OI/mqdefault.jpg",
-    "time": "2026-11-08T10:00:35+00:00",
-    "short": false
-   },
-   {
-    "title": "Ludwig reacts to our disguises.. #podcast #theyard #comedy",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/shorts/qssvEpRyncM",
-    "thumb": "https://i.ytimg.com/vi/qssvEpRyncM/mqdefault.jpg",
-    "time": "2026-11-06T23:03:07+00:00",
-    "short": true
-   },
-   {
-    "title": "How Did Interstellar Become Every Dude's Favorite Movie?",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=f5iyzbgBTgA",
-    "thumb": "https://i.ytimg.com/vi/f5iyzbgBTgA/mqdefault.jpg",
-    "time": "2026-11-03T14:14:19+00:00",
-    "short": false
-   },
-   {
-    "title": "Is This The Best Directed Movie Ever?",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=_t76HmE8ib4",
-    "thumb": "https://i.ytimg.com/vi/_t76HmE8ib4/mqdefault.jpg",
-    "time": "2026-09-15T13:11:42+00:00",
-    "short": false
-   },
-   {
-    "title": "Come See My New Film In Theaters",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=uuMbBWR-2Xg",
-    "thumb": "https://i.ytimg.com/vi/uuMbBWR-2Xg/mqdefault.jpg",
-    "time": "2026-09-04T22:53:08+00:00",
-    "short": false
-   },
-   {
-    "title": "We Need To Talk About How Weird HOOK Is",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=hXAWl_Ar6xA",
-    "thumb": "https://i.ytimg.com/vi/hXAWl_Ar6xA/mqdefault.jpg",
-    "time": "2026-08-06T14:38:38+00:00",
-    "short": false
-   },
-   {
-    "title": "Can video games be cinema? #videogames #movie #thelastofus #deathstranding",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/shorts/-GWrCLXTuwM",
-    "thumb": "https://i.ytimg.com/vi/-GWrCLXTuwM/mqdefault.jpg",
-    "time": "2026-07-01T16:17:55+00:00",
-    "short": true
-   }
-  ]
+  "channels": [],
+  "videos": []
  }
 }
