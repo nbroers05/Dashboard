@@ -4,100 +4,136 @@
    "name": "NOS",
    "items": [
     {
+     "title": "Voormalig Doe Maar-drummer Jan Pijnenburg (70) overleden",
+     "link": "https://nos.nl/l/2639401",
+     "time": "2026-11-13T22:52:05+01:00",
+     "img": "https://images.cdn.nos.nl/7/3/2/i/Q/z/A6foSLCF8FECnaTgW3JbKKvSJcfQSmm7h9cUNwt/185x16x1728x972-1024x576.webp"
+    },
+    {
+     "title": "Het kan nog steeds fout gaan, is de conclusie na urenlang crisisoverleg",
+     "link": "https://nos.nl/l/2639395",
+     "time": "2026-11-13T22:15:47+01:00",
+     "img": "https://images.cdn.nos.nl/7/8/T/v/4/G/RLer9DGKEqDBUNYHR7CfgUbrYvfR76K9MBpuqGT/8x150x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Alle vliegtuigen in VS aan grond gehouden door communicatiestoring",
+     "link": "https://nos.nl/l/2639391",
+     "time": "2026-11-13T22:09:31+01:00",
+     "img": "https://images.cdn.nos.nl/6/7/J/y/V/L/2CCiFPRbNKMbEjtvFwKVfhHUs4sqLjbBma1XoKx/1x280x2736x1539-1024x576.webp"
+    },
+    {
+     "title": "Aanvaring vrachtschip met cruiseschip op Mississippi, mensen uit water gered",
+     "link": "https://nos.nl/l/2639389",
+     "time": "2026-11-13T21:55:17+01:00",
+     "img": "https://images.cdn.nos.nl/4/o/f/n/U/y/cxCmHDJZ8cfiSk6Runj8GwSxEeUedWovTTH47d/0x0x1920x1080-1024x576.webp"
+    },
+    {
+     "title": "Lichtzwaard uit 'I am your father'-scene Star Wars brengt 4,87 miljoen dollar op",
+     "link": "https://nos.nl/l/2639384",
+     "time": "2026-11-13T21:24:54+01:00",
+     "img": "https://images.cdn.nos.nl/2/G/k/J/J/w/xgqtBdXdDKeF8ADibtizfChFi6DKXBw48wUhCGd/8x145x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Politie opent zaak naar komiek David Wallliams wegens 'ernstige seksuele misdrijven'",
+     "link": "https://nos.nl/l/2639381",
+     "time": "2026-11-13T21:16:21+01:00",
+     "img": "https://images.cdn.nos.nl/7/7/v/f/7/Z/RMyQQE8ihmBQJ6eWmGqjd15faqYRmN7wftrDPyv/0x34x3456x1944-1024x576.webp"
+    },
+    {
+     "title": "Podcast De Stemming: Klein bier, een bloemenwijkje en Argentijnse voetballers",
+     "link": "https://nos.nl/l/2639379",
+     "time": "2026-11-13T21:04:36+01:00",
+     "img": "https://images.cdn.nos.nl/6/9/z/R/x/N/LXHHHEVZRLNnxvhCXyDVvpxrvj7GPuohZauad3Y/0x0x1024x576-1024x576.webp"
+    },
+    {
+     "title": "Meerdere dieren in beslag genomen bij privédierentuin vastgoedondernemer",
+     "link": "https://nos.nl/l/2639378",
+     "time": "2026-11-13T20:56:06+01:00",
+     "img": "https://images.cdn.nos.nl/3/4/R/v/c/F/DwNk6EmqBgrLEjYUWMxQieph8tqiEK8AV7UwmN2/7x619x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Morgen komt Sint aan in het land: wordt het bibberen langs de kant?",
+     "link": "https://nos.nl/l/2639376",
+     "time": "2026-11-13T20:24:39+01:00",
+     "img": "https://images.cdn.nos.nl/4/7/j/B/B/J/1g3X8EwdVsPazYTM4BNh5pTvk1bEt8btsahomQR/3x185x3536x1989-1024x576.webp"
+    },
+    {
+     "title": "Eerste Gamemuziek Top 50 van NPO Klassiek: Zelda-game Ocarina of Time op nummer 1",
+     "link": "https://nos.nl/l/2639371",
+     "time": "2026-11-13T20:06:20+01:00",
+     "img": "https://images.cdn.nos.nl/3/D/a/8/j/S/ZRRiK85Zy9KJi3kY4unJurqjkAMJLXfNAXnWYhL/0x0x4000x2250-1024x576.webp"
+    },
+    {
+     "title": "Snel grote boom met veel schaduw laten groeien? Proef moet uitwijzen welke grond daarvoor het best is",
+     "link": "https://nos.nl/l/2639365",
+     "time": "2026-11-13T19:35:56+01:00",
+     "img": "https://images.cdn.nos.nl/1/b/T/k/M/p/2bSPYwmmYD1iQmfw51duez6R6rjJFbpsDyuHeV/2x211x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Kabinet zit er voorlopig nog, maar crisissfeer blijft",
+     "link": "https://nos.nl/l/2639364",
+     "time": "2026-11-13T19:30:31+01:00",
+     "img": "https://images.cdn.nos.nl/4/G/L/1/o/V/YzUkCr47B8yfYAfn77cisa4KYPDUyiaJr4242yT/0x344x4000x2250-1024x576.webp"
+    },
+    {
+     "title": "Twee vrouwen aangeklaagd voor medeplichtigheid aan dodelijke schietpartij in Stade",
+     "link": "https://nos.nl/l/2639361",
+     "time": "2026-11-13T19:22:02+01:00",
+     "img": "https://images.cdn.nos.nl/8/3/7/T/4/E/kWbnByWXNNdMbRn5noSAkyVG8XDXPU4eh7RL1XC/8x277x3984x2241-1024x576.webp"
+    },
+    {
      "title": "Vijf Europese landen en EU vertegenwoordigen Europa bij vredesgesprekken met Oekraïne",
      "link": "https://nos.nl/l/2639360",
      "time": "2026-11-13T19:04:32+01:00",
-     "img": "https://images.cdn.nos.nl/6/G/U/N/R/W/q3shLN2UsW5A7eXzvo9SMR1L2waJCjyJJLUxT3T/4x370x3776x2124-1024x576.webp"
+     "img": "https://images.cdn.nos.nl/5/A/S/c/V/b/X2PTVcDzqkD9x4mXVqVtU7iZHoyyTRvnvD1XoRB/8x238x3984x2241-1024x576.webp"
     },
     {
      "title": "Nederlandse influencer opgepakt door Amerikaanse immigratiedienst ICE",
      "link": "https://nos.nl/l/2639356",
      "time": "2026-11-13T18:43:03+01:00",
      "img": "https://images.cdn.nos.nl/2/G/9/U/X/F/MpKQnekgrkQ99PFRz2hZitoaEGaLib6FEhdC4QS/4x158x2992x1683-1024x576.webp"
-    },
-    {
-     "title": "Vier minderjarigen in Drunen aangehouden die zich voordeden als agenten",
-     "link": "https://nos.nl/l/2639355",
-     "time": "2026-11-13T18:36:38+01:00",
-     "img": "https://images.cdn.nos.nl/2/8/5/S/f/e/KDgCoPQT7TK4qMrv5SrzCnsQ4V6wj6w11Y427p2/243x908x2352x1323-1024x576.webp"
-    },
-    {
-     "title": "Wereldwijde storing Microsoft neemt af, exacte oorzaak nog altijd onbekend",
-     "link": "https://nos.nl/l/2639353",
-     "time": "2026-11-13T18:18:34+01:00",
-     "img": "https://images.cdn.nos.nl/6/E/G/h/8/H/AessBQtkBVSGQnryXVoho7wzazYHeEXzBBayeHP/8x212x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Na Trumps deal met Poetin nog geen druppel Russische diesel aangekomen in de VS",
-     "link": "https://nos.nl/l/2639350",
-     "time": "2026-11-13T18:05:05+01:00",
-     "img": "https://images.cdn.nos.nl/5/8/K/D/k/o/82X2FDHZbpNHHRn8LADaAMt8N7qKFDUAuub9fdJ/271x141x3600x2025-1024x576.webp"
-    },
-    {
-     "title": "Kansen van Klaas Knot slinken, volgende week duidelijk wie ECB-president wordt",
-     "link": "https://nos.nl/l/2639342",
-     "time": "2026-11-13T17:43:05+01:00",
-     "img": "https://images.cdn.nos.nl/1/6/S/v/x/e/J4oVRm5n4HCRBqatZyXXgiZyWhuHTsuTb8RvyXm/8x194x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Curaçao wil samenwerken met omstreden regering El Salvador op gebied van justitie",
-     "link": "https://nos.nl/l/2639339",
-     "time": "2026-11-13T17:07:15+01:00",
-     "img": "https://images.cdn.nos.nl/4/9/J/N/k/J/aAB4w9yYSoC7bJV4Qya1jfcViiZnsKEHwyE2zKD/0x0x1600x900-1024x576.webp"
-    },
-    {
-     "title": "Kind overleden bij ongeluk op fietspad Utrecht, mogelijk mini-auto betrokken",
-     "link": "https://nos.nl/l/2639336",
-     "time": "2026-11-13T16:42:11+01:00",
-     "img": "https://images.cdn.nos.nl/8/7/y/V/G/2/cYydgCruy3L1hWAj4eWWkg3Mj7F1taQJsVhF1m1/0x0x1920x1080-1024x576.webp"
-    },
-    {
-     "title": "Podcast De Dag: hoe Jetten de kabinetscrisis (mis)managet",
-     "link": "https://nos.nl/l/2639332",
-     "time": "2026-11-13T15:55:44+01:00",
-     "img": "https://images.cdn.nos.nl/4/8/G/6/u/r/sGpF1xSLeWY9ZQi9ykh1p8FREAkc7m6WLiMALXe/0x0x1920x1080-1024x576.webp"
-    },
-    {
-     "title": "Hele weekend geen treinen tussen Roermond en Sittard door storing en werkzaamheden",
-     "link": "https://nos.nl/l/2639331",
-     "time": "2026-11-13T15:48:12+01:00",
-     "img": "https://images.cdn.nos.nl/5/F/L/N/s/G/58aa2s3LbGEK3REu8RusyY9b2zZpKYxwQHqqGt6/8x212x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Wolven doden 35 schapen in België, dodelijkste aanval sinds terugkeer roofdier",
-     "link": "https://nos.nl/l/2639327",
-     "time": "2026-11-13T15:34:29+01:00",
-     "img": "https://images.cdn.nos.nl/4/F/D/J/F/D/F9sTYZ13vmnVLcnhAjkf4V7kS6D4CJ44sZZYXaa/8x298x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "23 doden onder wie drie kinderen bij botsing bus en vrachtwagen in India",
-     "link": "https://nos.nl/l/2639324",
-     "time": "2026-11-13T15:18:34+01:00",
-     "img": "https://images.cdn.nos.nl/2/G/i/R/t/7/4N5ndKgN1GDJg79Aazb1NsMMqGpfZSavszEwUmA/8x212x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "KLM doet aangifte na brand door powerbank Camiel Eurlings",
-     "link": "https://nos.nl/l/2639322",
-     "time": "2026-11-13T15:06:53+01:00",
-     "img": "https://images.cdn.nos.nl/3/9/E/h/b/M/rTNMo8xqUKgH2eiv3Csds78KHwBU2tUcUqXqJHd/1x139x448x252-448x252.webp"
-    },
-    {
-     "title": "Gronings havenbedrijf: Eemshaven geen geschikte locatie voor kerncentrales",
-     "link": "https://nos.nl/l/2639319",
-     "time": "2026-11-13T14:28:47+01:00",
-     "img": "https://images.cdn.nos.nl/6/7/r/H/Q/9/tqGopdCvZqYSv5bAftntM9svRadcUHcwn1Meg9d/7x3x1088x612-1024x576.webp"
-    },
-    {
-     "title": "Kremlin: Europa mag meepraten over Oekraïne 'als het bijdraagt aan vredesproces'",
-     "link": "https://nos.nl/l/2639309",
-     "time": "2026-11-13T13:44:46+01:00",
-     "img": "https://images.cdn.nos.nl/6/4/c/u/U/2/zrZxo2zD21q32rSKSdmUtCyDzbHYTeS8L6duC1e/8x212x3984x2241-1024x576.webp"
     }
    ]
   },
   {
    "name": "NOS Sport",
    "items": [
+    {
+     "title": "Blije Xavi prijst Verbruggen en vertelt: 'De Jong vroeg zelf om wissel'",
+     "link": "https://nos.nl/l/2639409",
+     "time": "2026-11-13T23:19:50+01:00",
+     "img": "https://images.cdn.nos.nl/7/E/u/J/q/8/k61wBZwjftLDw6wmVG2LFHeGG2jMur1RhPvGNf1/767x413x1520x855-1024x576.webp"
+    },
+    {
+     "title": "Duitsland draait met eenvoudige zege in Servië warm voor Oranje",
+     "link": "https://nos.nl/l/2639404",
+     "time": "2026-11-13T22:57:58+01:00",
+     "img": "https://images.cdn.nos.nl/2/3/H/9/p/c/jbN2So7pm2DMT2nhS8wUPrJb7eVpPDRgraeAqHi/0x0x2960x1665-1024x576.webp"
+    },
+    {
+     "title": "Monsterzege wervelend Oranje op Grieken (7-0), kwartfinales Nations League vrijwel zeker",
+     "link": "https://nos.nl/l/2639398",
+     "time": "2026-11-13T22:35:20+01:00",
+     "img": "https://images.cdn.nos.nl/3/4/x/R/U/U/JcHzqoqR3BeDJLEkBs5tDnTXEtrx4BtEaka8yx5/5x2x2832x1593-1024x576.webp"
+    },
+    {
+     "title": "Doelman Owono twaalf duels geschorst na fatale botsing met De Miguel",
+     "link": "https://nos.nl/l/2639393",
+     "time": "2026-11-13T22:11:43+01:00",
+     "img": "https://images.cdn.nos.nl/3/7/d/i/H/R/JBCMDD2FatvSwoHFUjD4rBX3pfpjdQp6tYRwwvC/8x193x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Jong Oranje dankzij Deense eigen goals bijna zeker van EK-deelname",
+     "link": "https://nos.nl/l/2639374",
+     "time": "2026-11-13T20:20:42+01:00",
+     "img": "https://images.cdn.nos.nl/4/8/o/J/X/T/i1qYAheg2HepV6XwqbkgjahrAo5WE9BU3Mj1GwM/530x148x3024x1701-1024x576.webp"
+    },
+    {
+     "title": "Oufkir scoort bij debuut voor Marokko, Salah topscorer aller tijden Egypte",
+     "link": "https://nos.nl/l/2639369",
+     "time": "2026-11-13T19:47:58+01:00",
+     "img": "https://images.cdn.nos.nl/2/H/n/s/Q/f/SUbyvQyueHyHLdMLxh3M5hkcN616CQuSMsHNx2P/424x322x2864x1611-1024x576.webp"
+    },
     {
      "title": "Borussia Dortmund stopt omstreden deal met wapenfabrikant na dit seizoen",
      "link": "https://nos.nl/l/2639334",
@@ -117,7 +153,7 @@
      "img": "https://images.cdn.nos.nl/8/D/u/Y/P/3/prikABJf8hXNdPVG27ezB5z3AygaiCSipfSF32j/1141x1032x2784x1566-1024x576.webp"
     },
     {
-     "title": "Pochettino volgt ontslagen Carrick op als trainer Manchester United",
+     "title": "Pochettino nieuwe trainer Manchester United, neemt in tranen afscheid als bondscoach VS",
      "link": "https://nos.nl/l/2639304",
      "time": "2026-11-13T13:05:34+01:00",
      "img": "https://images.cdn.nos.nl/5/3/y/8/F/u/qW3WxVQUqd8GU9ghPnbwE83dbri9xisD1N5Dbmm/3x81x1808x1017-1024x576.webp"
@@ -151,42 +187,6 @@
      "link": "https://nos.nl/l/2639267",
      "time": "2026-11-13T09:55:41+01:00",
      "img": "https://images.cdn.nos.nl/4/D/6/o/B/Y/GCNv9TczcaDrWZZ6j9MqR6D3Z4VxHaBZHQPrgpN/307x210x3408x1917-1024x576.webp"
-    },
-    {
-     "title": "Nog geen debuut Van den Berg tegen Griekenland, Xavi laat verdediger buiten selectie",
-     "link": "https://nos.nl/l/2639262",
-     "time": "2026-11-13T09:13:43+01:00",
-     "img": "https://images.cdn.nos.nl/3/6/X/c/S/f/gcEySfTmY9FFnfSt3GEzLmHcwTtDPi31Si4oppf/1282x173x2688x1512-1024x576.webp"
-    },
-    {
-     "title": "Curaçao en Panama spelen doelpuntloos gelijk in eerste duel kwartfinales Nations League",
-     "link": "https://nos.nl/l/2639257",
-     "time": "2026-11-13T08:09:10+01:00",
-     "img": "https://images.cdn.nos.nl/8/H/6/c/u/a/xzYUv2Xjawx4dC1m2nKUfzyVoUAxJo3RVuGmKjJ/174x39x928x522-928x522.webp"
-    },
-    {
-     "title": "Er zit nog veel Nederland in Hatzidiakos: 'Mooi en frivool voetbal, zo ben ik opgegroeid'",
-     "link": "https://nos.nl/l/2639243",
-     "time": "2026-11-13T06:01:04+01:00",
-     "img": "https://images.cdn.nos.nl/6/2/T/U/s/Z/tZudgFBPXCnsvWFgEL3XbDhVVcMCMUPexbQx54H/4x50x1824x1026-1024x576.webp"
-    },
-    {
-     "title": "Xavi denkt Oranje-raadsel Malen te kunnen ontrafelen: 'Hij moet belangrijk zijn'",
-     "link": "https://nos.nl/l/2639242",
-     "time": "2026-11-13T06:00:16+01:00",
-     "img": "https://images.cdn.nos.nl/5/C/6/4/4/1/SHVGsTgWLzWSo4ZaEYb9XNmceJYCGQayj6cFUtB/215x181x2080x1170-1024x576.webp"
-    },
-    {
-     "title": "Pegula naar halve finales WTA Finals, zege Gauff niet genoeg",
-     "link": "https://nos.nl/l/2639234",
-     "time": "2026-11-13T00:08:58+01:00",
-     "img": "https://images.cdn.nos.nl/8/7/Q/n/d/E/xFsz3nMY7ShWzwqhuWwnuCutsF4fdtYZruZvpY5/1x0x2496x1404-1024x576.webp"
-    },
-    {
-     "title": "Recordinternational Kane matchwinner voor Engeland, Spanje verlengt ongeslagen reeks",
-     "link": "https://nos.nl/l/2639228",
-     "time": "2026-11-12T22:59:39+01:00",
-     "img": "https://images.cdn.nos.nl/3/6/Z/a/y/r/xABkioxh4C7GXpHAF8orrkS7VEiFjdyVhzgDSXt/4x149x3616x2034-1024x576.webp"
     }
    ]
   },
@@ -194,94 +194,94 @@
    "name": "NU.nl",
    "items": [
     {
-     "title": "Nieuwe Sint mogelijk uitgelekt: 'topfavoriet' Gijs Naber bij repetitie intocht",
-     "link": "https://www.nu.nl/media/6416520/nieuwe-sint-mogelijk-uitgelekt-topfavoriet-gijs-naber-bij-repetitie-intocht.html",
-     "time": "2026-11-13T18:47:06+01:00",
-     "img": "https://images.nu.nl/m/5yix9i4acxi6_sqr256/46/0/337/337/nieuwe-sint-mogelijk-uitgelekt-topfavoriet-gijs-naber-bij-repetitie-intocht.jpg"
+     "title": "Cruiseschip met 129 passagiers kapseist in New Orleans na aanvaring met tanker",
+     "link": "https://www.nu.nl/algemeen/6416546/cruiseschip-met-129-passagiers-kapseist-in-new-orleans-na-aanvaring-met-tanker.html",
+     "time": "2026-11-13T23:06:33+01:00",
+     "img": "https://images.nu.nl/m/ultxecga9c2l_sqr256/572/0/2271/2271/cruiseschip-met-129-passagiers-kapseist-in-new-orleans-na-aanvaring-met-tanker.jpg"
     },
     {
-     "title": "Toptalent Angel Daleman pakt erfenis van Leerdam: 'Jutta is een groot voorbeeld'",
-     "link": "https://www.nu.nl/schaatsen/6416493/toptalent-angel-daleman-pakt-erfenis-van-leerdam-jutta-is-een-groot-voorbeeld.html",
-     "time": "2026-11-13T18:21:36+01:00",
-     "img": "https://images.nu.nl/m/giexfssa72zj_sqr256/970/577/1941/1941/toptalent-angel-daleman-pakt-erfenis-van-leerdam-jutta-is-een-groot-voorbeeld.jpg"
+     "title": "Oranje verplettert Grieken en is vrijwel zeker van kwartfinales Nations League",
+     "link": "https://www.nu.nl/voetbal/6416531/oranje-verplettert-grieken-en-is-vrijwel-zeker-van-kwartfinales-nations-league.html",
+     "time": "2026-11-13T22:36:49+01:00",
+     "img": "https://images.nu.nl/m/rzdx0lnanysu_sqr256/109/0/2362/2362/oranje-verplettert-grieken-en-is-vrijwel-zeker-van-kwartfinales-nations-league.jpg"
     },
     {
-     "title": "Geen straf voor persoon die probleemwolf Bram 's avonds te laat doodschoot",
-     "link": "https://www.nu.nl/binnenland/6416498/geen-straf-voor-persoon-die-probleemwolf-bram-s-avonds-te-laat-doodschoot.html",
-     "time": "2026-11-13T17:35:56+01:00",
-     "img": "https://images.nu.nl/m/i9txwokahcds_sqr256/774/1548/1888/1888/geen-straf-voor-persoon-die-probleemwolf-bram-s-avonds-te-laat-doodschoot.jpg"
+     "title": "Doe Maar-drummer Jan Pijnenburg (70) plotseling overleden",
+     "link": "https://www.nu.nl/muziek/6416540/doe-maar-drummer-jan-pijnenburg-70-plotseling-overleden.html",
+     "time": "2026-11-13T22:35:47+01:00",
+     "img": "https://images.nu.nl/m/7spxh32a2l1e_sqr256/1505/103/2540/2540/doe-maar-drummer-jan-pijnenburg-70-plotseling-overleden.jpg"
     },
     {
-     "title": "Sinterklaas neemt Spaans weer mee: het wordt zonnig en droog tijdens intocht",
-     "link": "https://www.nu.nl/binnenland/6416338/sinterklaas-neemt-spaans-weer-mee-het-wordt-zonnig-en-droog-tijdens-intocht.html",
-     "time": "2026-11-13T16:35:02+01:00",
-     "img": "https://images.nu.nl/m/hmsxz1da6qdy_sqr256/502/0/900/900/sinterklaas-neemt-spaans-weer-mee-het-wordt-zonnig-en-droog-tijdens-intocht.jpg"
+     "title": "Alle vliegtuigen in VS moeten aan de grond blijven vanwege 'veiligheidsredenen'",
+     "link": "https://www.nu.nl/buitenland/6416541/alle-vliegtuigen-in-vs-moeten-aan-de-grond-blijven-vanwege-veiligheidsredenen.html",
+     "time": "2026-11-13T22:12:05+01:00",
+     "img": "https://images.nu.nl/m/jtsxc0qahhst_sqr256/2450/0/4875/4875/alle-vliegtuigen-in-vs-moeten-aan-de-grond-blijven-vanwege-veiligheidsredenen.jpg"
     },
     {
-     "title": "Leontine Ruiters 'strontverliefd' op John: 'En Marco is ontzettend blij voor me'",
-     "link": "https://www.nu.nl/achterklap/6416500/leontine-ruiters-strontverliefd-op-john-en-marco-is-ontzettend-blij-voor-me.html",
-     "time": "2026-11-13T16:12:42+01:00",
-     "img": "https://images.nu.nl/m/hexxa6qat47n_sqr256/1446/0/4626/4626/leontine-ruiters-strontverliefd-op-john-en-marco-is-ontzettend-blij-voor-me.jpg"
+     "title": "Keeper Owono voor 12 duels geschorst in Spanje na fatale botsing met De Miguel",
+     "link": "https://www.nu.nl/voetbal/6416539/keeper-owono-voor-12-duels-geschorst-in-spanje-na-fatale-botsing-met-de-miguel.html",
+     "time": "2026-11-13T21:57:01+01:00",
+     "img": "https://images.nu.nl/m/jxzxdvha4wc8_sqr256/1015/73/2824/2824/keeper-owono-voor-12-duels-geschorst-in-spanje-na-fatale-botsing-met-de-miguel.jpg"
     },
     {
-     "title": "Hoe het Griekse elftal uit een dal klom: 'Winnen van Oranje vinden ze normaal'",
-     "link": "https://www.nu.nl/voetbal/6415216/hoe-het-griekse-elftal-uit-een-dal-klom-winnen-van-oranje-vinden-ze-normaal.html",
-     "time": "2026-11-13T16:07:27+01:00",
-     "img": "https://images.nu.nl/m/93kxnb8arsxl_sqr256/767/1/3131/3131/hoe-het-griekse-elftal-uit-een-dal-klom-winnen-van-oranje-vinden-ze-normaal.jpg"
+     "title": "Microsoft kan nog niet zeggen wanneer wereldwijde storing voorbij is",
+     "link": "https://www.nu.nl/tech/6416534/microsoft-kan-nog-niet-zeggen-wanneer-wereldwijde-storing-voorbij-is.html",
+     "time": "2026-11-13T21:25:25+01:00",
+     "img": "https://images.nu.nl/m/9xhxf7yand70_sqr256/154/45/620/620/microsoft-kan-nog-niet-zeggen-wanneer-wereldwijde-storing-voorbij-is.jpg"
     },
     {
-     "title": "Video | Máxima straalt tussen koning en Amalia na beëdiging als reservist",
-     "link": "https://www.nu.nl/332258/video/maxima-straalt-tussen-koning-en-amalia-na-beediging-als-reservist.html",
-     "time": "2026-11-13T16:04:48+01:00",
-     "img": "https://images.nu.nl/m/xknxsbcazmwu_sqr256/440/5/1077/1077/maxima-straalt-tussen-koning-en-amalia-na-beediging-als-reservist.jpg"
+     "title": "Helmplicht voor jongeren op fatbikes moet vóór start nieuwe schooljaar ingaan",
+     "link": "https://www.nu.nl/binnenland/6416527/helmplicht-voor-jongeren-op-fatbikes-moet-voor-start-nieuwe-schooljaar-ingaan.html",
+     "time": "2026-11-13T21:23:17+01:00",
+     "img": "https://images.nu.nl/m/qpdxq2qalq6d_sqr256/947/1/3999/3999/helmplicht-voor-jongeren-op-fatbikes-moet-voor-start-nieuwe-schooljaar-ingaan.jpg"
     },
     {
-     "title": "KLM doet aangifte tegen oud-topman Eurlings vanwege brandende powerbank",
-     "link": "https://www.nu.nl/algemeen/6416492/klm-doet-aangifte-tegen-oud-topman-eurlings-vanwege-brandende-powerbank.html",
-     "time": "2026-11-13T15:27:58+01:00",
-     "img": "https://images.nu.nl/m/h6qxrr5a0y64_sqr256/1021/0/901/901/klm-doet-aangifte-tegen-oud-topman-eurlings-vanwege-brandende-powerbank.jpg"
+     "title": "Kabinetscrisis duurt voort: coalitie praat door, VVD spreekt van mislukt experiment",
+     "link": "https://www.nu.nl/politiek/6416522/kabinetscrisis-duurt-voort-coalitie-praat-door-vvd-spreekt-van-mislukt-experiment.html",
+     "time": "2026-11-13T20:28:18+01:00",
+     "img": "https://images.nu.nl/m/2xrx8kra6yrn_sqr256/2748/0/5504/5504/kabinetscrisis-duurt-voort-coalitie-praat-door-vvd-spreekt-van-mislukt-experiment.jpg"
     },
     {
-     "title": "Microsoft meldt na ruim anderhalve dag vooruitgang bij oplossen grote storing",
-     "link": "https://www.nu.nl/tech/6416487/microsoft-meldt-na-ruim-anderhalve-dag-vooruitgang-bij-oplossen-grote-storing.html",
-     "time": "2026-11-13T15:22:21+01:00",
-     "img": "https://images.nu.nl/m/vesxkiaa600u_sqr256/0/0/735/735/microsoft-meldt-na-ruim-anderhalve-dag-vooruitgang-bij-oplossen-grote-storing.jpg"
+     "title": "Jong Oranje heeft EK-ticket voor het grijpen na ruime zege in Denemarken",
+     "link": "https://www.nu.nl/voetbal/6416529/jong-oranje-heeft-ek-ticket-voor-het-grijpen-na-ruime-zege-in-denemarken.html",
+     "time": "2026-11-13T20:20:35+01:00",
+     "img": "https://images.nu.nl/m/6e1xxntaxzmx_sqr256/988/0/3350/3350/jong-oranje-heeft-ek-ticket-voor-het-grijpen-na-ruime-zege-in-denemarken.jpg"
     },
     {
-     "title": "Verdachte (16) van schietpartij Schiedam blijft langer vastzitten",
-     "link": "https://www.nu.nl/binnenland/6416490/verdachte-16-van-schietpartij-schiedam-blijft-langer-vastzitten.html",
-     "time": "2026-11-13T15:21:48+01:00",
-     "img": "https://images.nu.nl/m/jkgxd2farmqk_sqr256/0/0/3653/3653/verdachte-16-van-schietpartij-schiedam-blijft-langer-vastzitten.jpg"
+     "title": "Video | Yesilgöz: 'Minderheidskabinet is een mislukt experiment'",
+     "link": "https://www.nu.nl/332265/video/yesilgoz-minderheidskabinet-is-een-mislukt-experiment.html",
+     "time": "2026-11-13T20:10:46+01:00",
+     "img": "https://images.nu.nl/m/5anxo88a57us_sqr256/600/0/1080/1080/yesilgoz-minderheidskabinet-is-een-mislukt-experiment.jpg"
     },
     {
-     "title": "Koningin Máxima tijdens ceremonie beëdigd tot luitenant-kolonel",
-     "link": "https://www.nu.nl/koningshuis/6416486/koningin-maxima-tijdens-ceremonie-beedigd-tot-luitenant-kolonel.html",
-     "time": "2026-11-13T15:10:36+01:00",
-     "img": "https://images.nu.nl/m/s64x0jba7n0d_sqr256/161/0/533/533/koningin-maxima-tijdens-ceremonie-beedigd-tot-luitenant-kolonel.jpg"
+     "title": "Vier minderjarige nepagenten aangehouden in Brabants Drunen",
+     "link": "https://www.nu.nl/binnenland/6416512/vier-minderjarige-nepagenten-aangehouden-in-brabants-drunen.html",
+     "time": "2026-11-13T19:52:01+01:00",
+     "img": "https://images.nu.nl/m/egqxmxsa5o89_sqr256/0/2/5502/5502/vier-minderjarige-nepagenten-aangehouden-in-brabants-drunen.jpg"
     },
     {
-     "title": "KNVB zet extra medewerkers in bij duel Oranje vanwege Microsoft-storing",
-     "link": "https://www.nu.nl/voetbal/6416484/knvb-zet-extra-medewerkers-in-bij-duel-oranje-vanwege-microsoft-storing.html",
-     "time": "2026-11-13T15:04:32+01:00",
-     "img": "https://images.nu.nl/m/wqhx5pcaa33m_sqr256/722/0/3641/3641/knvb-zet-extra-medewerkers-in-bij-duel-oranje-vanwege-microsoft-storing.jpg"
+     "title": "EU wil alleen over vrede Oekraïne praten en negeert Russische vertragingstactiek",
+     "link": "https://www.nu.nl/spanningen-oekraine/6416514/eu-wil-alleen-over-vrede-oekraine-praten-en-negeert-russische-vertragingstactiek.html",
+     "time": "2026-11-13T19:51:15+01:00",
+     "img": "https://images.nu.nl/m/vqkxsgdau53a_sqr256/360/0/3037/3037/eu-wil-alleen-over-vrede-oekraine-praten-en-negeert-russische-vertragingstactiek.jpg"
     },
     {
-     "title": "Overstappen naar andere zorgverzekeraar kan tot 54 euro per maand schelen",
-     "link": "https://www.nu.nl/economie/6416460/overstappen-naar-andere-zorgverzekeraar-kan-tot-54-euro-per-maand-schelen.html",
-     "time": "2026-11-13T14:54:24+01:00",
-     "img": "https://images.nu.nl/m/8a2xym4ahn9i_sqr256/443/0/1080/1080/overstappen-naar-andere-zorgverzekeraar-kan-tot-54-euro-per-maand-schelen.jpg"
+     "title": "Live | Voetbal | Bondscoach Xavi zag al op de training dat het goed zat bij Oranje",
+     "link": "https://www.nu.nl/sport/6416496/voetbal-bondscoach-xavi-zag-al-op-de-training-dat-het-goed-zat-bij-oranje.html",
+     "time": "2026-11-13T19:40:35+01:00",
+     "img": "https://images.nu.nl/m/awjxsjoaun11_sqr256/3021/380/2979/2979/voetbal-bondscoach-xavi-zag-al-op-de-training-dat-het-goed-zat-bij-oranje.jpg"
     },
     {
-     "title": "Onterecht aan Hamas gelinkte student doet aangifte tegen docent",
-     "link": "https://www.nu.nl/binnenland/6416477/onterecht-aan-hamas-gelinkte-student-doet-aangifte-tegen-docent.html",
-     "time": "2026-11-13T14:21:28+01:00",
-     "img": "https://images.nu.nl/m/ejnxk04aml1x_sqr256/934/1/3333/3333/onterecht-aan-hamas-gelinkte-student-doet-aangifte-tegen-docent.jpg"
+     "title": "Oranje met Frenkie de Jong én Veerman in Nations League-duel met Griekenland",
+     "link": "https://www.nu.nl/voetbal/6416524/oranje-met-frenkie-de-jong-en-veerman-in-nations-league-duel-met-griekenland.html",
+     "time": "2026-11-13T19:32:10+01:00",
+     "img": "https://images.nu.nl/m/swsx89ua9tz8_sqr256/1032/0/2359/2359/oranje-met-frenkie-de-jong-en-veerman-in-nations-league-duel-met-griekenland.jpg"
     },
     {
-     "title": "Politie vindt 3D-geprinte vuurwapens en boksbeugels in Eindhovense woning",
-     "link": "https://www.nu.nl/binnenland/6416470/politie-vindt-3d-geprinte-vuurwapens-en-boksbeugels-in-eindhovense-woning.html",
-     "time": "2026-11-13T14:02:45+01:00",
-     "img": "https://images.nu.nl/m/8edxetaabigm_sqr256/400/0/804/804/politie-vindt-3d-geprinte-vuurwapens-en-boksbeugels-in-eindhovense-woning.jpg"
+     "title": "Livestream | Bekijk live de reactie van Van den Brink na crisisoverleg",
+     "link": "https://www.nu.nl/332254/video/bekijk-live-de-reactie-van-van-den-brink-na-crisisoverleg.html",
+     "time": "2026-11-13T19:22:30+01:00",
+     "img": "https://images.nu.nl/m/7o2xhu6aqgu6_sqr256/1334/0/4000/4000/bekijk-live-de-reactie-van-van-den-brink-na-crisisoverleg.jpg"
     }
    ]
   }
