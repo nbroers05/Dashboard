@@ -1,21 +1,21 @@
 'use strict';
 
-// Aftelklok naar de volgende F1-sessie via de Jolpica-API (opvolger van Ergast).
+// Countdown to the next F1 session via the Jolpica API (successor of Ergast).
 // Circuit-omtrek: bacinger/f1-circuits (MIT-licentie). Vlag: flagcdn.com.
 DASH.widget('w-f1', (card, body, guard) => {
   const { h, store, fmtTime, fmtDay } = DASH;
   const KEY = 'f1.schedule.v2';
   const CIRCUITS = 'https://cdn.jsdelivr.net/gh/bacinger/f1-circuits@master/f1-circuits.geojson';
   const SESSIONS = [
-    ['FirstPractice', 'Vrije training 1', 60],
-    ['SecondPractice', 'Vrije training 2', 60],
-    ['ThirdPractice', 'Vrije training 3', 60],
-    ['SprintQualifying', 'Sprintkwalificatie', 45],
-    ['SprintShootout', 'Sprintkwalificatie', 45],
+    ['FirstPractice', 'Practice 1', 60],
+    ['SecondPractice', 'Practice 2', 60],
+    ['ThirdPractice', 'Practice 3', 60],
+    ['SprintQualifying', 'Sprint qualifying', 45],
+    ['SprintShootout', 'Sprint qualifying', 45],
     ['Sprint', 'Sprint', 45],
-    ['Qualifying', 'Kwalificatie', 60],
+    ['Qualifying', 'Qualifying', 60],
   ];
-  // Reserve als het circuit niet in de set staat
+  // Fallback when the circuit isn't in the set
   const COUNTRY = {
     Australia: 'au', Bahrain: 'bh', China: 'cn', Japan: 'jp', 'Saudi Arabia': 'sa', USA: 'us', 'United States': 'us',
     Italy: 'it', Monaco: 'mc', Spain: 'es', Canada: 'ca', Austria: 'at', UK: 'gb', 'United Kingdom': 'gb', Hungary: 'hu',
@@ -64,13 +64,13 @@ DASH.widget('w-f1', (card, body, guard) => {
       }
     }
     render();
-    // Circuitvormen los laden: lukt dat niet, dan blijft de rest gewoon staan
+    // Load the circuit shapes separately: if that fails, the rest simply stays
     if (!circuits) {
       DASH.getJSON(CIRCUITS).then((g) => { circuits = g.features || []; render(); }).catch(() => {});
     }
   });
 
-  // Circuit dat het dichtst bij de coördinaten van de race ligt (binnen ±30 km)
+  // The circuit closest to the race's coordinates (within ±30 km)
   function findCircuit(s) {
     if (!circuits || !Number.isFinite(s.lat)) return null;
     let best = null, bestD = Infinity;
@@ -107,7 +107,7 @@ DASH.widget('w-f1', (card, body, guard) => {
     return svg;
   }
 
-  // Melding als de volgende sessie binnen een uur begint (of nu bezig is)
+  // Notification when the next session starts within an hour (or is running now)
   function f1Alert() {
     const now = Date.now();
     const s = sessions.find((x) => x.end > now);
@@ -117,13 +117,13 @@ DASH.widget('w-f1', (card, body, guard) => {
     DASH.alert('f1', {
       level: live ? 'info' : 'warn',
       icon: '🏎️',
-      text: live ? `${s.name} is bezig` : `${s.name} begint over ${min} min`,
+      text: live ? `${s.name} is running` : `${s.name} starts in ${min} min`,
       sub: `GP ${s.gp} · ${fmtTime(s.start)}`,
     });
   }
   DASH.every(60 * 1000, guard(f1Alert));
 
-  // ---------- Na de race: uitslag en klassement tot de volgende sessie (meestal VT1 van de volgende GP) ----------
+  // ---------- After the race: results and standings until the next session (usually FP1 of the next GP) ----------
   const RKEY = 'f1.results';
   const NAT = {
     Dutch: 'nl', British: 'gb', German: 'de', Spanish: 'es', French: 'fr', Italian: 'it', Monegasque: 'mc', Australian: 'au',
@@ -132,10 +132,10 @@ DASH.widget('w-f1', (card, body, guard) => {
     Polish: 'pl', Russian: 'ru', Swedish: 'se', Estonian: 'ee', Indian: 'in', Irish: 'ie',
   };
   let results = store.get(RKEY);   // { raceStart, race, at, top: [...], standings: [...] }
-  // Laatste sessie die al voorbij is: een race? Dan tonen we de uitslag in plaats van de aftelklok
+  // The last session that's already over: a race? Then we show the results instead of the countdown
   const lastRace = (now) => {
     const prev = sessions.filter((x) => x.end <= now).pop();
-    return prev && prev.name === 'Race' && now - prev.end < 3 * 86400000 ? prev : null;   // uitslag 3 dagen, daarna aftellen
+    return prev && prev.name === 'Race' && now - prev.end < 3 * 86400000 ? prev : null;   // results for 3 days, then the countdown
   };
   async function loadResults(race) {
     const cached = store.get(RKEY);
@@ -146,7 +146,7 @@ DASH.widget('w-f1', (card, body, guard) => {
     ]);
     const rr = (r.MRData.RaceTable.Races || [])[0];
     const sl = (st.MRData.StandingsTable.StandingsLists || [])[0];
-    // Nog de vorige race in de API (uitslag nog niet verwerkt): dan nog even de aftelklok
+    // The API still has the previous race (results not processed yet): then the countdown a bit longer
     if (!rr || Math.abs(Date.parse(`${rr.date}T${rr.time || '12:00:00Z'}`) - race.start) > 86400000) return null;
     const driver = (d) => ({ code: d.code || d.familyName.slice(0, 3).toUpperCase(), name: `${d.givenName} ${d.familyName}`, last: d.familyName, flag: NAT[d.nationality] || null });
     const out = {
@@ -166,7 +166,7 @@ DASH.widget('w-f1', (card, body, guard) => {
     const head = h('div', 'w-row');
     const t = h('div');
     t.style.minWidth = '0';
-    t.append(h('div', 'w-mid', `Uitslag GP ${res.race}`), h('div', 'w-sub', next ? `Volgende: ${next.name} GP ${next.gp} · ${fmtDay(next.start)} ${fmtTime(next.start)}` : 'Laatste race van het seizoen'));
+    t.append(h('div', 'w-mid', `Results GP ${res.race}`), h('div', 'w-sub', next ? `Next: ${next.name} GP ${next.gp} · ${fmtDay(next.start)} ${fmtTime(next.start)}` : 'Last race of the season'));
     head.append(t);
     const podium = h('div', 'f1-podium');
     for (const d of res.top.slice(0, 3)) {
@@ -184,7 +184,7 @@ DASH.widget('w-f1', (card, body, guard) => {
       rest.append(li);
     }
     const champ = h('div', 'f1-champ');
-    champ.append(h('p', 'f1-champ-head', 'Kampioenschap'));
+    champ.append(h('p', 'f1-champ-head', 'Championship'));
     for (const d of res.standings) {
       const row = h('div', 'f1-champ-row');
       row.append(h('span', 'f1-n', String(d.pos)), flag(d.flag, 'f1-sflag'), h('span', 'f1-champ-name', d.last), h('b', null, `${d.points}`));
@@ -193,10 +193,10 @@ DASH.widget('w-f1', (card, body, guard) => {
     const foot = h('div', 'w-row');
     const vbtn = h('button', 'w-btn', '▶ Stream');
     vbtn.onclick = openVideo;
-    foot.append(h('span', 'w-sub', 'Uitslag tot de volgende sessie'), vbtn);
+    foot.append(h('span', 'w-sub', 'Results until the next session'), vbtn);
     body.replaceChildren(head, podium, rest, champ, foot);
     body.classList.add('f1-res');
-    // Op het moment dat de volgende sessie begint: terug naar de aftelklok
+    // At the moment the next session starts: back to the countdown
     if (next) countdown = setTimeout(guard(render), Math.min(next.start - Date.now(), 2 ** 31 - 1));
   }
 
@@ -211,13 +211,13 @@ DASH.widget('w-f1', (card, body, guard) => {
     if (race && (!s || s.start > now)) {
       if (results && results.raceStart === race.start) return renderResults(results, s);
       loadResults(race).then((res) => {
-        if (!res) return setTimeout(guard(render), 15 * 60000);   // nog geen uitslag: over een kwartier opnieuw
+        if (!res) return setTimeout(guard(render), 15 * 60000);   // no results yet: again in a quarter of an hour
         results = res;
         render();
       }).catch((e) => console.warn('[f1] uitslag', e));
     }
     if (!s) {
-      body.replaceChildren(h('p', 'w-note', 'Geen sessies meer gepland. Tot volgend seizoen!'));
+      body.replaceChildren(h('p', 'w-note', 'No more sessions planned. See you next season!'));
       return;
     }
     const live = s.start <= now;
@@ -242,13 +242,13 @@ DASH.widget('w-f1', (card, body, guard) => {
     const foot = h('div', 'w-row');
     const count = h('div', 'f1-count');
     foot.append(count);
-    if (live) foot.append(h('span', 'w-pill live', 'Nu bezig'));
+    if (live) foot.append(h('span', 'w-pill live', 'Running now'));
     const vbtn = h('button', 'w-btn', '▶ Stream');
     vbtn.onclick = openVideo;
     foot.append(vbtn);
     body.replaceChildren(head, track, foot);
 
-    // "3d 4h 35min"; seconden pas op de dag zelf (of tijdens de sessie)
+    // "3d 4h 35min"; seconds only on the day itself (or during the session)
     const tick = () => {
       const target = live ? s.end : s.start;
       const ms = target - Date.now();
@@ -263,7 +263,7 @@ DASH.widget('w-f1', (card, body, guard) => {
       if (d || hh) units.push([hh, 'h']);
       units.push([mm, 'min']);
       if (sameDay || live) units.push([ss, 's']);
-      const parts = live ? [h('small', null, 'nog ')] : [];
+      const parts = live ? [h('small', null, 'left ')] : [];
       for (const [v, u] of units) parts.push(document.createTextNode(v), h('small', null, u), document.createTextNode(' '));
       count.replaceChildren(...parts);
     };
@@ -272,11 +272,11 @@ DASH.widget('w-f1', (card, body, guard) => {
   }
 
   // ---------- Stream-pop-up ----------
-  // Plak een link of een embed-code; die wordt in deze browser onthouden.
+  // Paste a link or an embed code; it's remembered in this browser.
   const VKEY = 'f1.stream';
   let pop = null;
 
-  // Link of embed-code → veilige embed-URL. We maken zelf het iframe; geplakte code wordt nooit zo uitgevoerd.
+  // Link or embed code → a safe embed URL. We make the iframe ourselves; pasted code is never run as-is.
   function toEmbed(input) {
     let s = input.trim();
     const iframe = s.match(/<iframe[^>]*\ssrc=["']([^"']+)["']/i);
@@ -299,7 +299,7 @@ DASH.widget('w-f1', (card, body, guard) => {
       if ((m = u.pathname.match(/^\/videos\/(\d+)/))) return `https://player.twitch.tv/?video=${m[1]}&parent=${parent}`;
       if ((m = u.pathname.match(/^\/([\w]+)\/?$/))) return `https://player.twitch.tv/?channel=${m[1]}&parent=${parent}`;
     }
-    return u.href; // andere sites: de link zelf (werkt als die site insluiten toestaat)
+    return u.href; // other sites: the link itself (works if that site allows embedding)
   }
   function start(u) {
     const t = u.searchParams.get('t') || u.searchParams.get('start');
@@ -321,10 +321,10 @@ DASH.widget('w-f1', (card, body, guard) => {
     const stage = h('div', 'vid-stage');
     const own = h('form', 'vid-own');
     const area = h('input');
-    area.placeholder = 'Plak een link (YouTube, Vimeo, Twitch) of een embed-code (<iframe …>)';
-    area.setAttribute('aria-label', 'Link of embed-code');
-    const save = h('button', 'w-btn', 'Afspelen');
-    const clear = h('button', 'w-btn ghost', 'Wissen');
+    area.placeholder = 'Paste a link (YouTube, Vimeo, Twitch) or an embed code (<iframe …>)';
+    area.setAttribute('aria-label', 'Link or embed code');
+    const save = h('button', 'w-btn', 'Play');
+    const clear = h('button', 'w-btn ghost', 'Clear');
     clear.type = 'button';
     const msg = h('span', 'vid-msg');
     own.append(area, save, clear, msg);
@@ -345,18 +345,18 @@ DASH.widget('w-f1', (card, body, guard) => {
       const s = state();
       area.value = s.input || '';
       if (s.src) stage.replaceChildren(frame(s.src));
-      else stage.replaceChildren(h('div', 'vid-empty', 'Plak hieronder een link of embed-code en klik op Afspelen.'));
+      else stage.replaceChildren(h('div', 'vid-empty', 'Paste a link or embed code below and click Play.'));
     }
     own.onsubmit = (e) => {
       e.preventDefault();
       const src = toEmbed(area.value);
-      if (!src) { msg.textContent = 'Geen geldige https-link of embed-code.'; msg.className = 'vid-msg bad'; return; }
+      if (!src) { msg.textContent = 'Not a valid https link or embed code.'; msg.className = 'vid-msg bad'; return; }
       msg.textContent = '';
       store.set(VKEY, { src, input: area.value.trim() });
       draw();
     };
     clear.onclick = () => { store.set(VKEY, { src: null, input: '' }); msg.textContent = ''; draw(); };
-    // Sluiten = video stoppen
+    // Close = stop the video
     pop.dialog.addEventListener('close', () => stage.replaceChildren());
     pop.show = draw;
   }

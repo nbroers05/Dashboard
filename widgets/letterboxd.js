@@ -1,18 +1,18 @@
 'use strict';
 
-// Laatst gekeken: de nieuwste logs van Letterboxd met poster en sterren.
-// De data komt uit data/letterboxd.json, die een GitHub Action elk uur bijwerkt (Letterboxd zelf is niet vanuit de browser te lezen).
+// Last watched: the latest Letterboxd logs with poster and stars.
+// The data comes from data/letterboxd.json, which a GitHub Action updates every hour (Letterboxd itself can't be read from the browser).
 DASH.widget('w-letterboxd', (card, body, guard) => {
   const { h } = DASH;
-  const SHOW = 20;   // zoveel als er zijn; de opmaak toont alleen wat op één rij past
+  const SHOW = 20;   // as many as there are; the styles only show what fits on one row
 
   const stars = (r) => (r == null ? '' : '★'.repeat(Math.floor(r)) + (r % 1 ? '½' : ''));
-  const date = (iso) => (iso ? new Date(`${iso}T12:00:00`).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' }).replace('.', '') : '');
+  const date = (iso) => (iso ? new Date(`${iso}T12:00:00`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }).replace('.', '') : '');
 
   function render(data) {
     const logs = (data.logs || []).slice(0, SHOW);
     if (!logs.length) {
-      body.replaceChildren(h('p', 'w-note', 'Nog geen films gevonden op Letterboxd.'));
+      body.replaceChildren(h('p', 'w-note', 'No films found on Letterboxd yet.'));
       return;
     }
     const row = h('div', 'lb-row');
@@ -21,7 +21,7 @@ DASH.widget('w-letterboxd', (card, body, guard) => {
       a.href = f.link;
       a.target = '_blank';
       a.rel = 'noopener';
-      a.title = `${f.title}${f.year ? ` (${f.year})` : ''}${f.rating != null ? ` · ${stars(f.rating)}` : ''}${f.rewatch ? ' · opnieuw gekeken' : ''}`;
+      a.title = `${f.title}${f.year ? ` (${f.year})` : ''}${f.rating != null ? ` · ${stars(f.rating)}` : ''}${f.rewatch ? ' · rewatched' : ''}`;
       const poster = DASH.img(f.poster, 'lb-poster', f.title);
       const badges = h('div', 'lb-badges');
       if (f.liked) badges.append(h('span', 'lb-like', '♥'));
@@ -34,7 +34,7 @@ DASH.widget('w-letterboxd', (card, body, guard) => {
     const latest = logs[0];
     const t = h('div');
     t.style.minWidth = '0';
-    t.append(h('div', 'w-mid lb-title', latest.title), h('div', 'w-sub', `${latest.year || ''} · gekeken ${date(latest.watched)}${latest.rewatch ? ' · opnieuw' : ''}`));
+    t.append(h('div', 'w-mid lb-title', latest.title), h('div', 'w-sub', `${latest.year || ''} · watched ${date(latest.watched)}${latest.rewatch ? ' · again' : ''}`));
     const profile = h('a', 'w-btn lb', 'Letterboxd ↗');
     profile.href = `https://letterboxd.com/${data.user || 'nbroers05'}/films/diary/`;
     profile.target = '_blank';
@@ -45,10 +45,10 @@ DASH.widget('w-letterboxd', (card, body, guard) => {
 
   const load = guard(async () => {
     try {
-      // Eén keer per kwartier een verse versie (de Action werkt het hooguit elk uur bij)
+      // A fresh version once per quarter hour (the Action updates it at most every hour)
       render(await DASH.getJSON(`data/letterboxd.json?t=${Math.floor(Date.now() / 900000)}`));
     } catch (e) {
-      body.replaceChildren(DASH.problem('Letterboxd-data kon niet laden. De GitHub Action maakt die elk uur aan (zie README).', 'Opnieuw proberen', load));
+      body.replaceChildren(DASH.problem('Letterboxd data couldn\'t load. The GitHub Action makes it every hour (see README).', 'Try again', load));
       console.warn('[letterboxd]', e);
     }
   });

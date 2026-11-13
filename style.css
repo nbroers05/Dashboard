@@ -18,11 +18,11 @@
   --surface: rgba(255, 255, 255, .09);
   --surface-hover: rgba(255, 255, 255, .16);
 
-  /* Vaste kleur per onderwerp (ook in de agenda) */
+  /* A fixed color per subject (also in the agenda) */
   --c-f1: #e10600;
   --c-sun: #ff8a3d;
   --c-sun2: #8b5cf6;
-  --c-ah: #3f51b5;
+  --c-ah: #00ADE6;   /* AH is always the bright AH blue (preference, 13 Nov 2026) */
   --c-study: #2fbf71;
   --c-anime: #ff5fa2;
   --c-film: #f5b02e;
@@ -47,7 +47,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Achtergrond kleurt mee met de hoes */
+/* The background follows the cover */
 body::before {
   content: '';
   position: fixed;
@@ -61,7 +61,7 @@ body::before {
 
 button { font: inherit; color: inherit; }
 
-/* ---------- Indeling: 12 kolommen ---------- */
+/* ---------- Layout: 12 columns ---------- */
 .dashboard {
   max-width: 1500px;
   margin: 0 auto;
@@ -74,7 +74,7 @@ button { font: inherit; color: inherit; }
   gap: 24px;
 }
 .widgets { display: contents; }
-/* Speler over de volle breedte; met de songtekst open schuift hij in naar 8 kolommen */
+/* Player across the full width; with the lyrics open it shrinks to 8 columns */
 .media-stack { grid-column: 1 / -1; grid-row: span 2; }
 .dashboard.lyrics-open .media-stack { grid-column: span 8; }
 .tile[hidden] { display: none; }
@@ -91,13 +91,13 @@ button { font: inherit; color: inherit; }
   min-width: 0;
 }
 
-/* Views per toestand */
+/* Views per state */
 .view { display: none; }
 .player[data-state="login"] .login-view,
 .player[data-state="idle"] .idle-view { display: block; }
 .player[data-state="player"] .player-view { display: grid; }
 
-/* Tekst */
+/* Text */
 .eyebrow {
   margin: 0 0 10px;
   font-size: 1rem;
@@ -129,11 +129,11 @@ button { font: inherit; color: inherit; }
 }
 .muted { color: var(--muted); line-height: 1.5; }
 
-/* ---------- Mediastapel (Now Bar-stijl) ---------- */
-/* Alle kaarten in dezelfde cel; de kaart vooraan (pos 0) speelt, de volgende steekt er onderaan smaller uit */
+/* ---------- Media stack (Now Bar style) ---------- */
+/* All cards in the same cell; the front card (pos 0) plays, the next one peeks out narrower at the bottom */
 .media-stack { display: grid; position: relative; min-width: 0; }
 .media-stack > .player { grid-area: 1 / 1; min-width: 0; transition: transform .5s cubic-bezier(.2, .8, .2, 1), filter .5s, opacity .5s; transform-origin: 50% 100%; }
-/* Dicht (niet doorschijnend), anders schemert de kaart erachter door */
+/* Solid (not see-through), otherwise the card behind shows through */
 .media-stack > .player { background: color-mix(in srgb, var(--tint) 35%, #161618); }
 .media-stack > .player[data-pos="0"] { z-index: 3; }
 .media-stack > .player[data-pos="1"] { z-index: 2; transform: translateY(20px) scale(.955); filter: brightness(.85); border-color: rgba(255, 255, 255, .22); background: color-mix(in srgb, var(--tint) 30%, #3a3a40); cursor: pointer; }
@@ -147,16 +147,16 @@ button { font: inherit; color: inherit; }
 .media-dots button { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .3); cursor: pointer; }
 .media-dots button[aria-current="true"] { background: var(--accent); width: 20px; border-radius: 99px; }
 .media-dots button { transition: width .3s, background .3s; }
-/* Algemene mediakaart (YouTube enz.): zelfde opmaak als Spotify */
+/* General media card (YouTube etc.): the same styles as Spotify */
 .media-card .play-btn .i-pause, .media-card.playing .play-btn .i-play { display: none; }
 .media-card.playing .play-btn .i-pause { display: block; }
 .media-card .bar { cursor: default; }
 .media-card .app-badge { display: inline-flex; align-items: center; gap: 6px; }
 .media-card .app-badge i { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
 
-/* ---------- Speler ---------- */
-/* Vervaagde hoes als achtergrond van het hele vak */
-/* Geen backdrop-filter hier: samen met de vervaagde hoes gaf dat in Firefox donkere blokken achter de knoppen */
+/* ---------- Player ---------- */
+/* Blurred cover as the background of the whole tile */
+/* No backdrop-filter here: together with the blurred cover it gave dark blocks behind the buttons in Firefox */
 .player { position: relative; overflow: hidden; isolation: isolate; backdrop-filter: none; -webkit-backdrop-filter: none; }
 .player::before {
   content: '';
@@ -178,7 +178,7 @@ button { font: inherit; color: inherit; }
 .player-view {
   height: 100%;
   grid-template-columns: minmax(0, 1fr) auto;
-  /* Knoppen links naast de hoes: geen lege rij onder de hoes */
+  /* Buttons to the left next to the cover: no empty row below the cover */
   grid-template-areas:
     "info cover"
     "progress cover"
@@ -206,7 +206,7 @@ button { font: inherit; color: inherit; }
 }
 .cover:not([src]) { visibility: hidden; }
 
-/* Voortgang */
+/* Progress */
 .bar {
   position: relative;
   height: 22px;
@@ -236,7 +236,7 @@ button { font: inherit; color: inherit; }
   font-variant-numeric: tabular-nums;
 }
 
-/* Knoppen */
+/* Buttons */
 .controls {
   display: flex;
   flex-wrap: wrap;
@@ -245,7 +245,7 @@ button { font: inherit; color: inherit; }
 }
 .group { display: flex; align-items: center; gap: 10px; }
 .extra { margin-left: auto; }
-/* Songtekst open (smallere speler): bediening in twee rijen onder elkaar, gecentreerd */
+/* Lyrics open (narrower player): controls in two rows below each other, centred */
 .dashboard.lyrics-open .controls { flex-direction: column; gap: 8px; }
 .dashboard.lyrics-open .extra { margin-left: 0; }
 
@@ -265,7 +265,7 @@ button { font: inherit; color: inherit; }
 .btn:hover { background: var(--surface-hover); }
 .btn:active { transform: scale(.94); }
 .btn:disabled { opacity: .35; cursor: default; transform: none; }
-/* Gedimd maar op zijn plek (kan nu niet bij deze bron); de tooltip zegt waarom */
+/* Dimmed but in its place (not possible right now for this source); the tooltip says why */
 .btn.off { opacity: .3; cursor: not-allowed; }
 .btn.off:hover { background: transparent; }
 .btn.off:active { transform: none; }
@@ -342,10 +342,10 @@ button { font: inherit; color: inherit; }
 
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 
-/* ---------- Vakken: eigen kleur per onderwerp ---------- */
+/* ---------- Tiles: own color per subject ---------- */
 .tile {
   --c: #8a8aa0;
-  --ct: color-mix(in srgb, var(--c) 52%, white);   /* accentkleur voor tekst: licht genoeg op donker */
+  --ct: color-mix(in srgb, var(--c) 52%, white);   /* accent color for text: light enough on dark */
   position: relative;
   grid-column: span 4;
   grid-row: span 2;
@@ -364,7 +364,7 @@ button { font: inherit; color: inherit; }
 #w-weather { --c: var(--wx, var(--c-sky)); transition: --c .8s; }
 #w-f1 { --c: var(--c-f1); }
 #w-rain { --c: #5a9bd3; }
-#w-ah { --c: var(--ah, var(--c-ah)); }
+#w-ah { --c: var(--c-ah); }
 #w-canvas { --c: var(--c-study); }
 #w-episodes { --c: var(--c-anime); }
 #w-stars { --c: var(--c-film); }
@@ -382,12 +382,12 @@ button { font: inherit; color: inherit; }
 #w-friends { --c: #00e054; }
 #w-sptop { --c: #1ed760; }
 #w-checkin { --c: var(--c-checkin); }
-/* Check-in: vak en invulvak */
+/* Check-in: tile and form */
 #w-checkin .w-row { align-items: center; }
 .ci-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-top: auto; font-size: .82rem; }
 .ci-err { color: #ff8a8a; }
 .ds-btn.bad { color: #ffb366; font-weight: 700; }
-/* Data-overzicht */
+/* Data overview */
 .panel-dialog.data-dialog { height: fit-content; max-height: calc(100dvh - 24px); width: min(620px, calc(100vw - 24px)); }
 .data-dialog .panel-body { height: auto; max-height: calc(100dvh - 100px); overflow-y: auto; padding: 12px 16px 16px; }
 .ds-list { display: flex; flex-direction: column; gap: 6px; }
@@ -403,7 +403,7 @@ button { font: inherit; color: inherit; }
 .ds-err { grid-column: 2 / -1; margin: 0; font-size: .78rem; color: #ffb3b3; overflow-wrap: anywhere; }
 .ds-foot { margin: 6px 2px 0; }
 @media (max-width: 700px) { .ds-row { grid-template-columns: 18px minmax(0, 1fr); } .ds-when { grid-column: 2; text-align: left; } }
-/* Breed liggend: compact in de linkerkolom (meldingen houden de ruimte) */
+/* Wide landscape: compact in the left column (notifications keep the space) */
 .desk #w-checkin { flex: none; }
 .desk #w-checkin { padding-top: 8px; padding-bottom: 8px; }
 .desk #w-checkin > .eyebrow { display: none; }
@@ -434,9 +434,9 @@ button { font: inherit; color: inherit; }
 #w-alerts { --c: #a78bfa; }
 #w-health { --c: #ff5f8f; }
 
-/* Gezondheid */
+/* Health */
 .hl-steps { display: flex; align-items: center; gap: 18px; }
-/* Ring naar het dagdoel (SVG): achtergrondring in de vakkleur, voortgang met ronde kop, % in het midden */
+/* Ring towards the daily goal (SVG): background ring in the tile color, progress with a round cap, % in the middle */
 .hl-ring { flex: none; width: 96px; height: 96px; display: grid; place-items: center; position: relative; }
 .hl-ring svg { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
 .hl-ring circle { fill: none; stroke-width: 10; }
@@ -472,7 +472,7 @@ button { font: inherit; color: inherit; }
 .ml-subject { font-size: .88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ml-snippet { font-size: .78rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* Meldingen */
+/* Notifications */
 .al-list { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; min-height: 0; overflow-y: auto; scrollbar-width: thin; }
 .al-item {
   --lv: rgba(255, 255, 255, .2);
@@ -503,16 +503,16 @@ button.al-item:hover { background: rgba(255, 255, 255, .1); }
 .al-helper { margin: 6px 0 0; font-size: .75rem; }
 .al-more { align-self: flex-start; margin-top: 2px; padding: 6px 12px; font-size: .8rem; }
 .al-more[hidden], .al-fit > [hidden] { display: none !important; }
-/* Kaartjes niet laten krimpen: wat niet past wordt weggelaten, niet platgedrukt */
+/* Don't let cards shrink: what doesn't fit is left out, not squashed */
 .al-fit > * { flex: none; }
 .panel-dialog.al-dialog { height: fit-content; max-height: calc(100dvh - 40px); width: min(620px, calc(100vw - 24px)); }
 .al-dialog .panel-body { height: auto; max-height: calc(100dvh - 110px); padding: 14px 16px 18px; }
 .al-dialog .al-list { overflow: visible; }
 #w-alerts.al-urgent { border-color: color-mix(in srgb, #ff4d4d 50%, transparent); }
 
-/* Laatst gekeken (Letterboxd) */
+/* Last watched (Letterboxd) */
 .lb-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-/* Zoveel posters als er op één rij passen: de rest loopt door naar een volgende rij die buiten beeld valt */
+/* As many posters as fit on one row: the rest continues on a next row that falls out of view */
 .lb-row { --lb-w: 104px; display: flex; flex-wrap: wrap; align-content: flex-start; gap: 12px; overflow: hidden; height: calc(var(--lb-w) * 1.5 + 44px); margin-top: 4px; }
 .lb-film { flex: none; width: var(--lb-w); display: flex; flex-direction: column; align-items: center; gap: 4px; color: inherit; text-decoration: none; }
 .lb-poster { width: 100%; aspect-ratio: 2 / 3; border-radius: 10px; box-shadow: 0 8px 20px rgba(0, 0, 0, .4); transition: transform .2s; }
@@ -524,7 +524,7 @@ button.al-item:hover { background: rgba(255, 255, 255, .1); }
 .lb-re { color: #40bcf4; }
 .lb-stars { font-size: .9rem; color: #00e054; letter-spacing: .02em; white-space: nowrap; }
 .lb-date { font-size: .72rem; color: var(--muted); }
-/* Spotify-maandoverzicht: twee kolommen (nummers, artiesten) */
+/* Spotify month: two columns (tracks, artists) */
 .sp-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .sp-head { margin: 0 0 6px; font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 .sp-list { display: flex; flex-direction: column; gap: 4px; margin: 0; padding: 0; list-style: none; }
@@ -545,7 +545,7 @@ button.al-item:hover { background: rgba(255, 255, 255, .1); }
 .tall #w-sptop .sp-col:last-child .sp-rank { position: absolute; top: 4px; left: 4px; z-index: 1; display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: rgba(0, 0, 0, .7); text-align: center; font-size: .8rem; }
 .tall #w-sptop .sp-col:last-child .sp-txt { align-items: center; }
 .tall #w-sptop .sp-col:last-child .sp-txt b { font-size: .95rem; max-width: 100%; }
-/* Vrienden op Letterboxd: naam linksboven op de poster, jouw verwachte cijfer rechtsonder als hij op je watchlist staat */
+/* Friends on Letterboxd: name top left on the poster, your predicted rating bottom right if it's on your watchlist */
 .fr-name { position: absolute; top: 6px; left: 6px; z-index: 1; max-width: calc(100% - 12px); padding: 2px 7px; border-radius: 999px; background: rgba(0, 0, 0, .7); font-size: .7rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .fr-mine.film-score { left: auto; right: 6px; bottom: 6px; padding: 2px 7px; border-radius: 9px; font-size: .85rem; --ct: var(--c-film); color: var(--c-film); }
 .fr-count { flex: none; align-self: flex-start; padding: 4px 10px; border-radius: 999px; background: color-mix(in srgb, var(--c-film) 22%, transparent); color: var(--c-film); font-size: .78rem; font-weight: 700; }
@@ -570,7 +570,7 @@ button.al-item:hover { background: rgba(255, 255, 255, .1); }
   color: var(--ct);
 }
 .w-big small { display: block; margin-top: 6px; font-size: .9rem; font-weight: 600; letter-spacing: 0; line-height: 1.2; color: var(--muted); }
-/* Schreefcijfers (Instellingen › Thema, standaard aan): alleen de grote hoofdgetallen, labels/tekst blijven schreefloos */
+/* Serif digits (Settings › Theme, on by default): only the big main numbers, labels/text stay sans-serif */
 .serif-nums :is(.w-big, .f1-count, .film-score, .cine-score, .hl-num, .hl-stat b, .ah-month b, .ah-pay b) {
   font-family: 'Source Serif 4', Georgia, 'Noto Serif', serif;
   font-weight: 600;
@@ -615,7 +615,7 @@ button.al-item:hover { background: rgba(255, 255, 255, .1); }
 .w-empty { margin: auto 0; display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
 .w-empty p { margin: 0; color: var(--muted); font-size: 1rem; }
 
-/* Plaatjes: eerst een kleurvlak, het plaatje verschijnt pas als het geladen is (nooit een kapot icoon) */
+/* Images: a color block first, the image only appears once it has loaded (never a broken icon) */
 .img-box {
   position: relative;
   overflow: hidden;
@@ -627,7 +627,7 @@ button.al-item:hover { background: rgba(255, 255, 255, .1); }
 .img-box > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .4s; }
 .img-box > img.loaded { opacity: 1; }
 
-/* Weer */
+/* Weather */
 .wx-top { display: flex; align-items: center; gap: 8px; }
 .wx-icon { width: 120px; height: 120px; flex: none; margin: -14px -10px -14px -14px; }
 .wx-icon img { width: 100%; height: 100%; }
@@ -640,7 +640,7 @@ button.al-item:hover { background: rgba(255, 255, 255, .1); }
 .tile.clickable { cursor: pointer; transition: border-color .2s, filter .2s; }
 .tile.clickable:hover { border-color: color-mix(in srgb, var(--c) 55%, transparent); filter: brightness(1.06); }
 
-/* Buienalarm */
+/* Rain alarm */
 .rn-text { font-size: 1.45rem; }
 .rn-chart { flex: 1; min-height: 90px; display: grid; grid-template-columns: repeat(24, 1fr); gap: 3px; align-items: end; margin-top: 6px; }
 .rn-bar { height: 100%; display: flex; align-items: flex-end; }
@@ -653,7 +653,7 @@ button.al-item:hover { background: rgba(255, 255, 255, .1); }
 .rn-flat::before { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 2px; border-radius: 2px; background: color-mix(in srgb, var(--ct) 45%, transparent); }
 .rn-flat span { position: relative; padding: 2px 12px; border-radius: 99px; background: color-mix(in srgb, var(--c) 18%, #141417); color: var(--ct); font-size: .85rem; font-weight: 650; }
 
-/* Weer-popup in de stijl van een weer-app: achtergrond naar weer en tijdstip */
+/* Weather pop-up in the style of a weather app: background by weather and time of day */
 .panel-dialog.wx-dialog {
   --sky1: #3a7bd5; --sky2: #6fb1fc;
   width: min(760px, calc(100vw - 24px));
@@ -748,7 +748,7 @@ button.al-item:hover { background: rgba(255, 255, 255, .1); }
 .f1-track circle { fill: #fff; }
 .f1-count { font-size: 2.6rem; font-weight: 750; letter-spacing: -.02em; font-variant-numeric: tabular-nums; color: var(--ct); line-height: 1; }
 .f1-count small { font-size: .42em; font-weight: 600; color: var(--muted); margin-left: 2px; }
-/* Na de race: podium groot, plek 4-10 klein, klassement top 5 */
+/* After the race: podium big, places 4-10 small, standings top 5 */
 .f1-podium { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 4px; }
 .f1-pod { position: relative; display: flex; flex-direction: column; align-items: center; gap: 3px; min-width: 0; padding: 10px 6px 8px; border-radius: 14px; background: rgba(255, 255, 255, .05); text-align: center; }
 .f1-pod.p1 { background: color-mix(in srgb, var(--c) 22%, transparent); }
@@ -767,7 +767,7 @@ button.al-item:hover { background: rgba(255, 255, 255, .1); }
 .f1-champ-name { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .f1-champ-row b { font-variant-numeric: tabular-nums; }
 
-/* Zonneboog (in de weer-popup) */
+/* Sun arc (in the weather pop-up) */
 .sun-arc { width: 100%; max-height: 230px; overflow: visible; }
 .sun-horizon { stroke: rgba(255, 255, 255, .35); stroke-width: 1.5; }
 .sun-path { fill: none; stroke: rgba(255, 255, 255, .45); stroke-width: 1.5; stroke-dasharray: 3 4; }
@@ -780,7 +780,7 @@ button.al-item:hover { background: rgba(255, 255, 255, .1); }
 .sun-labels b { font-size: 1.6rem; font-variant-numeric: tabular-nums; }
 .sun-labels .w-sub { font-size: .78rem; color: inherit; opacity: .8; }
 
-/* Songtekst: zelfde hoogte als de speler, de tekst scrolt binnen het vak */
+/* Lyrics: the same height as the player, the text scrolls inside the tile */
 #lyrics { --c: var(--accent); grid-column: span 4; grid-row: span 2; min-height: 0; }
 #lyrics .eyebrow { margin: 0; }
 #lyrics .w-body { position: relative; margin-top: 8px; }
@@ -803,7 +803,7 @@ button.al-item:hover { background: rgba(255, 255, 255, .1); }
   cursor: pointer;
   transition: color .35s, transform .35s;
   transform-origin: left center;
-  padding-right: 4%;   /* ruimte voor scale(1.04) van de huidige regel, anders valt de laatste letter van een lange regel weg */
+  padding-right: 4%;   /* room for scale(1.04) of the current line, otherwise the last letter of a long line falls off */
 }
 .ly-line.past { color: rgba(255, 255, 255, .5); }
 .ly-line.now { color: #fff; transform: scale(1.04); text-shadow: 0 0 18px color-mix(in srgb, var(--c) 60%, transparent); }
@@ -852,7 +852,7 @@ button.al-item:hover { background: rgba(255, 255, 255, .1); }
 @media (hover: none) { .td-del { opacity: .7; } }
 .td-foot { margin-top: auto; display: flex; justify-content: space-between; align-items: center; }
 
-/* AH-uren */
+/* AH hours */
 .ah-top { display: flex; align-items: flex-end; gap: 18px; }
 .ah-month { margin-left: auto; text-align: right; }
 .ah-month b { font-size: 1.5rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
@@ -861,7 +861,7 @@ button.al-item:hover { background: rgba(255, 255, 255, .1); }
 .ah-net { font-size: .78rem; }
 .ah-wk-pay { margin-top: 2px; }
 
-/* Loonberekening (pop-up) */
+/* Pay calculation (pop-up) */
 .panel-dialog.ah-dialog { height: fit-content; max-height: calc(100dvh - 24px); }
 .ah-dialog .panel-body { height: auto; max-height: calc(100dvh - 90px); }
 .ahp { padding: 18px; display: flex; flex-direction: column; gap: 16px; }
@@ -890,8 +890,8 @@ button.al-item:hover { background: rgba(255, 255, 255, .1); }
 .ah-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; font-size: .72rem; color: var(--muted); text-align: center; }
 .ah-days .today { color: var(--text); font-weight: 700; }
 
-/* Canvas: tijdlijn van de week */
-/* Canvas: deadlines op urgentie (rood < 24 uur, oranje < 3 dagen, rustig daarna, te laat valt extra op) */
+/* Canvas: timeline of the week */
+/* Canvas: deadlines by urgency (red < 24 hours, orange < 3 days, calm after that, late stands out extra) */
 .cv-list { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
 .cv-item {
   --u: rgba(255, 255, 255, .25);
@@ -939,7 +939,7 @@ a.cv-name:hover { text-decoration: underline; }
 .cv-more { margin-top: auto; align-self: flex-start; }
 #w-canvas.has-late { border-color: color-mix(in srgb, #ff3b3b 55%, transparent); }
 
-/* Canvas-pagina: schermvullend paneel */
+/* Canvas page: full-screen panel */
 .panel-dialog.page-dialog { width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh; border-radius: 0; border: 0; }
 .panel-dialog.page-dialog .panel-head { padding: 14px max(18px, calc((100vw - 860px) / 2)); }
 .panel-dialog.page-dialog .panel-head b { font-size: 1.2rem; }
@@ -959,7 +959,7 @@ a.cv-name:hover { text-decoration: underline; }
 .cv-page .cv-name { font-size: 1.08rem; white-space: normal; }
 .cv-page .cv-when { font-size: .95rem; }
 
-/* Episodes Left: rij covers met badge */
+/* Episodes Left: a row of covers with a badge */
 .ep-covers { display: flex; gap: 12px; overflow-x: auto; padding: 6px 2px 8px; scrollbar-width: thin; }
 .ep-cover { position: relative; flex: none; width: 96px; text-decoration: none; color: inherit; }
 .ep-cover .img-box { width: 96px; aspect-ratio: 2 / 3; border-radius: 12px; box-shadow: 0 8px 20px rgba(0, 0, 0, .4); }
@@ -978,8 +978,8 @@ a.cv-name:hover { text-decoration: underline; }
 }
 .ep-name { margin-top: 6px; font-size: .75rem; color: var(--muted); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
 
-/* Film van vanavond */
-/* Draait nu in de bios: films van je watchlist in het programma */
+/* Film tonight */
+/* Showing now in the cinema: films from your watchlist in the programme */
 .cine { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; padding-top: 10px; border-top: 1px solid rgba(255, 255, 255, .08); }
 .cine-head { margin: 0; font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--c-film); }
 .cine-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 't s' 'w s'; column-gap: 10px; padding: 6px 10px; border-radius: 12px; background: rgba(255, 255, 255, .05); color: inherit; text-decoration: none; }
@@ -1005,7 +1005,7 @@ a.cv-name:hover { text-decoration: underline; }
 .film-info { display: flex; flex-direction: column; gap: 6px; min-width: 0; flex: 1; }
 .film-info .w-mid { font-size: 1.4rem; }
 .film-stars { color: var(--ct); font-size: 1.2rem; letter-spacing: 1px; white-space: nowrap; }
-/* Twee knoppen naast elkaar onder poster en info; Letterboxd in hun eigen groen */
+/* Two buttons side by side below the poster and info; Letterboxd in their own green */
 .film-actions { margin-top: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .film-actions .w-btn { justify-content: center; padding: 10px 12px; white-space: normal; text-align: center; line-height: 1.2; }
 .w-btn.lb { background: #00e054; color: #062b12; }
@@ -1026,13 +1026,13 @@ a.cv-name:hover { text-decoration: underline; }
 .panel-frame { width: 100%; height: 100%; border: 0; display: block; color-scheme: dark; padding: 12px; }
 
 /* F1-video */
-/* Breed paneel: tot 16px van de schermrand; de hoogte volgt de inhoud */
-/* fit-content: een modale dialog rekt bij height:auto anders uit tot de volle schermhoogte */
+/* Wide panel: up to 16px from the screen edge; the height follows the content */
+/* fit-content: a modal dialog otherwise stretches to the full screen height with height:auto */
 .panel-dialog.panel-wide { width: calc(100vw - 32px); height: fit-content; max-width: none; max-height: calc(100dvh - 32px); }
 .panel-wide .panel-body { height: auto; overflow: visible; }
 
-/* F1-stream: video in 16:9 over de volle breedte, zonder zwarte balken.
-   Op een liggend scherm wordt hij smaller zodat hij in de hoogte past (200px = kop + invoer + randen). */
+/* F1 stream: video in 16:9 across the full width, without black bars.
+   On a landscape screen it gets narrower so it fits the height (200px = header + input + borders). */
 .vid-body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 12px; }
 .vid-stage { display: flex; justify-content: center; }
 .vid-frame, .vid-empty { width: min(100%, calc((100dvh - 200px) * 16 / 9)); aspect-ratio: 16 / 9; border-radius: 14px; }
@@ -1087,7 +1087,7 @@ a.cv-name:hover { text-decoration: underline; }
 .cal-day ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 .cal-empty { color: var(--muted); font-size: .95rem; }
 
-/* Titels nooit midden in een woord afbreken: afkappen met puntjes, volledige titel in de tooltip */
+/* Never break titles in the middle of a word: cut off with dots, the full title in the tooltip */
 .clip {
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -1154,7 +1154,7 @@ a.event:hover { background: color-mix(in srgb, var(--c, #888) 24%, rgba(255, 255
 }
 .seg button[aria-pressed="true"] { background: var(--accent); color: #0b0b0b; }
 
-/* Agenda-kop: Lijst/Week en Passend/Scrollen; daaronder vorige/volgende week en welke week het is */
+/* Agenda header: List/Week and Fit/Scroll; below that previous/next week and which week it is */
 .cal-ctl { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
 .dashboard:not(.week-mode) .cal-weekonly { display: none; }
 .cal-weeknav { display: flex; align-items: center; gap: 6px; margin-top: 10px; }
@@ -1168,7 +1168,7 @@ a.event:hover { background: color-mix(in srgb, var(--c, #888) 24%, rgba(255, 255
 .cal-nav-btn:disabled { opacity: .4; cursor: default; }
 .cal-week-label { margin-left: 6px; color: var(--muted); font-size: .9rem; font-variant-numeric: tabular-nums; }
 
-/* Weekweergave */
+/* Week view */
 .week {
   --cols: 52px repeat(7, minmax(0, 1fr));
   overflow-x: auto;
@@ -1196,10 +1196,10 @@ a.event:hover { background: color-mix(in srgb, var(--c, #888) 24%, rgba(255, 255
 .wk-label { color: var(--muted); font-size: .7rem; padding-top: 4px; }
 
 .wk-row.wk-body { border-top: 1px solid rgba(255, 255, 255, .08); }
-/* Passend: alles past, niets scrolt. Scrollen: het raster scrolt zelf (de dagen blijven erboven staan) */
+/* Fit: everything fits, nothing scrolls. Scroll: the grid scrolls itself (the days stay above it) */
 .week.fit .wk-body { overflow: hidden; }
 .week.scroll .wk-body { overflow-y: auto; scrollbar-width: thin; }
-/* Weinig hoogte: titel op één regel met puntjes, de tijd staat in de tooltip */
+/* Little height: the title on one line with dots, the time is in the tooltip */
 .wk-ev.tight { padding: 1px 6px; border-left-width: 3px; }
 .wk-ev.tight b.clip { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: .85em; line-height: 1.3; }
 .wk-ev.tight span { display: none; }
@@ -1219,7 +1219,7 @@ a.event:hover { background: color-mix(in srgb, var(--c, #888) 24%, rgba(255, 255
 }
 .wk-col.today { background-color: rgba(255, 255, 255, .03); }
 
-/* Event-kleur per categorie: --evbg en --fg zet de agenda zelf (donkere tekst op lichte achtergrond) */
+/* Event color per category: the agenda sets --evbg and --fg itself (dark text on a light background) */
 .wk-ev, .wk-chip {
   display: block;
   overflow: hidden;
@@ -1235,9 +1235,9 @@ a.event:hover { background: color-mix(in srgb, var(--c, #888) 24%, rgba(255, 255
 .wk-ev { position: absolute; margin: 1px 2px; }
 .wk-ev b { font-weight: 650; }
 .wk-ev span { display: block; margin-top: 2px; opacity: .8; font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-/* Kort blok: alleen de titel (de tijd staat in de tooltip) */
+/* Short block: only the title (the time is in the tooltip) */
 .wk-ev.short span { display: none; }
-/* Naast elkaar: alleen de titel, iets kleiner, en bij hover even breed */
+/* Side by side: only the title, a bit smaller, and wide for a moment on hover */
 .wk-ev.narrow { padding: 4px 5px; font-size: .82em; border-left-width: 3px; }
 .wk-ev.narrow span { display: none; }
 .wk-ev.narrow:hover, .wk-ev.narrow:focus-visible { z-index: 4; min-width: 160px; box-shadow: 0 8px 20px rgba(0, 0, 0, .5); }
@@ -1261,7 +1261,7 @@ a.event:hover { background: color-mix(in srgb, var(--c, #888) 24%, rgba(255, 255
   background: var(--accent);
 }
 
-/* Tooltip met volledige titel (hover op pc, eerste tik op telefoon) */
+/* Tooltip with the full title (hover on PC, first tap on phone) */
 .cal-tip {
   position: fixed;
   z-index: 30;
@@ -1297,10 +1297,10 @@ a.event:hover { background: color-mix(in srgb, var(--c, #888) 24%, rgba(255, 255
 }
 #toast.show { opacity: 1; transform: translate(-50%, 0); }
 
-/* Versienummer onderaan */
+/* Version number at the bottom */
 .version { grid-column: 1 / -1; text-align: center; font-size: .78rem; color: var(--muted); opacity: .7; padding: 4px 0 8px; }
 
-/* ---------- Topbalk ---------- */
+/* ---------- Top bar ---------- */
 .topbar {
   grid-column: 1 / -1;
   position: relative;
@@ -1326,11 +1326,11 @@ a.event:hover { background: color-mix(in srgb, var(--c, #888) 24%, rgba(255, 255
 .tb-date { display: block; color: var(--text); font-weight: 600; }
 .tb-date::first-letter { text-transform: uppercase; }
 .tb-week { display: block; }
-/* Dagregel: één korte zin over vandaag */
+/* Day line: one short sentence about today */
 .tb-dayline { display: block; max-width: 34vw; overflow: hidden; text-overflow: ellipsis; color: color-mix(in srgb, var(--accent) 70%, white); font-size: .85em; font-weight: 600; }
 .tb-dayline[hidden] { display: none; }
 body.minimal .tb-dayline { max-width: none; margin-top: 6px; }
-/* Onderzoek: vaste knop met een klein menu */
+/* Research: a fixed button with a small menu */
 .tb-research { position: relative; display: flex; }
 .tb-research-btn { border: 0; background: none; cursor: pointer; font: inherit; }
 .tb-research-icon { display: grid; place-items: center; }
@@ -1345,10 +1345,10 @@ body.minimal .tb-dayline { max-width: none; margin-top: 6px; }
 .tb-research-menu a { padding: 8px 10px; border-radius: 10px; color: var(--text); text-decoration: none; }
 .tb-research-menu a:hover { background: var(--surface-hover); }
 body.minimal .tb-research { display: none; }
-/* Focusmodus: knop, resterende tijd naast de klok, dashboard licht gedimd */
+/* Focus mode: button, time left next to the clock, dashboard slightly dimmed */
 .tb-feeds[aria-pressed="true"] { color: var(--accent); background: var(--surface-hover); }
 body.minimal .tb-feeds { display: none; }
-/* ---------- Feeds-pagina: vaste laag onder de topbalk, eigen raster ---------- */
+/* ---------- Feeds page: a fixed layer below the top bar, own grid ---------- */
 .feeds-page { position: fixed; left: 0; right: 0; bottom: 0; top: 120px; z-index: 4; overflow-y: auto; overscroll-behavior: contain; padding: 0 max(16px, env(safe-area-inset-right)) 24px max(16px, env(safe-area-inset-left)); animation: fd-in .35s ease; }
 .feeds-page[hidden] { display: none; }
 @keyframes fd-in { from { opacity: 0; transform: translateY(8px); } }
@@ -1397,13 +1397,13 @@ body.feeds-open .tall-rot > .tile { visibility: hidden !important; }
 .fd-mkt-note { margin: 10px 2px 0; }
 .fd-key { display: flex; gap: 8px; margin-top: 10px; }
 .fd-key input { flex: 1; min-width: 0; padding: 8px 12px; border: 1px solid rgba(255, 255, 255, .12); border-radius: 12px; background: rgba(255, 255, 255, .06); color: var(--text); font: inherit; font-size: .88rem; }
-/* Breed liggend: vier kolommen naast elkaar, alles in één scherm */
+/* Wide landscape: four columns side by side, everything on one screen */
 html.desk-mode .feeds-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: minmax(0, 1fr); height: 100%; max-width: none; }
 html.desk-mode .feeds-page { padding-bottom: 12px; }
 html.desk-mode .feeds-grid > .fd-card, html.desk-mode #fd-yt, html.desk-mode #fd-mkt { grid-column: span 1; }
 html.desk-mode #fd-news, html.desk-mode #fd-film { height: auto; min-height: 0; }
 html.desk-mode .fd-yt-grid { grid-template-columns: 1fr; }
-/* Staand: twee kolommen, YouTube en markten eronder */
+/* Portrait: two columns, YouTube and markets below them */
 @media (max-width: 1279px), (orientation: portrait) {
   html:not(.desk-mode) #fd-yt { grid-column: span 12; }
   html:not(.desk-mode) #fd-mkt { grid-column: span 12; }
@@ -1419,7 +1419,7 @@ html.desk-mode .fd-yt-grid { grid-template-columns: 1fr; }
   .fd-mkt-chg { grid-column: 3; }
   .fd-mkt-price { grid-column: 3; grid-row: 1; }
 }
-/* ---------- Mijn data: vaste laag onder de topbalk (zoals Feeds), grafieken uit het privé archief ---------- */
+/* ---------- My data: a fixed layer below the top bar (like Feeds), charts from the private archive ---------- */
 .tb-mydata[aria-pressed="true"] { color: var(--accent); background: var(--surface-hover); }
 body.minimal .tb-mydata { display: none; }
 .md-page { position: fixed; left: 0; right: 0; bottom: 0; top: 120px; z-index: 4; overflow-y: auto; overscroll-behavior: contain; padding: 0 max(16px, env(safe-area-inset-right)) 24px max(16px, env(safe-area-inset-left)); animation: fd-in .35s ease; }
@@ -1443,7 +1443,7 @@ body.mydata-open .tall-rot > .tile { visibility: hidden !important; }
 .md-demo .md-meta { color: var(--c-film); font-weight: 650; }
 .md-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 16px; align-items: start; }
 .md-grid[hidden] { display: none; }
-/* Masonry (layout() in mydata.js): vakken absoluut neergezet, kolommen naar de breedte */
+/* Masonry (layout() in mydata.js): tiles placed absolutely, columns by width */
 .md-grid.md-masonry { display: block; position: relative; }
 .md-masonry > * { position: absolute; left: 0; top: 0; margin: 0; }
 .md-masonry:not(.md-one) #md-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -1457,7 +1457,7 @@ body.mydata-open .tall-rot > .tile { visibility: hidden !important; }
 .md-body { gap: 8px; container-type: inline-size; }
 #md-cov, #md-kpis, #md-overlap { grid-column: span 12; }
 #md-work, #md-money, #md-body { grid-column: span 4; }
-/* Staand: check-ins naast Computer (onder Werk/Geld/Lichaam); liggend: naast Plekken */
+/* Portrait: check-ins next to Computer (below Work/Money/Body); landscape: next to Places */
 .md-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
 .md-kpi { display: flex; flex-direction: column; gap: 4px; padding: 16px 22px; border-radius: 24px; }
 .md-kpi b { font-size: 2rem; font-weight: 750; letter-spacing: -.02em; font-variant-numeric: tabular-nums; line-height: 1.05; }
@@ -1481,12 +1481,12 @@ line.md-grid { stroke: rgba(255, 255, 255, .07); stroke-width: 1; }
 .md-legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: .82rem; color: var(--muted); }
 .md-legend span { display: inline-flex; align-items: center; gap: 6px; }
 .md-legend i { width: 10px; height: 10px; border-radius: 3px; }
-/* Weekdag x uur */
+/* Weekday x hour */
 .md-heat { display: grid; grid-template-columns: 20px repeat(24, minmax(0, 1fr)); gap: 2px; font-size: 10px; color: var(--muted); }
 .md-heat-h { text-align: left; line-height: 1; }
 .md-heat-d { line-height: 14px; }
 .md-cell { height: 14px; border-radius: 2px; background: color-mix(in srgb, var(--ct) calc(var(--a) * 100%), rgba(255, 255, 255, .05)); }
-/* Top-lijsten */
+/* Top lists */
 .md-top { list-style: none; margin: 4px 0 0; padding: 0; display: flex; flex-direction: column; gap: 5px; }
 .md-top li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; font-size: .86rem; }
 .md-top-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -1497,7 +1497,7 @@ line.md-grid { stroke: rgba(255, 255, 255, .07); stroke-width: 1; }
 @container (max-width: 420px) { .md-top2 { grid-template-columns: minmax(0, 1fr); grid-auto-flow: row; grid-template-rows: none; } }
 .md-place { cursor: pointer; border-radius: 8px; }
 .md-place:hover .md-top-name { color: var(--ct); }
-/* Dekking */
+/* Coverage */
 .md-cov { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 3px 14px; align-items: center; }
 .md-cov-name { font-size: .86rem; color: var(--muted); white-space: nowrap; }
 .md-cov-empty { font-style: italic; }
@@ -1509,16 +1509,16 @@ line.md-grid { stroke: rgba(255, 255, 255, .07); stroke-width: 1; }
 .md-cov-hit { cursor: pointer; }
 .md-cov-axis { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); }
 .md-cov-axis span:empty { display: none; }
-/* Plekken */
+/* Places */
 .md-places-split { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); }
 @container (max-width: 620px) { .md-places-split { grid-template-columns: minmax(0, 1fr); } }
 .md-map { height: 340px; border-radius: 18px; overflow: hidden; background: #1b1b20; z-index: 0; }
-.md-map .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(.7) contrast(.9) saturate(.25); }   /* donker en grijzig: de vakjes vallen op */
+.md-map .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(.7) contrast(.9) saturate(.25); }   /* dark and greyish: the blocks stand out */
 .md-map.leaflet-container { background: #1b1b20; font: inherit; }
 .md-map .leaflet-control-attribution { background: rgba(20, 20, 24, .75); color: var(--muted); font-size: 10px; }
 .md-map .leaflet-control-attribution a { color: var(--text); }
 .md-map-wait { padding: 16px; }
-/* Werk, geld, check-ins */
+/* Work, money, check-ins */
 .md-dl { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: .86rem; }
 .md-dl li { display: flex; gap: 10px; }
 .md-dl b { flex: none; min-width: 84px; font-variant-numeric: tabular-nums; }
@@ -1532,12 +1532,12 @@ line.md-grid { stroke: rgba(255, 255, 255, .07); stroke-width: 1; }
 /* Tooltip */
 .md-tip { position: fixed; left: 0; top: 0; z-index: 60; max-width: 320px; padding: 7px 11px; border-radius: 10px; background: #26262b; box-shadow: 0 10px 30px rgba(0, 0, 0, .45); color: var(--text); font-size: .8rem; line-height: 1.35; pointer-events: none; }
 .md-tip[hidden] { display: none; }
-/* Leeg / geen token */
+/* Empty / no token */
 .md-empty { max-width: 760px !important; margin-top: 8px; min-height: 0; gap: 12px; }
 .md-howto { margin: 0; padding-left: 20px; color: var(--muted); font-size: .92rem; line-height: 1.5; display: flex; flex-direction: column; gap: 4px; }
 .md-empty-row { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .md-token { margin-top: 0; }
-/* Liggend breed (desk): dekking + kerncijfers naast elkaar, drie vakken in een rij, dan vier */
+/* Wide landscape (desk): coverage + key numbers side by side, three tiles in a row, then four */
 html.desk-mode .md-map { height: 300px; }
 @media (max-width: 700px) {
   .md-page { padding-bottom: 16px; }
@@ -1552,7 +1552,7 @@ html.desk-mode .md-map { height: 300px; }
   .md-r { margin-left: 0; }
 }
 @media (prefers-reduced-motion: reduce) { .md-page { animation: none; } }
-/* ---------- Spelletjes (games.js): vaste laag onder de topbalk, zoals Feeds ---------- */
+/* ---------- Games (games.js): a fixed layer below the top bar, like Feeds ---------- */
 .tb-games[aria-pressed="true"] { color: var(--accent); background: var(--surface-hover); }
 body.minimal .tb-games { display: none; }
 .gm-page { position: fixed; left: 0; right: 0; bottom: 0; top: 120px; z-index: 4; overflow-y: auto; overscroll-behavior: contain; padding: 0 max(16px, env(safe-area-inset-right)) 24px max(16px, env(safe-area-inset-left)); animation: fd-in .35s ease; }
@@ -1598,7 +1598,7 @@ body.games-open .tall-rot > .tile { visibility: hidden !important; }
 .gm-2048 { --gap: 10px; position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(4, minmax(0, 1fr)); gap: var(--gap);
   width: min(100%, 720px, 66dvh); aspect-ratio: 1; margin: 0 auto; padding: var(--gap); border-radius: 18px; background: rgba(0, 0, 0, .3); touch-action: none; user-select: none; }
 .gm-cell { border-radius: 10px; background: rgba(255, 255, 255, .05); }
-/* Tegels liggen los boven het raster; --r/--c bepalen de plek, de overgang geeft het schuiven */
+/* Tiles lie loose above the grid; --r/--c decide the place, the transition gives the sliding */
 .gm-tile { --size: calc((100% - 5 * var(--gap)) / 4); position: absolute; width: var(--size); height: var(--size);
   left: calc(var(--gap) + var(--c) * (var(--size) + var(--gap))); top: calc(var(--gap) + var(--r) * (var(--size) + var(--gap)));
   display: grid; place-items: center; border-radius: 10px; background: #3a3346; font-size: clamp(1.1rem, 4.5vw, 2rem); font-weight: 800; font-variant-numeric: tabular-nums;
@@ -1647,10 +1647,10 @@ body.minimal .tb-focus { display: none; }
 .fc-actions { display: flex; gap: 8px; justify-content: flex-end; }
 .focus-dialog .w-btn:not(.ghost) { --c: var(--c-study); }
 .al-muted .al-check { background: rgba(255, 255, 255, .08); }
-/* Verjaardag in de dagregel; vandaag extra opvallend */
+/* Birthday in the day line; today extra noticeable */
 .tb-bday-today { display: inline-block; padding: 2px 10px; border-radius: 999px; background: linear-gradient(90deg, #ff5fa2, #f5b02e); color: #1a1a1a; font-weight: 800; font-size: 1.08em;
   box-shadow: 0 0 0 2px rgba(255, 95, 162, .25), 0 4px 16px rgba(255, 95, 162, .35); }
-/* ---------- Thema's (themes.js + themes/*.js; sinds 0.44.0, topbalk zoals de feestdagenversie 0.42.0) ---------- */
+/* ---------- Themes (themes.js + themes/*.js; since 0.44.0, top bar like the holiday version 0.42.0) ---------- */
 .tb-greet { display: block; margin: 2px 0 1px; color: color-mix(in srgb, var(--th1) 55%, white); font-size: 1.3em; font-weight: 800; letter-spacing: -.01em; white-space: normal; }
 .tb-greet[hidden] { display: none; }
 .tb-greet.small { font-size: 1em; font-weight: 700; }
@@ -1660,29 +1660,29 @@ html[data-theme]:not([data-theme-soft]) .topbar {
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--th1) 14%, transparent), 0 20px 60px rgba(0, 0, 0, .3);
 }
 html[data-theme]:not([data-theme-soft]) .tb-dayline { color: color-mix(in srgb, var(--th2) 60%, white); }
-/* Rustige rand (F1-weekend, tentamenweek) */
+/* Calm border (F1 weekend, exam week) */
 html[data-theme-soft] .topbar { border: 1px solid color-mix(in srgb, var(--th1) 55%, transparent); }
-html[data-theme="verjaardag"] .tb-greet { font-size: 1.55em; }
+html[data-theme="birthday"] .tb-greet { font-size: 1.55em; }
 body.minimal .tb-greet { font-size: clamp(1.4rem, 3.4vw, 2.6rem); text-align: center; margin: 4px 0 2px; }
 body.minimal .tb-greet.small { font-size: clamp(1rem, 2vw, 1.4rem); }
 html[data-theme]:not([data-theme-soft]) body.minimal .tb-time { color: color-mix(in srgb, var(--th1) 35%, white); }
-@media (max-width: 700px) { .tb-greet, html[data-theme="verjaardag"] .tb-greet { font-size: 1.12em; } .tb-greet.small { font-size: .95em; } }
+@media (max-width: 700px) { .tb-greet, html[data-theme="birthday"] .tb-greet { font-size: 1.12em; } .tb-greet.small { font-size: .95em; } }
 .th-fx { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 300; pointer-events: none; }
-/* Icoontje vooraan in de dagregel (pompoen bij Halloween) */
+/* Icon at the start of the day line (pumpkin at Halloween) */
 html.th-icon .tb-dayline::before { content: var(--th-icon); }
-/* "Bekijk als datum" staat aan: klik = terug naar vandaag */
+/* "View as date" is on: click = back to today */
 .th-view { display: block; margin: 0 0 2px; padding: 1px 10px; border: 0; border-radius: 999px; background: rgba(255, 255, 255, .12); color: var(--text); font-size: .8em; font-weight: 700; cursor: pointer; }
 .th-view[hidden] { display: none; }
-/* Achtergrond en deeltjes: achter alle vakken (nooit over tekst) */
+/* Background and particles: behind all tiles (never over text) */
 .th-bg, .th-parts { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
 .th-bg[hidden], .th-parts[hidden] { display: none; }
-/* Topbalk-versiering: in de ruimte boven de topbalk */
+/* Top bar decoration: in the space above the top bar */
 .th-top { position: absolute; left: 24px; right: 24px; top: -17px; height: 30px; pointer-events: none; z-index: 1; overflow: visible; }
 .th-top svg, .th-drops svg { display: block; overflow: visible; }
 .th-bulb { animation: th-blink 2.4s ease-in-out infinite; }
 @keyframes th-blink { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
 .th-drops { position: absolute; left: 24px; right: 24px; top: -10px; height: 16px; pointer-events: none; }
-/* Versiering op de vakken: alleen in hoeken en randen (themes.js kijkt of daar niets staat) */
+/* Decoration on the tiles: only in corners and edges (themes.js checks nothing is there) */
 .th-host { position: relative; }
 .th-deco { position: absolute; z-index: 3; pointer-events: none; }
 .th-deco > svg { display: block; width: 100%; height: 100%; transform: rotate(var(--rot, 0deg)); }
@@ -1692,7 +1692,7 @@ html.th-icon .tb-dayline::before { content: var(--th-icon); }
 .th-deco.th-band { left: 0; right: 0; top: 0; }
 .th-deco.th-all { inset: 0; border-radius: inherit; }
 body.minimal .th-deco { display: none; }
-/* Minimale modus vult het scherm met de topbalk: als er deeltjes vallen een doorzichtigere achtergrond, anders zie je ze niet */
+/* Minimal mode fills the screen with the top bar: when particles fall a more transparent background, otherwise you don't see them */
 html.th-falling body.minimal .topbar { background: color-mix(in srgb, var(--tint) 25%, rgba(22, 22, 24, .4)); }
 html.th-falling[data-theme]:not([data-theme-soft]) body.minimal .topbar {
   background: linear-gradient(120deg, color-mix(in srgb, var(--th1) 20%, rgba(22, 22, 24, .42)), color-mix(in srgb, var(--th2) 10%, rgba(22, 22, 24, .42)) 70%);
@@ -1700,7 +1700,7 @@ html.th-falling[data-theme]:not([data-theme-soft]) body.minimal .topbar {
 @media (max-width: 700px) { .th-top, .th-drops, .th-deco { display: none; } }
 html.th-still .th-bulb, html.th-still .th-deco, html.th-still .th-deco * { animation: none !important; }
 @media (prefers-reduced-motion: reduce) { .th-bulb, .th-deco, .th-deco * { animation: none !important; } }
-/* ---------- Instellingen (settings.js): tandwiel + paneel met tabjes ---------- */
+/* ---------- Settings (settings.js): gear + panel with tabs ---------- */
 .tb-settings[aria-pressed="true"] { color: var(--accent); background: var(--surface-hover); }
 .panel-dialog.settings-dialog { --st: #b48cff; width: min(660px, calc(100vw - 24px)); height: fit-content; max-height: calc(100dvh - 24px); display: none; flex-direction: column; }
 .panel-dialog.settings-dialog[open] { display: flex; }
@@ -1712,7 +1712,7 @@ html.th-still .th-bulb, html.th-still .th-deco, html.th-still .th-deco * { anima
 .st-tab[aria-selected="true"] { background: var(--st); color: #141218; }
 .st-later { border: 1px dashed rgba(255, 255, 255, .2); background: none; color: var(--muted); font-weight: 400; cursor: default; }
 .st-body { padding: 10px 18px 20px; overflow-y: auto; min-height: 0; }
-/* Tabje Thema (themes.js) */
+/* Theme tab (themes.js) */
 .th-set-h { margin: 14px 0 8px; font-size: .85rem; font-weight: 700; color: rgba(255, 255, 255, .85); }
 .th-set-h:first-child { margin-top: 4px; }
 .th-auto { display: flex; flex-direction: column; gap: 2px; width: 100%; padding: 10px 14px; border: 2px solid transparent; border-radius: 12px; background: rgba(255, 255, 255, .06); text-align: left; cursor: pointer; }
@@ -1739,7 +1739,7 @@ html.th-still .th-bulb, html.th-still .th-deco, html.th-still .th-deco * { anima
 .th-date input { padding: 6px 10px; border: 1px solid rgba(255, 255, 255, .15); border-radius: 8px; background: #2a2730; color: var(--text); font: inherit; color-scheme: dark; }
 .th-date .w-btn:disabled { opacity: .45; cursor: default; }
 .th-set-note { margin: 8px 0 0; color: var(--muted); font-size: .78rem; line-height: 1.4; }
-/* Tabje Data (datastatus.js) */
+/* Data tab (datastatus.js) */
 .st-row { display: flex; align-items: center; justify-content: space-between; gap: 8px 14px; flex-wrap: wrap; padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, .06); }
 .st-ctl { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
 .st-state { font-size: .8rem; font-weight: 700; white-space: nowrap; }
@@ -1754,7 +1754,7 @@ html.th-still .th-bulb, html.th-still .th-deco, html.th-still .th-deco * { anima
   .panel-dialog.settings-dialog { width: 100vw; max-width: 100vw; height: 100dvh; max-height: 100dvh; border-radius: 0; border: 0; }
   .st-body { flex: 1; }
 }
-/* Foutmelding in een vak, met knop */
+/* Error message in a tile, with a button */
 .w-problem p { color: var(--muted); }
 
 .tb-links { display: flex; gap: 2px; margin-left: auto; }
@@ -1768,7 +1768,7 @@ html.th-still .th-bulb, html.th-still .th-deco, html.th-still .th-deco * { anima
   text-decoration: none;
 }
 .tb-link:hover { background: var(--surface-hover); }
-.tb-icon { width: 28px; height: 28px; border-radius: 8px; flex: none; background: none; } /* alleen het logo, geen kleurvlak of letter */
+.tb-icon { width: 28px; height: 28px; border-radius: 8px; flex: none; background: none; } /* only the logo, no color block or letter */
 .tb-icon img { width: 100%; height: 100%; object-fit: contain; }
 .tb-name { display: none; }
 .tb-edit { border: 0; background: none; cursor: pointer; font: inherit; }
@@ -1776,13 +1776,13 @@ html.th-still .th-bulb, html.th-still .th-deco, html.th-still .th-deco * { anima
 .tb-tray { display: contents; }
 .tb-handle { display: none; }
 
-/* Staand scherm: links ingeklapt achter één knopje, bij hover naar links uitvouwen over de datum heen.
-   De tekst eronder vervaagt aan de rand (masker op .tb-clock, --fade-x zet topbar.js). */
+/* Portrait screen: links folded behind one button, unfolding to the left over the date on hover.
+   The text below fades at the edge (mask on .tb-clock, topbar.js sets --fade-x). */
 @property --fade-on { syntax: '<number>'; inherits: true; initial-value: 0; }
 html.portrait-wide body:not(.minimal) .topbar { --fade-on: 0; transition: --fade-on .3s ease; }
 html.portrait-wide body:not(.minimal) .topbar:has(.tb-links:hover, .tb-links:focus-within, .tb-links.open) { --fade-on: 1; }
 html.portrait-wide body:not(.minimal) .tb-day { min-width: 0; overflow: hidden; }
-html.portrait-wide body:not(.minimal) .tb-dayline { max-width: none; white-space: normal; text-overflow: clip; text-wrap: pretty; }   /* 0.60.0: mag over twee regels, niet meer afknippen ("Oma m…") */
+html.portrait-wide body:not(.minimal) .tb-dayline { max-width: none; white-space: normal; text-overflow: clip; text-wrap: pretty; }   /* 0.60.0: may span two lines, no more cutting off ("Grandma b…") */
 html.portrait-wide body:not(.minimal) .tb-clock {
   flex: 0 1 auto;
   min-width: 0;
@@ -1811,7 +1811,7 @@ html.portrait-wide .tb-links:is(:hover, :focus-within, .open) .tb-tray {
 }
 html.portrait-wide .tb-links:is(:hover, :focus-within, .open) .tb-handle { opacity: 0; }
 
-/* Snelkoppelingen aanpassen */
+/* Editing shortcuts */
 .panel-dialog.links-dialog { height: fit-content; max-height: calc(100dvh - 24px); width: min(640px, calc(100vw - 24px)); }
 .links-dialog .panel-body { height: auto; padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 14px; }
 .lk-rows { display: flex; flex-direction: column; gap: 8px; }
@@ -1889,7 +1889,7 @@ html.portrait-wide .tb-links:is(:hover, :focus-within, .open) .tb-handle { opaci
 .tb-min .i-full, .tb-min[aria-pressed="true"] .i-min { display: none; }
 .tb-min[aria-pressed="true"] .i-full { display: block; }
 
-/* Minimale modus: alleen klok, datum en zoekbalk in het midden */
+/* Minimal mode: only clock, date and search bar in the middle */
 body.minimal .dashboard > :not(.topbar) { display: none !important; }
 body.minimal .topbar {
   position: fixed;
@@ -1919,7 +1919,7 @@ body.minimal .tb-actions { position: absolute; top: max(16px, env(safe-area-inse
     border-radius: 24px;
   }
   .tb-clock { flex-direction: column; align-items: flex-start; gap: 6px; flex: 1 1 100%; min-width: 0; }
-  /* Tweede rij: Onderzoek (alleen icoon) links, knoppen rechts */
+  /* Second row: Research (icon only) on the left, buttons on the right */
   .tb-research .tb-name { display: none; }
   .tb-actions { margin-left: auto; }
   .tb-time { font-size: 2.4rem; }
@@ -1928,11 +1928,11 @@ body.minimal .tb-actions { position: absolute; top: max(16px, env(safe-area-inse
   .tb-menu { display: grid; }
   .tb-search { order: 3; flex: 1 1 100%; min-width: 0; }
   .tb-search kbd { display: none; }
-  /* Snelkoppelingen als uitklapmenu */
+  /* Shortcuts as a drop-down menu */
   .tb-links {
     display: none;
     position: absolute;
-    top: calc(100% - 68px);   /* net onder de knoppenrij (daaronder zit alleen nog de zoekbalk) */
+    top: calc(100% - 68px);   /* just below the row of buttons (only the search bar is below that) */
     right: 14px;
     flex-direction: column;
     gap: 2px;
@@ -1947,12 +1947,12 @@ body.minimal .tb-actions { position: absolute; top: max(16px, env(safe-area-inse
   .tb-name { display: inline; }
 }
 
-/* Middelgroot (tablet): vakken twee aan twee */
+/* Medium (tablet): tiles two by two */
 @media (min-width: 701px) and (max-width: 1000px) {
   .media-stack { grid-column: 1 / -1; }
 }
 
-/* ---------- Telefoon: alles onder elkaar ---------- */
+/* ---------- Phone: everything below each other ---------- */
 @media (max-width: 700px) {
   .dashboard {
     grid-template-columns: minmax(0, 1fr);
@@ -1985,7 +1985,7 @@ body.minimal .tb-actions { position: absolute; top: max(16px, env(safe-area-inse
   .week { --cols: 38px repeat(7, minmax(84px, 1fr)); margin-left: -6px; margin-right: -6px; font-size: .82rem; }
 }
 
-/* ---------- Breed liggend scherm (desk.js zet .desk): alles in één scherm, niets scrollt behalve agenda en meldingen ---------- */
+/* ---------- Wide landscape screen (desk.js sets .desk): everything on one screen, nothing scrolls except agenda and notifications ---------- */
 html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .dashboard.desk {
   max-width: none;
@@ -2007,7 +2007,7 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk-mid { grid-area: mid; }
 .desk-right { grid-area: right; }
 
-/* Vakken compacter */
+/* Tiles more compact */
 .desk .tile { min-height: 0; padding: 11px 15px; border-radius: 22px; grid-column: auto !important; grid-row: auto !important; }
 .desk .tile .eyebrow { margin-bottom: 4px; font-size: .68rem; }
 .desk .w-big { font-size: 2.3rem; }
@@ -2016,18 +2016,18 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk .w-mid { font-size: 1.05rem; }
 .desk .w-sub { font-size: .82rem; }
 
-/* Links: weer + buienalarm, meldingen, AH */
+/* Left: weather + rain alarm, notifications, AH */
 .desk-weather { flex: none; min-height: 0; display: flex; flex-direction: column; border-radius: 22px; overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--c-sky) 26%, transparent);
   background: linear-gradient(160deg, color-mix(in srgb, var(--c-sky) 22%, #151518), color-mix(in srgb, #5a9bd3 12%, #121214)); }
 .desk-weather > .tile { flex: none; background: none; border: 0; border-radius: 0; }
 .desk-weather > #w-weather { padding-bottom: 6px; }
-/* Buienalarm onder het weer in hetzelfde vak, gescheiden door een dun lijntje; compact */
+/* Rain alarm below the weather in the same tile, separated by a thin line; compact */
 .desk #w-rain { border-top: 1px solid rgba(255, 255, 255, .12); padding-top: 9px; }
 .desk #w-rain .rn-flat { min-height: 26px; }
 .desk #w-rain .rn-chart { min-height: 48px; }
 .desk #w-rain .rn-foot { font-size: .72rem; }
-/* Bron rechts naast de zin in plaats van eronder: scheelt een regel */
+/* Source to the right of the sentence instead of below it: saves a line */
 .desk #w-rain .w-body, .tall #w-rain .w-body { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "head foot" "chart chart" "axis axis"; align-items: baseline; column-gap: 10px; }
 .desk #w-rain .rn-head, .tall #w-rain .rn-head { grid-area: head; min-width: 0; }
 .desk #w-rain .rn-foot, .tall #w-rain .rn-foot { grid-area: foot; text-align: right; white-space: nowrap; }
@@ -2045,7 +2045,7 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk .rn-text { font-size: 1.05rem; }
 .desk .rn-chart { min-height: 40px; }
 .desk #w-alerts { flex: 1 1 0; }
-/* Meldingen: alleen kaartjes die helemaal passen (alerts.js laat de rest weg), knop eronder */
+/* Notifications: only cards that fit completely (alerts.js leaves out the rest), button below */
 .desk #w-alerts .w-body { min-height: 0; }
 .desk #w-alerts .w-big { font-size: 1.7rem; display: flex; align-items: baseline; gap: 8px; }
 .desk #w-alerts .w-big small { margin: 0; }
@@ -2053,7 +2053,7 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk #w-alerts .al-fit { flex: 1 1 0; min-height: 0; overflow: hidden; align-content: start; }
 
 .desk #w-ah { flex: none; }
-/* Staafjes vullen de vrije ruimte in het vak (minstens 48px), met de uren erboven */
+/* Bars fill the free space in the tile (at least 48px), with the hours above them */
 .desk .ah-bars { flex: none; height: 56px; margin-top: 2px; }
 .desk #w-ah .w-sub { line-height: 1.25; }
 .desk #w-ah .w-label { line-height: 1.2; }
@@ -2064,7 +2064,7 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk .ah-days { font-size: .65rem; }
 .desk .ah-month b { font-size: 1.2rem; }
 
-/* Midden: speler als compacte strook, agenda vult de rest */
+/* Middle: player as a compact strip, agenda fills the rest */
 .desk .media-stack { flex: none; }
 .desk .media-stack > .player { padding: 12px 16px; border-radius: 22px; }
 .desk .media-stack.stacked-1 { padding-bottom: 26px; }
@@ -2095,7 +2095,7 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk .player-view .btn.pill { width: 64px; height: 40px; }
 .desk .player-view .btn.small { width: 36px; height: 36px; }
 .desk .player-view .btn.small svg { width: 20px; height: 20px; }
-/* Niets aan het spelen / inloggen: nog dunnere strook */
+/* Nothing playing / logging in: an even thinner strip */
 .desk .player .login-view .title, .desk .player .idle-view .title { font-size: 1.2rem; }
 .desk .player .login-view .row, .desk .player .idle-view .meta { margin-top: 8px; }
 .desk .player .devices { margin-top: 8px; }
@@ -2106,7 +2106,7 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk #calendar .view { min-height: 0; }
 .desk #calendar[data-state="main"] .cal-main { flex: 1; min-height: 0; }
 .desk .cal-list { --fit-source: box; flex: 1; min-height: 0; overflow: hidden; margin: 8px 0 4px; }
-/* Weekweergave: de datum staat al in de topbalk, de weeknavigatie komt ernaast op dezelfde hoogte */
+/* Week view: the date is already in the top bar, the week navigation goes next to it at the same height */
 .desk.week-mode #cal-today { display: none; }
 .desk.week-mode .cal-head { align-items: center; }
 .desk.week-mode .cal-head .eyebrow { margin: 0; }
@@ -2114,22 +2114,22 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk .cal-nav-btn { height: 30px; min-width: 30px; }
 .desk .agenda .title { font-size: 1.5rem; }
 
-/* Rechts: Canvas, F1, Episodes, film/laatst gekeken */
-.desk #w-canvas { flex: 0 1 auto; }   /* zo hoog als de inhoud: geen leeg vak bij weinig deadlines */
+/* Right: Canvas, F1, Episodes, film/last watched */
+.desk #w-canvas { flex: 0 1 auto; }   /* as tall as the content: no empty tile with few deadlines */
 .desk #w-canvas .w-big { font-size: 1.7rem; display: flex; align-items: baseline; gap: 8px; }
 .desk #w-canvas .w-big small { margin: 0; }
 .desk .cv-item.compact .cv-name { font-size: .88rem; }
 .desk .cv-meta { font-size: .72rem; margin-top: 0; }
 .desk #w-f1 { flex: .95 1 0; }
-/* F1: kop bovenaan, aftelklok groot links, circuit klein rechts */
+/* F1: header at the top, countdown big on the left, circuit small on the right */
 .desk #w-f1 .w-body { display: grid; grid-template-columns: minmax(0, 1fr) 42%; grid-template-rows: auto minmax(0, 1fr); grid-template-areas: "head track" "foot track"; gap: 6px 12px; }
 .desk #w-f1 .f1-head { grid-area: head; }
 .desk #w-f1 .f1-track { grid-area: track; position: relative; overflow: hidden; align-self: stretch; }
-/* Absoluut binnen het vak: zo past het circuit altijd in de beschikbare hoogte */
+/* Absolute inside the tile: that way the circuit always fits the available height */
 .desk #w-f1 .f1-track svg { position: absolute; inset: 8px; width: calc(100% - 16px); height: calc(100% - 16px); max-height: none; }
 .desk #w-f1 .w-body > .w-row { grid-area: foot; align-self: end; flex-direction: column; align-items: flex-start; gap: 6px; }
 .desk #w-f1 .w-btn { padding: 5px 12px; font-size: .78rem; }
-/* Uitslag na de race: kop over de hele breedte, daaronder podium | 4-10 | klassement */
+/* Results after the race: header across the full width, below it podium | 4-10 | standings */
 .desk #w-f1 .w-body.f1-res { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1.1fr); grid-template-rows: auto minmax(0, 1fr); grid-template-areas: "head head head" "pod rest champ"; gap: 4px 10px; }
 .desk #w-f1 .f1-res > .w-row:first-child { grid-area: head; align-self: start; flex-direction: row; }
 .desk #w-f1 .f1-res > .w-row:first-child .w-mid { font-size: 1rem; }
@@ -2171,7 +2171,7 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk-tabbar button[aria-selected="true"] { background: rgba(255, 255, 255, .1); color: var(--text); }
 .desk-tabs > .tile { flex: 1 1 0; background: none; border: 0; border-radius: 0; padding-top: 8px; }
 .desk-tabs > .tile > .eyebrow { display: none; }
-/* Laatst gekeken / Vrienden in een tabje: posters schalen mee met de hoogte die er is (nooit half afgesneden) */
+/* Last watched / Friends in a tab: posters scale with the height there is (never cut in half) */
 .desk-tabs #w-letterboxd .w-body > .w-row, .desk-tabs #w-friends .w-body > .w-row { display: none; }
 .desk-tabs .lb-row { height: auto; flex: 1 1 0; min-height: 0; margin: 0; container-type: size; }
 .desk-tabs .lb-film { width: max(24px, min(72px, calc((100cqh - 18px) / 1.5))); }
@@ -2180,7 +2180,7 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk #w-stars .w-body { flex-direction: row; align-items: stretch; gap: 12px; }
 .desk #w-stars .film { flex: 1; min-width: 0; }
 .desk #w-stars .film-actions { flex: none; width: 140px; margin: 0; grid-template-columns: 1fr; align-content: center; gap: 6px; }
-/* Poster zo hoog als het vak, breedte volgt (2:3) */
+/* Poster as tall as the tile, the width follows (2:3) */
 .desk #w-stars .film { align-items: stretch; min-height: 0; }
 .desk .film-poster { width: auto; height: 100%; min-height: 0; align-self: stretch; aspect-ratio: 2 / 3; }
 .desk .film-info { gap: 2px; }
@@ -2193,7 +2193,7 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk .fr-count { display: none; }
 .desk .lb-stars { font-size: .7rem; }
 
-/* Onderaan: Meer (mail, to-do, gezondheid), klapt naar boven uit over de onderste helft */
+/* At the bottom: More (mail, to-do, health), folds up over the bottom half */
 .desk-more { grid-area: more; position: relative; z-index: 30; }
 .desk-more-bar {
   width: 100%; display: flex; align-items: center; gap: 14px;
@@ -2209,7 +2209,7 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk-drawer {
   position: absolute; left: 0; right: 0; bottom: calc(100% + 10px);
   height: calc(50dvh - 40px);
-  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 12px;   /* één kolom per zichtbaar vak */
+  display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 12px;   /* one column per visible tile */
   padding: 12px; border-radius: 24px;
   background: rgba(14, 14, 16, .92); border: 1px solid rgba(255, 255, 255, .1);
   box-shadow: 0 -20px 60px rgba(0, 0, 0, .55);
@@ -2220,7 +2220,7 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .desk-more.open .desk-drawer { transform: none; opacity: 1; visibility: visible; pointer-events: auto; }
 .desk-drawer > .tile { min-height: 0; overflow: hidden; }
 
-/* Lage schermen (bijv. laptop 1366x768): bijzaken weg, zodat alles blijft passen */
+/* Low screens (e.g. laptop 1366x768): side things gone, so everything keeps fitting */
 @media (max-height: 820px) {
   .dashboard.desk { padding: 8px 10px; gap: 10px; }
   .desk-col { gap: 10px; }
@@ -2239,7 +2239,7 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
   .desk #w-canvas .w-body > .w-row { display: none; }
   .desk .cv-meta .cv-course { display: none; }
   .desk .f1-count { font-size: 2.1rem; }
-  /* Uitslag: kop op één regel, klassement top 3 */
+  /* Results: header on one line, standings top 3 */
   .desk #w-f1 .f1-res > .w-row:first-child .w-sub { display: none; }
   .desk #w-f1 .f1-res .f1-champ-row:nth-child(n+5) { display: none; }
   .desk #w-f1 .f1-res .f1-pod { padding: 1px 6px; }
@@ -2248,7 +2248,7 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
   .desk #w-ah .w-big { font-size: 1.7rem; }
 }
 
-/* Songtekst als pop-up boven het dashboard (zoals de weer-popup) */
+/* Lyrics as a pop-up above the dashboard (like the weather pop-up) */
 .desk #lyrics:not([hidden]) {
   position: fixed; z-index: 60; left: 50%; top: 50%; transform: translate(-50%, -50%);
   width: min(620px, 92vw); height: min(82dvh, 780px);
@@ -2261,8 +2261,8 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 @keyframes ly-pop { from { opacity: 0; transform: translate(-50%, -48%) scale(.96); } }
 .desk #lyrics .ly-line { font-size: 1.5rem; }
 
-/* ---------- Staand scherm, nieuw ontwerp (desk.js zet .tall) ---------- */
-/* Rood getal op het Gmail-icoon */
+/* ---------- Portrait screen, new design (desk.js sets .tall) ---------- */
+/* Red number on the Gmail icon */
 .tb-link { position: relative; }
 .tb-badge {
   position: absolute; top: 1px; right: 0;
@@ -2281,7 +2281,7 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .tall .tall-row > .tile { grid-column: auto !important; grid-row: auto !important; min-height: 0; }
 .tall-hidden { display: none; }
 
-/* Weer met het buienalarm erin: droog = één regel onderin, regen in de komende 2 uur = de grafiek klapt uit */
+/* Weather with the rain alarm in it: dry = one line at the bottom, rain in the next 2 hours = the chart unfolds */
 .tall .desk-weather { display: flex; flex-direction: column; min-width: 0; border-radius: 30px; overflow: hidden;
   border: 1px solid color-mix(in srgb, var(--c-sky) 26%, transparent);
   background: linear-gradient(150deg, color-mix(in srgb, var(--c-sky) 24%, #151518), color-mix(in srgb, #5a9bd3 10%, #121214)); }
@@ -2293,13 +2293,13 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .tall #w-rain .rn-foot { font-size: .75rem; }
 .tall #w-rain .w-body { gap: 6px; }
 
-/* Roterend vak: één onderdeel tegelijk, rustige crossfade */
+/* Rotating tile: one part at a time, a calm crossfade */
 .tall-rot { grid-column: 1 / -1; display: grid; position: relative; min-width: 0; }
-/* Allemaal in dezelfde cel; de hoogste bepaalt de hoogte, dus het vak verspringt niet bij het wisselen */
+/* All in the same cell; the tallest decides the height, so the tile doesn't jump when switching */
 .tall .tall-rot > .tile { grid-area: 1 / 1 !important; min-height: 280px; opacity: 0; visibility: hidden; transition: opacity .9s ease, visibility .9s; padding-bottom: 34px; }
 .tall .tall-rot > .tile.on { opacity: 1; visibility: visible; }
 .tall #w-letterboxd .lb-row, .tall #w-friends .lb-row { --lb-w: 128px; gap: 14px; }
-/* Film van vanavond: top 3 naast elkaar */
+/* Film tonight: top 3 side by side */
 .film3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
 .film3-item { display: flex; gap: 14px; min-width: 0; color: inherit; text-decoration: none; }
 .film3-item .film-poster { width: 110px; flex: none; align-self: flex-start; }
@@ -2310,19 +2310,19 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .film3-txt b { font-size: 1.05rem; line-height: 1.25; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
 .film3-rank { position: absolute; top: 6px; left: 6px; z-index: 1; display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(0, 0, 0, .7); font-size: .75rem; font-weight: 800; }
 .film3-actions { margin-top: 14px; grid-template-columns: auto; justify-content: start; }
-/* Episodes Left in het roterende vak: grote covers, zoveel als er op één rij passen */
+/* Episodes Left in the rotating tile: big covers, as many as fit on one row */
 .tall .ep-covers { flex-wrap: wrap; overflow: hidden; height: 252px; align-content: flex-start; gap: 16px; padding-top: 6px; }
 .tall .ep-cover { width: 140px; }
 .tall .ep-cover .img-box { width: 140px; }
-/* Weinig series (tot 4): grotere covers, verdeeld over de breedte */
+/* Few series (up to 4): bigger covers, spread over the width */
 .tall .ep-covers:not(:has(.ep-cover:nth-child(5))) { justify-content: space-evenly; height: 300px; }
 .tall .ep-covers:not(:has(.ep-cover:nth-child(5))) .ep-cover, .tall .ep-covers:not(:has(.ep-cover:nth-child(5))) .ep-cover .img-box { width: 176px; }
 .tall #w-episodes .w-big { font-size: 2.4rem; display: flex; align-items: baseline; gap: 10px; }
 .tall #w-episodes .w-big small { margin: 0; }
 .tall .ep-covers { padding-bottom: 4px; }
-/* Agenda: begrensde hoogte, de rest scrollt binnen het vak */
+/* Agenda: limited height, the rest scrolls inside the tile */
 .tall .cal-list { --fit-h: 540px; }
-/* Onderaan het roterende vak: ‹ bolletjes › (de pijltjes staan niet over de inhoud heen) */
+/* At the bottom of the rotating tile: ‹ dots › (the arrows aren't over the content) */
 .tall-nav { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); z-index: 2; display: flex; align-items: center; gap: 10px; }
 .tall-arrow { width: 28px; height: 28px; display: grid; place-items: center; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .08);
   color: var(--text); font: inherit; font-size: 1.2rem; line-height: 1; cursor: pointer; opacity: .7; transition: opacity .2s, background .2s; }
@@ -2331,35 +2331,35 @@ html.desk-mode, html.desk-mode body { height: 100%; overflow: hidden; }
 .tall-dots button { width: 9px; height: 9px; padding: 0; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .3); cursor: pointer; transition: width .3s, background .3s; }
 .tall-dots button[aria-current="true"] { width: 22px; border-radius: 99px; background: var(--accent); }
 
-/* Meer-balk (to-do) blijft onderaan in beeld */
+/* More bar (to-do) stays in view at the bottom */
 .tall .desk-more { grid-area: auto; grid-column: 1 / -1; position: sticky; bottom: 10px; z-index: 30; }
-/* Duidelijk los van de agenda die eronder doorloopt: bijna dicht, lichtere rand en schaduw */
+/* Clearly separate from the agenda continuing below it: almost solid, a lighter border and shadow */
 .tall .desk-more-bar { background: color-mix(in srgb, var(--tint) 22%, rgba(16, 16, 18, .97)); border-color: rgba(255, 255, 255, .18);
   box-shadow: 0 -10px 30px rgba(0, 0, 0, .55), 0 2px 10px rgba(0, 0, 0, .4); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
 .tall .desk-more-bar:hover { background: color-mix(in srgb, var(--tint) 30%, rgba(28, 28, 32, .98)); }
 .tall .desk-drawer { height: min(55dvh, 560px); grid-template-columns: none; grid-auto-columns: minmax(0, 420px); justify-content: center; }
 
-/* ---------- Animaties: alleen als er iets gebeurt, nooit doorlopend ---------- */
-/* Vakken schuiven zacht in bij het laden (motion.js zet --i en de klasse .intro) */
+/* ---------- Animations: only when something happens, never continuous ---------- */
+/* Tiles slide in softly on load (motion.js sets --i and the class .intro) */
 @keyframes rise {
   from { opacity: 0; transform: translateY(14px) scale(.985); }
   to { opacity: 1; transform: none; }
 }
-/* dash.js zet .booting terwijl de vakken nog laden; motion.js haalt het weg en start .intro */
+/* dash.js sets .booting while the tiles are still loading; motion.js removes it and starts .intro */
 body.booting .dashboard > .card, body.booting .media-stack, body.booting .widgets > .tile, body.booting .desk-col > *, body.booting .desk-more, body.booting .tall-row > *, body.booting .tall-rot { opacity: 0; }
 body.intro .dashboard > .card, body.intro .media-stack, body.intro .widgets > .tile, body.intro .desk-col > *, body.intro .desk-more, body.intro .tall-row > *, body.intro .tall-rot {
   animation: rise .9s cubic-bezier(.2, .7, .2, 1) both;
   animation-delay: calc(var(--i, 0) * 75ms);
 }
 
-/* Hoes wisselt met een crossfade (spotify.js gebruikt View Transitions); de rest van de pagina wisselt direct */
+/* The cover switches with a crossfade (spotify.js uses View Transitions); the rest of the page switches directly */
 #cover { view-transition-name: player-cover; }
 ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 ::view-transition-group(player-cover) { animation-duration: .7s; }
 ::view-transition-old(player-cover), ::view-transition-new(player-cover) { animation-duration: .7s; height: 100%; object-fit: cover; }
 .player::before { transition: background-image 1s; }
 
-/* Pop-ups openen met een korte schaal-fade */
+/* Pop-ups open with a short scale fade */
 @keyframes pop-in {
   from { opacity: 0; transform: scale(.96); }
   to { opacity: 1; transform: none; }
@@ -2368,13 +2368,13 @@ body.intro .dashboard > .card, body.intro .media-stack, body.intro .widgets > .t
 dialog[open] { animation: pop-in .35s cubic-bezier(.2, .8, .2, 1); }
 dialog[open]::backdrop { animation: fade-in .35s ease; }
 
-/* ---------- Telefoon met tabbalk (phone.js; desk.js zet .phone en html.phone-mode; sinds 0.45.0) ---------- */
+/* ---------- Phone with a tab bar (phone.js; desk.js sets .phone and html.phone-mode; since 0.45.0) ---------- */
 .dashboard.phone { gap: 10px; padding: 10px 10px calc(76px + env(safe-area-inset-bottom)); }
 body.ph-has-mini .dashboard.phone { padding-bottom: calc(132px + env(safe-area-inset-bottom)); }
 .phone .ph-pane { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
 .phone .ph-pane[hidden], .phone .ph-pane [hidden], .ph-hidden { display: none !important; }
-/* Topbalk alleen op Vandaag (en als Feeds, Mijn data of Spelletjes open is: daar zit de sluitknop in) */
-body[data-ph-tab]:not([data-ph-tab="vandaag"]):not(.feeds-open):not(.mydata-open):not(.games-open) .phone > .topbar { display: none; }
+/* Top bar only on Today (and when Feeds, My data or Games is open: the close button is in it) */
+body[data-ph-tab]:not([data-ph-tab="today"]):not(.feeds-open):not(.mydata-open):not(.games-open) .phone > .topbar { display: none; }
 html.phone-mode body:not(.minimal) .topbar { gap: 8px; padding: 12px 12px 10px 16px; border-radius: 22px; }
 html.phone-mode body:not(.minimal) .tb-clock { flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
 html.phone-mode body:not(.minimal) .tb-time { font-size: 1.7rem; }
@@ -2390,13 +2390,13 @@ html.phone-mode body:not(.minimal) .topbar.ph-search-open .tb-search { display: 
 html.phone-mode body:not(.minimal) .ph-search-btn { display: grid; }
 html.phone-mode body:not(.minimal) .tb-links { top: 100%; margin-top: 6px; }
 
-/* Kopregel per tabblad */
+/* Header per tab */
 .ph-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: max(6px, env(safe-area-inset-top)) 6px 2px; }
 .ph-head h2 { margin: 0; font-size: 1.45rem; font-weight: 750; }
 .ph-link { border: 0; background: none; color: var(--muted); font: inherit; font-size: .9rem; cursor: pointer; padding: 6px 4px; }
 .ph-seg button { padding: 6px 14px; font-size: .85rem; }
 
-/* Kaartjes */
+/* Cards */
 .ph-card {
   display: flex; flex-direction: column; gap: 4px; min-width: 0;
   padding: 10px 14px; border: 1px solid rgba(255, 255, 255, .06); border-radius: 18px;
@@ -2421,7 +2421,7 @@ button.ph-card:active { transform: scale(.985); }
 .ph-ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .ph-btn { margin-top: auto; padding: 7px 12px; border: 0; border-radius: 99px; background: var(--c-checkin); color: #1a1124; font: inherit; font-size: .85rem; font-weight: 700; cursor: pointer; }
 
-/* Vandaag */
+/* Today */
 .ph-chips { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; margin: 0 -10px; padding: 0 10px; }
 .ph-chips::-webkit-scrollbar { display: none; }
 .ph-chip { flex: none; display: inline-flex; align-items: center; gap: 7px; padding: 7px 12px; border: 0; border-radius: 99px; background: rgba(255, 255, 255, .08); color: var(--text); font: inherit; font-size: .82rem; white-space: nowrap; cursor: pointer; }
@@ -2481,10 +2481,10 @@ button.ph-card:active { transform: scale(.985); }
 .ph-ev-rain.wet { color: #9fb3d1; }
 .ph-ev-count { flex: none; padding: 3px 9px; border-radius: 99px; background: rgba(229, 72, 77, .2); color: #ff8a8d; font-size: .75rem; font-weight: 700; }
 .phone .ph-pane[data-tab="agenda"] #calendar { padding: 14px; border-radius: 20px; }
-/* Weekstand: de eigen kop (titel, Lijst/Week) van de agenda niet dubbel; vorige/volgende/Vandaag blijven */
+/* Week view: the agenda's own header (title, List/Week) not twice; previous/next/Today stay */
 .phone .ph-pane[data-tab="agenda"] #calendar .cal-head { display: none; }
 
-/* Media: compacte speler (hoes links, tekst en balk rechts, knoppen eronder) */
+/* Media: compact player (cover on the left, text and bar on the right, buttons below) */
 .phone #spotify { padding: 14px; border-radius: 22px; }
 .phone .player-view {
   grid-template-columns: 104px minmax(0, 1fr);
@@ -2518,7 +2518,7 @@ button.ph-card:active { transform: scale(.985); }
 /* Data */
 .ph-ci { background: color-mix(in srgb, var(--c-checkin) 10%, rgba(30, 24, 34, .9)); }
 .ph-ci-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
-/* Check-in compact: per schaal één regel (naam links, vijf knoppen rechts), notitie en opslaan naast elkaar */
+/* Check-in compact: one line per scale (name on the left, five buttons on the right), note and save side by side */
 .ph-ci .ci-form { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 5px 8px; }
 .ph-ci .ci-row { grid-column: 1 / -1; display: grid; grid-template-columns: 70px minmax(0, 1fr); align-items: center; gap: 6px; }
 .ph-ci .ci-label { font-size: .8rem; letter-spacing: 0; text-transform: none; }
@@ -2540,7 +2540,7 @@ button.ph-card:active { transform: scale(.985); }
 .ph-memory { border-style: dashed; border-color: rgba(255, 255, 255, .18); background: none; }
 .phone .version { padding: 4px 0 0; text-align: center; }
 
-/* Minispeler en tabbalk: vast onderaan */
+/* Mini player and tab bar: fixed at the bottom */
 .ph-bar {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
   display: grid; grid-template-columns: repeat(4, 1fr);
@@ -2572,7 +2572,7 @@ button.ph-card:active { transform: scale(.985); }
 body.minimal :is(.ph-bar, .ph-mini, .ph-pane) { display: none !important; }
 body:is(.feeds-open, .mydata-open, .games-open) .ph-mini { display: none; }
 
-/* ---------- Zijbalk op de pc (rail.js, alleen in desk; sinds 0.46.0) ---------- */
+/* ---------- Sidebar on the PC (rail.js, only in desk; since 0.46.0) ---------- */
 .rail {
   position: fixed; left: 0; top: 0; bottom: 0; z-index: 45; width: 56px;
   display: flex; flex-direction: column; justify-content: space-between; align-items: center;
@@ -2590,23 +2590,23 @@ body:is(.feeds-open, .mydata-open, .games-open) .ph-mini { display: none; }
 .rail-dot { position: absolute; top: 7px; right: 7px; width: 8px; height: 8px; border-radius: 50%; background: #e5484d; box-shadow: 0 0 0 2px rgba(18, 17, 23, .92); }
 .rail-dot[hidden] { display: none; }
 body.minimal .rail { display: none; }
-/* Ruimte voor de balk: dashboard en pagina's schuiven op; de knoppen die nu in de balk zitten, uit de topbalk */
+/* Room for the bar: dashboard and pages move along; the buttons that are now in the bar, out of the top bar */
 html.desk-mode body:not(.minimal) .dashboard.desk { padding-left: 68px; }
 html.desk-mode body:not(.minimal) :is(.feeds-page, .md-page, .gm-page) { left: 56px; }
 html.desk-mode body:not(.minimal) .topbar :is(.tb-feeds, .tb-mydata, .tb-settings, .tb-games, .tb-focus, .tb-min) { display: none; }
-/* Agenda als eigen laag, zoals Feeds en Mijn data */
+/* Agenda as its own layer, like Feeds and My data */
 .ag-layer { position: fixed; top: 120px; left: 68px; right: 12px; bottom: 12px; z-index: 4; display: flex; flex-direction: column; min-height: 0; animation: fd-in .35s ease; }
 .ag-layer[hidden] { display: none; }
 .ag-layer #calendar { flex: 1 1 0; }
 body.agenda-open .dashboard > :not(.topbar, .ag-layer) { opacity: 0 !important; pointer-events: none; }
 body.agenda-open .tall-rot > .tile { visibility: hidden !important; }
 
-/* Offline (dash.js): klein balkje bovenaan */
+/* Offline (dash.js): a small bar at the top */
 #offline-note { position: fixed; top: max(8px, env(safe-area-inset-top)); left: 50%; transform: translateX(-50%); z-index: 60; padding: 6px 14px; border-radius: 99px; background: #e0a53a; color: #1d1405; font-size: .82rem; font-weight: 700; box-shadow: 0 8px 24px rgba(0, 0, 0, .4); }
 #offline-note[hidden] { display: none; }
 
-/* Beweging beperken (instelling van het apparaat): alles uit */
-/* ---------- Inloggen (vault.js, sinds 0.47.0) ---------- */
+/* Reduce motion (a device setting): everything off */
+/* ---------- Log in (vault.js, since 0.47.0) ---------- */
 .panel-dialog.vault-dialog { --c: #0060ff; width: min(420px, calc(100vw - 24px)); height: fit-content; max-height: calc(100dvh - 24px); overflow-y: auto; }
 .vault-form { display: flex; flex-direction: column; gap: 12px; padding: 26px 28px 22px; }
 .vault-form h2 { margin: 0; font-size: 1.25rem; }
@@ -2624,8 +2624,8 @@ body.agenda-open .tall-rot > .tile { visibility: hidden !important; }
 .st-body .w-btn { margin-top: 6px; }
 .vault-list { margin: 10px 0; padding-left: 20px; font-size: .9rem; }
 .vault-list .ok { color: #5bd38a; }
-.vault-list .nee { color: var(--muted); }
-/* Supabase-koppeling bovenin Instellingen › Inloggen (sync.js, sinds 1.1.0) */
+.vault-list .no { color: var(--muted); }
+/* Supabase link at the top of Settings › Log in (sync.js, since 1.1.0) */
 .sb-part { margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid rgba(255, 255, 255, .1); }
 .sb-head { margin: 0 0 6px; font-size: 1rem; }
 .sb-part .sb-bad { color: #ff8a5c; }
@@ -2638,8 +2638,8 @@ body.agenda-open .tall-rot > .tile { visibility: hidden !important; }
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
 }
 
-/* ---------- Windows-app (?app=pc, appbar.js): eigen titelbalk bovenaan, de rest schuift eronder ----------
-   --app-h = hoogte van de balk; alles wat 100dvh of top: 0 gebruikt krijgt die hoogte eraf. Schermvullend (F11) = geen balk. */
+/* ---------- Windows app (?app=pc, appbar.js): own title bar at the top, the rest moves below it ----------
+   --app-h = the bar's height; everything that uses 100dvh or top: 0 gets that height subtracted. Full screen (F11) = no bar. */
 .app-bar { display: none; }
 html.app { --app-h: 30px; }
 html.app.app-full { --app-h: 0px; }
@@ -2664,7 +2664,7 @@ html.app.app-full .app-bar { display: none; }
 .app-btn:hover { background: rgba(255, 255, 255, .08); }
 .app-btn.app-close:hover { background: #c42b1c; color: #fff; }
 html.app-maxed .app-max svg path { d: path('M1.5 3h5.5v5.5h-5.5zM3 3v-1.5h5.5v5.5h-1.5'); }
-/* Wat de balk anders zou overlappen */
+/* What the bar would otherwise overlap */
 html.app .dashboard.desk { height: calc(100dvh - var(--app-h)); }
 html.app .rail { top: var(--app-h); }
 html.app body.minimal .topbar { top: var(--app-h); }
@@ -2680,13 +2680,13 @@ html.app .panel-dialog.page-dialog { height: calc(100dvh - var(--app-h)); }
   html.app .panel-dialog.settings-dialog { height: calc(100dvh - var(--app-h)); }
 }
 
-/* ---------- Kamer als startscherm (kamer.js): laag over het dashboard tot je op de monitor/telefoon klikt ---------- */
-body.kamer-on { overflow: hidden; }
-.kamer { position: fixed; left: 0; right: 0; bottom: 0; top: var(--app-h, 0px); z-index: 85; background: #0b0820; overflow: hidden; }
-.kamer-gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; image-rendering: pixelated; opacity: 0; transition: opacity .4s; }
-.kamer.ready .kamer-gl { opacity: 1; }
-/* Tekstvak zoals een DS-spel */
-.kamer-box {
+/* ---------- Room as start screen (room.js): a layer over the dashboard until you click the monitor/phone ---------- */
+body.room-on { overflow: hidden; }
+.room { position: fixed; left: 0; right: 0; bottom: 0; top: var(--app-h, 0px); z-index: 85; background: #0b0820; overflow: hidden; }
+.room-gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; image-rendering: pixelated; opacity: 0; transition: opacity .4s; }
+.room.ready .room-gl { opacity: 1; }
+/* Text box like a DS game */
+.room-box {
   position: absolute; left: 50%; bottom: max(20px, env(safe-area-inset-bottom)); transform: translateX(-50%);
   width: min(760px, calc(100% - 32px)); min-height: 84px; box-sizing: border-box;
   padding: 14px 22px; display: block; text-align: left; cursor: pointer;
@@ -2694,22 +2694,22 @@ body.kamer-on { overflow: hidden; }
   box-shadow: 0 6px 0 rgba(0, 0, 0, .4); color: #fff;
   font: 400 clamp(22px, 2.4vw, 32px)/1.1 VT323, 'Lucida Console', monospace;
 }
-.kamer-box:focus-visible { outline: 3px solid #f2d14a; outline-offset: 3px; }
-.kamer-who { position: absolute; left: 20px; top: -30px; padding: 0 14px; background: #f2d14a; color: #1a1450; border: 3px solid #fff; border-bottom: 0; border-radius: 8px 8px 0 0; font-size: 22px; line-height: 26px; }
-.kamer.going .kamer-box { opacity: 0; transition: opacity .2s; }
-.kamer-copies { position: absolute; inset: 0; pointer-events: none; }
-.kamer-copy, .kamer-part { position: absolute; left: 0; top: 0; display: block; }
-.kamer-part.mid { z-index: 2; }
-@media (prefers-reduced-motion: reduce) { .kamer-gl { transition: none; } }
-/* PS1-korrel: vaste ruis, even grof als de lage pixels (kamer.js zet de grootte) */
-.kamer-grain { position: absolute; inset: 0; pointer-events: none; image-rendering: pixelated; mix-blend-mode: soft-light; opacity: .3; }
+.room-box:focus-visible { outline: 3px solid #f2d14a; outline-offset: 3px; }
+.room-who { position: absolute; left: 20px; top: -30px; padding: 0 14px; background: #f2d14a; color: #1a1450; border: 3px solid #fff; border-bottom: 0; border-radius: 8px 8px 0 0; font-size: 22px; line-height: 26px; }
+.room.going .room-box { opacity: 0; transition: opacity .2s; }
+.room-copies { position: absolute; inset: 0; pointer-events: none; }
+.room-copy, .room-part { position: absolute; left: 0; top: 0; display: block; }
+.room-part.mid { z-index: 2; }
+@media (prefers-reduced-motion: reduce) { .room-gl { transition: none; } }
+/* PS1 grain: fixed noise, as coarse as the low pixels (room.js sets the size) */
+.room-grain { position: absolute; inset: 0; pointer-events: none; image-rendering: pixelated; mix-blend-mode: soft-light; opacity: .3; }
 
-/* ---------- 1.0 op tall (sinds 0.59.0) ---------- */
-/* Knop voor de dunne speler alleen op tall */
+/* ---------- 1.0 on tall (since 0.59.0) ---------- */
+/* Button for the thin player only on tall */
 .dashboard:not(.tall) #player-size { display: none; }
 .btn#player-size[aria-pressed="true"] { color: var(--accent); }
 
-/* Dunne speler: zelfde strook als liggend (desk), met de songtekst ernaast even hoog */
+/* Thin player: the same strip as landscape (desk), with the lyrics next to it the same height */
 .tall.player-thin .media-stack { grid-row: auto; }
 .tall.player-thin .media-stack > .player { padding: 14px 18px; border-radius: 24px; }
 .tall.player-thin .media-stack.stacked-1 { padding-bottom: 26px; }
@@ -2743,11 +2743,11 @@ body.kamer-on { overflow: hidden; }
 .tall.player-thin .player .muted { margin: 4px 0 0; font-size: .9rem; }
 .tall.player-thin #lyrics { grid-row: auto; padding: 14px 20px; border-radius: 24px; }
 .tall.player-thin #lyrics .ly-line { font-size: 1.05rem; margin-bottom: 8px; }
-/* 0.60.2: de standaard-padding (35% van de breedte, boven én onder) is in de lage strook hoger dan het vak zelf,
-   waardoor de huidige regel onder de rand viel. Hier vaste ruimte van ongeveer een half vak. */
+/* 0.60.2: the default padding (35% of the width, top and bottom) is taller than the tile itself in the low strip,
+   so the current line fell below the edge. Here a fixed space of about half a tile. */
 .tall.player-thin .ly-scroll { padding: 48px 0; -webkit-mask-image: linear-gradient(transparent, #000 28%, #000 72%, transparent); mask-image: linear-gradient(transparent, #000 28%, #000 72%, transparent); }
 
-/* Rij Canvas · Meldingen · Gezondheid: even brede kolommen; Canvas zonder open deadlines valt weg */
+/* Row Canvas · Notifications · Health: equally wide columns; Canvas without open deadlines drops out */
 .tall-auto { grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
 .tall #w-canvas.cv-none { display: none; }
 .tall #w-canvas .w-big { font-size: 2.2rem; display: flex; align-items: baseline; gap: 8px; }
@@ -2759,14 +2759,14 @@ body.kamer-on { overflow: hidden; }
 .tall #w-health > .w-body { flex: 1 1 auto; display: flex; flex-direction: column; gap: 12px; min-height: 0; }
 .tall #w-health .hl-bars { flex: 1 1 auto; height: auto; min-height: 64px; }
 
-/* ---------- Memory Lane (sinds 0.60.0, alleen tall in het roterende vak) ---------- */
+/* ---------- Memory Lane (since 0.60.0, only tall in the rotating tile) ---------- */
 #w-memory { --c: #b48cff; }
 .mm-wrap { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 28px; min-height: 0; }
 .mm-main { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
 .mm-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
 .mm-date { font-size: 1.6rem; color: color-mix(in srgb, var(--c) 45%, #ffd27a); }
 .mm-label { display: block; font-size: .75rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: color-mix(in srgb, var(--c) 70%, white); }
-.mm-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); grid-auto-rows: 1fr; gap: 12px; flex: 1 1 auto; max-height: 260px; }   /* vult de lege ruimte als er weinig is (0.60.1) */
+.mm-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); grid-auto-rows: 1fr; gap: 12px; flex: 1 1 auto; max-height: 260px; }   /* fills the empty space when there's little (0.60.1) */
 .mm-stat { justify-content: center; }
 .mm-stat { display: flex; flex-direction: column; gap: 4px; padding: 14px 18px; min-height: 92px; border-radius: 16px; background: rgba(255, 255, 255, .06); min-width: 0; color: inherit; text-decoration: none; }
 a.mm-stat:hover, a.mm-stat:focus-visible { background: rgba(255, 255, 255, .11); }

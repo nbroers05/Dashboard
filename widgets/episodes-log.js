@@ -1,16 +1,16 @@
 'use strict';
 
-// Episodes Left-logboek voor het privé archief: bewaart per serie hoeveel afleveringen er nog open staan, zodat het
-// archief per dag kan uitrekenen welke series je keek en hoeveel afleveringen. De extensie zelf blijft ongewijzigd:
-// we luisteren naar hetzelfde bericht als het Episodes-vak ({ title, left }). Het aantal uitgezonden afleveringen
-// komt van AniList (zelfde zoekvraag als de covers), zodat gekeken = uitgezonden − nog open; zo telt een nieuwe
-// aflevering die je meteen kijkt ook mee. Alleen met het data-token (DASH_DATA), nooit in demo-modus.
-// Hooguit één momentopname per half uur, en alleen als er iets veranderd is. Data: data/episodes-left/<jjjj-mm>.csv.
+// Episodes Left log for the private archive: saves per series how many episodes are still open, so the
+// archive can work out per day which series you watched and how many episodes. The extension itself stays unchanged:
+// we listen to the same message as the Episodes tile ({ title, left }). The number of aired episodes
+// comes from AniList (the same query as the covers), so watched = aired − still open; that way a new
+// episode you watch right away counts too. Only with the data token (DASH_DATA), never in demo mode.
+// At most one snapshot per half hour, and only when something changed. Data: data/episodes-left/<yyyy-mm>.csv.
 (() => {
   const { store } = DASH;
   const D = window.DASH_DATA;
   if (!D || DASH.DEMO) return;
-  const AIRED = 'episodes.aired';      // { titel: { at, aired, id } }, 6 uur geldig
+  const AIRED = 'episodes.aired';      // { title: { at, aired, id } }, valid for 6 hours
   const LAST = 'episodes.logged';      // { at, sig }
   const COLS = ['timestamp_utc', 'timestamp_local', 'source', 'collected_at', 'id', 'title', 'left', 'aired', 'watched', 'anilist_id'];
   let busy = false, timer = 0;
@@ -55,7 +55,7 @@
       await D.appendRows(`data/episodes-left/${local.slice(0, 7)}.csv`, COLS, out, `Episodes Left ${stamp}`);
       store.set(LAST, { at: Date.now(), sig });
     } catch (e) {
-      console.warn('Episodes Left-logboek:', e.message);   // volgende keer opnieuw; het vak zelf werkt gewoon door
+      console.warn('Episodes Left log:', e.message);   // again next time; the tile itself just keeps working
     } finally {
       busy = false;
     }

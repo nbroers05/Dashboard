@@ -1,7 +1,7 @@
 'use strict';
 
-// Songtekst naast de speler. Spotify geeft zelf geen teksten via hun API; deze komen van LRCLIB (gratis, geen sleutel).
-// Gesynchroniseerde teksten lopen mee met het nummer; klik op een regel om daarheen te spoelen.
+// Lyrics next to the player. Spotify gives no lyrics via its API; these come from LRCLIB (free, no key).
+// Synced lyrics run along with the track; click a line to seek there.
 DASH.widget('lyrics', (card, body, guard) => {
   const { h, store } = DASH;
   const dash = document.querySelector('.dashboard');
@@ -11,13 +11,13 @@ DASH.widget('lyrics', (card, body, guard) => {
   const API = 'https://lrclib.net/api';
 
   const cache = new Map();        // track-id → { lines: [{t, text}] | null, plain: string | null, instrumental }
-  let shown = null;               // track-id die nu in het vak staat
+  let shown = null;               // track id that's in the tile now
   let lines = null;
   let active = -1;
   let userScrollUntil = 0;
   let tickTimer = null;
 
-  // ---------- Openen / sluiten ----------
+  // ---------- Opening / closing ----------
   function setOpen(open) {
     card.hidden = !open;
     dash.classList.toggle('lyrics-open', open);
@@ -33,7 +33,7 @@ DASH.widget('lyrics', (card, body, guard) => {
   document.getElementById('lyrics-close').addEventListener('click', () => setOpen(false));
 
   // ---------- Ophalen ----------
-  // "winter 4ever - Sped Up" → "winter 4ever"; ook (Remastered 2009), feat. enz.
+  // "winter 4ever - Sped Up" → "winter 4ever"; also (Remastered 2009), feat. etc.
   const clean = (s) => s
     .replace(/\s*[-–]\s*(sped up|slowed.*|nightcore|remaster(ed)?.*|live.*|radio edit|single version|mono|stereo).*$/i, '')
     .replace(/\s*[([](sped up|slowed[^)\]]*|feat\.[^)\]]*|with [^)\]]*|remaster[^)\]]*|\d{4} remaster[^)\]]*)[)\]]/gi, '')
@@ -44,7 +44,7 @@ DASH.widget('lyrics', (card, body, guard) => {
     return m ? { t: (Number(m[1]) * 60 + Number(m[2])) * 1000, text: m[3].trim() } : null;
   }).filter(Boolean);
 
-  // 404 = niet gevonden; elke andere fout (LRCLIB plat, 502 enz.) gooit, zodat het niet als 'geen tekst' onthouden wordt
+  // 404 = not found; any other error (LRCLIB down, 502 etc.) throws, so it isn't remembered as 'no lyrics'
   async function get(path, params) {
     const res = await fetch(`${API}/${path}?${new URLSearchParams(params)}`);
     if (res.ok) return res.json();
@@ -54,10 +54,10 @@ DASH.widget('lyrics', (card, body, guard) => {
 
   async function find(track) {
     const durS = Math.round(track.duration / 1000);
-    // 1. Exact op titel, artiest, album en duur
+    // 1. Exactly on title, artist, album and duration
     const exact = await get('get', { track_name: track.name, artist_name: track.artist, album_name: track.album, duration: durS });
     if (exact) return { hit: exact, scale: 1 };
-    // 2. Zoeken met een opgeschoonde titel; dichtstbijzijnde duur met tekst wint
+    // 2. Search with a cleaned-up title; the closest duration with lyrics wins
     const name = clean(track.name);
     let list = (await get('search', { track_name: name, artist_name: track.artist })) || [];
     if (!list.length && name !== track.name) {
@@ -67,7 +67,7 @@ DASH.widget('lyrics', (card, body, guard) => {
     if (!withText.length) return null;
     withText.sort((a, b) => (!!b.syncedLyrics - !!a.syncedLyrics) || Math.abs(a.duration - durS) - Math.abs(b.duration - durS));
     const hit = withText[0];
-    // Sped up / slowed versie: de tijden van het origineel naar deze versie omrekenen
+    // Sped up / slowed version: convert the original's times to this version
     const ratio = hit.duration ? durS / hit.duration : 1;
     return { hit, scale: Math.abs(ratio - 1) > 0.03 && ratio > 0.5 && ratio < 1.6 ? ratio : 1 };
   }
@@ -88,7 +88,7 @@ DASH.widget('lyrics', (card, body, guard) => {
     return entry;
   }
 
-  // ---------- Tonen ----------
+  // ---------- Showing ----------
   function note(text) {
     lines = null;
     box.classList.remove('plain');
@@ -97,20 +97,20 @@ DASH.widget('lyrics', (card, body, guard) => {
 
   async function show(track) {
     if (card.hidden) return;
-    if (!track) { shown = null; return note('Speel een nummer af om de songtekst te zien.'); }
+    if (!track) { shown = null; return note('Play a track to see the lyrics.'); }
     if (shown === track.id) return;
     shown = track.id;
-    note('Songtekst zoeken…');
+    note('Finding lyrics…');
     let entry;
     try {
       entry = await load(track);
     } catch {
-      if (shown === track.id) note('Kon de songtekst niet ophalen (LRCLIB reageert niet). Volgende nummer of opnieuw openen probeert het weer.');
+      if (shown === track.id) note('Couldn\'t fetch the lyrics (LRCLIB isn\'t responding). The next track or opening again tries again.');
       cache.delete(track.id);
       shown = null;
       return;
     }
-    if (shown !== track.id) return; // intussen een ander nummer
+    if (shown !== track.id) return; // another track in the meantime
     active = -1;
     box.scrollTop = 0;
     if (entry.instrumental) return note('Instrumentaal ♪');
@@ -128,13 +128,13 @@ DASH.widget('lyrics', (card, body, guard) => {
     if (entry.plain) {
       lines = null;
       box.classList.add('plain');
-      box.replaceChildren(h('p', 'ly-note', 'Niet gesynchroniseerd'), ...entry.plain.split('\n').map((t) => h('p', 'ly-line', t || ' ')));
+      box.replaceChildren(h('p', 'ly-note', 'Not synced'), ...entry.plain.split('\n').map((t) => h('p', 'ly-line', t || ' ')));
       return;
     }
-    note('Geen songtekst gevonden voor dit nummer.');
+    note('No lyrics found for this track.');
   }
 
-  // Huidige regel oplichten en in het midden houden (behalve vlak nadat je zelf scrolt)
+  // Light up the current line and keep it in the middle (except right after you scroll yourself)
   function tick() {
     if (!lines || card.hidden || typeof window.spotifyPosition !== 'function') return;
     const pos = window.spotifyPosition() + 250;
@@ -160,7 +160,7 @@ DASH.widget('lyrics', (card, body, guard) => {
     if (l) { userScrollUntil = 0; window.spotifySeek(Math.round(l.t)); }
   });
 
-  // Vak van grootte veranderd (dunne/grote speler, ander scherm): huidige regel meteen weer in het midden (0.60.2)
+  // The tile changed size (thin/big player, another screen): the current line back in the middle right away (0.60.2)
   window.addEventListener('resize', () => {
     const cur = active >= 0 && box.children[active];
     if (cur && !card.hidden && Date.now() > userScrollUntil) requestAnimationFrame(() => { box.scrollTop = cur.offsetTop - box.clientHeight / 2 + cur.offsetHeight / 2; });

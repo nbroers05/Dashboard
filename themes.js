@@ -1,19 +1,19 @@
 'use strict';
 
-// Thema's (sinds 0.44.0; bouwt voort op de feestdagenversie 0.42.0). Statisch geladen, werkt ook met ?mini=1.
-// Elk thema is een eigen bestand in themes/ (uitleg bovenin themes/standaard.js) en meldt zich met DASH_THEMES.add({...}).
-// Dit bestand kiest welk thema er nu geldt en tekent het:
-//   - topbalk: kleur (html[data-theme] + --th1/--th2), groet .tb-greet, icoontje in de dagregel, versiering erboven (.th-top)
-//   - achtergrond (.th-bg) en één gedeeld doek voor vallende deeltjes (.th-parts) ACHTER de vakken, dus nooit over tekst
-//   - versiering op de vakken (.th-deco): alleen in een hoek of rand waar geen tekst, knop of plaatje zit (free())
-//   - eenmalige effecten (confetti, vuurwerk) één keer per dag per browser (theme.fx), op een doek over de pagina
-// Automatisch: een feestdag gaat boven het seizoen, het echte weer (Open-Meteo, 20 min cache) komt erbovenop.
-// Telefoon (≤ 700px): alleen topbalkkleur, groet en achtergrond. Minimale modus: alles behalve vakversiering (er zijn geen vakken).
-// Beweging beperken: alleen stilstaand (geen deeltjes, geen effecten, niets knippert). Tentamenweek: ook alles stil.
-// Instellingen (tabje Thema in settings.js) staan in localStorage theme.settings; "Bekijk als datum" in sessionStorage.
+// Themes (since 0.44.0; builds on the holiday version 0.42.0). Loaded directly, also works with ?mini=1.
+// Each theme is its own file in themes/ (explained at the top of themes/default.js) and registers with DASH_THEMES.add({...}).
+// This file picks which theme applies now and draws it:
+//   - top bar: color (html[data-theme] + --th1/--th2), greeting .tb-greet, icon in the day line, decoration above it (.th-top)
+//   - background (.th-bg) and one shared canvas for falling particles (.th-parts) BEHIND the tiles, so never over text
+//   - decoration on the tiles (.th-deco): only in a corner or edge without text, buttons or images (free())
+//   - one-off effects (confetti, fireworks) once a day per browser (theme.fx), on a canvas over the page
+// Automatic: a holiday beats the season, the real weather (Open-Meteo, 20 min cache) goes on top.
+// Phone (≤ 700px): only top bar color, greeting and background. Minimal mode: everything except tile decoration (there are no tiles).
+// Reduced motion: only still decoration (no particles, no effects, nothing blinks). Exam week: everything still too.
+// Settings (Theme tab in settings.js) are in localStorage theme.settings; "View as date" in sessionStorage.
 //
-// Testen: ?datum=JJJJ-MM-DD doet alsof het die dag is, ?thema=<naam> of ?<naam> zet een thema vast (effect dan altijd),
-// ?weer=sneeuw|regen|zon|koud doet alsof het zulk weer is.
+// Testing: ?date=YYYY-MM-DD pretends it's that day, ?theme=<name> or ?<name> forces a theme (effect then always),
+// ?weather=snow|rain|sun|cold pretends it's that weather.
 window.DASH_THEMES = (() => {
   const { h, store } = DASH;
   const root = document.documentElement;
@@ -27,40 +27,41 @@ window.DASH_THEMES = (() => {
   const addDays = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n, 12);
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const phoneMq = matchMedia('(max-width: 700px)');
-  const FILES = ['standaard', 'herfst', 'winter', 'lente', 'zomer', 'halloween', 'sinterklaas', 'kerst', 'oudennieuw',
-    'valentijn', 'pasen', 'koningsdag', 'bevrijdingsdag', 'verjaardag', 'f1', 'tentamen'];
+  const FILES = ['default', 'autumn', 'winter', 'spring', 'summer', 'halloween', 'sinterklaas', 'christmas', 'newyear',
+    'valentine', 'easter', 'kingsday', 'liberationday', 'birthday', 'f1', 'exams'];
 
-  // ---------- Eigen verjaardag uit het privé archief (config.json → persoonlijk.verjaardag, sinds 0.49.0) ----------
-  // Met het archief-token (ook na inloggen met de bundel, vault.js) klopt hij zo op elke computer. datarepo.js laadt
-  // pas met het volledige dashboard: daarom bij dash:data-token en een paar seconden na het laden.
+  // ---------- Own birthday from the private archive (config.json → personal.birthday, since 0.49.0) ----------
+  // With the archive token (also after logging in with the bundle, vault.js) it's right on every computer. datarepo.js only
+  // loads with the full dashboard: hence on dash:data-token and a few seconds after load.
   async function personal() {
     const D = window.DASH_DATA;
     if (DASH.DEMO || !D || !D.token()) return;
     try {
       const f = await D.read('config.json');
-      const b = f && (JSON.parse(f.text).persoonlijk || {}).verjaardag;
+      const cfg = f && JSON.parse(f.text);
+      const b = cfg && ((cfg.personal || {}).birthday || (cfg.persoonlijk || {}).verjaardag);   // old names as fallback
       if (b && /^\d{4}-\d{2}-\d{2}$/.test(b) && b !== store.get('theme.birthday')) { store.set('theme.birthday', b); refresh(); }
-    } catch (e) { console.warn('[themes] verjaardag uit archief', e); }
+    } catch (e) { console.warn('[themes] birthday from archive', e); }
   }
   window.addEventListener('dash:data-token', personal);
   window.addEventListener('load', () => setTimeout(personal, 4000));
 
-  // ---------- Eigen verjaardag eenmalig instellen via de link (staat niet in de code: de repo is openbaar) ----------
-  const setB = params.get('mijnverjaardag');
+  // ---------- Set your own birthday once via the link (it's not in the code: the repo is public) ----------
+  const setB = params.get('mybirthday');
   if (setB && /^\d{4}-\d{2}-\d{2}$/.test(setB)) {
     store.set('theme.birthday', setB);
-    params.delete('mijnverjaardag');
+    params.delete('mybirthday');
     history.replaceState(null, '', location.pathname + (params.toString() ? `?${params}` : '') + location.hash);
     document.addEventListener('DOMContentLoaded', () => {
       const t = document.getElementById('toast');
       if (!t) return;
-      t.textContent = 'Verjaardag opgeslagen in deze browser 🎂';
+      t.textContent = 'Birthday saved in this browser 🎂';
       t.classList.add('show');
       setTimeout(() => t.classList.remove('show'), 4000);
     });
   }
 
-  // ---------- Hulpjes voor de themabestanden ----------
+  // ---------- Helpers for the theme files ----------
   function easter(y) {
     const a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25);
     const g = Math.floor((b - f + 1) / 3), hh = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4;
@@ -68,17 +69,17 @@ window.DASH_THEMES = (() => {
     const month = Math.floor((hh + l - 7 * m + 114) / 31);
     return new Date(y, month - 1, ((hh + l - 7 * m + 114) % 31) + 1, 12);
   }
-  // 'MM-DD' tussen van en tot (ook over de jaarwisseling heen)
+  // 'MM-DD' between from and to (also across New Year)
   const between = (d, from, to) => { const x = md(d); return from <= to ? x >= from && x <= to : x >= from || x <= to; };
   const daysUntil = (d, mmdd) => {
     let t = noon(`${d.getFullYear()}-${mmdd}`);
     if (t < noon(isoDay(d))) t = noon(`${d.getFullYear() + 1}-${mmdd}`);
     return Math.round((t - noon(isoDay(d))) / 86400000);
   };
-  const inDays = (n) => (n === 1 ? 'morgen' : `over ${n} dagen`);
-  // Agenda: live uit calendar.js, anders de bewaarde (minimale modus)
+  const inDays = (n) => (n === 1 ? 'tomorrow' : `in ${n} days`);
+  // Agenda: live from calendar.js, otherwise the saved one (minimal mode)
   const calEvents = () => (window.DASH_CALENDAR && window.DASH_CALENDAR.connected ? window.DASH_CALENDAR.events : (store.get('google.events') || {}).events) || [];
-  // Seeded toeval: dezelfde dag geeft dezelfde vakken en hoeken
+  // Seeded randomness: the same day gives the same tiles and corners
   function rng(str) {
     let a = 0;
     for (const ch of str) a = (Math.imul(a, 31) + ch.charCodeAt(0)) | 0;
@@ -90,10 +91,10 @@ window.DASH_THEMES = (() => {
     };
   }
   const svgUrl = (svg) => `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
-  // Sneeuwkapje bovenop een vak (kerst, winter in december)
+  // Snow cap on top of a tile (Christmas, winter in December)
   const snowCap = '<svg viewBox="0 0 200 14" preserveAspectRatio="none"><path d="M0 0H200V6Q195 12 188 8T172 9T156 7T140 10T124 8T108 10T92 7T76 9T60 8T44 10T28 7T12 9T0 7Z" fill="#f2f6ff" fill-opacity=".92"/></svg>';
 
-  // ---------- Registratie ----------
+  // ---------- Registration ----------
   const themes = [], byId = {}, aliases = {}, kinds = {};
   let ready = false;
   function add(t) {
@@ -106,14 +107,20 @@ window.DASH_THEMES = (() => {
   }
   const kind = (name, def) => { kinds[name] = def; };
 
-  // ---------- Instellingen ----------
-  // style: 'huisstijl' (sinds 1.2.0 standaard, huisstijl.css + huisstijl.js), 'modern' of 'y2k'; stand: 'auto' | 'digital' | 'poster' | 'titel'
-  const DEFAULTS = { choice: 'auto', all: true, particles: true, deco: true, topbar: true, bg: true, weather: true, fx: true, amount: 'normaal', serif: true, style: 'huisstijl', stand: 'auto' };
-  const AMOUNT = { rustig: { parts: 10, deco: 0.5 }, normaal: { parts: 30, deco: 1 }, feestje: { parts: 60, deco: 1.6 } };
-  // Opgeslagen instellingen van vóór 1.2.0 hebben altijd style: 'modern' (de oude standaard) zonder styleV: die gaan naar de huisstijl
+  // ---------- Settings ----------
+  // style: 'housestyle' (default since 1.2.0, housestyle.css + housestyle.js), 'modern' or 'y2k'; mood: 'auto' | 'digital' | 'poster' | 'titlecard'
+  const DEFAULTS = { choice: 'auto', all: true, particles: true, deco: true, topbar: true, bg: true, weather: true, fx: true, amount: 'normal', serif: true, style: 'housestyle', mood: 'auto' };
+  const AMOUNT = { calm: { parts: 10, deco: 0.5 }, normal: { parts: 30, deco: 1 }, party: { parts: 60, deco: 1.6 } };
+  // Settings saved before 1.2.0 always have style: 'modern' (the old default) without styleV: those go to the house style.
+  // Values saved before 1.7.0 were Dutch; the migration at the top of index.html converts them, this does it again to be safe.
+  const OLD = { huisstijl: 'housestyle', titel: 'titlecard', rustig: 'calm', normaal: 'normal', feestje: 'party' };
   const settings = () => {
     const saved = store.get('theme.settings') || {}, s = { ...DEFAULTS, ...saved };
-    if (saved.styleV !== 2) s.style = 'huisstijl';
+    if (saved.stand && !saved.mood) s.mood = saved.stand;
+    for (const k of ['style', 'mood', 'amount']) if (OLD[s[k]]) s[k] = OLD[s[k]];
+    if (window.DASH_OLD_THEME_IDS && DASH_OLD_THEME_IDS[s.choice]) s.choice = DASH_OLD_THEME_IDS[s.choice];
+    delete s.stand;
+    if (saved.styleV !== 2) s.style = 'housestyle';
     return s;
   };
   function set(key, value) {
@@ -125,44 +132,44 @@ window.DASH_THEMES = (() => {
     style();
     refresh();
   }
-  // Schreefcijfers (grote hoofdgetallen in een schreefletter, html.serif-nums): los van "Alle effecten", meteen bij laden
+  // Serif digits (big numbers in a serif face, html.serif-nums): separate from "All effects", applied right at load
   const serif = () => root.classList.toggle('serif-nums', settings().serif !== false);
   serif();
-  // Stijl (html.y2k, opmaak in y2k.css): los van het thema, dus seizoenen en feestdagen blijven werken. ?stijl=y2k|modern om te testen
-  const urlStyle = /^(y2k|modern|huisstijl)$/.test(params.get('stijl') || '') ? params.get('stijl') : null;
+  // Style (html.y2k, styles in y2k.css): separate from the theme, so seasons and holidays keep working. ?style=y2k|modern to test
+  const urlStyle = /^(y2k|modern|housestyle)$/.test(params.get('style') || '') ? params.get('style') : null;
   const style = () => {
     const st = urlStyle || settings().style;
     root.classList.toggle('y2k', st === 'y2k');
-    root.classList.toggle('nh-want', st === 'huisstijl');   // huisstijl.js zet html.nh (nog niet op de telefoon)
-    window.DASH_HUISSTIJL?.refresh();
-    window.dispatchEvent(new Event('resize'));   // vensterranden en titelbalken veranderen de maten: indelingen opnieuw laten meten
+    root.classList.toggle('nh-want', st === 'housestyle');   // housestyle.js sets html.nh (not on the phone)
+    window.DASH_HOUSESTYLE?.refresh();
+    window.dispatchEvent(new Event('resize'));   // window borders and title bars change sizes: let the layouts measure again
   };
   style();
   const session = {
     get(k) { try { return sessionStorage.getItem(k); } catch { return null; } },
     set(k, v) { try { if (v == null) sessionStorage.removeItem(k); else sessionStorage.setItem(k, v); } catch {} },
   };
-  const urlDay = /^\d{4}-\d{2}-\d{2}$/.test(params.get('datum') || '') ? params.get('datum') : null;
+  const urlDay = /^\d{4}-\d{2}-\d{2}$/.test(params.get('date') || '') ? params.get('date') : null;
   const viewIso = () => urlDay || session.get('theme.viewDate');
   function viewDate(iso) { session.set('theme.viewDate', iso && /^\d{4}-\d{2}-\d{2}$/.test(iso) ? iso : null); refresh(); }
   const today = () => (viewIso() ? noon(viewIso()) : new Date());
 
-  // ---------- Welk thema ----------
+  // ---------- Which theme ----------
   function forced() {
-    const name = params.get('thema') || [...params.keys()].find((k) => byId[k] || aliases[k]);
+    const name = params.get('theme') || [...params.keys()].find((k) => byId[k] || aliases[k]);
     if (!name) return null;
     if (aliases[name]) return aliases[name];
     return byId[name] ? { id: name } : null;
   }
-  // Gegevens die de when()-regels mogen gebruiken (één keer per keer kiezen opgehaald)
+  // Data the when() rules may use (fetched once per pick)
   function context() {
     const f1 = store.get('f1.schedule.v2');
     return { events: calEvents(), f1: (f1 && f1.sessions) || [], birthday: store.get('theme.birthday'), wx: wxState() };
   }
   function pick(day, data) {
-    const hits = themes.filter((t) => { try { return t.when && t.when(day, data); } catch (e) { console.warn('[thema]', t.id, e); return false; } });
-    const season = hits.filter((t) => t.tier === 'seizoen').sort((a, b) => b.prio - a.prio)[0];
-    return [season, ...hits.filter((t) => t.tier !== 'seizoen').sort((a, b) => a.prio - b.prio)].filter(Boolean);
+    const hits = themes.filter((t) => { try { return t.when && t.when(day, data); } catch (e) { console.warn('[theme]', t.id, e); return false; } });
+    const season = hits.filter((t) => t.tier === 'season').sort((a, b) => b.prio - a.prio)[0];
+    return [season, ...hits.filter((t) => t.tier !== 'season').sort((a, b) => a.prio - b.prio)].filter(Boolean);
   }
   function current(data) {
     const s = settings(), f = forced(), day = today();
@@ -170,52 +177,52 @@ window.DASH_THEMES = (() => {
     if (s.choice !== 'auto' && byId[s.choice]) return { layers: [byId[s.choice]], fixed: true, day };
     return { layers: pick(day, data), fixed: false, day };
   }
-  const names = (l) => l.filter((t) => t.id !== 'standaard').map((t) => t.name).join(' + ') || 'Standaard';
-  // "nu: Herfst + Halloween · vanaf zo: Herfst"
+  const names = (l) => l.filter((t) => t.id !== 'default').map((t) => t.name).join(' + ') || 'Default';
+  // "now: Autumn + Halloween · from Sun: Autumn"
   function describe() {
     const data = context(), day = today(), now = pick(day, data);
     const key = (l) => l.map((t) => t.id).join();
-    let text = `nu: ${names(now)}`;
+    let text = `now: ${names(now)}`;
     for (let i = 1; i <= 120; i++) {
       const d = addDays(day, i), l = pick(d, data);
       if (key(l) === key(now)) continue;
-      const when = i < 7 ? d.toLocaleDateString('nl-NL', { weekday: 'short' }) : d.toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' });
-      text += ` · vanaf ${when}: ${names(l)}`;
+      const when = i < 7 ? d.toLocaleDateString('en-GB', { weekday: 'short' }) : d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+      text += ` · from ${when}: ${names(l)}`;
       break;
     }
     const w = settings().weather && !viewIso() ? wxState() : null;
-    if (w && w.kind) text += ` · echt weer: ${w.kind}`;
+    if (w && w.kind) text += ` · real weather: ${w.kind}`;
     return text;
   }
 
-  // ---------- Echt weer ----------
-  const WX_TEST = params.get('weer');
+  // ---------- Real weather ----------
+  const WX_TEST = params.get('weather');
   function wxState() {
-    if (WX_TEST) return { kind: WX_TEST === 'koud' ? null : WX_TEST, temp: WX_TEST === 'koud' || WX_TEST === 'sneeuw' ? -1 : 14 };
+    if (WX_TEST) return { kind: WX_TEST === 'cold' ? null : WX_TEST, temp: WX_TEST === 'cold' || WX_TEST === 'snow' ? -1 : 14 };
     const c = store.get('theme.wx');
-    return c && Date.now() - c.at < 3 * 3600000 ? c : null;
+    return c && c.v === 2 && Date.now() - c.at < 3 * 3600000 ? c : null;   // v2 = English kinds (1.7.0)
   }
   let wxBusy = false;
   async function loadWx() {
     const c = store.get('theme.wx');
-    if (WX_TEST || wxBusy || (c && Date.now() - c.at < 20 * 60000)) return;
+    if (WX_TEST || wxBusy || (c && c.v === 2 && Date.now() - c.at < 20 * 60000)) return;
     wxBusy = true;
     try {
       const d = await DASH.getJSON('https://api.open-meteo.com/v1/forecast?' + new URLSearchParams({
         latitude: DASH.HOME.lat, longitude: DASH.HOME.lon, current: 'temperature_2m,weather_code,is_day', timezone: 'Europe/Amsterdam' }));
       const code = d.current.weather_code;
-      const kindOf = [71, 73, 75, 77, 85, 86].includes(code) ? 'sneeuw' : (code >= 51 && code <= 67) || (code >= 80 && code <= 99) ? 'regen'
-        : code <= 1 && d.current.is_day ? 'zon' : null;
-      store.set('theme.wx', { at: Date.now(), kind: kindOf, temp: d.current.temperature_2m });
+      const kindOf = [71, 73, 75, 77, 85, 86].includes(code) ? 'snow' : (code >= 51 && code <= 67) || (code >= 80 && code <= 99) ? 'rain'
+        : code <= 1 && d.current.is_day ? 'sun' : null;
+      store.set('theme.wx', { v: 2, at: Date.now(), kind: kindOf, temp: d.current.temperature_2m });
       refresh();
     } catch (e) {
-      console.warn('[thema] weer lukt niet:', e);
+      console.warn('[theme] weather failed:', e);
     } finally {
       wxBusy = false;
     }
   }
 
-  // ---------- Topbalk: groet, kleur, dagregel-icoon, versiering ----------
+  // ---------- Top bar: greeting, color, day-line icon, decoration ----------
   let greet = null, viewChip = null, topEl = null, dropsEl = null;
   function topbarParts() {
     if (greet || !dayEl) return;
@@ -225,12 +232,12 @@ window.DASH_THEMES = (() => {
     viewChip = h('button', 'th-view');
     viewChip.type = 'button';
     viewChip.hidden = true;
-    viewChip.title = 'Terug naar vandaag';
+    viewChip.title = 'Back to today';
     viewChip.onclick = () => viewDate(null);
     dayEl.insertBefore(viewChip, greet);
   }
-  // Lampjes, vlaggetjes of een slinger net boven de topbalk (in de ruimte erboven, nooit over tekst)
-  // f < 1: kleiner getekend als er weinig ruimte boven de topbalk is (compacte liggende stand)
+  // Lights, flags or a garland just above the top bar (in the space above it, never over text)
+  // f < 1: drawn smaller when there's little room above the top bar (compact landscape layout)
   const GARLAND_BOTTOM = { lights: 24, flags: 26, garland: 22, stars: 17 };
   function garland(type, colors, width, f = 1) {
     const W = Math.max(200, Math.round(width / f)), H = 30, span = W > 900 ? 240 : 160;
@@ -251,7 +258,7 @@ window.DASH_THEMES = (() => {
     return `<svg viewBox="0 0 ${W} ${H}" width="${Math.round(W * f)}" height="${Math.round(H * f)}" aria-hidden="true">${cord}${items}</svg>`;
   }
   function drops(width) {
-    const r = rng('regen'), W = Math.round(width);
+    const r = rng('rain'), W = Math.round(width);
     let s = '';
     for (let i = 0; i < Math.round(W / 70); i++) {
       const x = 20 + r() * (W - 40), sz = 3 + r() * 2.5;
@@ -262,7 +269,7 @@ window.DASH_THEMES = (() => {
   let topKey = '';
   function topDeco(spec, rain) {
     const br = bar ? bar.getBoundingClientRect() : { width: 0 }, width = br.width - 48;
-    // Ruimte: van de bovenkant van de pagina tot de eerste tekst/knop in de topbalk
+    // Room: from the top of the page to the first text/button in the top bar
     const parts = bar ? [...bar.querySelectorAll('.tb-clock, .tb-links, .tb-research, .tb-search, .tb-actions')].filter((e) => e.offsetParent) : [];
     const contentTop = parts.length ? Math.min(...parts.map((e) => e.getBoundingClientRect().top)) - br.top : 14;
     const above = br.top + scrollY;
@@ -289,7 +296,7 @@ window.DASH_THEMES = (() => {
     }
   }
 
-  // ---------- Achtergrond ----------
+  // ---------- Background ----------
   let bgEl = null;
   function background(css) {
     if (!css) { if (bgEl) bgEl.hidden = true; return; }
@@ -302,7 +309,7 @@ window.DASH_THEMES = (() => {
     if (bgEl.dataset.css !== css) { bgEl.dataset.css = css; bgEl.style.background = css; }
   }
 
-  // ---------- Vallende deeltjes: één doek achter de vakken ----------
+  // ---------- Falling particles: one canvas behind the tiles ----------
   const P = { cv: null, ctx: null, parts: [], mix: [], target: 0, raf: 0, last: 0, W: 0, H: 0, s: 1, key: '' };
   function sizeCanvas() {
     if (!P.cv) return;
@@ -356,7 +363,7 @@ window.DASH_THEMES = (() => {
     P.key = key;
     P.mix = mix.filter((m) => kinds[m.kind]);
     P.target = P.mix.length ? target : 0;
-    root.classList.toggle('th-falling', P.target > 0);   // minimale modus: topbalk doorzichtiger, zodat je ze ziet
+    root.classList.toggle('th-falling', P.target > 0);   // minimal mode: top bar more transparent, so you see them
     if (!P.target) {
       if (P.raf) cancelAnimationFrame(P.raf);
       P.raf = 0;
@@ -368,7 +375,7 @@ window.DASH_THEMES = (() => {
       P.cv = h('canvas', 'th-parts');
       P.cv.setAttribute('aria-hidden', 'true');
       document.body.prepend(P.cv);
-      if (bgEl) document.body.prepend(bgEl);   // achtergrond onder de deeltjes
+      if (bgEl) document.body.prepend(bgEl);   // background below the particles
       P.ctx = P.cv.getContext('2d');
       sizeCanvas();
     }
@@ -376,20 +383,20 @@ window.DASH_THEMES = (() => {
     P.parts = P.parts.filter((p) => P.mix.some((m) => kinds[m.kind] === p.k));
     startParts();
   }
-  document.addEventListener('visibilitychange', startParts);   // verborgen tabblad = stil
+  document.addEventListener('visibilitychange', startParts);   // hidden tab = still
   let resizeTimer = 0;
   addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => { sizeCanvas(); topKey = ''; refresh(); placeDeco(); }, 300);
   });
 
-  // Standaardsoorten deeltjes (een thema kan er zelf een bij maken met DASH_THEMES.kind)
+  // Standard particle kinds (a theme can add its own with DASH_THEMES.kind)
   const pick1 = (list) => list[Math.floor(Math.random() * list.length)];
-  kind('sneeuw', {
+  kind('snow', {
     init(p) { p.size = 1.4 + Math.random() * 2.4; p.vy = 0.45 + Math.random() * 0.7; p.vx = (Math.random() - 0.5) * 0.3; p.amp = 0.35; p.a = 0.55 + Math.random() * 0.4; },
     draw(ctx, p, s) { ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(0, 0, p.size * s, 0, 6.28); ctx.fill(); },
   });
-  kind('blad', {
+  kind('leaf', {
     init(p) { p.size = 7 + Math.random() * 6; p.vy = 0.5 + Math.random() * 0.5; p.vx = (Math.random() - 0.3) * 0.4; p.vr = (Math.random() - 0.5) * 0.04; p.amp = 0.9; p.sw = 0.025; p.a = 0.85;
       p.c = pick1(['#d9772b', '#c4501f', '#e3a33a', '#a8461c', '#c98a2c']); },
     draw(ctx, p, s) {
@@ -405,12 +412,12 @@ window.DASH_THEMES = (() => {
       ctx.beginPath(); ctx.moveTo(0, -z * 0.8); ctx.lineTo(0, z * 1.2); ctx.stroke();
     },
   });
-  kind('bloesem', {
+  kind('blossom', {
     init(p) { p.size = 3.5 + Math.random() * 3; p.vy = 0.35 + Math.random() * 0.45; p.vx = 0.15 + Math.random() * 0.3; p.vr = (Math.random() - 0.5) * 0.05; p.amp = 0.7; p.a = 0.85;
       p.c = pick1(['#ffc2d6', '#ffd9e6', '#fff0f5', '#f7a8c4']); },
     draw(ctx, p, s) { ctx.fillStyle = p.c; ctx.beginPath(); ctx.ellipse(0, 0, p.size * s, p.size * 0.6 * s, 0, 0, 6.28); ctx.fill(); },
   });
-  kind('hartje', {
+  kind('heart', {
     init(p) { p.size = 5 + Math.random() * 5; p.vy = 0.4 + Math.random() * 0.4; p.vr = (Math.random() - 0.5) * 0.02; p.amp = 0.5; p.a = 0.8; p.c = pick1(['#ff5f8f', '#ff8fb1', '#e6395f']); },
     draw(ctx, p, s) {
       const z = p.size * s;
@@ -426,26 +433,26 @@ window.DASH_THEMES = (() => {
     init(p) { p.size = 4 + Math.random() * 4; p.vy = 0.8 + Math.random() * 0.8; p.vr = (Math.random() - 0.5) * 0.15; p.amp = 0.6; p.c = pick1(['#b48cff', '#ff7aa8', '#ffcf5c', '#7ad7ff', '#9cff8a']); },
     draw(ctx, p, s) { ctx.fillStyle = p.c; ctx.fillRect(-p.size * s / 2, -p.size * s / 4, p.size * s, p.size * s / 2); },
   });
-  kind('regen', {
+  kind('rain', {
     init(p) { p.size = 10 + Math.random() * 10; p.vy = 7 + Math.random() * 4; p.vx = -0.8; p.amp = 0; p.r = 0.08; p.a = 0.28 + Math.random() * 0.2; },
     draw(ctx, p, s) { ctx.strokeStyle = '#a9c8ff'; ctx.lineWidth = 1.2 * s; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, p.size * s); ctx.stroke(); },
   });
 
-  // ---------- Huisstijl (sinds 1.4.0): deeltjes, teken en slinger ----------
-  // Deeltjes als lijntekening of pixel in --feest en --ink (kleuren één keer per refresh uit de stijl gelezen)
-  const NHC = { feest: '#d7261e', ink: '#16130f' };
+  // ---------- House style (since 1.4.0): particles, mark and garland ----------
+  // Particles as a line drawing or pixel in --holiday and --ink (colors read from the styles once per refresh)
+  const NHC = { holiday: '#d7261e', ink: '#16130f' };
   function nhColors() {
     const cs = getComputedStyle(root);
-    NHC.feest = cs.getPropertyValue('--feest').trim() || NHC.feest;
+    NHC.holiday = cs.getPropertyValue('--holiday').trim() || NHC.holiday;
     NHC.ink = cs.getPropertyValue('--ink').trim() || NHC.ink;
   }
-  const NH_KINDS = ['sneeuw', 'blad', 'bloesem', 'hartje', 'confetti', 'regen'];
-  const nhInit = (p, size, vy) => { p.size = size + Math.random() * size * 0.6; p.vy = vy + Math.random() * vy * 0.6; p.vx = (Math.random() - 0.5) * 0.3; p.amp = 0.4; p.a = 0.9; p.c = Math.random() < 0.6 ? 'feest' : 'ink'; };
-  kind('nh-sneeuw', {   // pixelvlokje: plusje van vier blokjes
+  const NH_KINDS = ['snow', 'leaf', 'blossom', 'heart', 'confetti', 'rain'];
+  const nhInit = (p, size, vy) => { p.size = size + Math.random() * size * 0.6; p.vy = vy + Math.random() * vy * 0.6; p.vx = (Math.random() - 0.5) * 0.3; p.amp = 0.4; p.a = 0.9; p.c = Math.random() < 0.6 ? 'holiday' : 'ink'; };
+  kind('nh-snow', {   // pixel flake: a plus of four blocks
     init(p) { nhInit(p, 2, 0.45); p.vr = 0; p.r = 0; p.c = 'ink'; },
     draw(ctx, p, s) { const z = Math.round(p.size * s); ctx.fillStyle = NHC.ink; ctx.fillRect(-z / 2, -z * 1.5, z, z * 3); ctx.fillRect(-z * 1.5, -z / 2, z * 3, z); },
   });
-  kind('nh-blad', {
+  kind('nh-leaf', {
     init(p) { nhInit(p, 7, 0.5); p.vr = (Math.random() - 0.5) * 0.04; p.amp = 0.9; p.sw = 0.025; },
     draw(ctx, p, s) {
       const z = p.size * s;
@@ -453,11 +460,11 @@ window.DASH_THEMES = (() => {
       ctx.beginPath(); ctx.moveTo(0, -z); ctx.quadraticCurveTo(z * 0.9, -z * 0.3, 0, z); ctx.quadraticCurveTo(-z * 0.9, -z * 0.3, 0, -z); ctx.moveTo(0, -z * 0.6); ctx.lineTo(0, z * 1.2); ctx.stroke();
     },
   });
-  kind('nh-bloesem', {
+  kind('nh-blossom', {
     init(p) { nhInit(p, 4, 0.35); p.vx = 0.2; p.amp = 0.7; },
     draw(ctx, p, s) { ctx.strokeStyle = NHC[p.c]; ctx.lineWidth = 1.4 * s; ctx.beginPath(); ctx.arc(0, 0, p.size * s, 0, 6.28); ctx.stroke(); },
   });
-  kind('nh-hartje', {
+  kind('nh-heart', {
     init(p) { nhInit(p, 6, 0.4); p.vr = (Math.random() - 0.5) * 0.02; },
     draw(ctx, p, s) {
       const z = p.size * s;
@@ -471,41 +478,41 @@ window.DASH_THEMES = (() => {
     init(p) { nhInit(p, 4, 0.8); p.vr = (Math.random() - 0.5) * 0.15; },
     draw(ctx, p, s) { ctx.fillStyle = NHC[p.c]; ctx.fillRect(-p.size * s / 2, -p.size * s / 4, p.size * s, p.size * s / 2); },
   });
-  kind('nh-regen', {
+  kind('nh-rain', {
     init(p) { p.size = 10 + Math.random() * 8; p.vy = 7 + Math.random() * 4; p.vx = -0.6; p.amp = 0; p.r = 0.08; p.a = 0.35; },
     draw(ctx, p, s) { ctx.strokeStyle = NHC.ink; ctx.lineWidth = 1 * s; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, p.size * s); ctx.stroke(); },
   });
-  kind('nh-stip', {   // alles waar geen eigen huisstijlversie van is (pepernoten, eitjes, sterretjes): een pixelblokje
+  kind('nh-dot', {   // anything without its own house-style version (pepernoten, eggs, stars): a pixel block
     init(p) { nhInit(p, 3, 0.6); p.vr = 0; p.r = 0; },
     draw(ctx, p, s) { const z = Math.round(p.size * s); ctx.fillStyle = NHC[p.c]; ctx.fillRect(-z / 2, -z / 2, z, z); },
   });
-  // Teken (Japans woord van het thema) vóór de groet, en de slinger boven de topbalk
-  let nhTekenEl = null, nhSlingerEl = null, nhSlingerKey = '';
-  function nhTop(F, slinger) {
-    if (dayEl && !nhTekenEl && greet) {
-      nhTekenEl = h('span', 'nh-teken');
-      nhTekenEl.hidden = true;
-      dayEl.insertBefore(nhTekenEl, greet);
+  // Mark (the theme's Japanese word) before the greeting, and the garland above the top bar
+  let nhMarkEl = null, nhGarlandEl = null, nhGarlandKey = '';
+  function nhTop(F, garland) {
+    if (dayEl && !nhMarkEl && greet) {
+      nhMarkEl = h('span', 'nh-mark');
+      nhMarkEl.hidden = true;
+      dayEl.insertBefore(nhMarkEl, greet);
     }
-    if (nhTekenEl) {
-      nhTekenEl.hidden = !F;
-      if (F && nhTekenEl.textContent !== F.teken) nhTekenEl.textContent = F.teken;
+    if (nhMarkEl) {
+      nhMarkEl.hidden = !F;
+      if (F && nhMarkEl.textContent !== F.mark) nhMarkEl.textContent = F.mark;
     }
-    const width = slinger && bar ? Math.round(bar.getBoundingClientRect().width) : 0;
-    const key = slinger ? `${width}` : '';
-    if (key === nhSlingerKey) return;
-    nhSlingerKey = key;
-    if (nhSlingerEl) { nhSlingerEl.remove(); nhSlingerEl = null; }
-    if (slinger && width > 0) {
-      nhSlingerEl = h('div', 'nh-slinger-wrap');
-      nhSlingerEl.innerHTML = window.DASH_HUISSTIJL.slingerSvg(width);
-      bar.append(nhSlingerEl);
+    const width = garland && bar ? Math.round(bar.getBoundingClientRect().width) : 0;
+    const key = garland ? `${width}` : '';
+    if (key === nhGarlandKey) return;
+    nhGarlandKey = key;
+    if (nhGarlandEl) { nhGarlandEl.remove(); nhGarlandEl = null; }
+    if (garland && width > 0) {
+      nhGarlandEl = h('div', 'nh-garland-wrap');
+      nhGarlandEl.innerHTML = window.DASH_HOUSESTYLE.garlandSvg(width);
+      bar.append(nhGarlandEl);
     }
   }
 
-  // ---------- Versiering op de vakken ----------
-  // Spec in een thema: { type: 'corner', id, svg, size | w+h, max, corners: ['tr', ...], inset: [x, y], mirror, card, if(data) }
-  //                   { type: 'cap', svg, h }  (rand bovenop elk vak)   { type: 'edge', cls, card? }  (alleen de rand zelf)
+  // ---------- Decoration on the tiles ----------
+  // Spec in a theme: { type: 'corner', id, svg, size | w+h, max, corners: ['tr', ...], inset: [x, y], mirror, card, if(data) }
+  //                  { type: 'cap', svg, h }  (edge on top of each tile)   { type: 'edge', cls, card? }  (just the border)
   let decoSpecs = [], decoSeed = '', decoKey = '', decoTimer = 0;
   const OCCUPY = 'img, svg, button, input, select, textarea, canvas, video, iframe, .img-box, [role="slider"], a, .w-big, .seg';
   function visible(el) {
@@ -513,7 +520,7 @@ window.DASH_THEMES = (() => {
     const r = el.getBoundingClientRect();
     return r.width > 120 && r.height > 90;
   }
-  // Rechthoeken van alles wat je niet wilt bedekken: tekst (per regel), knoppen, plaatjes, grote getallen
+  // Rectangles of everything you don't want to cover: text (per line), buttons, images, big numbers
   function occupied(card) {
     const cr = card.getBoundingClientRect(), area = cr.width * cr.height, out = [];
     const walker = document.createTreeWalker(card, NodeFilter.SHOW_TEXT);
@@ -551,8 +558,8 @@ window.DASH_THEMES = (() => {
       if (spec.type === 'edge') { for (const c of pool) plan.push({ card: c, spec, corner: 'all' }); continue; }
       if (spec.type === 'cap') { for (const c of pool) if (free(c, rectFor(c, spec))) plan.push({ card: c, spec, corner: 'band' }); continue; }
       const r = rng(`${decoSeed}|${spec.id}`);
-      // Vakken die je nu ziet eerst (niet in de dichte Meer-lade, niet ver onder beeld)
-      // (en in het roterende vak op tall alleen het onderdeel dat nu voorkomt)
+      // Tiles you can see now first (not in the closed More drawer, not far below the screen)
+      // (and in the rotating tile on tall only the part that's showing now)
       const seen = (c) => !c.closest('.desk-more:not(.open)') && !(c.closest('.tall-rot') && !c.classList.contains('on')) && c.getBoundingClientRect().top < innerHeight * 1.5;
       const order = pool.map((c) => [r() + (seen(c) ? 0 : 1), c]).sort((a, b) => a[0] - b[0]).map((x) => x[1]);
       let n = spec.max || 1;
@@ -592,12 +599,12 @@ window.DASH_THEMES = (() => {
       p.card.append(el);
     }
   }
-  // Inhoud komt later binnen (agenda, posters): een paar keer opnieuw kijken, daarna elke minuut
+  // Content arrives later (agenda, posters): look again a few times, then every minute
   [2500, 6000, 12000, 25000].forEach((ms) => setTimeout(() => decoSpecs.length && placeDeco(), ms));
   DASH.every(60 * 1000, () => decoSpecs.length && placeDeco());
   window.addEventListener('dash:layout', () => setTimeout(() => { topKey = ''; refresh(); placeDeco(); }, 400));
 
-  // ---------- Eenmalige effecten (confetti, vuurwerk): ~4 s op een doek over de pagina, daarna weg ----------
+  // ---------- One-off effects (confetti, fireworks): ~4 s on a canvas over the page, then gone ----------
   function effect(kindName) {
     if (reduced.matches) return;
     const cv = h('canvas', 'th-fx');
@@ -606,7 +613,7 @@ window.DASH_THEMES = (() => {
     const W = (cv.width = innerWidth * devicePixelRatio), H = (cv.height = innerHeight * devicePixelRatio);
     const s = devicePixelRatio;
     let colors = kindName === 'confetti' ? ['#b48cff', '#ff7aa8', '#ffcf5c', '#7ad7ff', '#9cff8a'] : ['#f5c542', '#ff7a59', '#7ad7ff', '#ffffff', '#ff5f8f'];
-    if (window.DASH_HUISSTIJL && DASH_HUISSTIJL.active()) { nhColors(); colors = [NHC.feest, NHC.feest, NHC.ink]; }   // huisstijl: feestkleur en ink
+    if (window.DASH_HOUSESTYLE && DASH_HOUSESTYLE.active()) { nhColors(); colors = [NHC.holiday, NHC.holiday, NHC.ink]; }   // house style: holiday color and ink
     let parts = [];
     if (kindName === 'confetti') {
       parts = Array.from({ length: 160 }, () => ({ x: Math.random() * W, y: -Math.random() * H * 0.5, vx: (Math.random() - 0.5) * 2 * s, vy: (2 + Math.random() * 3) * s,
@@ -624,7 +631,7 @@ window.DASH_THEMES = (() => {
     (function draw(now) {
       const t = now - start;
       ctx.clearRect(0, 0, W, H);
-      if (kindName === 'vuurwerk' && t < 2600 && t >= nextBurst) { burst(); nextBurst = t + 380 + Math.random() * 300; }
+      if (kindName === 'fireworks' && t < 2600 && t >= nextBurst) { burst(); nextBurst = t + 380 + Math.random() * 300; }
       for (const p of parts) {
         if (p.spark) {
           p.x += p.vx; p.y += p.vy; p.vy += 0.04 * s; p.vx *= 0.985; p.life -= 0.012;
@@ -642,14 +649,14 @@ window.DASH_THEMES = (() => {
     })(start);
   }
 
-  // ---------- Alles samen toepassen ----------
+  // ---------- Apply everything ----------
   let tickTimer = 0;
   function refresh() {
     if (!ready) return;
     topbarParts();
     const s = settings(), data = context(), cur = current(data);
-    const layers = cur.layers.filter((t) => t && t.id !== 'standaard');
-    const top = [...layers].reverse();                       // belangrijkste eerst
+    const layers = cur.layers.filter((t) => t && t.id !== 'default');
+    const top = [...layers].reverse();                       // most important first
     const firstWith = (k) => top.find((t) => t[k]);
     const phone = phoneMq.matches, minimal = document.body.classList.contains('minimal');
     const quiet = layers.some((t) => t.quiet), still = reduced.matches || quiet;
@@ -658,15 +665,15 @@ window.DASH_THEMES = (() => {
     const day = cur.test || cur.fixed ? cur.day : now;
     const wx = on && s.weather && (!viewIso() || WX_TEST) ? wxState() : null;
     if (on && s.weather && !viewIso()) loadWx();
-    // Huisstijl (sinds 1.4.0): het thema zet alleen --feest, een Japans teken, een slinger, lijntekening-hoeken en
-    // kleine deeltjes in feestkleur. Geen emoji, geen eigen achtergrond, geen gekleurde topbalk (design system › Feestdagen).
-    const NHS = window.DASH_HUISSTIJL, nh = !!(NHS && NHS.active());
-    const feestT = nh && on ? top.find((t) => NHS.FEEST[t.id]) : null, F = feestT ? NHS.FEEST[feestT.id] : null;
-    if (F) { root.style.setProperty('--feest-p', F.feest); root.style.setProperty('--feest-t', F.feestTitel); }
-    else { root.style.removeProperty('--feest-p'); root.style.removeProperty('--feest-t'); }
-    nhTop(nh && F, nh && F && F.slinger && s.topbar && !phone);
+    // House style (since 1.4.0): the theme only sets --holiday, a Japanese mark, a garland, line-drawing corners and
+    // small particles in the holiday color. No emoji, no own background, no colored top bar (design system › Holidays).
+    const NHS = window.DASH_HOUSESTYLE, nh = !!(NHS && NHS.active());
+    const holT = nh && on ? top.find((t) => NHS.HOLIDAY[t.id]) : null, F = holT ? NHS.HOLIDAY[holT.id] : null;
+    if (F) { root.style.setProperty('--holiday-p', F.color); root.style.setProperty('--holiday-t', F.titleColor); }
+    else { root.style.removeProperty('--holiday-p'); root.style.removeProperty('--holiday-t'); }
+    nhTop(nh && F, nh && F && F.garland && s.topbar && !phone);
 
-    // Topbalk: kleur van het belangrijkste thema met een topbalkstijl
+    // Top bar: color of the most important theme that has a top bar style
     const main = top.find((t) => t.topbar);
     const colorFrom = main || firstWith('c1');
     if (colorFrom) {
@@ -676,14 +683,14 @@ window.DASH_THEMES = (() => {
     }
     if (main) root.dataset.theme = main.id; else delete root.dataset.theme;
     root.toggleAttribute('data-theme-soft', !!main && main.topbar === 'soft');
-    root.dataset.season = (layers.find((t) => t.tier === 'seizoen') || {}).id || '';
+    root.dataset.season = (layers.find((t) => t.tier === 'season') || {}).id || '';
     root.classList.toggle('th-still', still);
 
-    // Groet (string of { text, small }): het belangrijkste thema dat iets te zeggen heeft
+    // Greeting (string or { text, small }): the most important theme that has something to say
     let g = null;
     for (const t of top) {
       if (!t.greeting) continue;
-      try { g = t.greeting(day, { fixed: cur.fixed, data, now }); } catch (e) { console.warn('[thema]', t.id, e); }
+      try { g = t.greeting(day, { fixed: cur.fixed, data, now }); } catch (e) { console.warn('[theme]', t.id, e); }
       if (g) break;
     }
     if (greet) {
@@ -694,41 +701,41 @@ window.DASH_THEMES = (() => {
       greet.classList.toggle('small', !!(g && g.small));
       const v = viewIso();
       viewChip.hidden = !v || !!urlDay;
-      if (v) viewChip.textContent = `${nh ? 'bekijk' : '👁'} ${noon(v).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short', year: 'numeric' })} · terug`;
+      if (v) viewChip.textContent = `${nh ? 'view' : '👁'} ${noon(v).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })} · back`;
     }
     const icon = nh ? null : firstWith('dayIcon');
     root.classList.toggle('th-icon', !!icon);
     if (icon) root.style.setProperty('--th-icon', `"${icon.dayIcon} "`);
 
-    // Achtergrond (ook op de telefoon en in de minimale modus)
+    // Background (also on the phone and in minimal mode)
     const bgT = on && s.bg ? firstWith('bg') : null;
     let bg = bgT ? (typeof bgT.bg === 'function' ? bgT.bg(day) : bgT.bg) : '';
-    if (on && s.bg && wx && wx.kind === 'zon' && !(bgT && bgT.noSun)) bg = `radial-gradient(40% 35% at 92% 0%, rgba(255,214,120,.16), transparent 70%)${bg ? `, ${bg}` : ''}`;
+    if (on && s.bg && wx && wx.kind === 'sun' && !(bgT && bgT.noSun)) bg = `radial-gradient(40% 35% at 92% 0%, rgba(255,214,120,.16), transparent 70%)${bg ? `, ${bg}` : ''}`;
     background(nh ? '' : bg);
 
-    // Topbalk-versiering (niet op de telefoon; in de huisstijl de slinger uit nhTop)
+    // Top bar decoration (not on the phone; in the house style the garland from nhTop)
     const td = on && s.topbar && !phone && !nh ? firstWith('topDeco') : null;
-    topDeco(td && td.topDeco, !!(on && s.topbar && !phone && !nh && wx && wx.kind === 'regen'));
+    topDeco(td && td.topDeco, !!(on && s.topbar && !phone && !nh && wx && wx.kind === 'rain'));
 
-    // Vakversiering (niet op de telefoon en niet in de minimale modus)
-    const amount = AMOUNT[s.amount] || AMOUNT.normaal;
-    const holiday = layers.some((t) => t.tier !== 'seizoen' && t.deco);
+    // Tile decoration (not on the phone and not in minimal mode)
+    const amount = AMOUNT[s.amount] || AMOUNT.normal;
+    const holiday = layers.some((t) => t.tier !== 'season' && t.deco);
     let specs = [];
     if (nh) {
-      // Huisstijl: één soort hoek (lijntekening van het belangrijkste thema) op hooguit drie vensters, onderin zodat hij
-      // nooit over de titelbalk valt; F1-raceweekend: geblokte rand om het F1-venster
+      // House style: one kind of corner (line drawing of the most important theme) on at most three windows, at the bottom so
+      // it never covers the title bar; F1 race weekend: checkered border around the F1 window
       if (F && s.deco && !phone && !minimal) {
-        specs.push({ type: 'corner', id: `nh-${F.hoek}`, cls: 'nh-hoek', size: 46, inset: [8, 8], corners: ['br', 'bl'], turn: 0,
-          max: Math.min(3, Math.max(1, Math.round(3 * amount.deco))), svg: NHS.hoekSvg(F.hoek) });
-        if (layers.some((t) => t.id === 'f1')) specs.push({ type: 'edge', id: 'nh-geblokt', cls: 'nh-geblokt', card: 'w-f1' });
+        specs.push({ type: 'corner', id: `nh-${F.corner}`, cls: 'nh-corner', size: 46, inset: [8, 8], corners: ['br', 'bl'], turn: 0,
+          max: Math.min(3, Math.max(1, Math.round(3 * amount.deco))), svg: NHS.cornerSvg(F.corner) });
+        if (layers.some((t) => t.id === 'f1')) specs.push({ type: 'edge', id: 'nh-checkered', cls: 'nh-checkered', card: 'w-f1' });
       }
     } else if (on && s.deco && !phone && !minimal) {
       for (const t of top) {
         for (const spec of t.deco || []) {
           if (spec.if && !spec.if(data, wx, cur.day)) continue;
-          if (specs.some((x) => x.id === (spec.id || `${t.id}-${spec.type}`))) continue;   // bv. sneeuwkapjes van kerst én winter
+          if (specs.some((x) => x.id === (spec.id || `${t.id}-${spec.type}`))) continue;   // e.g. snow caps from both Christmas and winter
           let max = spec.max ? Math.max(1, Math.round(spec.max * amount.deco)) : spec.max;
-          if (t.tier === 'seizoen' && holiday && max) max = Math.max(1, Math.ceil(max / 2));
+          if (t.tier === 'season' && holiday && max) max = Math.max(1, Math.ceil(max / 2));
           specs.push({ ...spec, id: spec.id || `${t.id}-${spec.type}`, max });
         }
       }
@@ -742,23 +749,23 @@ window.DASH_THEMES = (() => {
       placeDeco();
     }
 
-    // Deeltjes (ook in de minimale modus; niet op de telefoon, niet bij beweging beperken of tentamenweek)
+    // Particles (also in minimal mode; not on the phone, not with reduced motion or in exam week)
     const mix = [];
     if (on && s.particles && !phone && !still) {
       for (const t of layers) for (const p of t.particles || []) mix.push({ kind: p.kind, weight: p.density });
-      if (wx && wx.kind === 'sneeuw') mix.push({ kind: 'sneeuw', weight: 0.8 });
-      if (wx && wx.kind === 'regen') mix.push({ kind: 'regen', weight: 0.6 });
+      if (wx && wx.kind === 'snow') mix.push({ kind: 'snow', weight: 0.8 });
+      if (wx && wx.kind === 'rain') mix.push({ kind: 'rain', weight: 0.6 });
     }
     let target = Math.min(amount.parts, Math.round(mix.reduce((a, m) => a + m.weight, 0) * amount.parts));
     if (nh) {
-      // Huisstijl: hooguit 12, klein, als lijntekening of pixel in feestkleur/ink (soorten nh-* hieronder)
-      for (const m of mix) m.kind = NH_KINDS.includes(m.kind) ? `nh-${m.kind}` : 'nh-stip';
+      // House style: at most 12, small, as a line drawing or pixel in holiday color/ink (kinds nh-* above)
+      for (const m of mix) m.kind = NH_KINDS.includes(m.kind) ? `nh-${m.kind}` : 'nh-dot';
       target = Math.min(12, target);
       nhColors();
     }
     particles(mix, target);
 
-    // Eenmalig effect: één keer per dag per browser (bij testen met ?datum/?thema altijd)
+    // One-off effect: once a day per browser (always when testing with ?date/?theme)
     if (on && s.fx && !still) {
       for (const t of top) {
         const fx = t.fx && (typeof t.fx === 'function' ? t.fx(day) : t.fx);
@@ -772,14 +779,14 @@ window.DASH_THEMES = (() => {
       }
     }
 
-    // Sommige thema's willen vaker bijwerken (aftellen op oudejaarsdag)
+    // Some themes want to update more often (countdown on New Year's Eve)
     const tick = top.map((t) => t.tick && t.tick(day)).find(Boolean);
     clearTimeout(tickTimer);
     if (tick) tickTimer = setTimeout(refresh, tick);
     window.dispatchEvent(new CustomEvent('dash:theme', { detail: { layers: layers.map((t) => t.id) } }));
   }
 
-  // ---------- Themabestanden laden (parallel, uitvoeren in volgorde) ----------
+  // ---------- Load the theme files (in parallel, run in order) ----------
   if (dayEl) {
     let left = FILES.length;
     const done = () => { if (--left === 0) { ready = true; refresh(); } };
@@ -788,32 +795,32 @@ window.DASH_THEMES = (() => {
       el.src = `themes/${f}.js?v=${DASH.VERSION}`;
       el.async = false;
       el.onload = done;
-      el.onerror = () => { el.remove(); if (retry) load(f, false); else { console.warn('[thema] laden mislukt:', f); done(); } };   // één keer opnieuw
+      el.onerror = () => { el.remove(); if (retry) load(f, false); else { console.warn('[theme] loading failed:', f); done(); } };   // retry once
       document.head.append(el);
     };
     for (const f of FILES) load(f, true);
-    DASH.every(60 * 1000, refresh);                        // om middernacht vanzelf om
-    window.addEventListener('dash:calendar', refresh);     // verjaardag en tentamens uit de agenda komen later binnen
-    window.addEventListener('dash:stand', refresh);        // huisstijl: andere stand = andere feestkleur voor de deeltjes
+    DASH.every(60 * 1000, refresh);                        // switches by itself at midnight
+    window.addEventListener('dash:calendar', refresh);     // birthdays and exams from the agenda arrive later
+    window.addEventListener('dash:mood', refresh);         // house style: another mood = another holiday color for the particles
     phoneMq.addEventListener('change', refresh);
     reduced.addEventListener('change', refresh);
-    // Minimale modus aan/uit (topbar.js zet body.minimal)
+    // Minimal mode on/off (topbar.js sets body.minimal)
     new MutationObserver(() => {
       const m = document.body.classList.contains('minimal');
       if (m !== refresh.minimal) { refresh.minimal = m; refresh(); setTimeout(placeDeco, 500); }
     }).observe(document.body, { attributes: true, attributeFilter: ['class'] });
   }
 
-  // ---------- Tabje Thema in Instellingen (settings.js) ----------
-  const ORDER = ['herfst', 'winter', 'lente', 'zomer', 'halloween', 'sinterklaas', 'kerst', 'oudennieuw', 'koningsdag', 'verjaardag',
-    'valentijn', 'pasen', 'bevrijdingsdag', 'f1', 'tentamen', 'standaard'];
+  // ---------- Theme tab in Settings (settings.js) ----------
+  const ORDER = ['autumn', 'winter', 'spring', 'summer', 'halloween', 'sinterklaas', 'christmas', 'newyear', 'kingsday', 'birthday',
+    'valentine', 'easter', 'liberationday', 'f1', 'exams', 'default'];
   const SWITCHES = [
-    ['particles', 'Vallende deeltjes', 'sneeuw, blaadjes, bloesem, hartjes, confetti'],
-    ['deco', 'Versiering op de vakken', 'sneeuwkapjes, spinnenweb, blaadjes, bloesem'],
-    ['topbar', 'Topbalk-versiering', 'lampjes, vlaggetjes, slinger'],
-    ['bg', 'Achtergrond', 'thema-verloop, sterrenhemel bij Oud en Nieuw'],
-    ['weather', 'Echt weer meenemen', 'sneeuw, regen of zon van nu'],
-    ['fx', 'Eenmalige effecten', 'vuurwerk, confetti bij laden'],
+    ['particles', 'Falling particles', 'snow, leaves, blossom, hearts, confetti'],
+    ['deco', 'Decoration on the tiles', 'snow caps, cobwebs, leaves, blossom'],
+    ['topbar', 'Top bar decoration', 'lights, flags, garland'],
+    ['bg', 'Background', 'theme gradient, starry sky at New Year'],
+    ['weather', 'Include real weather', 'snow, rain or sun right now'],
+    ['fx', 'One-off effects', 'fireworks, confetti on load'],
   ];
   function renderTab(el) {
     const s = settings(), redraw = () => { el.replaceChildren(); renderTab(el); };
@@ -821,59 +828,59 @@ window.DASH_THEMES = (() => {
     const head = (text) => el.append(h('p', 'th-set-h', text));
     const f = forced();
 
-    head('Stijl');
+    head('Style');
     const styleRow = h('div', 'th-sw th-amount');
     const styleSeg = h('div', 'seg');
-    for (const [k, label] of [['huisstijl', 'Huisstijl'], ['modern', 'Modern'], ['y2k', 'Y2K (2003)']]) {
+    for (const [k, label] of [['housestyle', 'House style'], ['modern', 'Modern'], ['y2k', 'Y2K (2003)']]) {
       const b = h('button', null, label);
       b.type = 'button';
       b.setAttribute('aria-pressed', String(s.style === k));
       b.onclick = () => change('style', k);
       styleSeg.append(b);
     }
-    styleRow.append(h('span', 'th-sw-txt', 'Uiterlijk van de vakken'), styleSeg);
+    styleRow.append(h('span', 'th-sw-txt', 'Look of the tiles'), styleSeg);
     el.append(styleRow);
-    if (s.style === 'huisstijl') {
-      const standRow = h('div', 'th-sw th-amount'), standSeg = h('div', 'seg');
-      for (const [k, label] of [['auto', 'Vanzelf'], ['digital', 'Digital Future'], ['poster', 'Poster'], ['titel', 'Titelkaart']]) {
+    if (s.style === 'housestyle') {
+      const moodRow = h('div', 'th-sw th-amount'), moodSeg = h('div', 'seg');
+      for (const [k, label] of [['auto', 'Automatic'], ['digital', 'Digital Future'], ['poster', 'Poster'], ['titlecard', 'Title card']]) {
         const b = h('button', null, label);
         b.type = 'button';
-        b.setAttribute('aria-pressed', String((s.stand || 'auto') === k));
-        b.onclick = () => change('stand', k);
-        standSeg.append(b);
+        b.setAttribute('aria-pressed', String((s.mood || 'auto') === k));
+        b.onclick = () => change('mood', k);
+        moodSeg.append(b);
       }
-      const standTxt = h('span', 'th-sw-txt', 'Stand');
-      if (window.DASH_HUISSTIJL) standTxt.append(h('small', null, `nu: ${window.DASH_HUISSTIJL.describe()}`));
-      standRow.append(standTxt, standSeg);
-      el.append(standRow);
+      const moodTxt = h('span', 'th-sw-txt', 'Mood');
+      if (window.DASH_HOUSESTYLE) moodTxt.append(h('small', null, `now: ${window.DASH_HOUSESTYLE.describe()}`));
+      moodRow.append(moodTxt, moodSeg);
+      el.append(moodRow);
     }
-    if (urlStyle) el.append(h('p', 'th-set-note', `Nu vastgezet via de link (?stijl=${urlStyle}).`));
+    if (urlStyle) el.append(h('p', 'th-set-note', `Fixed by the link right now (?style=${urlStyle}).`));
 
-    head('Kies thema');
+    head('Pick a theme');
     const auto = h('button', 'th-auto');
     auto.type = 'button';
     auto.setAttribute('aria-pressed', String(s.choice === 'auto'));
-    auto.append(h('b', null, 'Automatisch'), h('span', null, `volgt datum en weer · ${describe()}`));
+    auto.append(h('b', null, 'Automatic'), h('span', null, `follows date and weather · ${describe()}`));
     auto.onclick = () => change('choice', 'auto');
     el.append(auto);
     const grid = h('div', 'th-cards');
     for (const id of ORDER.filter((x) => byId[x]).concat(themes.map((t) => t.id).filter((x) => !ORDER.includes(x)))) {
       const t = byId[id], b = h('button', 'th-card');
       b.type = 'button';
-      b.title = `${t.name} vastzetten`;
-      // Huisstijl: het Japanse teken en de feestkleur in plaats van emoji en verloop
-      const NF = window.DASH_HUISSTIJL && DASH_HUISSTIJL.active() ? DASH_HUISSTIJL.FEEST[id] || { teken: '', feest: '#1b2a8c' } : null;
-      b.style.setProperty('--a', NF ? NF.feest : t.c1);
-      b.style.setProperty('--b', NF ? NF.feest : t.c2);
+      b.title = `Fix ${t.name}`;
+      // House style: the Japanese mark and the holiday color instead of emoji and gradient
+      const NF = window.DASH_HOUSESTYLE && DASH_HOUSESTYLE.active() ? DASH_HOUSESTYLE.HOLIDAY[id] || { mark: '', color: '#1b2a8c' } : null;
+      b.style.setProperty('--a', NF ? NF.color : t.c1);
+      b.style.setProperty('--b', NF ? NF.color : t.c2);
       b.setAttribute('aria-pressed', String(s.choice === id));
-      b.append(h('span', `th-card-icon${NF ? ' nh-teken' : ''}`, NF ? NF.teken : t.icon), h('span', 'th-card-name', t.name));
+      b.append(h('span', `th-card-icon${NF ? ' nh-mark' : ''}`, NF ? NF.mark : t.icon), h('span', 'th-card-name', t.name));
       b.onclick = () => change('choice', id);
       grid.append(b);
     }
     el.append(grid);
-    if (f) el.append(h('p', 'th-set-note', `Nu vastgezet via de link (${byId[f.id].name}); haal ?thema / ?${f.id} uit het adres om dit te gebruiken.`));
+    if (f) el.append(h('p', 'th-set-note', `Fixed by the link right now (${byId[f.id].name}); remove ?theme / ?${f.id} from the address to use this.`));
 
-    head('Effecten');
+    head('Effects');
     const row = (label, sub, checked, onChange, disabled) => {
       const r = h('label', `th-sw${disabled ? ' off' : ''}`);
       const txt = h('span', 'th-sw-txt');
@@ -888,43 +895,43 @@ window.DASH_THEMES = (() => {
       r.append(txt, input);
       el.append(r);
     };
-    row('Alle effecten', 'hoofdschakelaar: alles in één keer uit', s.all, (v) => change('all', v));
+    row('All effects', 'main switch: everything off at once', s.all, (v) => change('all', v));
     for (const [k, label, sub] of SWITCHES) row(label, sub, s[k], (v) => change(k, v), !s.all);
 
     const amount = h('div', 'th-sw th-amount');
     const seg = h('div', 'seg');
-    for (const [k, label] of [['rustig', 'Rustig'], ['normaal', 'Normaal'], ['feestje', 'Feestje']]) {
+    for (const [k, label] of [['calm', 'Calm'], ['normal', 'Normal'], ['party', 'Party']]) {
       const b = h('button', null, label);
       b.type = 'button';
       b.setAttribute('aria-pressed', String(s.amount === k));
       b.onclick = () => change('amount', k);
       seg.append(b);
     }
-    amount.append(h('span', 'th-sw-txt', 'Hoeveelheid'), seg);
+    amount.append(h('span', 'th-sw-txt', 'Amount'), seg);
     el.append(amount);
 
-    head('Lettertype');
-    row('Schreefcijfers', 'grote getallen in de vakken met schreef (Source Serif); labels blijven zoals ze zijn', s.serif, (v) => change('serif', v));
+    head('Font');
+    row('Serif digits', 'big numbers in the tiles in a serif face (Source Serif); labels stay as they are', s.serif, (v) => change('serif', v));
 
-    head('Bekijk als datum');
+    head('View as date');
     const dateRow = h('div', 'th-date');
     const input = h('input');
     input.type = 'date';
     input.value = viewIso() || isoDay(new Date());
     input.disabled = !!urlDay;
     input.onchange = () => { if (input.value) { viewDate(input.value); redraw(); } };
-    const back = h('button', 'w-btn ghost', 'terug naar vandaag');
+    const back = h('button', 'w-btn ghost', 'back to today');
     back.type = 'button';
     back.disabled = !viewIso() || !!urlDay;
     back.onclick = () => { viewDate(null); redraw(); };
     dateRow.append(input, back);
     el.append(dateRow);
-    el.append(h('p', 'th-set-note', urlDay ? 'De datum staat vast via ?datum= in het adres.'
-      : 'Zo zie je hoe een dag eruitziet bij Automatisch. Geldt alleen voor dit tabblad; het echte weer telt dan niet mee.'));
-    if (reduced.matches) el.append(h('p', 'th-set-note', 'Beweging beperken staat aan op deze computer: alleen stilstaande versiering.'));
-    el.append(h('p', 'th-set-note', 'Op de telefoon alleen topbalkkleur, groet en achtergrond.'));
+    el.append(h('p', 'th-set-note', urlDay ? 'The date is fixed by ?date= in the address.'
+      : 'This shows what a day looks like on Automatic. Only for this tab; the real weather doesn\'t count then.'));
+    if (reduced.matches) el.append(h('p', 'th-set-note', 'Reduce motion is on on this computer: only still decoration.'));
+    el.append(h('p', 'th-set-note', 'On the phone only the top bar color, greeting and background.'));
   }
-  if (window.DASH_SETTINGS) DASH_SETTINGS.add({ id: 'thema', label: 'Thema', order: 10, render: renderTab });
+  if (window.DASH_SETTINGS) DASH_SETTINGS.add({ id: 'theme', label: 'Theme', order: 10, render: renderTab });
 
   return { add, kind, util: { isoDay, md, noon, addDays, easter, between, daysUntil, inDays, calEvents, rng, svgUrl, snowCap },
     settings, set, viewDate, viewIso, today, describe, list: () => themes.slice(), refresh, placeDeco, DEFAULTS };

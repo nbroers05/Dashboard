@@ -1,14 +1,14 @@
 'use strict';
 
-// Zijbalk op de pc (alleen in desk, sinds 0.46.0): smalle icoonbalk links met logo, Overzicht, Agenda, Mijn data,
-// Feeds, Spelletjes, Focus (0.46.2) en onderaan Instellingen. Het logo zet de minimale modus aan (de minimaliseerknop
-// staat in desk niet meer in de topbalk; in de minimale modus zelf wel, om terug te gaan). De tegenhanger van de tabbalk op de telefoon (phone.js). desk.js zet hem aan en uit.
-// - Overzicht = het dashboard: sluit de open pagina (via zijn eigen knop, zodat het adres en de terug-knop kloppen).
-// - Mijn data en Feeds = de bestaande pagina's (knoppen .tb-mydata/.tb-feeds staan in desk verborgen in de topbalk).
-// - Agenda = de gewone agenda (#calendar) schermvullend in een eigen laag, zelfde stijl als Feeds/Mijn data, adres
-//   #agenda; Esc of terug = weer het dashboard (de agenda gaat dan terug naar zijn plek in de middelste kolom).
-// - Rood puntje bij Feeds: data/feeds.json heeft iets nieuwers dan de laatste keer dat je Feeds opende (feeds.seen).
-// Naam als tooltip (title), actief item met een licht vlakje. Minimale modus: balk weg (CSS).
+// Sidebar on the PC (desk only, since 0.46.0): a narrow icon bar on the left with the logo, Overview, Agenda, My data,
+// Feeds, Games, Focus (0.46.2) and Settings at the bottom. The logo turns on minimal mode (the minimise button
+// isn't in the top bar in desk anymore; in minimal mode itself it is, to go back). The counterpart of the phone's tab bar (phone.js). desk.js turns it on and off.
+// - Overview = the dashboard: closes the open page (via its own button, so the address and the back button are right).
+// - My data and Feeds = the existing pages (buttons .tb-mydata/.tb-feeds are hidden in the top bar in desk).
+// - Agenda = the normal agenda (#calendar) full screen in its own layer, same style as Feeds/My data, address
+//   #agenda; Esc or back = the dashboard again (the agenda then goes back to its place in the middle column).
+// - Red dot on Feeds: data/feeds.json has something newer than the last time you opened Feeds (feeds.seen).
+// Name as a tooltip (title), active item with a light patch. Minimal mode: bar gone (CSS).
 window.DASH_RAIL = (() => {
   const { h, store } = DASH;
   const $ = (sel) => document.querySelector(sel);
@@ -36,24 +36,24 @@ window.DASH_RAIL = (() => {
   }
   const logo = h('button', 'rail-logo');
   logo.type = 'button';
-  logo.title = 'Minimaliseren';
+  logo.title = 'Minimise';
   logo.setAttribute('aria-label', 'Minimale modus');
   logo.innerHTML = '<img src="favicon.svg" alt="">';
   logo.onclick = () => { const m = $('.tb-min'); if (m) m.click(); };
-  // Spelletjes en Focus: zelfde icoon als hun (in desk verborgen) topbalkknop
+  // Games and Focus: the same icon as their (hidden in desk) top-bar button
   const copyIcon = (sel) => { const b = $(sel); const svg = b && b.querySelector('svg'); return svg ? svg.outerHTML : ''; };
   ICON.games = copyIcon('.tb-games');
   ICON.focus = copyIcon('.tb-focus');
   const top = h('div', 'rail-top');
-  top.append(logo, item('overview', 'Overzicht', () => go('overview')), item('agenda', 'Agenda', () => go('agenda')),
-    item('mydata', 'Mijn data', () => go('mydata')), item('feeds', 'Feeds', () => go('feeds')),
-    item('games', 'Spelletjes', () => go('games')), item('focus', 'Focusmodus', () => { const f = $('.tb-focus'); if (f) f.click(); }));
+  top.append(logo, item('overview', 'Overview', () => go('overview')), item('agenda', 'Agenda', () => go('agenda')),
+    item('mydata', 'My data', () => go('mydata')), item('feeds', 'Feeds', () => go('feeds')),
+    item('games', 'Games', () => go('games')), item('focus', 'Focus mode', () => { const f = $('.tb-focus'); if (f) f.click(); }));
   const dot = h('i', 'rail-dot');
   dot.hidden = true;
   btns.feeds.append(dot);
-  rail.append(top, item('settings', 'Instellingen', () => { const s = $('.tb-settings'); if (s) s.click(); }));
+  rail.append(top, item('settings', 'Settings', () => { const s = $('.tb-settings'); if (s) s.click(); }));
 
-  // ---------- Welke pagina is open ----------
+  // ---------- Which page is open ----------
   const PAGES = { feeds: ['feeds-open', '.tb-feeds'], mydata: ['mydata-open', '.tb-mydata'], games: ['games-open', '.tb-games'] };
   function current() {
     if (document.body.classList.contains('agenda-open')) return 'agenda';
@@ -63,7 +63,7 @@ window.DASH_RAIL = (() => {
   function mark() {
     const cur = current();
     for (const [id, b] of Object.entries(btns)) if (id !== 'settings' && id !== 'focus') b.setAttribute('aria-current', id === cur ? 'page' : 'false');
-    // Instellingen open / focus loopt: zelfde stand als hun topbalkknop
+    // Settings open / focus running: the same state as their top-bar button
     for (const [id, sel] of [['settings', '.tb-settings'], ['focus', '.tb-focus']]) {
       const s = $(sel);
       btns[id].setAttribute('aria-pressed', s ? s.getAttribute('aria-pressed') || 'false' : 'false');
@@ -76,7 +76,7 @@ window.DASH_RAIL = (() => {
     if (id === 'overview') {
       if (cur === 'agenda') return setAgenda(false);
       const p = PAGES[cur];
-      if (p && $(p[1])) $(p[1]).click();   // eigen knop: sluit en zet het adres goed
+      if (p && $(p[1])) $(p[1]).click();   // own button: closes and sets the address right
       return;
     }
     if (id === 'agenda') return setAgenda(true);
@@ -85,7 +85,7 @@ window.DASH_RAIL = (() => {
     if (p && $(p[1])) $(p[1]).click();
   }
 
-  // ---------- Agenda als eigen laag ----------
+  // ---------- Agenda as its own layer ----------
   const layer = h('section', 'ag-layer');
   layer.setAttribute('aria-label', 'Agenda');
   layer.hidden = true;
@@ -119,7 +119,7 @@ window.DASH_RAIL = (() => {
       }
       pushed = false;
     }
-    window.dispatchEvent(new Event('resize'));   // weekraster opnieuw passend maken
+    window.dispatchEvent(new Event('resize'));   // fit the week grid again
     mark();
   }
   window.addEventListener('dash:page', (e) => { if (e.detail !== 'agenda' && active && !layer.hidden) setAgenda(false, true); });
@@ -129,7 +129,7 @@ window.DASH_RAIL = (() => {
   });
   window.addEventListener('resize', () => { if (active && !layer.hidden) placeLayer(); });
 
-  // ---------- Rood puntje: nieuws sinds je Feeds voor het laatst opende ----------
+  // ---------- Red dot: news since you last opened Feeds ----------
   let newest = null;
   function seen() {
     if (newest) store.set('feeds.seen', newest);
@@ -144,16 +144,16 @@ window.DASH_RAIL = (() => {
       newest = times[times.length - 1] || null;
       if (!newest) return;
       const last = store.get('feeds.seen');
-      if (!last) store.set('feeds.seen', newest);   // eerste keer: niets "nieuw"
+      if (!last) store.set('feeds.seen', newest);   // first time: nothing "new"
       dot.hidden = !last || newest <= last || current() === 'feeds';
-      btns.feeds.title = dot.hidden ? 'Feeds' : 'Feeds · er is iets nieuws';
+      btns.feeds.title = dot.hidden ? 'Feeds' : 'Feeds · there\'s something new';
     } catch (e) { console.warn('[zijbalk] feeds', e); }
   }
   DASH.every(10 * 60 * 1000, checkFeeds);
 
   const watch = new MutationObserver(mark);
 
-  // ---------- Aan en uit (vanuit desk.js) ----------
+  // ---------- On and off (from desk.js) ----------
   function enter(d) {
     active = true;
     dash = d;

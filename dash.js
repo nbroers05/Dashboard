@@ -1,32 +1,32 @@
 'use strict';
 
-// Gedeelde hulpjes voor de kleine vakken.
-// Elk vak draait via DASH.widget(): gaat er in één vak iets mis, dan toont alleen dát vak een melding.
+// Shared helpers for the small tiles.
+// Every tile runs via DASH.widget(): if something goes wrong in one tile, only that tile shows a message.
 window.DASH = (() => {
   const DEMO = new URLSearchParams(location.search).has('demo');
 
-  // Versienummer onderaan: hetzelfde getal als ?v=N achter de bestanden in index.html
+  // Version number at the bottom: the same number as ?v=N after the files in index.html
   const VERSION = (new URL(document.currentScript.src).searchParams.get('v')) || '?';
   document.addEventListener('DOMContentLoaded', () => {
     const el = document.getElementById('version');
-    if (el) el.textContent = `Dashboard versie ${VERSION}${DEMO ? ' · demo' : ''}`;
+    if (el) el.textContent = `Dashboard version ${VERSION}${DEMO ? ' · demo' : ''}`;
   });
 
-  // ?maat: laat zien hoe groot het venster echt is (zonder werkbalken), om op precies die maat te testen
-  if (new URLSearchParams(location.search).has('maat')) {
+  // ?size: shows how big the window really is (without toolbars), to test at exactly that size
+  if (new URLSearchParams(location.search).has('size')) {
     document.addEventListener('DOMContentLoaded', () => {
       const tag = document.createElement('div');
       tag.style.cssText = 'position:fixed;left:12px;bottom:12px;z-index:9999;padding:8px 14px;border-radius:12px;background:#f5b02e;color:#111;font:700 15px/1.3 system-ui;box-shadow:0 8px 24px rgba(0,0,0,.5)';
-      const show = () => { tag.textContent = `${innerWidth} × ${innerHeight} · schaal ${devicePixelRatio} · ${matchMedia('(orientation: portrait)').matches ? 'staand' : 'liggend'}`; };
+      const show = () => { tag.textContent = `${innerWidth} × ${innerHeight} · scale ${devicePixelRatio} · ${matchMedia('(orientation: portrait)').matches ? 'portrait' : 'landscape'}`; };
       addEventListener('resize', show);
       show();
       document.body.append(tag);
     });
   }
 
-  // ---------- Als app op de telefoon (sinds 0.46.3) ----------
-  // Service worker (sw.js): altijd eerst het netwerk, alleen offline uit de cache. Per versie een nieuwe (sw.js?v=…).
-  // Offline: balkje bovenaan, zodat je weet dat je de laatst geladen versie ziet en vakken niet verversen.
+  // ---------- As an app on the phone (since 0.46.3) ----------
+  // Service worker (sw.js): always the network first, the cache only offline. A new one per version (sw.js?v=…).
+  // Offline: a bar at the top, so you know you're seeing the last loaded version and tiles don't refresh.
   if ('serviceWorker' in navigator && location.protocol !== 'file:' && VERSION !== '?') {
     addEventListener('load', () => navigator.serviceWorker.register(`sw.js?v=${VERSION}`).catch((e) => console.warn('[app] service worker', e)));
   }
@@ -36,7 +36,7 @@ window.DASH = (() => {
       el = document.createElement('div');
       el.id = 'offline-note';
       el.setAttribute('role', 'status');
-      el.textContent = 'Offline: je ziet de laatst geladen versie';
+      el.textContent = 'Offline: you\'re seeing the last loaded version';
       document.body.append(el);
     }
     el.hidden = navigator.onLine;
@@ -45,16 +45,16 @@ window.DASH = (() => {
   addEventListener('offline', offlineNote);
   document.addEventListener('DOMContentLoaded', () => { if (!navigator.onLine) offlineNote(); });
 
-  // ---------- Laden ----------
-  // ?mini=1 (nieuwe-tabpagina): alleen klok, datum en zoekbalk. De rest (Spotify, agenda, vakken) laadt pas
-  // als je het volledige dashboard opent, zodat een nieuw tabblad meteen klaar is. Zonder ?mini=1 laadt alles meteen.
+  // ---------- Loading ----------
+  // ?mini=1 (new-tab page): only clock, date and search bar. The rest (Spotify, agenda, tiles) only loads
+  // when you open the full dashboard, so a new tab is ready right away. Without ?mini=1 everything loads right away.
   const MINI = new URLSearchParams(location.search).get('mini') === '1';
   let files = null, wanted = false, loaded = false;
   function loadAll() {
     if (loaded) return;
     if (!files) { wanted = true; return; }
     loaded = true;
-    // Vakken onzichtbaar tot motion.js ze laat inschuiven (anders flitsen ze eerst even), met een vangnet
+    // Tiles invisible until motion.js slides them in (otherwise they flash first), with a safety net
     if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       document.body.classList.add('booting');
       setTimeout(() => document.body.classList.remove('booting'), 3000);
@@ -63,7 +63,7 @@ window.DASH = (() => {
       const el = document.createElement('script');
       const external = /^https?:/.test(f);
       el.src = external ? f : `${f}?v=${VERSION}`;
-      // Eigen bestanden in volgorde uitvoeren; Google-login los erbij (calendar.js wacht er zelf op)
+      // Own files run in order; the Google login separately (calendar.js waits for it itself)
       el.async = external;
       document.body.append(el);
     }
@@ -97,7 +97,7 @@ window.DASH = (() => {
     }
   }
 
-  // Melding in een vak met een knop (herladen, opnieuw inloggen, ...)
+  // Message in a tile with a button (reload, log in again, ...)
   function problem(text, label, onClick) {
     const box = h('div', 'w-empty w-problem');
     box.append(h('p', null, text));
@@ -109,18 +109,18 @@ window.DASH = (() => {
     }
     return box;
   }
-  // Knop "Agenda koppelen" voor vakken die de Google Agenda nodig hebben
+  // "Link agenda" button for tiles that need Google Calendar
   const connectGoogle = () => (window.DASH_GOOGLE ? window.DASH_GOOGLE.connect() : document.getElementById('cal-connect') && document.getElementById('cal-connect').click());
 
-  // Start een vak. fn(card, body, guard) mag async zijn; guard(fn) beschermt latere callbacks (timers, events).
+  // Start a tile. fn(card, body, guard) may be async; guard(fn) protects later callbacks (timers, events).
   function widget(id, fn) {
     const card = document.getElementById(id);
     if (!card) return;
     const body = card.querySelector('.w-body');
-    // Mislukt: korte melding met een knop, in plaats van een leeg vak
+    // Failed: a short message with a button, instead of an empty tile
     const fail = (e) => {
       console.error(`[${id}]`, e);
-      body.replaceChildren(problem('Dit vak kon niet laden. Het probeert het later opnieuw.', 'Nu herladen', () => location.reload()));
+      body.replaceChildren(problem('This tile couldn\'t load. It will try again later.', 'Reload now', () => location.reload()));
     };
     const guard = (f) => (...args) => {
       try {
@@ -133,8 +133,8 @@ window.DASH = (() => {
     guard(fn)(card, body, guard);
   }
 
-  // Herhaal fn elke ms, maar niet als het tabblad op de achtergrond staat (en direct bij terugkomen).
-  // Sinds 0.59.0 ook meteen na slaapstand of als internet terug is (event dash:wake, zie hieronder).
+  // Repeat fn every ms, but not while the tab is in the background (and right away when coming back).
+  // Since 0.59.0 also right after sleep or when the internet is back (event dash:wake, see below).
   function every(ms, fn) {
     let last = Date.now();
     setInterval(() => { if (!document.hidden) { last = Date.now(); fn(); } }, ms);
@@ -144,10 +144,10 @@ window.DASH = (() => {
     addEventListener('dash:wake', () => { if (!document.hidden) { last = Date.now(); fn(); } });
   }
 
-  // ---------- Zelfherstel (sinds 0.59.0, 1.0-plan) ----------
-  // Wakker worden: een timer die elke 30 s tikt; zat er ineens meer dan 3 minuten tussen, dan sliep de pc.
-  // Dan (na 8 s, zodat wifi en hulpprogramma op zijn), en als internet terugkomt (na 3 s): event dash:wake,
-  // waarop elk vak via every() meteen opnieuw ophaalt. Nooit vaker dan eens per 30 s.
+  // ---------- Self-recovery (since 0.59.0, 1.0 plan) ----------
+  // Waking up: a timer that ticks every 30 s; if suddenly more than 3 minutes passed in between, the PC was asleep.
+  // Then (after 8 s, so wifi and the helper are up), and when the internet comes back (after 3 s): event dash:wake,
+  // on which every tile refetches right away via every(). Never more than once per 30 s.
   let tickAt = Date.now(), wakeTimer = null, wokeAt = 0;
   function wake(delay) {
     clearTimeout(wakeTimer);
@@ -165,17 +165,17 @@ window.DASH = (() => {
   }, 30000);
   addEventListener('online', () => wake(3000));
 
-  // Nieuwe versie op de site: zelf herladen, zodat een scherm dat altijd openstaat niet op oude code blijft draaien.
-  // Elke 15 minuten (en na wakker worden) index.html ophalen en het ?v= van dash.js vergelijken. Alleen herladen als
-  // niemand het dashboard gebruikt: 2 minuten geen muis/toetsen, geen pop-up open en niet aan het typen.
-  // Eén keer per nieuwe versie (sessionStorage), zodat een oude kopie uit een cache geen herlaad-lus geeft.
+  // New version on the site: reload by itself, so a screen that's always on doesn't keep running old code.
+  // Every 15 minutes (and after waking up) fetch index.html and compare dash.js's ?v=. Only reload when
+  // nobody is using the dashboard: 2 minutes without mouse/keys, no pop-up open and not typing.
+  // Once per new version (sessionStorage), so an old copy from a cache doesn't cause a reload loop.
   let lastInput = Date.now();
   for (const ev of ['pointerdown', 'pointermove', 'keydown', 'wheel', 'touchstart']) addEventListener(ev, () => { lastInput = Date.now(); }, { passive: true, capture: true });
   let pendingVersion = null;
   async function checkVersion() {
     if (DEMO || VERSION === '?' || location.protocol === 'file:') return;
     try {
-      const res = await fetch(`${location.pathname}?versiecheck=${Date.now()}`, { cache: 'no-store' });
+      const res = await fetch(`${location.pathname}?versioncheck=${Date.now()}`, { cache: 'no-store' });
       if (!res.ok) return;
       const m = (await res.text()).match(/dash\.js\?v=([\w.]+)/);
       if (m && m[1] !== VERSION) pendingVersion = m[1];
@@ -196,15 +196,15 @@ window.DASH = (() => {
   setInterval(checkVersion, 15 * 60000);
   setInterval(tryReload, 60000);
 
-  // Afspraken uit calendar.js
+  // Appointments from calendar.js
   function onCalendar(fn) {
     window.addEventListener('dash:calendar', (e) => fn(e.detail));
     if (window.DASH_CALENDAR) fn(window.DASH_CALENDAR);
   }
 
-  // ---------- Regen voor de komende 2 uur (gedeeld door weer, buienalarm en de fietscheck) ----------
-  // Eerst Buienradar (radar, per 5 minuten). Lukt dat niet, dan Open-Meteo per kwartier (weermodel, minder precies).
-  // Geeft { source, updated, slots: [{ start, end, mmh }] } met mmh = neerslag in mm per uur.
+  // ---------- Rain for the next 2 hours (shared by weather, rain alarm and the bike check) ----------
+  // First Buienradar (radar, per 5 minutes). If that fails, Open-Meteo per quarter hour (weather model, less precise).
+  // Returns { source, updated, slots: [{ start, end, mmh }] } with mmh = precipitation in mm per hour.
   const HOME = { lat: 51.9225, lon: 4.4792 }; // Rotterdam
   const FIVE = 5 * 60000;
   let radarCache = null;
@@ -220,7 +220,7 @@ window.DASH = (() => {
     } finally {
       clearTimeout(timer);
     }
-    // Regels als "087|22:55": waarde 0-255 en de (Nederlandse) tijd
+    // Lines like "087|22:55": value 0-255 and the (Dutch) time
     const now = Date.now();
     const slots = [];
     let prev = null;
@@ -240,7 +240,7 @@ window.DASH = (() => {
       const v = Number(m[1]);
       slots.push({ start: t, end: t + FIVE, mmh: v ? 10 ** ((v - 109) / 32) : 0 });
     }
-    if (slots.length < 6) throw new Error('Buienradar gaf geen bruikbare data');
+    if (slots.length < 6) throw new Error('Buienradar returned no usable data');
     return { source: 'Buienradar', slots };
   }
 
@@ -251,27 +251,27 @@ window.DASH = (() => {
     }));
     const m = data.minutely_15;
     const slots = [];
-    // Een waarde op tijd T is de som van het kwartier dáárvoor: verdelen over drie stukjes van 5 minuten
+    // A value at time T is the sum of the quarter hour before it: spread over three 5-minute pieces
     m.time.forEach((t, i) => {
       for (let k = 3; k > 0; k--) slots.push({ start: t * 1000 - k * FIVE, end: t * 1000 - (k - 1) * FIVE, mmh: (m.precipitation[i] || 0) * 4 });
     });
     return { source: 'Open-Meteo', slots };
   }
 
-  // Eén keer per 5 minuten echt ophalen, ook als meerdere vakken tegelijk vragen
+  // Fetch for real once per 5 minutes, even when several tiles ask at the same time
   function radar() {
     if (radarCache && Date.now() - radarCache.at < FIVE) return radarCache.promise;
     const promise = buienradar()
-      .catch((e) => { console.warn('[regen] Buienradar lukt niet, Open-Meteo gebruikt:', e); return openMeteoRain(); })
+      .catch((e) => { console.warn('[rain] Buienradar failed, using Open-Meteo:', e); return openMeteoRain(); })
       .then((r) => ({ ...r, updated: Date.now(), slots: r.slots.filter((s) => s.end > Date.now()) }));
     radarCache = { at: Date.now(), promise };
     promise.catch(() => { radarCache = null; });
     return promise;
   }
-  const RAIN_MIN = 0.1; // mm per uur: vanaf hier telt het als regen
+  const RAIN_MIN = 0.1; // mm per hour: from here it counts as rain
 
-  // ---------- Achtergrondkleur uit een hoes ----------
-  // Gemiddelde "levendige" kleur → { tint, accent }. De kaart die vooraan staat in de mediastapel bepaalt de kleur van de pagina.
+  // ---------- Background color from a cover ----------
+  // Average "lively" color → { tint, accent }. The front card in the media stack decides the page color.
   function rgbToHsl(r, g, b) {
     r /= 255; g /= 255; b /= 255;
     const max = Math.max(r, g, b), min = Math.min(r, g, b);
@@ -307,7 +307,7 @@ window.DASH = (() => {
         ? { tint: `hsl(${hue} 6% 26%)`, accent: 'hsl(0 0% 92%)' }
         : { tint: `hsl(${hue} ${Math.round(Math.min(s, 0.7) * 100)}% 30%)`, accent: `hsl(${hue} ${Math.round(Math.max(0.45, Math.min(s, 0.85)) * 100)}% 66%)` };
     } catch {
-      return null; // geen CORS of iets anders: standaardkleuren houden
+      return null; // no CORS or something else: keep the default colors
     }
   }
   const tints = {};
@@ -318,13 +318,13 @@ window.DASH = (() => {
     document.documentElement.style.setProperty('--tint', t.tint);
     document.documentElement.style.setProperty('--accent', t.accent);
   }
-  // Kleur van een bron onthouden; alleen de bron vooraan kleurt de pagina
+  // Remember a source's color; only the front source colors the page
   function tint(owner, colors) { tints[owner] = colors; if (owner === tintOwner) applyTint(); }
   function tintFront(owner) { tintOwner = owner; applyTint(); }
 
-  // ---------- Meldingen (widgets/alerts.js toont ze) ----------
-  // Elk vak meldt zelf wat er speelt: DASH.alert('canvas', [{ level, icon, text, sub, onDismiss }]) of DASH.alert('canvas', null).
-  // level: 'urgent' (rood), 'warn' (oranje) of 'info'. onDismiss = er komt een ✕ bij.
+  // ---------- Notifications (widgets/alerts.js shows them) ----------
+  // Each tile reports what's going on: DASH.alert('canvas', [{ level, icon, text, sub, onDismiss }]) or DASH.alert('canvas', null).
+  // level: 'urgent' (red), 'warn' (orange) or 'info'. onDismiss = a ✕ is added.
   const alerts = new Map();
   function alert(key, list) {
     if (!list || (Array.isArray(list) && !list.length)) alerts.delete(key);
@@ -340,18 +340,18 @@ window.DASH = (() => {
   function addDays(ms, n) { const d = new Date(ms); return new Date(d.getFullYear(), d.getMonth(), d.getDate() + n).getTime(); }
   function startOfWeek(ms) { const t = startOfDay(ms); return addDays(t, -((new Date(t).getDay() + 6) % 7)); }
 
-  const fmtTime = (ms) => new Date(ms).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
-  const fmtWeekday = (ms) => new Date(ms).toLocaleDateString('nl-NL', { weekday: 'short' });
+  const fmtTime = (ms) => new Date(ms).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  const fmtWeekday = (ms) => new Date(ms).toLocaleDateString('en-GB', { weekday: 'short' });
   function fmtDay(ms) {
     const diff = Math.round((startOfDay(ms) - startOfDay(Date.now())) / 86400000);
-    if (diff === 0) return 'vandaag';
-    if (diff === 1) return 'morgen';
-    if (diff === -1) return 'gisteren';
-    return new Date(ms).toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short' });
+    if (diff === 0) return 'today';
+    if (diff === 1) return 'tomorrow';
+    if (diff === -1) return 'yesterday';
+    return new Date(ms).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
   }
-  const nl = (v, d = 1) => v.toFixed(d).replace('.', ',');
+  const dec = (v, d = 1) => v.toFixed(d);   // number with d decimals
 
-  // Plaatje met kleurvlak eronder: zolang het laadt (of als het mislukt) zie je het vlak met tekst, nooit een kapot icoon
+  // Image with a color block below it: while it loads (or if it fails) you see the block with text, never a broken icon
   function img(src, cls, fallbackText, color) {
     const box = h('div', `img-box ${cls || ''}`.trim());
     if (color) box.style.setProperty('--fb', color);
@@ -368,21 +368,21 @@ window.DASH = (() => {
     return box;
   }
 
-  // Pop-up-paneel voor een vak (Voorspel een film, F1-video, ...). color = accentkleur van het vak.
+  // Pop-up panel for a tile (Predict a film, F1 video, ...). color = the tile's accent color.
   function panel(title, color) {
     const dialog = h('dialog', 'panel-dialog');
     if (color) dialog.style.setProperty('--c', color);
     const head = h('div', 'panel-head');
-    const close = h('button', 'w-btn ghost', 'Sluiten');
+    const close = h('button', 'w-btn ghost', 'Close');
     close.onclick = () => dialog.close();
     head.append(h('b', null, title), close);
     const content = h('div', 'panel-body');
     dialog.append(head, content);
-    // Klik naast het paneel = sluiten
+    // Click next to the panel = close
     dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
     document.body.append(dialog);
     return { dialog, head, body: content, open: () => dialog.showModal(), close: () => dialog.close() };
   }
 
-  return { VERSION, DEMO, MINI, boot, loadAll, problem, connectGoogle, coverTint, tint, tintFront, h, store, getJSON, widget, every, onCalendar, HOME, radar, RAIN_MIN, alert, allAlerts, isAH, startOfDay, addDays, startOfWeek, fmtTime, fmtWeekday, fmtDay, nl, img, panel };
+  return { VERSION, DEMO, MINI, boot, loadAll, problem, connectGoogle, coverTint, tint, tintFront, h, store, getJSON, widget, every, onCalendar, HOME, radar, RAIN_MIN, alert, allAlerts, isAH, startOfDay, addDays, startOfWeek, fmtTime, fmtWeekday, fmtDay, dec, img, panel };
 })();

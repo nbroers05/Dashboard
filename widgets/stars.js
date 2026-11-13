@@ -1,10 +1,10 @@
 'use strict';
 
-// Film van vanavond: de bovenste film van je watchlist volgens de Sterrenvoorspeller, met poster (TMDB).
-// "Voorspel een film" opent de echte Sterrenvoorspeller-popup in een paneel.
-// Met Sterrenvoorspeller 0.2.2+ in Firefox stuurt de extensie je vernieuwde watchlist hierheen.
+// Film tonight: the top film of your watchlist according to the Sterrenvoorspeller, with a poster (TMDB).
+// "Predict a film" opens the real Sterrenvoorspeller popup in a panel.
+// With Sterrenvoorspeller 0.2.2+ in Firefox the extension sends your updated watchlist here.
 DASH.widget('w-stars', async (card, body, guard) => {
-  const { h, store, nl, img } = DASH;
+  const { h, store, dec, img } = DASH;
   const KEY = 'lbv:wl';
   const POSTERS = 'tmdb.posters';
   const TMDB_KEY = (window.DASHBOARD_CONFIG || {}).tmdbApiKey || '';
@@ -14,10 +14,10 @@ DASH.widget('w-stars', async (card, body, guard) => {
     const s = document.createElement('script');
     s.src = src;
     s.onload = res;
-    s.onerror = () => rej(new Error(`Kon ${src} niet laden`));
+    s.onerror = () => rej(new Error(`Couldn't load ${src}`));
     document.head.append(s);
   });
-  // Zelfde formule en watchlist als de extensie
+  // The same formula and watchlist as the extension
   await loadScript(`${BASE}lib/model-data.js`);
   await loadScript(`${BASE}lib/model.js`);
   await loadScript(`${BASE}popup/watchlist.js`);
@@ -35,7 +35,7 @@ DASH.widget('w-stars', async (card, body, guard) => {
   }
   const topFilm = () => topFilms(1)[0];
 
-  // Voor andere vakken (Vrienden, bioscoop): je verwachte cijfer voor een film op je watchlist, of null
+  // For other tiles (Friends, cinema): your predicted rating for a film on your watchlist, or null
   const norm = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '');
   function watchlist() {
     const stored = store.get(KEY);
@@ -48,7 +48,7 @@ DASH.widget('w-stars', async (card, body, guard) => {
     for (const f of list) byTitle.set(norm(f.film), f);
     const result = (f) => (f ? { film: f.film, year: f.jaar, slug: f.slug, value: predict(f) } : null);
     window.DASH_FILM = {
-      // slug = Letterboxd-adres van de film; anders op titel (en jaar, als dat bekend is)
+      // slug = the film's Letterboxd address; otherwise by title (and year, if known)
       predict({ slug, title, year } = {}) {
         if (slug && bySlug.has(slug)) return result(bySlug.get(slug));
         const f = title && byTitle.get(norm(title));
@@ -56,7 +56,7 @@ DASH.widget('w-stars', async (card, body, guard) => {
         return null;
       },
       norm,
-      // Voor de telefoon-app (telefoon.js, sinds 1.6.0): film van vanavond met verwacht cijfer en poster
+      // For the phone app (phone-app.js, since 1.6.0): film tonight with a predicted rating and poster
       async top() {
         const f = topFilm();
         if (!f) return null;
@@ -65,7 +65,7 @@ DASH.widget('w-stars', async (card, body, guard) => {
     };
     window.dispatchEvent(new CustomEvent('dash:watchlist'));
   }
-  // In het roterende vak (staand ontwerp) is er ruimte voor de top 3 naast elkaar
+  // In the rotating tile (portrait design) there's room for the top 3 side by side
   const wide = () => !!card.closest('.tall-rot');
 
   function addPoster(f, pbox) {
@@ -88,32 +88,32 @@ DASH.widget('w-stars', async (card, body, guard) => {
       a.href = `https://letterboxd.com/film/${f.slug}/`;
       a.target = '_blank';
       a.rel = 'noopener';
-      a.title = `${f.film}${f.jaar ? ` (${f.jaar})` : ''} · verwacht ${nl(f.p, 2)}`;
+      a.title = `${f.film}${f.jaar ? ` (${f.jaar})` : ''} · predicted ${dec(f.p, 2)}`;
       const pbox = img(null, 'film-poster', f.film);
-      pbox.append(h('span', 'film-score', nl(f.p, 1)), h('span', 'film3-rank', String(k + 1)));
+      pbox.append(h('span', 'film-score', dec(f.p, 1)), h('span', 'film3-rank', String(k + 1)));
       const txt = h('div', 'film3-txt');
-      txt.append(h('b', null, f.film), h('span', 'w-sub', [f.jaar, `verwacht ${nl(f.p, 2)}`].filter(Boolean).join(' · ')), h('span', 'film-stars', stars(f.p)));
+      txt.append(h('b', null, f.film), h('span', 'w-sub', [f.jaar, `predicted ${dec(f.p, 2)}`].filter(Boolean).join(' · ')), h('span', 'film-stars', stars(f.p)));
       a.append(pbox, txt);
       row.append(a);
       addPoster(f, pbox);
     });
     const actions = h('div', 'film-actions film3-actions');
-    const more = h('button', 'w-btn ghost', 'Voorspel een film');
+    const more = h('button', 'w-btn ghost', 'Predict a film');
     more.onclick = openPanel;
     actions.append(more);
     body.replaceChildren(row, actions);
     addCinema();
   }
 
-  // ---------- Draait nu in de bios: films van je watchlist in het programma (data/cinema.json, Action, dagelijks) ----------
+  // ---------- Showing now in the cinema: films from your watchlist in the programme (data/cinema.json, Action, daily) ----------
   let cinema = null;
   const when = (show) => {
     if (show.next) {
       const t = new Date(show.next).getTime();
       return `${DASH.fmtDay(t)} ${DASH.fmtTime(t)}`;
     }
-    if (show.until) return `t/m ${new Date(`${show.until}T12:00`).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' }).replace('.', '')}`;
-    return 'in het programma';
+    if (show.until) return `until ${new Date(`${show.until}T12:00`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }).replace('.', '')}`;
+    return 'in the programme';
   };
   function cinemaMatches() {
     if (!cinema || !window.DASH_FILM) return [];
@@ -121,7 +121,7 @@ DASH.widget('w-stars', async (card, body, guard) => {
     return (cinema.films || []).map((f) => {
       const mine = window.DASH_FILM.predict({ title: f.title });
       if (!mine) return null;
-      // Eerstvolgende voorstelling: met tijd eerst, daarna de rest
+      // Next showing: with a time first, then the rest
       const shows = f.shows.filter((s) => !s.next || new Date(s.next).getTime() > now)
         .sort((a, b) => (a.next || '9').localeCompare(b.next || '9'));
       return shows.length ? { ...f, mine, show: shows[0] } : null;
@@ -132,14 +132,14 @@ DASH.widget('w-stars', async (card, body, guard) => {
     const list = cinemaMatches();
     if (!list.length) return;
     const box = h('div', 'cine');
-    box.append(h('p', 'cine-head', 'Draait nu in de bios'));
+    box.append(h('p', 'cine-head', 'Showing now in the cinema'));
     for (const f of list.slice(0, card.closest('.desk-tabs') ? 1 : 3)) {
       const a = h('a', 'cine-row');
       a.href = f.show.url;
       a.target = '_blank';
       a.rel = 'noopener';
-      a.title = `${f.title} · ${f.show.cinema} · ${when(f.show)} · verwacht ${nl(f.mine.value, 2)}`;
-      a.append(h('b', null, f.title), h('span', 'w-sub', `${f.show.cinema} · ${when(f.show)}`), h('span', 'cine-score', nl(f.mine.value, 1)));
+      a.title = `${f.title} · ${f.show.cinema} · ${when(f.show)} · verwacht ${dec(f.mine.value, 2)}`;
+      a.append(h('b', null, f.title), h('span', 'w-sub', `${f.show.cinema} · ${when(f.show)}`), h('span', 'cine-score', dec(f.mine.value, 1)));
       box.append(a);
     }
     body.append(box);
@@ -149,7 +149,7 @@ DASH.widget('w-stars', async (card, body, guard) => {
       cinema = await DASH.getJSON(`data/cinema.json?t=${Math.floor(Date.now() / 3600000)}`);
       addCinema();
     } catch (e) {
-      console.warn('[bioscoop]', e);   // geen bioscoopdata: het filmvak werkt gewoon zonder
+      console.warn('[cinema]', e);   // no cinema data: the film tile just works without it
     }
   });
 
@@ -173,7 +173,7 @@ DASH.widget('w-stars', async (card, body, guard) => {
     return '★'.repeat(Math.floor(half)) + (half % 1 ? '½' : '');
   };
 
-  // Paneel met de echte popup (pas gemaakt bij de eerste klik)
+  // Panel with the real popup (only made on the first click)
   let pop = null;
   function openPanel() {
     if (!pop) {
@@ -190,36 +190,36 @@ DASH.widget('w-stars', async (card, body, guard) => {
     if (wide() && topFilms(3).length) return renderTop3();
     const f = topFilm();
     if (!f) {
-      body.replaceChildren(h('p', 'w-note', 'Geen films in je watchlist gevonden.'));
+      body.replaceChildren(h('p', 'w-note', 'No films found in your watchlist.'));
       return;
     }
     const url = `https://letterboxd.com/film/${f.slug}/`;
     const wrap = h('div', 'film');
     const pbox = img(null, 'film-poster', f.film);
-    pbox.append(h('span', 'film-score', nl(f.p, 1)));
+    pbox.append(h('span', 'film-score', dec(f.p, 1)));
     const info = h('div', 'film-info');
     info.append(
       h('div', 'w-mid', f.film),
       h('div', 'w-sub', [f.jaar, f.regisseur].filter(Boolean).join(' · ')),
       h('div', 'film-stars', stars(f.p)),
-      h('div', 'w-sub', `verwacht ${nl(f.p, 2)} · crowd ${nl(f.crowd, 2)}`),
+      h('div', 'w-sub', `verwacht ${dec(f.p, 2)} · crowd ${dec(f.crowd, 2)}`),
     );
     const actions = h('div', 'film-actions');
     const lb = h('a', 'w-btn lb', 'Letterboxd ↗');
     lb.href = url;
     lb.target = '_blank';
     lb.rel = 'noopener';
-    const more = h('button', 'w-btn ghost', 'Voorspel een film');
+    const more = h('button', 'w-btn ghost', 'Predict a film');
     more.onclick = openPanel;
     actions.append(lb, more);
     wrap.append(pbox, info);
     body.replaceChildren(wrap, actions);
     addCinema();
 
-    // Poster erbij zodra die binnen is; lukt het niet, dan blijft het kleurvlak met de titel
+    // Add the poster as soon as it's in; if that fails, the color block with the title stays
     addPoster(f, pbox);
   }
-  // Andere indeling (staand/liggend): opnieuw tekenen, want het roterende vak toont de top 3
+  // Another layout (portrait/landscape): draw again, because the rotating tile shows the top 3
   window.addEventListener('dash:layout', guard(() => render()));
 
   window.addEventListener('message', guard((e) => {

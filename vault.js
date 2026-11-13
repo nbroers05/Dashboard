@@ -1,21 +1,21 @@
 'use strict';
 
-// Eén inlog op elke computer (sinds 0.47.0). Alle sleutels van deze browser in één bundel (vault.json in de publieke repo),
-// in de browser versleuteld met Noahs wachtwoord: PBKDF2-SHA256 (600.000 rondes) → AES-GCM 256. Zonder wachtwoord onleesbaar.
-// - Laadt als eerste script na config.js: kiest hier de opslag voor het hele dashboard. "Deze computer onthouden" uit =
-//   sessionStorage-modus: window.localStorage wijst dan naar sessionStorage, zodat álles (tokens, caches) weg is als het
-//   tabblad dichtgaat, ook in bestanden die zelf localStorage gebruiken.
-// - Inlogscherm als deze browser nog geen sleutels heeft en er een bundel is. "Zonder inloggen" = dashboard zonder persoonlijke vakken.
-// - Uitloggen (knop in de topbalk, alleen in browsers die via de bundel zijn ingelogd) wist alle opslag van het dashboard.
-// - Bundel maken: Instellingen › Inloggen, alleen waar het hulpprogramma draait (dat levert de blijvende Google- en Spotify-
-//   sleutels via /vault/keys, en schrijft vault.json en pusht hem). Sinds 0.48.0 vernieuwen Google en Spotify zichzelf.
+// One login on every computer (since 0.47.0). All keys of this browser in one bundle (vault.json in the public repo),
+// encrypted in the browser with Noah's password: PBKDF2-SHA256 (600,000 rounds) → AES-GCM 256. Unreadable without the password.
+// - Loads as the first script after config.js: picks the storage for the whole dashboard here. "Remember this computer" off =
+//   sessionStorage mode: window.localStorage then points to sessionStorage, so everything (tokens, caches) is gone when the
+//   tab closes, also in files that use localStorage themselves.
+// - Login screen when this browser has no keys yet and there is a bundle. "Without logging in" = the dashboard without personal tiles.
+// - Log out (button in the top bar, only in browsers that logged in via the bundle) wipes all of the dashboard's storage.
+// - Make a bundle: Settings › Log in, only where the helper runs (it supplies the lasting Google and Spotify
+//   keys via /vault/keys, and writes vault.json and pushes it). Since 0.48.0 Google and Spotify refresh themselves.
 window.DASH_VAULT = (() => {
   const ITER = 600000;
-  const KEYS = ['data.token', 'feeds.twelvedata'];   // uit deze browser
-  const HELPER_KEYS = ['google.refresh', 'spotify.tokens'];   // uit het hulpprogramma (blijvende sleutels, zie hieronder)
-  const FLAG = 'vault.session';                      // in sessionStorage: dit tabblad is niet onthouden
-  const MARK = 'vault.unlocked';                     // in de gekozen opslag: ingelogd via de bundel
-  const SKIP = 'vault.skip';                         // in sessionStorage: "zonder inloggen" gekozen
+  const KEYS = ['data.token', 'feeds.twelvedata'];   // from this browser
+  const HELPER_KEYS = ['google.refresh', 'spotify.tokens'];   // from the helper (lasting keys, see below)
+  const FLAG = 'vault.session';                      // in sessionStorage: this tab isn't remembered
+  const MARK = 'vault.unlocked';                     // in the chosen storage: logged in via the bundle
+  const SKIP = 'vault.skip';                         // in sessionStorage: "without logging in" chosen
   const HELPER = 'http://127.0.0.1:8765/vault';
   const realLocal = (() => { try { return window.localStorage; } catch { return null; } })();
   const session = (() => { try { return window.sessionStorage; } catch { return null; } })();
@@ -57,7 +57,7 @@ window.DASH_VAULT = (() => {
       const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(box.iv) }, key, unb64(box.data));
       return JSON.parse(new TextDecoder().decode(plain));
     } catch {
-      throw new Error('Verkeerd wachtwoord');
+      throw new Error('Wrong password');
     }
   }
 
@@ -67,17 +67,17 @@ window.DASH_VAULT = (() => {
     return res.json();
   }
 
-  // ---------- Inloggen en uitloggen ----------
+  // ---------- Logging in and out ----------
   async function unlock(password, remember) {
     const box = await fetchBox();
-    if (!box) throw new Error('Er staat nog geen bundel online');
+    if (!box) throw new Error('There is no bundle online yet');
     const payload = await open(password, box);
-    // Niet onthouden: ook wat het dashboard vóór het inloggen al wegschreef (caches) uit de echte opslag halen
+    // Not remembered: also remove from the real storage what the dashboard wrote before logging in (caches)
     if (!remember) { try { realLocal && realLocal.clear(); } catch {} sset(FLAG, '1'); useSession(); }
     const s = store();
     for (const [k, v] of Object.entries(payload.keys || {})) if (typeof v === 'string') s.setItem(k, v);
     s.setItem(MARK, JSON.stringify({ at: new Date().toISOString(), remember: !!remember }));
-    // Supabase hoort bij dezelfde inlog (sync.js, sinds 1.1.0): wachtwoord afleiden uit de wachtzin, zelf inloggen na herladen
+    // Supabase belongs to the same login (sync.js, since 1.1.0): derive the password from the passphrase, log in by itself after a reload
     try { if (window.DASH_SB) await DASH_SB.prepare(password); } catch (e) { console.warn('[vault] supabase', e); }
     location.reload();
   }
@@ -102,38 +102,38 @@ window.DASH_VAULT = (() => {
 
   function showLogin() {
     const dlg = el('dialog', 'panel-dialog vault-dialog');
-    dlg.setAttribute('aria-label', 'Inloggen');
+    dlg.setAttribute('aria-label', 'Log in');
     const form = el('form', 'vault-form');
     form.method = 'dialog';
     const pw = el('input', 'vault-input');
-    Object.assign(pw, { type: 'password', autocomplete: 'current-password', placeholder: 'Wachtwoord', required: true });
+    Object.assign(pw, { type: 'password', autocomplete: 'current-password', placeholder: 'Password', required: true });
     const rem = el('label', 'vault-check');
     const box = el('input');
     box.type = 'checkbox';
-    rem.append(box, el('span', null, 'Deze computer onthouden (alleen op je eigen laptop/pc)'));
-    const go = el('button', 'w-btn vault-go', 'Ontgrendel');
+    rem.append(box, el('span', null, 'Remember this computer (only on your own laptop/PC)'));
+    const go = el('button', 'w-btn vault-go', 'Unlock');
     go.type = 'submit';
     const err = el('p', 'vault-err');
     err.setAttribute('role', 'alert');
-    const skip = el('button', 'vault-skip', 'Zonder inloggen verder');
+    const skip = el('button', 'vault-skip', 'Continue without logging in');
     skip.type = 'button';
     skip.onclick = () => { sset(SKIP, '1'); dlg.close(); };
     form.append(
-      el('h2', null, 'Inloggen op je dashboard'),
-      el('p', 'w-note', 'Deze browser heeft nog geen koppelingen.'),
+      el('h2', null, 'Log in to your dashboard'),
+      el('p', 'w-note', 'This browser has no connections yet.'),
       pw, rem, go, err,
-      el('p', 'w-note vault-small', 'Niet onthouden = uitgelogd zodra je het tabblad sluit. Zonder inloggen: het dashboard zonder persoonlijke vakken.'),
+      el('p', 'w-note vault-small', 'Not remembered = logged out as soon as you close the tab. Without logging in: the dashboard without personal tiles.'),
       skip,
     );
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       go.disabled = true;
-      go.textContent = 'Bezig…';
+      go.textContent = 'Busy…';
       err.textContent = '';
       try {
         await unlock(pw.value, box.checked);
       } catch (x) {
-        err.textContent = x.message || 'Ontgrendelen lukt niet';
+        err.textContent = x.message || 'Unlocking failed';
         go.disabled = false;
         go.textContent = 'Ontgrendel';
         pw.select();
@@ -146,34 +146,34 @@ window.DASH_VAULT = (() => {
     pw.focus();
   }
 
-  // ---------- Uitlogknop in de topbalk ----------
+  // ---------- Log-out button in the top bar ----------
   function logoutButton() {
     const actions = document.querySelector('#topbar .tb-actions');
     if (!actions || !unlocked()) return;
     const b = el('button', 'tb-btn tb-logout');
     b.type = 'button';
-    b.title = sget(FLAG) ? 'Uitloggen (gebeurt ook als je dit tabblad sluit)' : 'Uitloggen en alles van het dashboard uit deze browser wissen';
-    b.setAttribute('aria-label', 'Uitloggen');
+    b.title = sget(FLAG) ? 'Log out (also happens when you close this tab)' : 'Log out and wipe everything of the dashboard from this browser';
+    b.setAttribute('aria-label', 'Log out');
     b.innerHTML = '<svg viewBox="0 0 24 24"><path d="M10 17v-3H3v-4h7V7l5 5-5 5zm2-15h7a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2h-7v-2h7V4h-7V2z"/></svg>';
-    b.onclick = () => { if (confirm('Uitloggen? Alles van het dashboard wordt uit deze browser gewist.')) logout(); };
+    b.onclick = () => { if (confirm('Log out? Everything of the dashboard will be wiped from this browser.')) logout(); };
     actions.insertBefore(b, actions.querySelector('.tb-settings') || actions.firstChild);
   }
 
-  // ---------- Instellingen › Inloggen ----------
-  // { exists, made } van het hulpprogramma; 'oud' = het draait wel, maar kent /vault nog niet (start.bat opnieuw starten)
+  // ---------- Settings › Log in ----------
+  // { exists, made } from the helper; 'old' = it runs, but doesn't know /vault yet (run start.bat again)
   async function helperUp() {
     try {
       const r = await fetch(HELPER, { cache: 'no-store' });
-      if (!r.ok) return 'oud';
+      if (!r.ok) return 'old';
       const info = await r.json();
       const k = await fetch(`${HELPER}/keys`, { cache: 'no-store' });
-      if (!k.ok) return 'oud';
+      if (!k.ok) return 'old';
       return { ...info, keys: await k.json() };
     } catch { return null; }
   }
 
-  // Blijvende sleutels van het hulpprogramma als opslagwaarden: Google (calendar.js fromBundle) en Spotify (spotify.js,
-  // met `secret`: die sleutel vervalt niet bij gebruik, anders dan die van de gewone PKCE-inlog)
+  // Lasting keys from the helper as storage values: Google (calendar.js fromBundle) and Spotify (spotify.js,
+  // with `secret`: that key doesn't expire on use, unlike the one from the normal PKCE login)
   function helperValues(keys) {
     const out = {};
     if (keys.google) out['google.refresh'] = JSON.stringify(keys.google);
@@ -184,43 +184,43 @@ window.DASH_VAULT = (() => {
   function settingsTab(root) {
     const h = DASH.h;
     if (window.DASH_SB) DASH_SB.settingsPart(root);
-    root.append(h('p', 'w-note', 'Maak hier de versleutelde bundel met de sleutels van deze browser. Daarna kun je op elke computer inloggen met alleen je wachtwoord. Kies een lange wachtzin (4+ woorden): iedereen kan de bundel downloaden en proberen te raden.'));
+    root.append(h('p', 'w-note', 'Make the encrypted bundle with this browser\'s keys here. After that you can log in on any computer with just your password. Pick a long passphrase (4+ words): anyone can download the bundle and try to guess it.'));
     const list = h('ul', 'vault-list');
-    for (const k of KEYS) list.append(h('li', has(k) ? 'ok' : 'nee', `${k}: ${has(k) ? 'staat in deze browser' : 'ontbreekt hier'}`));
+    for (const k of KEYS) list.append(h('li', has(k) ? 'ok' : 'no', `${k}: ${has(k) ? 'in this browser' : 'missing here'}`));
     root.append(list);
     const helperList = h('ul', 'vault-list');
     root.append(helperList);
-    const status = h('p', 'w-note', 'Hulpprogramma zoeken…');
+    const status = h('p', 'w-note', 'Looking for the helper…');
     root.append(status);
     helperUp().then((info) => {
       if (!info) {
-        status.textContent = 'Het hulpprogramma draait hier niet. Een bundel maken kan alleen op je eigen pc (start.bat in dashboard/helper).';
+        status.textContent = 'The helper isn\'t running here. You can only make a bundle on your own PC (start.bat in dashboard/helper).';
         return;
       }
-      if (info === 'oud') {
-        status.textContent = 'Het hulpprogramma draait, maar is een oude versie. Dubbelklik op start.bat in dashboard/helper en open dit tabje opnieuw.';
+      if (info === 'old') {
+        status.textContent = 'The helper is running, but it\'s an old version. Double-click start.bat in dashboard/helper and open this tab again.';
         return;
       }
       const extra = helperValues(info.keys);
       helperList.append(
-        h('li', extra['google.refresh'] ? 'ok' : 'nee', `Google (agenda, mail, gezondheid): ${extra['google.refresh'] ? 'gekoppeld in het hulpprogramma' : 'nog niet gekoppeld (127.0.0.1:8765/koppel)'}`),
-        h('li', extra['spotify.tokens'] ? 'ok' : 'nee', `Spotify: ${extra['spotify.tokens'] ? 'gekoppeld in het hulpprogramma' : 'nog niet gekoppeld (127.0.0.1:8765/koppel, README stap 13)'}`),
+        h('li', extra['google.refresh'] ? 'ok' : 'no', `Google (agenda, mail, health): ${extra['google.refresh'] ? 'linked in the helper' : 'not linked yet (127.0.0.1:8765/link)'}`),
+        h('li', extra['spotify.tokens'] ? 'ok' : 'no', `Spotify: ${extra['spotify.tokens'] ? 'linked in the helper' : 'not linked yet (127.0.0.1:8765/link, README step 8)'}`),
       );
-      status.textContent = info.exists ? `Er staat al een bundel online (gemaakt ${info.made || 'onbekend'}). Een nieuwe vervangt hem.` : 'Er staat nog geen bundel online.';
+      status.textContent = info.exists ? `There is already a bundle online (made ${info.made || 'unknown'}). A new one replaces it.` : 'There is no bundle online yet.';
       const pw1 = h('input', 'vault-input');
       const pw2 = h('input', 'vault-input');
-      Object.assign(pw1, { type: 'password', autocomplete: 'new-password', placeholder: 'Nieuw wachtwoord' });
-      Object.assign(pw2, { type: 'password', autocomplete: 'new-password', placeholder: 'Nog een keer' });
-      const go = h('button', 'w-btn', 'Bundel maken en online zetten');
+      Object.assign(pw1, { type: 'password', autocomplete: 'new-password', placeholder: 'New password' });
+      Object.assign(pw2, { type: 'password', autocomplete: 'new-password', placeholder: 'Once more' });
+      const go = h('button', 'w-btn', 'Create bundle and put it online');
       go.type = 'button';
       const out = h('p', 'w-note');
       go.onclick = async () => {
-        if (pw1.value.length < 12) { out.textContent = 'Te kort: minstens 12 tekens (liever 4+ woorden).'; return; }
-        if (pw1.value !== pw2.value) { out.textContent = 'De wachtwoorden zijn niet gelijk.'; return; }
+        if (pw1.value.length < 12) { out.textContent = 'Too short: at least 12 characters (preferably 4+ words).'; return; }
+        if (pw1.value !== pw2.value) { out.textContent = 'The passwords don\'t match.'; return; }
         const keys = {};
         for (const k of KEYS) { const v = store().getItem(k); if (v != null) keys[k] = v; }
         Object.assign(keys, extra);
-        if (!Object.keys(keys).length) { out.textContent = 'Er staan geen sleutels in deze browser.'; return; }
+        if (!Object.keys(keys).length) { out.textContent = 'There are no keys in this browser.'; return; }
         go.disabled = true;
         out.textContent = 'Versleutelen…';
         try {
@@ -228,16 +228,16 @@ window.DASH_VAULT = (() => {
           box.made = new Date().toISOString().slice(0, 10);
           const r = await fetch(HELPER, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(box) });
           const res = await r.json().catch(() => ({}));
-          if (!r.ok) throw new Error(res.error || `Fout ${r.status}`);
-          // Nieuwe wachtzin = ook een nieuw Supabase-wachtwoord (afgeleid, sync.js); deze browser zet het om
+          if (!r.ok) throw new Error(res.error || `Error ${r.status}`);
+          // New passphrase = also a new Supabase password (derived, sync.js); this browser converts it
           let sbNote = '';
           if (res.pushed && window.DASH_SB && DASH_SB.linked()) {
-            sbNote = await DASH_SB.changePassphrase(pw1.value).then(() => ' Supabase-wachtwoord omgezet.', (e) => ` Supabase-wachtwoord omzetten lukte niet (${e.message}): koppel Supabase op elk apparaat opnieuw.`);
+            sbNote = await DASH_SB.changePassphrase(pw1.value).then(() => ' Supabase password converted.', (e) => ` Converting the Supabase password failed (${e.message}): link Supabase again on every device.`);
           }
-          out.textContent = `Klaar: ${Object.keys(keys).length} sleutels versleuteld${res.pushed ? ' en online gezet (over een minuut of twee live)' : ', maar pushen lukte niet: ' + (res.error || '?')}.${sbNote}`;
+          out.textContent = `Done: ${Object.keys(keys).length} keys encrypted${res.pushed ? ' and put online (live in a minute or two)' : ', but pushing failed: ' + (res.error || '?')}.${sbNote}`;
           pw1.value = pw2.value = '';
         } catch (x) {
-          out.textContent = `Mislukt: ${x.message}`;
+          out.textContent = `Failed: ${x.message}`;
         } finally {
           go.disabled = false;
         }
@@ -249,7 +249,7 @@ window.DASH_VAULT = (() => {
   // ---------- Start ----------
   document.addEventListener('DOMContentLoaded', () => {
     logoutButton();
-    if (window.DASH_SETTINGS) DASH_SETTINGS.add({ id: 'inloggen', label: 'Inloggen', order: 30, render: settingsTab });
+    if (window.DASH_SETTINGS) DASH_SETTINGS.add({ id: 'login', label: 'Log in', order: 30, render: settingsTab });
     if (demo || hasKeys() || sget(SKIP)) return;
     fetchBox().then((box) => { if (box) showLogin(); }).catch(() => {});
   });

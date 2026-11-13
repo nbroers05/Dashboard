@@ -1,11 +1,11 @@
 'use strict';
 
-// Mijn data: een eigen pagina (zelfde stijl als Feeds) met grafieken van alles in het PRIVÉ archief.
-// Openen/sluiten met het grafiek-icoon in de topbalk, Esc of de terug-knop (adres #mydata).
-// De data staat NIET in deze (publieke) repo: de pagina leest alleen de kleine samenvattingen
-// data/aggregates/*.json uit de privé repo (config.dataRepo) via de GitHub-API, met het token uit localStorage
-// (`data.token`, hetzelfde als de check-ins). Zonder token: lege pagina met uitleg. Met ?demo: verzonnen cijfers.
-// Alleen tonen: geen conclusies of adviezen.
+// My data: a page of its own (same style as Feeds) with charts of everything in the PRIVATE archive.
+// Open/close with the chart icon in the top bar, Esc or the back button (address #mydata).
+// The data is NOT in this (public) repo: the page only reads the small summaries
+// data/aggregates/*.json from the private repo (config.dataRepo) via the GitHub API, with the token from localStorage
+// (`data.token`, the same as the check-ins). Without a token: an empty page with an explanation. With ?demo: made-up numbers.
+// Display only: no conclusions or advice.
 (() => {
   const { h, store } = DASH;
   const bar = document.getElementById('topbar');
@@ -15,13 +15,13 @@
   const REPO = CFG.dataRepo || 'nbroers05/dashboard-data';
   const API = `https://api.github.com/repos/${REPO}/contents/data/aggregates/`;
   const GROUPS = ['youtube', 'spotify', 'letterboxd', 'series', 'places', 'work', 'money', 'body', 'computer', 'social', 'checkins', 'weather', 'context'];
-  const GROUP_LABEL = { youtube: 'YouTube', spotify: 'Spotify', letterboxd: 'Letterboxd', series: 'Series', places: 'Plekken', work: 'Werk en studie', money: 'Geld', body: 'Lichaam', computer: 'Computer', social: 'Berichten en zoeken', checkins: 'Check-ins', weather: 'Weer', context: 'Kalender en maan' };
-  // Kleuren voor grafieken met meerdere reeksen (vaste volgorde, kleurenblind-veilig op donker)
+  const GROUP_LABEL = { youtube: 'YouTube', spotify: 'Spotify', letterboxd: 'Letterboxd', series: 'Series', places: 'Places', work: 'Work and study', money: 'Money', body: 'Body', computer: 'Computer', social: 'Messages and search', checkins: 'Check-ins', weather: 'Weather', context: 'Calendar and moon' };
+  // Colors for charts with several series (fixed order, colorblind-safe on dark)
   const SERIES = ['#3987e5', '#d95926', '#199e70', '#c98500'];
 
   const page = h('section', 'md-page');
   page.id = 'mydata';
-  page.setAttribute('aria-label', 'Mijn data');
+  page.setAttribute('aria-label', 'My data');
   page.hidden = true;
   document.body.append(page);
   const place = () => { page.style.top = `${Math.round(bar.getBoundingClientRect().bottom + 12)}px`; };
@@ -30,39 +30,39 @@
 
   // ---------- Hulpjes ----------
   const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-  const nl = (n, d = 0) => (n == null || !Number.isFinite(n) ? '–' : n.toLocaleString('nl-NL', { minimumFractionDigits: d, maximumFractionDigits: d }));
+  const dec = (n, d = 0) => (n == null || !Number.isFinite(n) ? '–' : n.toLocaleString('en-GB', { minimumFractionDigits: d, maximumFractionDigits: d }));
   const pad = (n) => String(n).padStart(2, '0');
   const D0 = (s) => Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +(s.slice(8, 10) || 1));
   const iso = (t) => new Date(t).toISOString().slice(0, 10);
   const addDays = (s, n) => iso(D0(s) + n * 864e5);
   const monday = (s) => addDays(s, -((new Date(D0(s)).getUTCDay() + 6) % 7));
   const todayIso = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
-  const MONTHS = ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec'];
-  const WD = ['ma', 'di', 'wo', 'do', 'vr', 'za', 'zo'];
+  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const WD = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   const fmtMonth = (m) => `${MONTHS[+m.slice(5, 7) - 1]} ${m.slice(0, 4)}`;
   const fmtDate = (s, year = true) => `${+s.slice(8, 10)} ${MONTHS[+s.slice(5, 7) - 1]}${year ? ` ${s.slice(0, 4)}` : ''}`;
   const hours = (min) => (min == null ? null : min / 60);
-  const fmtH = (min) => (min == null ? '–' : min < 60 ? `${nl(min)} min` : `${nl(min / 60, min < 600 ? 1 : 0)} u`);
-  const eur = (v) => `€ ${nl(v)}`;
+  const fmtH = (min) => (min == null ? '–' : min < 60 ? `${dec(min)} min` : `${dec(min / 60, min < 600 ? 1 : 0)} h`);
+  const eur = (v) => `€ ${dec(v)}`;
   const note = (text) => h('p', 'w-note', text);
   const sub = (text) => h('p', 'w-sub md-sub', text);
   const mini = (title) => h('p', 'md-mini', title);
 
-  // ---------- Periode ----------
+  // ---------- Period ----------
   let period = store.get('mydata.period') || { mode: 'year' };
   let data = null;          // { index, groups: {naam: json} }
   let state = 'idle';       // idle | loading | ready | notoken | error
   let errMsg = '';
 
   function firstDay() {
-    // Begin van "alles": de vroegste maand van een bron, maar de agenda telt niet mee (losse afspraken vanaf 2005)
+    // Start of "all": a source's earliest month, but the agenda doesn't count (single appointments from 2005)
     const src = data?.index?.sources || {};
     const firsts = Object.entries(src).filter(([s, v]) => v.first && s !== 'calendar').map(([, v]) => v.first);
     return `${(firsts.sort()[0] || todayIso().slice(0, 7))}-01`;
   }
   function range() {
     const t = todayIso();
-    if (period.mode === 'month') return { from: `${t.slice(0, 7)}-01`, to: t };   // deze maand, vanaf de 1e
+    if (period.mode === 'month') return { from: `${t.slice(0, 7)}-01`, to: t };   // this month, from the 1st
     if (period.mode === 'all') return { from: firstDay(), to: t };
     if (period.mode === 'custom' && period.from && period.to) return period.from <= period.to ? { from: period.from, to: period.to } : { from: period.to, to: period.from };
     return { from: addDays(t, -364), to: t };
@@ -75,7 +75,7 @@
     for (;;) { const k = `${y}-${pad(m)}`; if (k > end) break; out.push(k); if (++m > 12) { m = 1; y++; } }
     return out;
   }
-  // Staafjes per dag, week of maand: zo blijft elke grafiek leesbaar
+  // Bars per day, week or month: that keeps every chart readable
   const autoBucket = (r, min = 'day') => {
     const n = nDays(r);
     const b = n <= 62 ? 'day' : n <= 731 ? 'week' : 'month';
@@ -83,15 +83,15 @@
     return order[Math.max(order.indexOf(b), order.indexOf(min))];
   };
   const bucketKey = (d, b) => (b === 'day' ? d : b === 'week' ? monday(d) : d.slice(0, 7));
-  const bucketLabel = (k, b) => (b === 'month' ? fmtMonth(k) : b === 'week' ? `week van ${fmtDate(k)}` : `${WD[(new Date(D0(k)).getUTCDay() + 6) % 7]} ${fmtDate(k)}`);
+  const bucketLabel = (k, b) => (b === 'month' ? fmtMonth(k) : b === 'week' ? `week of ${fmtDate(k)}` : `${WD[(new Date(D0(k)).getUTCDay() + 6) % 7]} ${fmtDate(k)}`);
   const bucketShort = (k, b) => (b === 'month' ? `${MONTHS[+k.slice(5, 7) - 1]} '${k.slice(2, 4)}` : fmtDate(k, false));
 
-  // ---------- Reeksen uit de samenvattingen ----------
+  // ---------- Series from the summaries ----------
   const G = (name) => data?.groups?.[name] || null;
   const meta = (g, m) => G(g)?.metrics?.[m] || {};
   const spanCache = new Map();
   function span(g, m) {
-    // Tellingen: binnen de periode waarin deze metriek data heeft (eerste t/m laatste dag) telt een lege dag als 0
+    // Counts: within the period in which this metric has data (first to last day) an empty day counts as 0
     const key = `${g}.${m}`;
     if (spanCache.has(key)) return spanCache.get(key);
     const days = Object.keys(G(g)?.daily?.[m] || {});
@@ -102,7 +102,7 @@
     return s;
   }
   function daily(g, m, r) {
-    // Map dag -> waarde of null (onbekend), voor elke dag in de periode
+    // Map day -> value or null (unknown), for every day in the period
     const dict = G(g)?.daily?.[m] || {};
     const isCount = (meta(g, m).kind || 'count') === 'count';
     const sp = span(g, m);
@@ -139,10 +139,10 @@
     for (const mo of monthsOf(r)) { const w = G(g)?.monthly?.[mo]?.[key]; if (w) { any = true; w.forEach((v, i) => { out[i] += v; }); } }
     return any ? out : null;
   }
-  // Maanddata (heatmaps, top-lijsten, bank) telt hele maanden: zeg dat erbij als de periode een maand doorsnijdt
-  const monthNote = (r) => (r.from.slice(8) !== '01' || addDays(r.to, 1).slice(8) !== '01' ? ' (hele maanden)' : '');
+  // Month data (heatmaps, top lists, bank) counts whole months: say so when the period cuts through a month
+  const monthNote = (r) => (r.from.slice(8) !== '01' || addDays(r.to, 1).slice(8) !== '01' ? ' (whole months)' : '');
 
-  // ---------- Grafieken (SVG, zelf getekend; hover = tooltip via data-tip) ----------
+  // ---------- Charts (SVG, drawn ourselves; hover = tooltip via data-tip) ----------
   const tipAttr = (s) => `data-tip="${esc(s)}"`;
   function barPath(x, y, w, hgt, base) {
     const rr = Math.min(4, w / 2, hgt);
@@ -152,7 +152,7 @@
   function xLabels(items, W, H, padL) {
     if (!items.length) return '';
     const n = items.length, bw = (W - padL) / n;
-    // Weinig staafjes met eigen korte labels (uren, sterren): alle labels; anders begin, midden en eind
+    // Few bars with their own short labels (hours, stars): all labels; otherwise start, middle and end
     const all = n <= 3 || (n <= 24 && items.some((it) => it.short === ''));
     const idx = all ? [...items.keys()].filter((i) => items[i].short !== '') : [0, Math.floor((n - 1) / 2), n - 1];
     return idx.map((i, j) => {
@@ -177,12 +177,12 @@
     const max = o.max ?? (Math.max(0, ...vals) || 1);
     const n = items.length || 1, bw = W / n, gap = bw > 6 ? 2 : bw > 3 ? 1 : 0, w = Math.max(1, bw - gap);
     const base = H - padB, ph = base - padT;
-    const fmt = o.fmt || ((v) => nl(v));
+    const fmt = o.fmt || ((v) => dec(v));
     let s = `<line x1="0" x2="${W}" y1="${base}" y2="${base}" class="md-base"/>`;
     s += `<text x="0" y="10" class="md-ax">${esc(o.maxLabel ? o.maxLabel(max) : `max ${fmt(max)}`)}</text>`;
     items.forEach((it, i) => {
       const x = i * bw + gap / 2;
-      const tip = `${it.label}: ${it.value == null ? 'geen data' : fmt(it.value)}`;
+      const tip = `${it.label}: ${it.value == null ? 'no data' : fmt(it.value)}`;
       if (it.value != null && it.value > 0) s += `<path d="${barPath(x, base - (it.value / max) * ph, w, (it.value / max) * ph, base)}" class="md-bar"/>`;
       else if (it.value == null) s += `<rect x="${x}" y="${base - 2}" width="${w}" height="2" class="md-gap"/>`;
       s += `<rect x="${i * bw}" y="0" width="${bw}" height="${base}" class="md-hit" ${tipAttr(tip)}/>`;
@@ -190,14 +190,14 @@
     s += xLabels(items, W, H, 0);
     return svgWrap(W, H, s);
   }
-  // Gestapelde staafjes: items [{label, short, parts: [..]}], names = namen van de delen
+  // Stacked bars: items [{label, short, parts: [..]}], names = names of the parts
   function stacked(box, items, names, o = {}) {
     const W = Math.max(120, box.clientWidth || 300), H = (o.height || 130) + (box._extra || 0), padT = 16, padB = 16;
     const totals = items.map((i) => i.parts.reduce((a, b) => a + (b || 0), 0));
     const max = Math.max(0, ...totals) || 1;
     const n = items.length || 1, bw = W / n, gap = bw > 6 ? 2 : bw > 3 ? 1 : 0, w = Math.max(1, bw - gap);
     const base = H - padB, ph = base - padT;
-    const fmt = o.fmt || ((v) => nl(v));
+    const fmt = o.fmt || ((v) => dec(v));
     let s = `<line x1="0" x2="${W}" y1="${base}" y2="${base}" class="md-base"/><text x="0" y="10" class="md-ax">max ${esc(fmt(max))}</text>`;
     items.forEach((it, i) => {
       const x = i * bw + gap / 2;
@@ -205,31 +205,31 @@
       it.parts.forEach((v, j) => {
         if (!v) return;
         const hh = (v / max) * ph;
-        const seg = Math.max(0, hh - (j ? 1 : 0));   // 1px naad tussen de delen
+        const seg = Math.max(0, hh - (j ? 1 : 0));   // 1px seam between the parts
         s += `<rect x="${x}" y="${y - hh}" width="${w}" height="${seg}" fill="${SERIES[j]}"/>`;
         y -= hh;
       });
-      const tip = `${it.label}: ${totals[i] ? names.map((nm, j) => `${nm} ${fmt(it.parts[j] || 0)}`).join(' · ') : 'geen data'}`;
+      const tip = `${it.label}: ${totals[i] ? names.map((nm, j) => `${nm} ${fmt(it.parts[j] || 0)}`).join(' · ') : 'no data'}`;
       s += `<rect x="${i * bw}" y="0" width="${bw}" height="${base}" class="md-hit" ${tipAttr(tip)}/>`;
     });
     s += xLabels(items, W, H, 0);
     return svgWrap(W, H, s);
   }
-  // Lijnen op één as: xs [{label, short}], list [{name, color, values}], o {min, max, fmt}
+  // Lines on one axis: xs [{label, short}], list [{name, color, values}], o {min, max, fmt}
   function lines(box, xs, list, o = {}) {
     const W = Math.max(160, box.clientWidth || 300), H = (o.height || 150) + (box._extra || 0), padT = 10, padB = 16, padL = 18;
     const all = list.flatMap((l) => l.values).filter((v) => v != null);
     const lo = o.min ?? Math.min(0, ...all), hi = o.max ?? (Math.max(...all, 1));
     const n = xs.length, step = n > 1 ? (W - padL - 6) / (n - 1) : 0;
     const X = (i) => padL + (n > 1 ? i * step : (W - padL) / 2), Y = (v) => padT + (1 - (v - lo) / (hi - lo || 1)) * (H - padT - padB);
-    const fmt = o.fmt || ((v) => nl(v, 1));
+    const fmt = o.fmt || ((v) => dec(v, 1));
     let s = '';
-    for (const t of o.ticks || [lo, hi]) s += `<line x1="${padL}" x2="${W}" y1="${Y(t)}" y2="${Y(t)}" class="md-grid"/><text x="0" y="${Y(t) + 4}" class="md-ax">${esc(o.tickFmt ? o.tickFmt(t) : nl(t))}</text>`;
+    for (const t of o.ticks || [lo, hi]) s += `<line x1="${padL}" x2="${W}" y1="${Y(t)}" y2="${Y(t)}" class="md-grid"/><text x="0" y="${Y(t) + 4}" class="md-ax">${esc(o.tickFmt ? o.tickFmt(t) : dec(t))}</text>`;
     for (const l of list) {
       let d = '', pen = false;
       l.values.forEach((v, i) => { if (v == null) { pen = false; return; } d += `${pen ? 'L' : 'M'}${X(i).toFixed(1)},${Y(v).toFixed(1)}`; pen = true; });
       s += `<path d="${d}" fill="none" stroke="${l.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
-      // Losse punten (zonder buren) en weinig punten: stipjes, anders zie je ze niet
+      // Loose points (without neighbours) and few points: dots, otherwise you don't see them
       l.values.forEach((v, i) => {
         if (v == null) return;
         const alone = (l.values[i - 1] == null) && (l.values[i + 1] == null);
@@ -239,7 +239,7 @@
     const cw = n > 1 ? step : W - padL;
     xs.forEach((x, i) => {
       const tip = `${x.label}: ${list.map((l) => `${l.name} ${l.values[i] == null ? '–' : (l.fmt || fmt)(l.values[i], i)}`).join(' · ')}`;
-      const x0 = Math.max(0, X(i) - cw / 2), x1 = Math.min(W, X(i) + cw / 2);   // niet buiten het vak
+      const x0 = Math.max(0, X(i) - cw / 2), x1 = Math.min(W, X(i) + cw / 2);   // not outside the tile
       s += `<rect x="${x0}" y="0" width="${x1 - x0}" height="${H - padB}" class="md-hit md-col" ${tipAttr(tip)}/>`;
     });
     s += xLabels(xs, W, H, padL);
@@ -250,7 +250,7 @@
     for (const it of list) { const s = h('span'); const sw = h('i'); sw.style.background = it.color; s.append(sw, it.name); l.append(s); }
     return l;
   }
-  // Weekdag x uur: 7 rijen, 24 kolommen
+  // Weekday x hour: 7 rows, 24 columns
   function heat(wdh, fmt) {
     const max = Math.max(...wdh) || 1;
     const g = h('div', 'md-heat');
@@ -268,7 +268,7 @@
     }
     return g;
   }
-  // Top-lijst met balkjes
+  // Top list with bars
   function topList(list, fmt, label = (k) => k) {
     const max = list[0]?.[1] || 1;
     const ol = h('ol', 'md-top');
@@ -283,30 +283,30 @@
     }
     return ol;
   }
-  // Grafiek in een vakje dat zijn breedte pas na het invoegen kent
+  // Chart in a box that only knows its width after being inserted
   function chart(parent, draw, cls = '') {
     const box = h('div', `md-chart ${cls}`);
     parent.append(box);
     const f = () => box.replaceChildren(draw(box));
-    f.box = box;   // box._extra = extra hoogte die de masonry-indeling erbij geeft (zie layout())
+    f.box = box;   // box._extra = extra height the masonry layout gives it (see layout())
     charts.push(f);
     return box;
   }
   let charts = [];
 
-  // ---------- Opbouw van de pagina ----------
+  // ---------- Building the page ----------
   const head = h('header', 'card md-head');
-  const title = h('h2', null, 'Mijn data');
+  const title = h('h2', null, 'My data');
   const periodEl = h('div', 'md-period');
   const custom = h('form', 'md-custom');
-  const fromIn = h('input'); fromIn.type = 'date'; fromIn.setAttribute('aria-label', 'Vanaf');
-  const toIn = h('input'); toIn.type = 'date'; toIn.setAttribute('aria-label', 'Tot en met');
-  custom.append(fromIn, h('span', 'w-sub', 't/m'), toIn, h('button', 'w-btn ghost', 'Toon'));
+  const fromIn = h('input'); fromIn.type = 'date'; fromIn.setAttribute('aria-label', 'From');
+  const toIn = h('input'); toIn.type = 'date'; toIn.setAttribute('aria-label', 'Up to and including');
+  custom.append(fromIn, h('span', 'w-sub', 'to'), toIn, h('button', 'w-btn ghost', 'Show'));
   const meta0 = h('p', 'w-sub md-meta');
   head.append(title, periodEl, custom, meta0);
   const grid = h('div', 'md-grid');
   page.append(head, grid);
-  for (const [mode, label] of [['month', 'Deze maand'], ['year', 'Jaar'], ['all', 'Alles'], ['custom', 'Eigen periode']]) {
+  for (const [mode, label] of [['month', 'This month'], ['year', 'Year'], ['all', 'All'], ['custom', 'Own period']]) {
     const b = h('button', null, label);
     b.type = 'button';
     b.dataset.mode = mode;
@@ -338,39 +338,39 @@
     return { card, head: hd, body };
   }
   const T = {
-    cov: tile('md-cov', 'Dekking per bron', '#9aa0b4'),
+    cov: tile('md-cov', 'Coverage per source', '#9aa0b4'),
     kpis: (() => { const k = h('div', 'md-kpis'); k.id = 'md-kpis'; grid.append(k); return k; })(),
-    watch: tile('md-watch', 'Kijken en luisteren', '#ff3b3b'),
-    places: tile('md-places', 'Plekken', '#a78bfa'),
+    watch: tile('md-watch', 'Watching and listening', '#ff3b3b'),
+    places: tile('md-places', 'Places', '#a78bfa'),
     check: tile('md-check', 'Check-ins', 'var(--c-checkin)'),
-    work: tile('md-work', 'Werk en studie', 'var(--c-ah)'),
-    money: tile('md-money', 'Geld', '#f5b02e'),
-    body: tile('md-body', 'Lichaam', '#ff5f8f'),
+    work: tile('md-work', 'Work and study', 'var(--c-ah)'),
+    money: tile('md-money', 'Money', '#f5b02e'),
+    body: tile('md-body', 'Body', '#ff5f8f'),
     pc: tile('md-pc', 'Computer', '#8a8aa0'),
     overlap: tile('md-overlap', 'Overlap', '#2ec4b6'),
   };
 
-  // ---------- Dekking: per bron welke maanden data hebben ----------
+  // ---------- Coverage: which months have data, per source ----------
   const COVER = [
     ['YouTube', ['youtube-history']], ['Spotify', ['spotify', 'spotify-history']], ['Letterboxd', ['letterboxd-export', 'letterboxd']],
-    ['Agenda', ['calendar']], ['Maps', ['maps-timeline']], ['Bank', ['bank']], ['Gezondheid', ['fit-daily', 'health-daily', 'health-sleep', 'health-heartrate']],
-    ['Check-ins', ['self-report']], ['Pc', ['pc-window', 'pc-web', 'pc-sessions', 'pc-afk']], ['Telefoon', ['activitywatch-android']],
-    ['Meldingen', ['notifications']], ['Steam', ['steam']], ['Weer', ['weather', 'weather-daily']],
-    ['Pc aan/uit', ['pc-power']], ['Firefox', ['firefox-history']], ['Series', ['episodes-left']], ["Foto's", ['photos']],
-    ['Zoeken', ['google-search']], ['OV', ['ov-trips']], ['Claude', ['claude-conversations']], ['Berichten', ['messages-daily']],
-    ['Kalender', ['day-context']], ['Maan', ['moon']],
+    ['Agenda', ['calendar']], ['Maps', ['maps-timeline']], ['Bank', ['bank']], ['Health', ['fit-daily', 'health-daily', 'health-sleep', 'health-heartrate']],
+    ['Check-ins', ['self-report']], ['PC', ['pc-window', 'pc-web', 'pc-sessions', 'pc-afk']], ['Phone', ['activitywatch-android']],
+    ['Notifications', ['notifications']], ['Steam', ['steam']], ['Weather', ['weather', 'weather-daily']],
+    ['PC on/off', ['pc-power']], ['Firefox', ['firefox-history']], ['Series', ['episodes-left']], ['Photos', ['photos']],
+    ['Search', ['google-search']], ['Public transport', ['ov-trips']], ['Claude', ['claude-conversations']], ['Messages', ['messages-daily']],
+    ['Calendar', ['day-context']], ['Moon', ['moon']],
   ];
   function renderCoverage(r) {
     const src = data.index.sources || {};
     const start = firstDay().slice(0, 7), months = monthsOf({ from: `${start}-01`, to: todayIso() });
-    T.cov.head.querySelector('.eyebrow').textContent = `Dekking per bron, ${start.slice(0, 4)} tot nu`;
-    // Pijltjes: de gekozen periode een maand terug of vooruit (een hele maand blijft een hele maand)
+    T.cov.head.querySelector('.eyebrow').textContent = `Coverage per source, ${start.slice(0, 4)} to now`;
+    // Arrows: the chosen period a month back or forward (a whole month stays a whole month)
     T.cov.head.querySelector('.md-steps')?.remove();
     const steps = h('div', 'md-steps');
     const prev = h('button', null, '‹'), next = h('button', null, '›');
     prev.type = next.type = 'button';
-    prev.title = 'Maand terug';
-    next.title = 'Maand vooruit';
+    prev.title = 'Month back';
+    next.title = 'Month forward';
     prev.setAttribute('aria-label', prev.title);
     next.setAttribute('aria-label', next.title);
     next.disabled = r.to >= todayIso();
@@ -408,9 +408,9 @@
         months.forEach((m, i) => {
           const v = row.per[m];
           if (v) s += `<rect x="${i * bw}" y="2" width="${Math.max(1, bw - (bw > 4 ? 1 : 0))}" height="10" rx="${bw > 6 ? 2 : 0}" class="md-cov-on${sel.has(m) ? ' sel' : ''}" style="opacity:${(0.45 + 0.55 * Math.log1p(v) / Math.log1p(max)).toFixed(2)}"/>`;
-          s += `<rect x="${i * bw}" y="0" width="${bw}" height="${H}" class="md-hit md-cov-hit" data-month="${m}" ${tipAttr(`${row.label} · ${fmtMonth(m)} · ${v ? `${nl(v)} rijen` : 'geen data'}${i === 0 && row.before ? ` (en ${nl(row.before)} rijen van vóór ${start.slice(0, 4)})` : ''}`)}/>`;
+          s += `<rect x="${i * bw}" y="0" width="${bw}" height="${H}" class="md-hit md-cov-hit" data-month="${m}" ${tipAttr(`${row.label} · ${fmtMonth(m)} · ${v ? `${dec(v)} rows` : 'no data'}${i === 0 && row.before ? ` (and ${dec(row.before)} rows from before ${start.slice(0, 4)})` : ''}`)}/>`;
         });
-        // Gekozen periode als kader over de balk
+        // The chosen period as a frame over the bar
         const a = months.indexOf(r.from.slice(0, 7)), b = months.indexOf(r.to.slice(0, 7));
         const ia = a < 0 ? 0 : a, ib = b < 0 ? n - 1 : b;
         s += `<rect x="${ia * bw}" y="0.5" width="${(ib - ia + 1) * bw}" height="${H - 1}" rx="3" class="md-cov-period"/>`;
@@ -418,14 +418,14 @@
       }, 'md-cov-bar');
     }
     if (empty.length) {
-      wrap.append(h('span', 'md-cov-name md-cov-empty', 'Nog leeg'), h('span', 'w-sub md-cov-emptylist', empty.join(', ')));
+      wrap.append(h('span', 'md-cov-name md-cov-empty', 'Still empty'), h('span', 'w-sub md-cov-emptylist', empty.join(', ')));
     }
     const axis = h('div', 'md-cov-axis');
-    axis.append(h('span', null, start.slice(0, 4)), h('span', null, months.length > 24 ? String(Math.round((+start.slice(0, 4) + +todayIso().slice(0, 4)) / 2)) : ''), h('span', null, 'nu'));
+    axis.append(h('span', null, start.slice(0, 4)), h('span', null, months.length > 24 ? String(Math.round((+start.slice(0, 4) + +todayIso().slice(0, 4)) / 2)) : ''), h('span', null, 'now'));
     wrap.append(h('span'), axis);
-    T.cov.body.replaceChildren(wrap, sub('Klik op een maand om alleen die maand te bekijken. Lichter = minder rijen.'));
+    T.cov.body.replaceChildren(wrap, sub('Click a month to see only that month. Lighter = fewer rows.'));
   }
-  // Klik op een maand in de dekking = eigen periode van die maand
+  // Click on a month in the coverage = own period of that month
   page.addEventListener('click', (e) => {
     const m = e.target.closest?.('[data-month]')?.dataset.month;
     if (!m) return;
@@ -435,13 +435,13 @@
     render();
   });
 
-  // ---------- Kerncijfers ----------
+  // ---------- Key numbers ----------
   function renderKpis(r) {
     const items = [
-      [total('youtube', 'videos', r), "YouTube-video's", nl],
-      [total('letterboxd', 'films', r), 'films gekeken', nl],
-      [total('places', 'visits', r), 'plekken bezocht', nl],
-      [total('work', 'ah_hours', r), 'AH-uren', (v) => `${nl(v)} u`],
+      [total('youtube', 'videos', r), 'YouTube videos', dec],
+      [total('letterboxd', 'films', r), 'films watched', dec],
+      [total('places', 'visits', r), 'places visited', dec],
+      [total('work', 'ah_hours', r), 'AH hours', (v) => `${dec(v)} h`],
     ];
     T.kpis.replaceChildren(...items.map(([v, label, f]) => {
       const c = h('div', 'card md-kpi');
@@ -450,7 +450,7 @@
     }));
   }
 
-  // ---------- Kijken en luisteren ----------
+  // ---------- Watching and listening ----------
   let watchTab = store.get('mydata.watchTab') || 'youtube';
   function renderWatch(r) {
     const tabs = h('div', 'fd-tabs md-tabs');
@@ -466,57 +466,57 @@
     const body = T.watch.body;
     body.replaceChildren();
     const b = autoBucket(r);
-    const per = { day: 'per dag', week: 'per week', month: 'per maand' }[b];
+    const per = { day: 'per day', week: 'per week', month: 'per month' }[b];
     if (watchTab === 'youtube') {
-      if (!hasData('youtube', 'videos')) return body.append(note('Nog geen YouTube-geschiedenis. Importeer de Takeout-export (zie de README van het archief).'));
+      if (!hasData('youtube', 'videos')) return body.append(note('No YouTube history yet. Import the Takeout export (see the archive\'s README).'));
       const wdh = sumWdh('youtube', r);
-      body.append(mini(`Wanneer, weekdag × uur${monthNote(r)}`), wdh ? heat(wdh, (v) => `${nl(v)} video's`) : note('Geen video’s in deze periode.'));
-      body.append(mini(`Video's ${per}`));
-      chart(body, (box) => bars(box, series('youtube', 'videos', r, b), { fmt: (v) => `${nl(v)} video's`, maxLabel: (m) => `max ${nl(m)}` }));
+      body.append(mini(`When, weekday × hour${monthNote(r)}`), wdh ? heat(wdh, (v) => `${dec(v)} videos`) : note('No videos in this period.'));
+      body.append(mini(`Videos ${per}`));
+      chart(body, (box) => bars(box, series('youtube', 'videos', r, b), { fmt: (v) => `${dec(v)} videos`, maxLabel: (m) => `max ${dec(m)}` }));
       const top = mergeTop('youtube', 'channels', r);
-      const tl = top.length ? topList(top, nl) : note('–');
+      const tl = top.length ? topList(top, dec) : note('–');
       tl.classList.add('md-top2');
-      body.append(mini('Top 10 kanalen'), tl);
-      body.append(sub("Alleen bekeken video's (geen advertenties). Shorts tellen ook mee."));
+      body.append(mini('Top 10 channels'), tl);
+      body.append(sub('Only watched videos (no ads). Shorts count too.'));
     } else if (watchTab === 'spotify') {
-      if (!hasData('spotify', 'minutes')) return body.append(note('Nog geen Spotify-data.'));
+      if (!hasData('spotify', 'minutes')) return body.append(note('No Spotify data yet.'));
       const wdh = sumWdh('spotify', r);
       const byHour = wdh ? Array.from({ length: 24 }, (_, hr) => WD.reduce((a, _d, d) => a + wdh[d * 24 + hr], 0)) : null;
-      body.append(mini(`Luistertijd per uur van de dag${monthNote(r)}`));
+      body.append(mini(`Listening time per hour of the day${monthNote(r)}`));
       if (byHour) chart(body, (box) => bars(box, byHour.map((v, hr) => ({ label: `${pad(hr)}:00–${pad(hr + 1)}:00`, short: hr % 6 === 0 ? `${hr}:00` : '', value: v })), { fmt: fmtH, height: 90 }));
-      else body.append(note('Niets geluisterd in deze periode.'));
+      else body.append(note('Nothing listened to in this period.'));
       const row = h('div', 'md-split');
       const a = h('div'), c = h('div');
       const ta = mergeTop('spotify', 'artists', r), tt = mergeTop('spotify', 'tracks', r);
-      a.append(mini('Top artiesten'), ta.length ? topList(ta, fmtH) : note('–'));
-      c.append(mini('Top nummers'), tt.length ? topList(tt, fmtH) : note('–'));
+      a.append(mini('Top artists'), ta.length ? topList(ta, fmtH) : note('–'));
+      c.append(mini('Top tracks'), tt.length ? topList(tt, fmtH) : note('–'));
       row.append(a, c);
-      body.append(row, mini(`Luistertijd ${per}`));
+      body.append(row, mini(`Listening time ${per}`));
       chart(body, (box) => bars(box, series('spotify', 'minutes', r, b), { fmt: fmtH, maxLabel: (m) => `max ${fmtH(m)}` }));
-      if (G('spotify')?.note && !(data.index.sources['spotify-history']?.rows)) body.append(sub('Nog zonder de volledige Spotify-geschiedenis: alleen sinds de koppeling (elk uur de laatste 50 nummers), als lengte van het nummer.'));
+      if (G('spotify')?.note && !(data.index.sources['spotify-history']?.rows)) body.append(sub('Still without the full Spotify history: only since the link (the last 50 tracks every hour), counted as track length.'));
     } else if (watchTab === 'series') {
-      if (!hasData('series', 'episodes')) return body.append(note('Nog geen series. Het dashboard op de pc bewaart elk half uur wat Episodes Left doorgeeft; na twee momentopnames zie je hier welke afleveringen je keek.'));
-      body.append(mini(`Afleveringen ${per}`));
-      chart(body, (box) => bars(box, series('series', 'episodes', r, b), { fmt: (v) => `${nl(v)} afleveringen` }));
+      if (!hasData('series', 'episodes')) return body.append(note('No series yet. The dashboard on the PC saves what Episodes Left passes on every half hour; after two snapshots you see here which episodes you watched.'));
+      body.append(mini(`Episodes ${per}`));
+      chart(body, (box) => bars(box, series('series', 'episodes', r, b), { fmt: (v) => `${dec(v)} episodes` }));
       const top = mergeTop('series', 'series', r);
-      body.append(mini('Meest gekeken series'), top.length ? topList(top, (v) => `${nl(v)} afl.`) : note('Geen afleveringen in deze periode.'));
-      body.append(sub('Uit Episodes Left: gekeken = uitgezonden (AniList) min nog open, per momentopname.'));
+      body.append(mini('Most watched series'), top.length ? topList(top, (v) => `${dec(v)} ep.`) : note('No episodes in this period.'));
+      body.append(sub('From Episodes Left: watched = aired (AniList) minus still open, per snapshot.'));
     } else {
-      if (!hasData('letterboxd', 'films')) return body.append(note('Nog geen Letterboxd-data.'));
+      if (!hasData('letterboxd', 'films')) return body.append(note('No Letterboxd data yet.'));
       body.append(mini(`Films ${per}`));
-      chart(body, (box) => bars(box, series('letterboxd', 'films', r, b), { fmt: (v) => `${nl(v)} films` }));
+      chart(body, (box) => bars(box, series('letterboxd', 'films', r, b), { fmt: (v) => `${dec(v)} films` }));
       const dist = new Array(11).fill(0);
       for (const mo of monthsOf(r)) (G('letterboxd').monthly?.[mo]?.ratings || []).forEach((v, i) => { dist[i] += v; });
       const rated = dist.slice(1).reduce((a, v) => a + v, 0);
       const avg = rated ? dist.slice(1).reduce((a, v, i) => a + v * (i + 1) / 2, 0) / rated : null;
-      body.append(mini(`Mijn cijfers${monthNote(r)}${avg ? ` · gemiddeld ${nl(avg, 2)} ★ over ${nl(rated)} films` : ''}`));
-      if (rated) chart(body, (box) => bars(box, dist.slice(1).map((v, i) => ({ label: `${nl((i + 1) / 2, 1)} ★`, short: (i + 1) % 2 === 0 ? `${(i + 1) / 2}★` : '', value: v })), { fmt: (v) => `${nl(v)} films`, height: 100 }));
-      else body.append(note('Geen cijfers in deze periode.'));
-      if (dist[0]) body.append(sub(`${nl(dist[0])} films zonder cijfer.`));
+      body.append(mini(`My ratings${monthNote(r)}${avg ? ` · average ${dec(avg, 2)} ★ over ${dec(rated)} films` : ''}`));
+      if (rated) chart(body, (box) => bars(box, dist.slice(1).map((v, i) => ({ label: `${dec((i + 1) / 2, 1)} ★`, short: (i + 1) % 2 === 0 ? `${(i + 1) / 2}★` : '', value: v })), { fmt: (v) => `${dec(v)} films`, height: 100 }));
+      else body.append(note('No ratings in this period.'));
+      if (dist[0]) body.append(sub(`${dec(dist[0])} films without a rating.`));
     }
   }
 
-  // ---------- Plekken: kaart (Leaflet + OpenStreetMap) ----------
+  // ---------- Places: map (Leaflet + OpenStreetMap) ----------
   let leaflet = null, map = null, layer = null;
   function loadLeaflet() {
     if (window.L) return Promise.resolve();
@@ -527,16 +527,16 @@
       css.integrity = 'sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H'; css.crossOrigin = 'anonymous';
       const js = h('script'); js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
       js.integrity = 'sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH'; js.crossOrigin = 'anonymous';
-      js.onload = resolve; js.onerror = () => { leaflet = null; reject(new Error('Kaart kon niet laden')); };
+      js.onload = resolve; js.onerror = () => { leaflet = null; reject(new Error('The map couldn\'t load')); };
       document.head.append(css, js);
     });
     return leaflet;
   }
-  const placeName = (n, type) => ({ HOME: 'Thuis', WORK: 'Werk', INFERRED_WORK: 'Werk' }[type] || (type === 'SEARCHED_ADDRESS' ? `Gezocht adres (${n})` : `Plek ${n}`));
+  const placeName = (n, type) => ({ HOME: 'Home', WORK: 'Work', INFERRED_WORK: 'Work' }[type] || (type === 'SEARCHED_ADDRESS' ? `Searched address (${n})` : `Place ${n}`));
   function renderPlaces(r) {
     const body = T.places.body;
     const P = G('places');
-    if (!P || !Object.keys(P.monthly || {}).length) { map = null; return body.replaceChildren(note('Nog geen Maps-tijdlijn. Exporteer hem op je telefoon (Instellingen › Locatie › Tijdlijn › Exporteren) en importeer hem op de pc.')); }
+    if (!P || !Object.keys(P.monthly || {}).length) { map = null; return body.replaceChildren(note('No Maps timeline yet. Export it on your phone (Settings › Location › Timeline › Export) and import it on the PC.')); }
     const cells = new Map(), places = new Map();
     for (const mo of monthsOf(r)) {
       const m = P.monthly[mo];
@@ -552,17 +552,17 @@
     const row = h('div', 'md-split md-places-split');
     row.append(mapBox, side);
     body.replaceChildren(row);
-    // Thuis vs elders per week
+    // Home vs elsewhere per week
     const b = autoBucket(r, 'week');
     const keys = ['home_min', 'work_min', 'away_min', 'travel_min'], names = ['thuis', 'werk', 'elders', 'onderweg'];
     const ser = keys.map((k) => series('places', k, r, b, 'sum'));
-    side.append(mini(`Thuis vs. elders ${b === 'week' ? 'per week' : 'per maand'}`));
+    side.append(mini(`Home vs. elsewhere ${b === 'week' ? 'per week' : 'per month'}`));
     if (ser[0].some((x) => x.value != null) || ser[2].some((x) => x.value != null)) {
       chart(side, (box) => stacked(box, ser[0].map((x, i) => ({ label: x.label, short: x.short, parts: ser.map((s) => s[i].value || 0) })), names, { fmt: fmtH, height: 110 }));
       side.append(legend(names.map((nm, i) => ({ name: nm, color: SERIES[i] }))));
-    } else side.append(note('Geen tijdlijn in deze periode.'));
+    } else side.append(note('No timeline in this period.'));
     const top = [...places.values()].sort((a, c) => c.min - a.min).slice(0, 5);
-    side.append(mini(`Meest bezochte plekken${monthNote(r)}`));
+    side.append(mini(`Most visited places${monthNote(r)}`));
     if (top.length) {
       const ol = h('ol', 'md-top md-places-top');
       const max = top[0].min || 1;
@@ -572,27 +572,27 @@
         const nm = h('span', 'md-top-name', placeName(p.n, p.type));
         const tr = h('span', 'md-top-bar');
         tr.style.setProperty('--w', `${Math.max(2, (p.min / max) * 100)}%`);
-        li.append(nm, h('span', 'md-top-val', `${fmtH(p.min)} · ${nl(p.visits)}×`), tr);
+        li.append(nm, h('span', 'md-top-val', `${fmtH(p.min)} · ${dec(p.visits)}×`), tr);
         li.onclick = () => map && map.flyTo([p.lat, p.lng], 15, { duration: .6 });
         ol.append(li);
       }
       side.append(ol);
     } else side.append(note('–'));
-    side.append(sub('Vakjes van ~250 m (geel = even, oranjerood = veel tijd), geen exacte routes. Plek-nummers blijven elke periode hetzelfde.'));
-    // Kaart
-    if (!cells.size) { mapBox.append(note('Geen plekken in deze periode.')); map = null; return; }
-    mapBox.append(h('p', 'w-sub md-map-wait', 'Kaart laden…'));
+    side.append(sub('Blocks of ~250 m (yellow = a while, orange-red = a lot of time), no exact routes. Place numbers stay the same in every period.'));
+    // Map
+    if (!cells.size) { mapBox.append(note('No places in this period.')); map = null; return; }
+    mapBox.append(h('p', 'w-sub md-map-wait', 'Loading map…'));
     loadLeaflet().then(() => {
       if (!mapBox.isConnected) return;
       mapBox.replaceChildren();
       const L = window.L;
       map = L.map(mapBox, { zoomControl: true, attributionControl: true, scrollWheelZoom: false });
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18, attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' }).addTo(map);
-      map.attributionControl.setPrefix('<a href="https://leafletjs.com">Leaflet</a>');   // zonder het vlaggetje van Leaflet 1.9
+      map.attributionControl.setPrefix('<a href="https://leafletjs.com">Leaflet</a>');   // without Leaflet 1.9's little flag
       layer = L.layerGroup().addTo(map);
       const dLat = (P.grid_m || 250) / 111320, dLng = (P.grid_m || 250) / (111320 * Math.cos(52 * Math.PI / 180));
       const list = [...cells].map(([k, min]) => { const [lat, lng] = k.split(',').map(Number); return { lat, lng, min }; }).sort((a, c) => c.min - a.min);
-      // Logaritmisch: thuis is zoveel uur dat de rest anders bijna onzichtbaar wordt. Geel (weinig) → oranjerood (veel)
+      // Logarithmic: home is so many hours that the rest would otherwise be almost invisible. Yellow (little) → orange-red (a lot)
       const max = Math.log1p(list[0].min);
       const ramp = (f) => `rgb(255, ${Math.round(224 - 134 * f)}, ${Math.round(138 - 107 * f)})`;
       for (const c of list) {
@@ -601,7 +601,7 @@
           { color: ramp(f), weight: 1, opacity: 0.9, fillColor: ramp(f), fillOpacity: 0.4 + 0.5 * f })
           .bindTooltip(fmtH(c.min)).addTo(layer);
       }
-      // Inzoomen op de vakjes waar je 90% van de tijd was (een verre reis zoomt de kaart anders heel ver uit)
+      // Zoom in on the blocks where you spent 90% of the time (a far trip would otherwise zoom the map out very far)
       let acc = 0;
       const all = list.reduce((a, c) => a + c.min, 0), keep = [];
       for (const c of list) { keep.push([c.lat, c.lng]); acc += c.min; if (acc >= all * 0.9 && keep.length >= 3) break; }
@@ -609,42 +609,42 @@
     }).catch((e) => mapBox.replaceChildren(note(e.message)));
   }
 
-  // ---------- Werk en studie ----------
+  // ---------- Work and study ----------
   function renderWork(r) {
     const body = T.work.body;
     body.replaceChildren();
-    if (!G('work')) return body.append(note('Nog geen agenda-data.'));
+    if (!G('work')) return body.append(note('No agenda data yet.'));
     const b = autoBucket(r, 'week');
-    const per = b === 'week' ? 'per week' : 'per maand';
-    body.append(mini(`AH-uren ${per}`));
-    if (anyIn('work', 'ah_hours', r)) chart(body, (box) => bars(box, series('work', 'ah_hours', r, b), { fmt: (v) => `${nl(v, 1)} u`, height: 100 }));
-    else body.append(note('Geen AH-diensten in deze periode (diensten = afspraken met "AH" in de titel).'));
-    body.append(mini(`Colleges ${per}`));
-    if (anyIn('work', 'colleges', r)) chart(body, (box) => bars(box, series('work', 'colleges', r, b), { fmt: (v) => `${nl(v)} colleges`, height: 80 }));
-    else body.append(note('Geen colleges in deze periode (herkend aan woorden als college, werkgroep, tentamen).'));
+    const per = b === 'week' ? 'per week' : 'per month';
+    body.append(mini(`AH hours ${per}`));
+    if (anyIn('work', 'ah_hours', r)) chart(body, (box) => bars(box, series('work', 'ah_hours', r, b), { fmt: (v) => `${dec(v, 1)} h`, height: 100 }));
+    else body.append(note('No AH shifts in this period (shifts = appointments with "AH" in the title).'));
+    body.append(mini(`Lectures ${per}`));
+    if (anyIn('work', 'colleges', r)) chart(body, (box) => bars(box, series('work', 'colleges', r, b), { fmt: (v) => `${dec(v)} lectures`, height: 80 }));
+    else body.append(note('No lectures in this period (recognised by words like college, werkgroep, tentamen, lecture).'));
     const dl = (G('work').deadlines || []).filter(([d]) => d >= r.from && d <= addDays(todayIso(), 14) && (d <= r.to || d >= todayIso()));
     body.append(mini('Deadlines'));
     if (dl.length) {
       const ul = h('ul', 'md-dl');
       for (const [d, t, name] of dl.slice(-8)) { const li = h('li'); li.append(h('b', null, `${fmtDate(d, false)}${t ? ` ${t}` : ''}`), h('span', null, name)); ul.append(li); }
       body.append(ul);
-    } else body.append(note('Geen Canvas-deadlines in de agenda voor deze periode.'));
+    } else body.append(note('No Canvas deadlines in the agenda for this period.'));
   }
 
-  // ---------- Geld ----------
+  // ---------- Money ----------
   function renderMoney(r) {
     const body = T.money.body;
     body.replaceChildren();
     const M = G('money');
-    if (!M || !Object.keys(M.monthly || {}).length) return body.append(note('Nog geen bankafschriften. Importeer een export van je bank op de pc.'));
+    if (!M || !Object.keys(M.monthly || {}).length) return body.append(note('No bank statements yet. Import an export from your bank on the PC.'));
     const months = monthsOf(r).filter((m) => M.monthly[m]);
-    if (!months.length) return body.append(note('Geen bankdata in deze periode.'));
+    if (!months.length) return body.append(note('No bank data in this period.'));
     const tin = months.reduce((a, m) => a + M.monthly[m].in, 0), tout = months.reduce((a, m) => a + M.monthly[m].out, 0);
     const sum = h('div', 'md-money-sum');
-    sum.append(h('span', null, `In ${eur(tin)}`), h('span', null, `Uit ${eur(tout)}`));
-    body.append(sum, mini(`In en uit per maand${monthNote(r)}`));
+    sum.append(h('span', null, `In ${eur(tin)}`), h('span', null, `Out ${eur(tout)}`));
+    body.append(sum, mini(`In and out per month${monthNote(r)}`));
     chart(body, (box) => {
-      // Twee staafjes per maand naast elkaar: in (1) en uit (2)
+      // Two bars per month side by side: in (1) and out (2)
       const W = Math.max(120, box.clientWidth), H = 110 + (box._extra || 0), padT = 16, padB = 16, base = H - padB;
       const max = Math.max(1, ...months.flatMap((m) => [M.monthly[m].in, M.monthly[m].out]));
       const n = months.length, bw = W / n, w = Math.max(1, (bw - 4) / 2);
@@ -652,12 +652,12 @@
       months.forEach((m, i) => {
         const o = M.monthly[m];
         [o.in, o.out].forEach((v, j) => { const hh = (v / max) * (base - padT); s += `<path d="${barPath(i * bw + 1 + j * (w + 2), base - hh, w, hh, base)}" fill="${SERIES[j]}"/>`; });
-        s += `<rect x="${i * bw}" y="0" width="${bw}" height="${base}" class="md-hit" ${tipAttr(`${fmtMonth(m)}: in ${eur(o.in)} · uit ${eur(o.out)}`)}/>`;
+        s += `<rect x="${i * bw}" y="0" width="${bw}" height="${base}" class="md-hit" ${tipAttr(`${fmtMonth(m)}: in ${eur(o.in)} · out ${eur(o.out)}`)}/>`;
       });
       s += xLabels(months.map((m) => ({ label: fmtMonth(m), short: bucketShort(m, 'month') })), W, H, 0);
       return svgWrap(W, H, s);
     });
-    body.append(legend([{ name: 'in', color: SERIES[0] }, { name: 'uit', color: SERIES[1] }]));
+    body.append(legend([{ name: 'in', color: SERIES[0] }, { name: 'out', color: SERIES[1] }]));
     const cats = new Map();
     for (const m of months) for (const [c, [i, o]] of Object.entries(M.monthly[m].cats || {})) { const x = cats.get(c) || [0, 0]; x[0] += i; x[1] += o; cats.set(c, x); }
     const internal = new Set(M.internal || []);
@@ -665,26 +665,26 @@
     const ins = [...cats].filter(([c, v]) => v[0] > 0 && !internal.has(c)).map(([c, v]) => [c, v[0]]).sort((a, b) => b[1] - a[1]);
     const row = h('div', 'md-split');
     const a = h('div'), c = h('div');
-    a.append(mini('Uitgaven per categorie'), outs.length ? topList(outs.slice(0, 8), eur) : note('–'));
-    c.append(mini('Inkomsten per categorie'), ins.length ? topList(ins.slice(0, 6), eur) : note('–'));
+    a.append(mini('Spending per category'), outs.length ? topList(outs.slice(0, 8), eur) : note('–'));
+    c.append(mini('Income per category'), ins.length ? topList(ins.slice(0, 6), eur) : note('–'));
     row.append(a, c);
     body.append(row);
     const own = [...internal].map((k) => cats.get(k)).filter(Boolean);
-    body.append(sub(`Categorieën zijn geschat uit de omschrijving.${own.length ? ` Overboekingen met je eigen rekening tellen niet mee (in ${eur(own.reduce((x, v) => x + v[0], 0))}, uit ${eur(own.reduce((x, v) => x + v[1], 0))}).` : ''} Alleen weergave.`));
+    body.append(sub(`Categories are estimated from the description.${own.length ? ` Transfers with your own account don't count (in ${eur(own.reduce((x, v) => x + v[0], 0))}, out ${eur(own.reduce((x, v) => x + v[1], 0))}).` : ''} Display only.`));
   }
 
-  // ---------- Lichaam ----------
+  // ---------- Body ----------
   function renderBody(r) {
     const body = T.body.body;
     body.replaceChildren();
-    if (!G('body')) return body.append(note('Nog geen gezondheidsdata.'));
+    if (!G('body')) return body.append(note('No health data yet.'));
     const b = autoBucket(r);
-    const avgNote = b === 'day' ? '' : ' (gemiddeld per dag)';
+    const avgNote = b === 'day' ? '' : ' (average per day)';
     const parts = [
-      ['steps', `Stappen${avgNote}`, (v) => `${nl(v)} stappen`, 'Geen stappen in deze periode.'],
-      ['sleep_h', `Slaap${avgNote}`, (v) => `${nl(v, 1)} u`, 'Nog geen slaapdata: Google Health geeft nu alleen stappen door.'],
-      ['resting_hr', 'Rusthartslag', (v) => `${nl(v)} bpm`, null],
-      ['avg_hr', 'Gemiddelde hartslag', (v) => `${nl(v)} bpm`, 'Nog geen hartslag: komt vanzelf mee als je horloge of telefoon hem doorgeeft.'],
+      ['steps', `Steps${avgNote}`, (v) => `${dec(v)} steps`, 'No steps in this period.'],
+      ['sleep_h', `Sleep${avgNote}`, (v) => `${dec(v, 1)} h`, 'No sleep data yet: Google Health only passes on steps right now.'],
+      ['resting_hr', 'Resting heart rate', (v) => `${dec(v)} bpm`, null],
+      ['avg_hr', 'Average heart rate', (v) => `${dec(v)} bpm`, 'No heart rate yet: it comes along by itself when your watch or phone passes it on.'],
     ];
     let shown = 0;
     for (const [m, label, fmt, empty] of parts) {
@@ -694,7 +694,7 @@
         shown++;
       } else if (empty && !(m === 'avg_hr' && anyIn('body', 'resting_hr', r))) body.append(mini(label.replace(avgNote, '')), note(empty));
     }
-    if (shown) body.append(sub('Stappen uit Google Fit (oud) en Google Health (nu).'));
+    if (shown) body.append(sub('Steps from Google Fit (old) and Google Health (now).'));
   }
 
   // ---------- Computer ----------
@@ -704,13 +704,13 @@
     const C = G('computer');
     const hasPc = C && ['pc_active_min', 'pc_on_min'].some((m) => hasData('computer', m));
     const b = autoBucket(r);
-    const per = { day: 'per dag', week: 'per week', month: 'per maand' }[b];
+    const per = { day: 'per day', week: 'per week', month: 'per month' }[b];
     if (hasPc) {
       const m = hasData('computer', 'pc_active_min') ? 'pc_active_min' : 'pc_on_min';
-      body.append(mini(`${m === 'pc_active_min' ? 'Actieve tijd' : 'Pc aan'} ${per}`));
+      body.append(mini(`${m === 'pc_active_min' ? 'Active time' : 'PC on'} ${per}`));
       chart(body, (box) => bars(box, series('computer', m, r, b), { fmt: fmtH, height: 90, maxLabel: (x) => `max ${fmtH(x)}` }));
       const wdh = sumWdh('computer', r);
-      if (wdh) body.append(mini(`Wanneer de pc aan staat${monthNote(r)}`), heat(wdh, fmtH));
+      if (wdh) body.append(mini(`When the PC is on${monthNote(r)}`), heat(wdh, fmtH));
       const row = h('div', 'md-split');
       const a = h('div'), c = h('div');
       const apps = mergeTop('computer', 'apps', r, 6), sites = mergeTop('computer', 'sites', r, 6);
@@ -719,53 +719,53 @@
       row.append(a, c);
       body.append(row);
     } else {
-      body.append(note('Nu nog leeg: wordt vanzelf gevuld door ActivityWatch (de pc-taak stuurt elke dag actieve tijd, apps en sites door).'));
+      body.append(note('Empty for now: ActivityWatch fills it by itself (the PC task sends active time, apps and sites every day).'));
     }
     if (C && hasData('computer', 'notifications') && anyIn('computer', 'notifications', r)) {
       const top = mergeTop('computer', 'notif_apps', r, 5);
-      body.append(mini(`Meldingen ${per}`));
-      chart(body, (box) => bars(box, series('computer', 'notifications', r, b), { fmt: (v) => `${nl(v)} meldingen`, height: 70 }));
-      if (top.length) body.append(topList(top, nl));
+      body.append(mini(`Notifications ${per}`));
+      chart(body, (box) => bars(box, series('computer', 'notifications', r, b), { fmt: (v) => `${dec(v)} notifications`, height: 70 }));
+      if (top.length) body.append(topList(top, dec));
     }
     if (C && anyIn('computer', 'steam_min', r)) {
-      body.append(mini('Gamen (Steam)'), topList(mergeTop('computer', 'games', r, 5), fmtH));
+      body.append(mini('Gaming (Steam)'), topList(mergeTop('computer', 'games', r, 5), fmtH));
     }
     if (C && anyIn('computer', 'phone_min', r)) {
-      body.append(mini(`Schermtijd telefoon ${per}`));
+      body.append(mini(`Phone screen time ${per}`));
       chart(body, (box) => bars(box, series('computer', 'phone_min', r, b), { fmt: fmtH, height: 70 }));
     }
     if (C && anyIn('computer', 'ff_visits', r)) {
-      body.append(mini(`Firefox-bezoeken ${per}`));
-      chart(body, (box) => bars(box, series('computer', 'ff_visits', r, b), { fmt: (v) => `${nl(v)} bezoeken`, height: 70 }));
+      body.append(mini(`Firefox visits ${per}`));
+      chart(body, (box) => bars(box, series('computer', 'ff_visits', r, b), { fmt: (v) => `${dec(v)} visits`, height: 70 }));
       const wdh = sumWdh('computer', r, 'ff_wdh');
-      if (wdh) body.append(mini(`Wanneer je surft${monthNote(r)}`), heat(wdh, (v) => `${nl(v)} bezoeken`));
-      if (!hasPc) body.append(mini('Meest bezochte sites'), topList(mergeTop('computer', 'ff_sites', r, 6), (v) => `${nl(v)}×`));
+      if (wdh) body.append(mini(`When you browse${monthNote(r)}`), heat(wdh, (v) => `${dec(v)} visits`));
+      if (!hasPc) body.append(mini('Most visited sites'), topList(mergeTop('computer', 'ff_sites', r, 6), (v) => `${dec(v)}×`));
     }
     const boots = total('computer', 'boots', r), chats = total('computer', 'claude_chats', r);
-    const facts = [boots ? `${nl(boots)}× opgestart` : '', chats ? `${nl(chats)} Claude-gesprekken` : ''].filter(Boolean);
+    const facts = [boots ? `${dec(boots)}× started` : '', chats ? `${dec(chats)} Claude chats` : ''].filter(Boolean);
     if (facts.length) body.append(sub(facts.join(' · ')));
   }
 
   // ---------- Check-ins ----------
-  const SCALES = [['mood', 'stemming'], ['energy', 'energie'], ['focus', 'focus'], ['stress', 'stress']];
+  const SCALES = [['mood', 'mood'], ['energy', 'energy'], ['focus', 'focus'], ['stress', 'stress']];
   function renderCheck(r) {
     const body = T.check.body;
     body.replaceChildren();
-    if (!G('checkins') || !hasData('checkins', 'checkins')) return body.append(note('Nog geen check-ins. Vul er een in via het check-in-vak op het dashboard.'));
+    if (!G('checkins') || !hasData('checkins', 'checkins')) return body.append(note('No check-ins yet. Fill one in via the check-in tile on the dashboard.'));
     const n = total('checkins', 'checkins', r) || 0, p = total('checkins', 'prompts', r) || 0, a = total('checkins', 'answered', r) || 0;
     const kp = h('div', 'md-money-sum');
-    kp.append(h('span', null, `${nl(n)} ingevuld`), h('span', null, p ? `${nl(a)} van ${nl(p)} meldingen` : 'geen meldingen'));
+    kp.append(h('span', null, `${dec(n)} filled in`), h('span', null, p ? `${dec(a)} of ${dec(p)} notifications` : 'no notifications'));
     body.append(kp);
-    if (!n) return body.append(note('Geen check-ins in deze periode.'));
+    if (!n) return body.append(note('No check-ins in this period.'));
     const b = autoBucket(r);
     const ser = SCALES.map(([k]) => series('checkins', k, r, b, 'mean'));
     const list = SCALES.map(([, name], i) => ({ name, color: SERIES[i], values: ser[i].map((x) => x.value) }));
     body.append(legend(list));
     chart(body, (box) => lines(box, ser[0], list, { min: 1, max: 5, ticks: [1, 3, 5], height: 150 }), 'md-check-chart');
-    body.append(sub(`1 = heel laag, 5 = heel hoog (stress: 5 = veel)${b === 'day' ? '' : `; gemiddelde ${b === 'week' ? 'per week' : 'per maand'}`}.`));
+    body.append(sub(`1 = very low, 5 = very high (stress: 5 = a lot)${b === 'day' ? '' : `; average ${b === 'week' ? 'per week' : 'per month'}`}.`));
   }
 
-  // ---------- Overlap: twee bronnen per dag over elkaar ----------
+  // ---------- Overlap: two sources per day on top of each other ----------
   let ov = store.get('mydata.overlap') || { a: 'youtube.videos', b: 'work.ah_hours' };
   function metricsList() {
     const out = [];
@@ -784,14 +784,14 @@
     const body = T.overlap.body;
     body.replaceChildren();
     const list = metricsList();
-    if (list.length < 2) return body.append(note('Er zijn nog te weinig bronnen met data per dag.'));
+    if (list.length < 2) return body.append(note('There are too few sources with data per day yet.'));
     if (!list.find((x) => x.id === ov.a)) ov.a = list[0].id;
     if (!list.find((x) => x.id === ov.b) || ov.b === ov.a) ov.b = list.find((x) => x.id !== ov.a).id;
     const ctrl = h('div', 'md-ov-ctrl');
     const mk = (key, color) => {
       const s = h('select', 'md-select');
       s.style.setProperty('--sw', color);
-      s.setAttribute('aria-label', key === 'a' ? 'Bron A' : 'Bron B');
+      s.setAttribute('aria-label', key === 'a' ? 'Source A' : 'Source B');
       let og = null, last = '';
       for (const x of list) {
         if (x.group !== last) { og = h('optgroup'); og.label = x.group; s.append(og); last = x.group; }
@@ -806,26 +806,26 @@
     const xs = [], ys = [];
     da.forEach(([, v], i) => { const w = db[i][1]; if (v != null && w != null) { xs.push(v); ys.push(w); } });
     const rr = pearson(xs, ys);
-    const rEl = h('p', 'md-r', rr == null ? 'r = –' : `r = ${nl(rr, 2)}`);
-    rEl.title = 'Pearson-correlatie over de dagen waarop allebei een waarde hebben';
+    const rEl = h('p', 'md-r', rr == null ? 'r = –' : `r = ${dec(rr, 2)}`);
+    rEl.title = 'Pearson correlation over the days on which both have a value';
     ctrl.append(mk('a', SERIES[0]), mk('b', SERIES[1]), rEl);
     body.append(ctrl);
     const b = autoBucket(r);
     const sa = series(A.g, A.m, r, b), sb = series(B.g, B.m, r, b);
-    // Eén as: elke reeks geschaald naar zijn eigen hoogste waarde (= 100%); de echte waarden staan in de tooltip
+    // One axis: each series scaled to its own highest value (= 100%); the real values are in the tooltip
     const norm = (s) => { const mx = Math.max(...s.map((x) => x.value ?? -Infinity)); return s.map((x) => (x.value == null ? null : mx > 0 ? x.value / mx * 100 : 0)); };
-    const fmtVal = (x, v) => (x.unit === 'min' ? fmtH(v) : `${nl(v, v % 1 ? 1 : 0)} ${x.unit}`);
+    const fmtVal = (x, v) => (x.unit === 'min' ? fmtH(v) : `${dec(v, v % 1 ? 1 : 0)} ${x.unit}`);
     const lst = [
       { name: A.label, color: SERIES[0], values: norm(sa), fmt: (_v, i) => (sa[i].value == null ? '–' : fmtVal(A, sa[i].value)) },
       { name: B.label, color: SERIES[1], values: norm(sb), fmt: (_v, i) => (sb[i].value == null ? '–' : fmtVal(B, sb[i].value)) },
     ];
     body.append(legend(lst));
     chart(body, (box) => lines(box, sa, lst, { min: 0, max: 100, ticks: [0, 50, 100], tickFmt: (t) => `${t}%`, height: 200 }), 'md-ov-chart');
-    const per = { day: 'per dag', week: 'per week', month: 'per maand' }[b];
-    body.append(sub(`${per[0].toUpperCase()}${per.slice(1)}, elke lijn geschaald naar zijn eigen hoogste punt (100%). De correlatie (r, van −1 tot 1) is berekend over ${nl(xs.length)} dagen waarop allebei een waarde hebben${xs.length < 3 ? ': te weinig om iets te zeggen' : ''}. Samenhang zegt niets over oorzaak.`));
+    const per = { day: 'per day', week: 'per week', month: 'per month' }[b];
+    body.append(sub(`${per[0].toUpperCase()}${per.slice(1)}, each line scaled to its own highest point (100%). The correlation (r, from −1 to 1) is calculated over ${dec(xs.length)} days on which both have a value${xs.length < 3 ? ': too few to say anything' : ''}. Correlation says nothing about cause.`));
   }
 
-  // ---------- Tooltip (gedeeld door alle grafieken) ----------
+  // ---------- Tooltip (shared by all charts) ----------
   const tip = h('div', 'md-tip');
   tip.hidden = true;
   document.body.append(tip);
@@ -844,11 +844,11 @@
   page.addEventListener('pointerleave', () => { tip.hidden = true; });
   page.addEventListener('scroll', () => { tip.hidden = true; }, { passive: true });
 
-  // ---------- Laden ----------
+  // ---------- Loading ----------
   const token = () => store.get('data.token');
   async function fetchAgg(name) {
     const res = await fetch(API + name, {
-      cache: 'no-cache',   // ETag: ongewijzigd = snel 304 van GitHub
+      cache: 'no-cache',   // ETag: unchanged = a quick 304 from GitHub
       headers: { Authorization: `Bearer ${token()}`, Accept: 'application/vnd.github.raw+json', 'X-GitHub-Api-Version': '2022-11-28' },
     });
     if (res.status === 404) return null;
@@ -866,9 +866,9 @@
     try {
       const [index, ...groups] = await Promise.all([fetchAgg('index.json'), ...GROUPS.map((g) => fetchAgg(`${g}.json`).catch(() => null))]);
       if (!index) {
-        // Bestaat de repo wel voor dit token? (GitHub geeft 404 bij geen toegang)
+        // Does the repo exist for this token? (GitHub gives 404 when there's no access)
         const st = await fetch(`https://api.github.com/repos/${REPO}`, { headers: { Authorization: `Bearer ${token()}` } }).catch(() => null);
-        const e = new Error(st && st.ok ? 'nog-geen-samenvattingen' : 'geen-toegang');
+        const e = new Error(st && st.ok ? 'no-summaries-yet' : 'no-access');
         e.status = 404;
         throw e;
       }
@@ -879,23 +879,23 @@
       page.dataset.loadMs = Math.round(performance.now() - t0);
     } catch (e) {
       state = 'error';
-      errMsg = e.message === 'nog-geen-samenvattingen'
-        ? 'De samenvattingen bestaan nog niet. Ze worden elk uur gemaakt door de workflow "Verzamelen" in het archief (of draai lokaal: python scripts/aggregate.py).'
-        : e.status === 401 ? 'Het token is ongeldig of verlopen. Maak een nieuw token (zie hieronder) en plak het opnieuw.'
-          : e.status === 403 || e.message === 'geen-toegang' ? 'Het token mag het archief niet lezen.'
-            : `Laden lukte niet (${e.message}). Probeer het later opnieuw.`;
+      errMsg = e.message === 'no-summaries-yet'
+        ? 'The summaries don\'t exist yet. They are made every hour by the workflow "Verzamelen" in the archive (or run locally: python scripts/aggregate.py).'
+        : e.status === 401 ? 'The token is invalid or expired. Make a new token (see below) and paste it again.'
+          : e.status === 403 || e.message === 'no-access' ? 'The token isn\'t allowed to read the archive.'
+            : `Loading failed (${e.message}). Try again later.`;
     }
     render();
   }
 
-  // ---------- Lege pagina's ----------
+  // ---------- Empty pages ----------
   function tokenForm() {
     const form = h('form', 'fd-key md-token');
     const input = h('input');
     input.type = 'password';
     input.autocomplete = 'off';
-    input.placeholder = token() ? 'Token opgeslagen (leeg = wissen)' : 'github_pat_…';
-    form.append(input, h('button', 'w-btn', 'Opslaan'));
+    input.placeholder = token() ? 'Token saved (empty = remove)' : 'github_pat_…';
+    form.append(input, h('button', 'w-btn', 'Save'));
     form.onsubmit = (e) => {
       e.preventDefault();
       const v = input.value.trim();
@@ -907,30 +907,30 @@
     return form;
   }
   const HOWTO = [
-    'Ga op github.com naar je profielfoto › Settings › Developer settings › Personal access tokens › Fine-grained tokens.',
-    `Klik op je token voor de check-ins (of maak er een: Generate new token). Bij Repository access: alleen ${REPO}.`,
-    'Bij Repository permissions › Contents: kies "Read and write" (lezen is nodig voor deze pagina, schrijven voor de check-ins). Opslaan.',
-    'Was het een nieuw token? Plak hem hieronder. Een bestaand token aanpassen: niks plakken, alleen deze pagina herladen.',
+    'On github.com go to your profile picture › Settings › Developer settings › Personal access tokens › Fine-grained tokens.',
+    `Click your token for the check-ins (or make one: Generate new token). Under Repository access: only ${REPO}.`,
+    'Under Repository permissions › Contents: choose "Read and write" (reading is needed for this page, writing for the check-ins). Save.',
+    'Was it a new token? Paste it below. Changing an existing token: paste nothing, just reload this page.',
   ];
   function renderEmpty(kind) {
     grid.hidden = true;
     const box = h('section', 'card tile md-empty');
     box.style.setProperty('--c', '#9aa0b4');
-    box.append(h('p', 'eyebrow', kind === 'notoken' ? 'Nog niet gekoppeld' : kind === 'loading' ? 'Laden' : 'Er ging iets mis'));
+    box.append(h('p', 'eyebrow', kind === 'notoken' ? 'Not linked yet' : kind === 'loading' ? 'Loading' : 'Something went wrong'));
     if (kind === 'loading') {
-      box.append(note('Samenvattingen ophalen uit je privé archief…'));
+      box.append(note('Fetching the summaries from your private archive…'));
     } else {
       box.append(note(kind === 'notoken'
-        ? `Deze pagina laat grafieken zien van alles in je privé archief (${REPO}). De data staat niet op deze website: je browser haalt hem op met het token van de check-ins. In deze browser staat nog geen token.`
+        ? `This page shows charts of everything in your private archive (${REPO}). The data isn't on this website: your browser fetches it with the check-in token. There's no token in this browser yet.`
         : errMsg));
       if (kind === 'notoken' || /token/i.test(errMsg)) {
         const ol = h('ol', 'md-howto');
         for (const s of HOWTO) ol.append(h('li', null, s));
         box.append(ol, tokenForm());
       }
-      const demo = h('a', 'text-btn', 'Bekijk een demo met verzonnen cijfers');
+      const demo = h('a', 'text-btn', 'View a demo with made-up numbers');
       demo.href = `${location.pathname}?demo#mydata`;
-      const retry = h('button', 'w-btn ghost', 'Opnieuw proberen');
+      const retry = h('button', 'w-btn ghost', 'Try again');
       retry.onclick = () => load(true);
       const row = h('div', 'md-empty-row');
       row.append(...(kind === 'error' ? [retry] : []), demo);
@@ -940,7 +940,7 @@
     page.append(box);
   }
 
-  // ---------- Alles tekenen ----------
+  // ---------- Draw everything ----------
   function render() {
     for (const b of periodEl.children) b.setAttribute('aria-pressed', b.dataset.mode === period.mode);
     custom.hidden = period.mode !== 'custom' || state !== 'ready';
@@ -962,25 +962,25 @@
     charts = [];
     for (const [f, t] of [[renderCoverage, T.cov], [renderKpis, null], [renderWatch, T.watch], [renderPlaces, T.places], [renderCheck, T.check],
       [renderWork, T.work], [renderMoney, T.money], [renderBody, T.body], [renderPc, T.pc], [renderOverlap, T.overlap]]) {
-      try { f(r); } catch (e) { console.error(e); if (t) t.body.replaceChildren(note(`Dit vak kon niet tekenen: ${e.message}`)); }
+      try { f(r); } catch (e) { console.error(e); if (t) t.body.replaceChildren(note(`This tile couldn't draw: ${e.message}`)); }
     }
-    // Pas na het invoegen kennen de vakjes hun breedte; layout() tekent de grafieken en zet de vakken neer
+    // Only after inserting do the boxes know their width; layout() draws the charts and places the tiles
     requestAnimationFrame(layout);
   }
 
   // ---------- Indeling: masonry ----------
-  // Kolommen naar de breedte (minstens 560px per kolom, hooguit 5; 2400 breed = 4, 1350 staand = 2, telefoon 1), Dekking en
-  // Overlap over de volle breedte. De vakken ertussen worden zo over de kolommen verdeeld dat de kolommen zo gelijk mogelijk
-  // eindigen (alle verdelingen geprobeerd, binnen een kolom in de vaste volgorde hieronder; bij gelijkspel de verdeling die
-  // het minst van die volgorde afwijkt). Wat er onderaan een kolom nog open blijft, krijgt het onderste vak erbij: de
-  // grafieken in dat vak worden hoger (box._extra).
-  // (Vakken over 2 kolommen kunnen niet: die laten aan één kant een gat dat geen vak kan opvullen.) Zo zijn er geen gaten tussen de vakken
-  // en geen lege stukken in een vak. Opnieuw na elke render() (periode, tabjes) en als de breedte verandert.
+  // Columns by width (at least 560px per column, at most 5; 2400 wide = 4, 1350 portrait = 2, phone 1), Coverage and
+  // Overlap across the full width. The tiles in between are spread over the columns so the columns end as evenly as
+  // possible (all distributions tried, within a column in the fixed order below; on a tie the distribution that
+  // deviates least from that order). Whatever stays open at the bottom of a column goes to the bottom tile: the
+  // charts in that tile get taller (box._extra).
+  // (Tiles across 2 columns can't: they leave a gap on one side no tile can fill.) So there are no gaps between the tiles
+  // and no empty parts in a tile. Again after every render() (period, tabs) and when the width changes.
   const ORDER = ['md-cov', 'md-kpis', 'md-watch', 'md-places', 'md-check', 'md-work', 'md-money', 'md-body', 'md-pc', 'md-overlap'];
   const WIDE = new Set(['md-cov', 'md-overlap']);
   const GAP = 16, COL_MIN = 560;
   const redraw = (f) => { try { f(); } catch (e) { console.error(e); } };
-  // Beste verdeling van hoogtes hs over n kolommen: [kolom per vak]
+  // Best distribution of heights hs over n columns: [column per tile]
   function spread(hs, n) {
     let best = null, bestMax = Infinity, bestInv = Infinity;
     const pick = Array(hs.length).fill(0), sum = Array(n).fill(0);
@@ -999,7 +999,7 @@
         return;
       }
       for (let c = 0; c < n; c++) {
-        if (sum[c] === 0 && sum.slice(0, c).some((v) => v === 0)) continue;   // lege kolommen zijn uitwisselbaar
+        if (sum[c] === 0 && sum.slice(0, c).some((v) => v === 0)) continue;   // empty columns are interchangeable
         pick[k] = c;
         sum[c] += hs[k];
         go(k + 1, Math.max(max, sum[c]));
@@ -1019,7 +1019,7 @@
     grid.classList.toggle('md-one', n === 1);
     for (const el of items) { el.style.width = `${span(el) * colW + (span(el) - 1) * GAP}px`; el.style.minHeight = ''; }
     for (const f of charts) { f.box._extra = 0; redraw(f); }
-    // 1. Verdelen: per vak de kolom; open ruimte onderaan een kolom onthouden bij het onderste vak
+    // 1. Distribute: a column per tile; remember the open space at the bottom of a column with the bottom tile
     const at = new Map(), extra = new Map();
     const give = (el, px) => { if (el && px >= 1) extra.set(el, Math.max(extra.get(el) || 0, px)); };
     const colH = Array(n).fill(0), last = Array(n).fill(null);
@@ -1040,13 +1040,13 @@
       last.fill(null);
     }
     flush();
-    // 2. Groeien: de grafieken in het vak krijgen de open ruimte erbij; zonder grafiek wordt het vak zelf hoger
+    // 2. Grow: the charts in the tile get the open space; without a chart the tile itself gets taller
     for (const [el, px] of extra) {
       const grow = charts.filter((f) => el.contains(f.box));
       if (grow.length) grow.forEach((f, k) => { const share = Math.floor(px / grow.length); f.box._extra = k === grow.length - 1 ? px - share * (grow.length - 1) : share; redraw(f); });
       else el.style.minHeight = `${el.offsetHeight + px}px`;
     }
-    // 3. Neerzetten met dezelfde verdeling; een restje onderaan gaat in het onderste vak
+    // 3. Place with the same distribution; a little rest at the bottom goes in the bottom tile
     colH.fill(0);
     last.fill(null);
     for (const el of items) {
@@ -1068,7 +1068,7 @@
     rt = setTimeout(layout, 150);
   }).observe(grid);
 
-  // ---------- Demo: duidelijk verzonnen cijfers ----------
+  // ---------- Demo: clearly made-up numbers ----------
   function demoData() {
     let seed = 7;
     const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
@@ -1079,27 +1079,27 @@
     const months = monthsOf({ from, to: t });
     const wd = () => Array.from({ length: 168 }, (_, i) => { const hr = i % 24; return Math.round(rnd() * (hr >= 8 && hr <= 23 ? 20 : 3)); });
     const top = (pre, n = 12) => Array.from({ length: n }, (_, i) => [`${pre} ${i + 1}`, Math.round((n - i) * 10 * (0.5 + rnd()))]);
-    const cnt = (k) => ({ label: k, unit: 'keer', kind: 'count' });
+    const cnt = (k) => ({ label: k, unit: 'times', kind: 'count' });
     const g = {
-      youtube: { metrics: { videos: { label: "YouTube-video's", unit: "video's", kind: 'count' } }, daily: { videos: dly(() => Math.round(rnd() * 25)) }, monthly: Object.fromEntries(months.map((m) => [m, { wdh: wd(), channels: top('Voorbeeldkanaal') }])) },
-      spotify: { metrics: { minutes: { label: 'Spotify-luistertijd', unit: 'min', kind: 'count' } }, daily: { minutes: dly(() => Math.round(rnd() * 180)) }, monthly: Object.fromEntries(months.map((m) => [m, { wdh: wd(), artists: top('Artiest'), tracks: top('Nummer') }])) },
-      letterboxd: { metrics: { films: { label: 'Films gekeken', unit: 'films', kind: 'count' } }, daily: { films: dly(() => (rnd() < 0.25 ? 1 : 0)) }, monthly: Object.fromEntries(months.map((m) => [m, { ratings: Array.from({ length: 11 }, (_, i) => Math.round(rnd() * (i > 4 ? 4 : 1))) }])) },
+      youtube: { metrics: { videos: { label: 'YouTube videos', unit: 'videos', kind: 'count' } }, daily: { videos: dly(() => Math.round(rnd() * 25)) }, monthly: Object.fromEntries(months.map((m) => [m, { wdh: wd(), channels: top('Example channel') }])) },
+      spotify: { metrics: { minutes: { label: 'Spotify listening time', unit: 'min', kind: 'count' } }, daily: { minutes: dly(() => Math.round(rnd() * 180)) }, monthly: Object.fromEntries(months.map((m) => [m, { wdh: wd(), artists: top('Artist'), tracks: top('Track') }])) },
+      letterboxd: { metrics: { films: { label: 'Films watched', unit: 'films', kind: 'count' } }, daily: { films: dly(() => (rnd() < 0.25 ? 1 : 0)) }, monthly: Object.fromEntries(months.map((m) => [m, { ratings: Array.from({ length: 11 }, (_, i) => Math.round(rnd() * (i > 4 ? 4 : 1))) }])) },
       places: {
         grid_m: 250,
-        metrics: { home_min: { label: 'Tijd thuis', unit: 'min', kind: 'measure' }, work_min: { label: 'Tijd op werk', unit: 'min', kind: 'measure' }, away_min: { label: 'Tijd elders', unit: 'min', kind: 'measure' }, travel_min: { label: 'Onderweg', unit: 'min', kind: 'measure' }, visits: { label: 'Plekken bezocht', unit: 'bezoeken', kind: 'count' } },
+        metrics: { home_min: { label: 'Time at home', unit: 'min', kind: 'measure' }, work_min: { label: 'Time at work', unit: 'min', kind: 'measure' }, away_min: { label: 'Time elsewhere', unit: 'min', kind: 'measure' }, travel_min: { label: 'Travelling', unit: 'min', kind: 'measure' }, visits: { label: 'Places visited', unit: 'visits', kind: 'count' } },
         daily: { home_min: dly(() => 800 + Math.round(rnd() * 400)), work_min: dly(() => Math.round(rnd() * 300)), away_min: dly(() => Math.round(rnd() * 200)), travel_min: dly(() => Math.round(rnd() * 90)), visits: dly(() => Math.round(rnd() * 6)) },
         monthly: Object.fromEntries(months.map((m) => [m, {
           grid: Array.from({ length: 30 }, (_, i) => [+(52.37 + (rnd() - 0.5) * 0.06).toFixed(4), +(4.9 + (rnd() - 0.5) * 0.1).toFixed(4), Math.round(rnd() * (i ? 600 : 20000))]),
           places: [[1, 20000, 30, 'HOME', 52.37, 4.9], [2, 3000, 12, 'WORK', 52.36, 4.92], ...Array.from({ length: 6 }, (_, i) => [i + 3, Math.round(rnd() * 900), 1 + Math.round(rnd() * 5), 'UNKNOWN', +(52.37 + (rnd() - 0.5) * 0.05).toFixed(4), +(4.9 + (rnd() - 0.5) * 0.08).toFixed(4)])],
         }])),
       },
-      work: { metrics: { ah_hours: { label: 'AH-uren', unit: 'uur', kind: 'count' }, colleges: cnt('Colleges'), events: cnt('Afspraken') }, daily: { ah_hours: dly(() => (rnd() < 0.35 ? 4 + Math.round(rnd() * 4) : 0)), colleges: dly((d) => ((new Date(D0(d)).getUTCDay() % 6) && rnd() < 0.4 ? 1 : 0)), events: dly(() => Math.round(rnd() * 4)) }, deadlines: [[addDays(t, -3), '23:59', 'Voorbeeldopdracht 1'], [addDays(t, 4), '17:00', 'Voorbeeldopdracht 2']] },
-      money: { internal: ['Eigen rekening'], monthly: Object.fromEntries(months.map((m) => { const c = { Salaris: [1000 + Math.round(rnd() * 300), 0], Boodschappen: [0, 150 + Math.round(rnd() * 80)], 'Eten en drinken': [0, Math.round(rnd() * 120)], Online: [0, Math.round(rnd() * 200)], Vervoer: [0, Math.round(rnd() * 60)] }; return [m, { cats: c, in: c.Salaris[0], out: Object.values(c).reduce((a, v) => a + v[1], 0) }]; })) },
-      body: { metrics: { steps: { label: 'Stappen', unit: 'stappen', kind: 'measure' }, sleep_h: { label: 'Slaap', unit: 'uur', kind: 'measure' }, resting_hr: { label: 'Rusthartslag', unit: 'bpm', kind: 'measure' } }, daily: { steps: dly(() => 3000 + Math.round(rnd() * 9000)), sleep_h: dly(() => +(6 + rnd() * 3).toFixed(1)), resting_hr: dly(() => 55 + Math.round(rnd() * 10)) } },
-      computer: { metrics: { pc_active_min: { label: 'Actief achter de pc', unit: 'min', kind: 'count' }, notifications: cnt('Meldingen') }, daily: { pc_active_min: dly(() => Math.round(rnd() * 400)), notifications: dly(() => Math.round(rnd() * 60)) }, monthly: Object.fromEntries(months.map((m) => [m, { wdh: wd(), apps: top('App'), sites: top('voorbeeld.nl'), notif_apps: top('Telefoon-app', 5) }])) },
-      checkins: { metrics: { mood: { label: 'Stemming', unit: '1-5', kind: 'measure' }, energy: { label: 'Energie', unit: '1-5', kind: 'measure' }, focus: { label: 'Focus', unit: '1-5', kind: 'measure' }, stress: { label: 'Stress', unit: '1-5', kind: 'measure' }, checkins: cnt('Check-ins ingevuld'), prompts: cnt('Check-in-meldingen'), answered: cnt('Check-ins na melding') },
+      work: { metrics: { ah_hours: { label: 'AH hours', unit: 'hours', kind: 'count' }, colleges: cnt('Lectures'), events: cnt('Appointments') }, daily: { ah_hours: dly(() => (rnd() < 0.35 ? 4 + Math.round(rnd() * 4) : 0)), colleges: dly((d) => ((new Date(D0(d)).getUTCDay() % 6) && rnd() < 0.4 ? 1 : 0)), events: dly(() => Math.round(rnd() * 4)) }, deadlines: [[addDays(t, -3), '23:59', 'Example assignment 1'], [addDays(t, 4), '17:00', 'Example assignment 2']] },
+      money: { internal: ['Own account'], monthly: Object.fromEntries(months.map((m) => { const c = { Salary: [1000 + Math.round(rnd() * 300), 0], Groceries: [0, 150 + Math.round(rnd() * 80)], 'Food and drink': [0, Math.round(rnd() * 120)], Online: [0, Math.round(rnd() * 200)], Transport: [0, Math.round(rnd() * 60)] }; return [m, { cats: c, in: c.Salary[0], out: Object.values(c).reduce((a, v) => a + v[1], 0) }]; })) },
+      body: { metrics: { steps: { label: 'Steps', unit: 'steps', kind: 'measure' }, sleep_h: { label: 'Sleep', unit: 'hours', kind: 'measure' }, resting_hr: { label: 'Resting heart rate', unit: 'bpm', kind: 'measure' } }, daily: { steps: dly(() => 3000 + Math.round(rnd() * 9000)), sleep_h: dly(() => +(6 + rnd() * 3).toFixed(1)), resting_hr: dly(() => 55 + Math.round(rnd() * 10)) } },
+      computer: { metrics: { pc_active_min: { label: 'Active at the PC', unit: 'min', kind: 'count' }, notifications: cnt('Notifications') }, daily: { pc_active_min: dly(() => Math.round(rnd() * 400)), notifications: dly(() => Math.round(rnd() * 60)) }, monthly: Object.fromEntries(months.map((m) => [m, { wdh: wd(), apps: top('App'), sites: top('example.com'), notif_apps: top('Phone app', 5) }])) },
+      checkins: { metrics: { mood: { label: 'Mood', unit: '1-5', kind: 'measure' }, energy: { label: 'Energy', unit: '1-5', kind: 'measure' }, focus: { label: 'Focus', unit: '1-5', kind: 'measure' }, stress: { label: 'Stress', unit: '1-5', kind: 'measure' }, checkins: cnt('Check-ins filled in'), prompts: cnt('Check-in notifications'), answered: cnt('Check-ins after a notification') },
         daily: Object.assign(...['mood', 'energy', 'focus', 'stress'].map((k) => ({ [k]: dly(() => +(1 + rnd() * 4).toFixed(1)) })), { checkins: dly(() => 1 + Math.round(rnd() * 2)), prompts: dly(() => 3), answered: dly(() => Math.round(rnd() * 3)) }) },
-      weather: { metrics: { tmax: { label: 'Max. temperatuur', unit: '°C', kind: 'measure' } }, daily: { tmax: dly((d) => +(12 + 9 * Math.sin((D0(d) / 864e5 - 100) / 365 * 2 * Math.PI) + rnd() * 4).toFixed(1)) } },
+      weather: { metrics: { tmax: { label: 'Max. temperature', unit: '°C', kind: 'measure' } }, daily: { tmax: dly((d) => +(12 + 9 * Math.sin((D0(d) / 864e5 - 100) / 365 * 2 * Math.PI) + rnd() * 4).toFixed(1)) } },
     };
     const sources = {};
     const cover = (s, first) => { const ms = monthsOf({ from: `${first}-01`, to: t }); sources[s] = { months: Object.fromEntries(ms.map((m) => [m, 100 + Math.round(rnd() * 500)])), rows: ms.length * 300, first: ms[0], last: ms.at(-1) }; };
@@ -1108,14 +1108,14 @@
     return { index: { updated: new Date().toISOString(), sources }, groups: g };
   }
 
-  // ---------- Openen en sluiten ----------
+  // ---------- Opening and closing ----------
   let pushed = false;
   function setOpen(open, fromHash) {
     page.hidden = !open;
     tip.hidden = true;
     document.body.classList.toggle('mydata-open', open);
     btn.setAttribute('aria-pressed', open);
-    btn.title = open ? 'Terug naar het dashboard (Esc)' : 'Mijn data';
+    btn.title = open ? 'Back to the dashboard (Esc)' : 'My data';
     if (open) {
       window.dispatchEvent(new CustomEvent('dash:page', { detail: 'mydata' }));
       if (!fromHash && location.hash !== '#mydata') {
@@ -1132,7 +1132,7 @@
     }
   }
   btn.onclick = () => setOpen(page.hidden);
-  // Feeds en Mijn data liggen op dezelfde plek: de ene opent, de andere gaat dicht
+  // Feeds and My data are in the same place: when one opens, the other closes
   window.addEventListener('dash:page', (e) => { if (e.detail !== 'mydata' && !page.hidden) setOpen(false, true); });
   window.addEventListener('popstate', () => setOpen(location.hash === '#mydata', true));
   window.addEventListener('dash:data-token', () => { data = null; if (!page.hidden) load(true); });

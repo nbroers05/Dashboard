@@ -1,26 +1,28 @@
 'use strict';
 
-// Stand voor de telefoon-app (sinds 1.5.0, groot idee "Telefoon-app" fase A).
-// De app kan zelf niet bij de Canvas-opdrachten met hun id's, Episodes Left (extensie in Firefox op de pc), Gmail en
-// het aantal check-ins. Dit dashboard zet daarom één rij in de Supabase van het dashboard (dashboard_settings,
-// sleutel `_telefoon.stand`, alleen Noahs account kan erbij) met per onderdeel een eigen tijd `at`:
-//   { canvas: { at, items: [{ id, title, course, due, allDay }] }, episodes: { at, rows: [{ title, left, nieuw }] },
-//     mail: { at, count, top: [{ from, subject, thread }] }, checkin: { at, day (JJJJ-MM-DD), count } }
-// Elk apparaat schrijft alleen de onderdelen die het zelf echt heeft, en een onderdeel van een ander apparaat met een
-// nieuwere tijd blijft staan (de laptop zonder extensie overschrijft Episodes dus niet).
-// Het AH-loon zet widgets/ah.js zelf in `_telefoon.loon` (Noahs keuze, 12 nov 2026). Canvas-vinkjes staan al in
-// dashboard_canvas_done. Hooguit eens per 2 minuten, en alleen als er iets veranderd is. Niet in demo.
+// Status for the phone app (since 1.5.0, big idea "Phone app" phase A).
+// The app can't reach the Canvas assignments with their ids, Episodes Left (extension in Firefox on the PC), Gmail and
+// the number of check-ins itself. So this dashboard puts one row in the dashboard's Supabase (dashboard_settings,
+// key `_phone.status`, only Noah's account can read it) with its own time `at` per part:
+//   { canvas: { at, items: [{ id, title, course, due, allDay }] }, episodes: { at, rows: [{ title, left, new }] },
+//     mail: { at, count, top: [{ from, subject, thread }] }, checkin: { at, day (YYYY-MM-DD), count } }
+// Every device only writes the parts it really has, and a part from another device with a newer time
+// stays (so the laptop without the extension doesn't overwrite Episodes).
+// widgets/ah.js puts the AH wage settings in `_phone.wage` itself (Noah's choice, 12 Nov 2026). Canvas check marks are already in
+// dashboard_canvas_done. At most once per 2 minutes, and only when something changed. Not in demo.
+// Until phone app 0.8.0 is installed everywhere, the old key `_telefoon.stand` (with `nieuw`) is written too; remove LEGACY after that.
 (() => {
   const SB = window.DASH_SB;
   if (!SB || !SB.configured || DASH.DEMO) return;
   const { store } = DASH;
-  const KEY = '_telefoon.stand';
+  const KEY = '_phone.status';
+  const LEGACY = '_telefoon.stand';
   const MIN_GAP = 2 * 60000;
   let lastSent = '', lastAt = 0, timer = null;
 
   function canvasPart() {
     const items = window.DASH_CANVAS && DASH_CANVAS.items();
-    if (!items) return null;   // geen agenda in deze browser
+    if (!items) return null;   // no agenda in this browser
     const now = Date.now();
     return {
       items: items.filter((it) => it.due > now - 14 * 86400000 && it.due < now + 30 * 86400000)
@@ -33,7 +35,7 @@
     const seen = store.get('episodes.seen') || {};
     return {
       updatedAt: data.updatedAt,
-      rows: data.rows.filter((r) => r.left > 0).map((r) => ({ title: r.title, left: r.left, nieuw: Math.max(0, r.left - (seen[r.title] ?? r.left)) })),
+      rows: data.rows.filter((r) => r.left > 0).map((r) => ({ title: r.title, left: r.left, new: Math.max(0, r.left - (seen[r.title] ?? r.left)) })),
     };
   }
   function mailPart() {
@@ -43,10 +45,10 @@
   }
   function checkinPart() {
     if (!window.DASH_CHECKIN) return null;
-    return { day: new Date().toLocaleDateString('sv'), count: DASH_CHECKIN.today() };   // JJJJ-MM-DD
+    return { day: new Date().toLocaleDateString('sv'), count: DASH_CHECKIN.today() };   // YYYY-MM-DD
   }
 
-  // Sinds 1.6.0 (fase B): film van vanavond (Sterrenvoorspeller-extensie) en Spotify-maand (Spotify-inlog van deze browser)
+  // Since 1.6.0 (phase B): film tonight (Sterrenvoorspeller extension) and Spotify month (this browser's Spotify login)
   async function filmPart() {
     if (!window.DASH_FILM || !DASH_FILM.top) return null;
     try { return await DASH_FILM.top(); } catch { return null; }
@@ -71,12 +73,16 @@
       const out = { ...old };
       for (const [k, v] of Object.entries(parts)) {
         if (!v) continue;
-        // Episodes: de stand van de extensie zelf telt (updatedAt), niet wanneer dit apparaat hem doorgaf
+        // Episodes: the extension's own status counts (updatedAt), not when this device passed it on
         if (k === 'episodes' && old.episodes && old.episodes.updatedAt && Date.parse(old.episodes.updatedAt) > Date.parse(v.updatedAt)) continue;
         if (k === 'spotify' && old.spotify && old.spotify.updatedAt > v.updatedAt) continue;
         out[k] = { at: now, ...v };
       }
       await SB.flag(KEY, out);
+      // Old app versions read the old key and `nieuw`
+      const legacy = { ...out };
+      if (out.episodes) legacy.episodes = { ...out.episodes, rows: out.episodes.rows.map((r) => ({ ...r, nieuw: r.new })) };
+      await SB.flag(LEGACY, legacy).catch(() => {});
       lastSent = mine;
     } catch (e) {
       SB.fail(e);

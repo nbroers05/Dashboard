@@ -81,7 +81,7 @@ def main():
     # Vrienden: één mislukte feed (typfout, privéprofiel) laat de rest gewoon doorgaan
     previous = previous_logs("data/friends.json")
     friends, logs = [], []
-    for f in config_items("vrienden"):
+    for f in config_items("friends"):
         user, name = f.get("user", ""), f.get("name") or f.get("user", "")
         if is_placeholder(user):
             log(f"Vriend {name}: nog geen gebruikersnaam ingevuld, overgeslagen")

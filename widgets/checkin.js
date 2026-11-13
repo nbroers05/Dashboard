@@ -1,23 +1,23 @@
 'use strict';
 
-// Check-in (experience sampling): in een paar tikken stemming, energie, focus en stress (1-5) en een notitie.
-// Opslaan in de PRIVÉ repo (data/self-report/<jaar>-<maand>.csv) via datarepo.js. Lukt opslaan niet (offline,
-// geen token), dan blijft de check-in in een wachtrij in deze browser en gaat hij later alsnog.
-// 3x per dag stuurt de Action in de privé repo een ntfy-melding met een link naar #checkin-<unix>: dan gaat het
-// invulvak meteen open en wordt de check-in aan die melding gekoppeld. "Nu invullen" kan altijd.
-// Het vak toont alleen hoeveel check-ins je vandaag hebt ingevuld (uit het archief, deze en vorige maand, elke 10 min,
-// zodat telefoon en pc samen tellen; plus de wachtrij). Bewust géén waarden of andere cijfers uit het archief (sinds
-// 0.44.17): Noah schrijft eerst zijn hypotheses op voordat hij naar de check-in-data kijkt. Ook in de browser
-// bewaren we alleen tijd en id.
+// Check-in (experience sampling): mood, energy, focus and stress (1-5) and a note in a few taps.
+// Saved in the PRIVATE repo (data/self-report/<year>-<month>.csv) via datarepo.js. If saving fails (offline,
+// no token), the check-in stays in a queue in this browser and goes later after all.
+// 3x a day the Action in the private repo sends an ntfy notification with a link to #checkin-<unix>: then the
+// form opens right away and the check-in is linked to that notification. "Fill in now" always works.
+// The tile only shows how many check-ins you filled in today (from the archive, this and last month, every 10 min,
+// so phone and PC count together; plus the queue). Deliberately NO values or other numbers from the archive (since
+// 0.44.17): Noah writes down his hypotheses first before he looks at the check-in data. In the browser too
+// we only keep the time and id.
 DASH.widget('w-checkin', (card, body, guard) => {
   const { h, store } = DASH;
   const D = window.DASH_DATA;
   const QUEUE = 'checkin.queue';
-  const LOG = 'checkin.log';   // alleen { t, id } van de laatste dagen (uit het archief + wachtrij), voor de telling
+  const LOG = 'checkin.log';   // only { t, id } of the last days (from the archive + queue), for the count
   const COLS = ['timestamp_utc', 'timestamp_local', 'source', 'collected_at', 'id', 'mood', 'energy', 'focus', 'stress', 'note', 'trigger', 'prompt_utc', 'delay_min', 'device'];
   const SCALES = [
-    ['mood', 'Stemming', ['😞', '🙁', '😐', '🙂', '😄']],
-    ['energy', 'Energie', ['🪫', '😴', '😐', '⚡', '🚀']],
+    ['mood', 'Mood', ['😞', '🙁', '😐', '🙂', '😄']],
+    ['energy', 'Energy', ['🪫', '😴', '😐', '⚡', '🚀']],
     ['focus', 'Focus', ['🌫️', '😶‍🌫️', '😐', '🎯', '🔥']],
     ['stress', 'Stress', ['😌', '🙂', '😐', '😬', '🤯']],
   ];
@@ -26,7 +26,7 @@ DASH.widget('w-checkin', (card, body, guard) => {
   const recent = () => (store.get(LOG) || []).filter((x) => Date.now() - x.t < 3 * 86400000);
   const today = () => recent().filter((x) => DASH.startOfDay(x.t) === DASH.startOfDay(Date.now()));
 
-  // ---------- Uit het archief: alle check-ins van de laatste dagen (ook van andere apparaten) ----------
+  // ---------- From the archive: all check-ins of the last days (also from other devices) ----------
   function parseCsv(text) {
     const rows = [];
     let row = [], cell = '', q = false;
@@ -55,18 +55,18 @@ DASH.widget('w-checkin', (card, body, guard) => {
       const remote = files.filter(Boolean).flatMap((f) => parseCsv(f.text)).map((r) => ({ t: Date.parse(r.timestamp_utc), id: r.id }))
         .filter((x) => Number.isFinite(x.t) && Date.now() - x.t < 3 * 86400000);
       const ids = new Set(remote.map((x) => x.id));
-      // Nog niet opgeslagen (wachtrij) telt ook mee
+      // Not saved yet (queue) counts too
       const waiting = queue().filter((r) => !ids.has(r.id)).map((r) => ({ t: Date.parse(r.timestamp_utc), id: r.id }));
       store.set(LOG, [...remote, ...waiting].sort((a, b) => a.t - b.t));
       render();
     } catch (e) {
-      console.warn('[check-in] ophalen', e);
+      console.warn('[check-in] fetching', e);
     } finally {
       pulling = false;
     }
   }
 
-  // ---------- Opslaan ----------
+  // ---------- Saving ----------
   let flushing = false, lastError = null;
   async function flush() {
     if (flushing || !D.token() || !queue().length) return;
@@ -92,7 +92,7 @@ DASH.widget('w-checkin', (card, body, guard) => {
     const r = {
       timestamp_utc: D.utcIso(now), timestamp_local: D.localIso(now), source: 'self-report', collected_at: D.utcIso(now),
       id: (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`),
-      ...values, note: note.replace(/\s*\n\s*/g, ' ').trim(),   // één regel: makkelijker voor CSV en analyse
+      ...values, note: note.replace(/\s*\n\s*/g, ' ').trim(),   // one line: easier for CSV and analysis
       trigger: promptUtc ? 'prompt' : 'manual',
       prompt_utc: promptUtc ? D.utcIso(new Date(promptUtc)) : '',
       delay_min: promptUtc ? Math.max(0, Math.round((now - promptUtc) / 60000)) : '',
@@ -116,11 +116,11 @@ DASH.widget('w-checkin', (card, body, guard) => {
     pop.open();
   }
 
-  // Het formulier zelf: in de pop-up, en op de telefoon ook los in het tabblad Data (phone.js)
+  // The form itself: in the pop-up, and on the phone also separately in the Data tab (phone.js)
   function buildForm(promptAt, done) {
     const chosen = {};
     const form = h('form', 'ci-form');
-    if (promptAt) form.append(h('p', 'w-sub ci-prompt', `Melding van ${DASH.fmtTime(promptAt)}`));
+    if (promptAt) form.append(h('p', 'w-sub ci-prompt', `Notification from ${DASH.fmtTime(promptAt)}`));
     for (const [key, label, faces] of SCALES) {
       const row = h('div', 'ci-row');
       row.setAttribute('role', 'radiogroup');
@@ -144,10 +144,10 @@ DASH.widget('w-checkin', (card, body, guard) => {
       form.append(row);
     }
     const note = h('textarea', 'ci-note');
-    note.placeholder = 'Notitie (mag leeg)';
+    note.placeholder = 'Note (may be empty)';
     note.rows = 2;
     note.maxLength = 500;
-    const go = h('button', 'w-btn', 'Opslaan');
+    const go = h('button', 'w-btn', 'Save');
     go.type = 'submit';
     go.disabled = true;
     form.append(note, go);
@@ -165,17 +165,17 @@ DASH.widget('w-checkin', (card, body, guard) => {
   let setup = null;
   function openSetup() {
     if (!setup) {
-      setup = DASH.panel('Data-archief koppelen', 'var(--c-checkin)');
+      setup = DASH.panel('Link data archive', 'var(--c-checkin)');
       setup.dialog.classList.add('checkin-dialog');
     }
     const input = h('input', 'ci-token');
     input.type = 'password';
     input.autocomplete = 'off';
-    input.placeholder = D.token() ? 'Token opgeslagen (leeg laten = wissen)' : 'github_pat_…';
-    const save = h('button', 'w-btn', 'Opslaan');
+    input.placeholder = D.token() ? 'Token saved (leave empty = remove)' : 'github_pat_…';
+    const save = h('button', 'w-btn', 'Save');
     const form = h('form', 'ci-form');
     form.append(
-      h('p', 'w-sub', `Check-ins gaan naar je privé repo ${D.REPO}. Plak hier een fine-grained GitHub-token met alleen toegang tot die repo (Contents: Read and write). Het blijft alleen in deze browser. Hoe je hem maakt staat in de README van ${D.REPO}.`),
+      h('p', 'w-sub', `Check-ins go to your private repo ${D.REPO}. Paste a fine-grained GitHub token here with access to that repo only (Contents: Read and write). It stays only in this browser. How to make one is in the README of ${D.REPO}.`),
       input, save,
     );
     form.onsubmit = (e) => {
@@ -189,14 +189,14 @@ DASH.widget('w-checkin', (card, body, guard) => {
     setup.open();
   }
 
-  // ---------- Vak ----------
+  // ---------- Tile ----------
   function render() {
     const t = today();
     const head = h('div', 'w-row');
     const big = h('div', 'w-big', String(t.length));
-    big.append(h('small', null, t.length === 1 ? 'check-in vandaag' : 'check-ins vandaag'));
+    big.append(h('small', null, t.length === 1 ? 'check-in today' : 'check-ins today'));
     head.append(big);
-    const btn = h('button', 'w-btn', 'Nu invullen');
+    const btn = h('button', 'w-btn', 'Fill in now');
     btn.type = 'button';
     btn.onclick = () => open(null);
     head.append(btn);
@@ -204,13 +204,13 @@ DASH.widget('w-checkin', (card, body, guard) => {
     const waiting = queue().length;
     const foot = h('div', 'ci-foot');
     if (!D.token()) {
-      const s = h('button', 'text-btn', 'Data-archief koppelen');
+      const s = h('button', 'text-btn', 'Link data archive');
       s.type = 'button';
       s.onclick = openSetup;
-      foot.append(h('span', 'w-sub', waiting ? `${waiting} wacht op koppeling · ` : 'Nog niet gekoppeld · '), s);
+      foot.append(h('span', 'w-sub', waiting ? `${waiting} waiting for a link · ` : 'Not linked yet · '), s);
     } else if (waiting || lastError) {
-      foot.append(h('span', `w-sub${lastError ? ' ci-err' : ''}`, lastError ? `Niet opgeslagen: ${lastError}` : `${waiting} wordt opgeslagen…`));
-      const r = h('button', 'text-btn', 'Opnieuw');
+      foot.append(h('span', `w-sub${lastError ? ' ci-err' : ''}`, lastError ? `Not saved: ${lastError}` : `${waiting} being saved…`));
+      const r = h('button', 'text-btn', 'Again');
       r.type = 'button';
       r.onclick = flush;
       if (lastError) foot.append(r);
@@ -218,7 +218,7 @@ DASH.widget('w-checkin', (card, body, guard) => {
     if (D.token()) {
       const settings = h('button', 'text-btn ci-settings', 'Token');
       settings.type = 'button';
-      settings.title = 'Token voor het data-archief wijzigen';
+      settings.title = 'Change the data archive token';
       settings.onclick = openSetup;
       foot.append(settings);
     }
@@ -227,7 +227,7 @@ DASH.widget('w-checkin', (card, body, guard) => {
     window.dispatchEvent(new CustomEvent('dash:checkin'));
   }
 
-  // #checkin of #checkin-<unix> (uit de ntfy-melding): meteen het invulvak
+  // #checkin or #checkin-<unix> (from the ntfy notification): open the form right away
   function fromHash() {
     const m = location.hash.match(/^#checkin(?:-(\d+))?$/);
     if (!m) return;

@@ -1,12 +1,12 @@
 'use strict';
 
-// Spotify-maandoverzicht: top 5 nummers en top 5 artiesten van de afgelopen ~4 weken (time_range=short_term).
-// Gebruikt de inlog van spotify.js (window.DASH_SPOTIFY). Daarvoor is de scope user-top-read nodig:
-// wie al eerder had ingelogd, moet één keer opnieuw inloggen.
+// Spotify month overview: top 5 tracks and top 5 artists of the last ~4 weeks (time_range=short_term).
+// Uses the login from spotify.js (window.DASH_SPOTIFY). That needs the scope user-top-read:
+// anyone who logged in before has to log in again once.
 DASH.widget('w-sptop', (card, body, guard) => {
   const { h, store } = DASH;
   const KEY = 'spotify.top';
-  const TTL = 6 * 3600000;   // Spotify werkt dit zelf ook maar ongeveer dagelijks bij
+  const TTL = 6 * 3600000;   // Spotify itself only updates this roughly daily
 
   const pic = (images) => (images && images.length ? images[images.length > 1 ? 1 : 0].url : null);
 
@@ -34,7 +34,7 @@ DASH.widget('w-sptop', (card, body, guard) => {
       return box;
     };
     const grid = h('div', 'sp-grid');
-    grid.append(col('Nummers', data.tracks, false), col('Artiesten', data.artists, true));
+    grid.append(col('Tracks', data.tracks, false), col('Artists', data.artists, true));
     body.replaceChildren(grid);
   }
 
@@ -52,14 +52,14 @@ DASH.widget('w-sptop', (card, body, guard) => {
   }
 
   const relogin = () => body.replaceChildren(DASH.problem(
-    'Voor je maandoverzicht heeft het dashboard één extra toestemming van Spotify nodig. Log daarvoor één keer opnieuw in.',
-    'Opnieuw inloggen bij Spotify', () => window.DASH_SPOTIFY.login(),
+    'For your month overview the dashboard needs one extra permission from Spotify. Log in again once for that.',
+    'Log in to Spotify again', () => window.DASH_SPOTIFY.login(),
   ));
 
   const load = guard(async () => {
     const S = window.DASH_SPOTIFY;
     if (!S || !S.connected()) {
-      body.replaceChildren(h('p', 'w-note', 'Log bovenaan in bij Spotify om je top van de afgelopen maand te zien.'));
+      body.replaceChildren(h('p', 'w-note', 'Log in to Spotify at the top to see your top of the last month.'));
       return;
     }
     if (S.hasScope('user-top-read') === false) return relogin();
@@ -68,17 +68,17 @@ DASH.widget('w-sptop', (card, body, guard) => {
     try {
       const data = await fetchTop();
       if (!data.tracks.length && !data.artists.length) {
-        body.replaceChildren(h('p', 'w-note', 'Nog niet genoeg geluisterd de afgelopen weken voor een top 5.'));
+        body.replaceChildren(h('p', 'w-note', 'Not listened enough in the last weeks for a top 5 yet.'));
         return;
       }
       if (!DASH.DEMO) store.set(KEY, data);
       render(data);
     } catch (e) {
-      // 403 = deze inlog heeft de scope nog niet (ingelogd vóór het maandoverzicht bestond)
+      // 403 = this login doesn't have the scope yet (logged in before the month overview existed)
       if (e.status === 403 || e.status === 401) return relogin();
       console.warn('[spotify-top]', e);
       if (cached) return render(cached);
-      body.replaceChildren(DASH.problem('Spotify gaf geen maandoverzicht. Het probeert het later opnieuw.', 'Opnieuw proberen', load));
+      body.replaceChildren(DASH.problem('Spotify returned no month overview. It will try again later.', 'Try again', load));
     }
   });
   DASH.every(TTL, load);

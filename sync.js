@@ -1,40 +1,40 @@
 'use strict';
 
-// Snelle sync via Supabase (sinds 1.1.0, fase 1 van het idee "Snelle sync via Supabase" in WENSEN.md).
-// Eigen Supabase-project "dashboard" (los van de planner). Tabellen en Row Level Security: supabase.sql.
-// Zonder Supabase (config nog SUPABASE_URL_HIER, geen internet, deze browser niet gekoppeld) werkt alles zoals vóór 1.1.0:
-// localStorage, en Canvas-afvinken via het archief.
+// Fast sync via Supabase (since 1.1.0, phase 1 of the idea "Fast sync via Supabase").
+// Own Supabase project "dashboard" (separate from the planner). Tables and Row Level Security: supabase.sql.
+// Without Supabase (config still a placeholder, no internet, this browser not linked) everything works like before 1.1.0:
+// localStorage, and Canvas check marks via the archive.
 //
-// Inloggen hoort bij de bestaande inlog (vault.js), zonder tweede inlogscherm:
-// - Het Supabase-wachtwoord wordt afgeleid uit de wachtzin: PBKDF2-SHA256(wachtzin, eigen zout, 600.000 rondes) → 32 bytes.
-//   Bij het ontgrendelen (vault.js) of eenmalig via Instellingen › Inloggen › "Supabase koppelen" (browsers die al ingelogd
-//   waren, zoals tall) komt { email, pw } in de opslag als sb.login. De wachtzin zelf wordt nergens bewaard.
-// - Daarmee logt deze browser zelf in, en opnieuw zodra de sessie verlopen is of de vernieuwsleutel niet meer werkt.
-//   Er komt dus nooit een inlogscherm: lukt het niet, dan valt het dashboard stil terug op localStorage en probeert het later.
-// - Bestaat het account nog niet, dan maakt de eerste gekoppelde browser het aan (signup; zie README "Supabase").
-// - vault.json verandert niet. Een nieuwe bundel met een nieuwe wachtzin zet het Supabase-wachtwoord mee om (vault.js).
+// Logging in is part of the existing login (vault.js), without a second login screen:
+// - The Supabase password is derived from the passphrase: PBKDF2-SHA256(passphrase, own salt, 600,000 rounds) → 32 bytes.
+//   On unlocking (vault.js) or once via Settings › Log in › "Link Supabase" (browsers that were already logged in,
+//   like tall) { email, pw } goes into storage as sb.login. The passphrase itself is never saved.
+// - With that this browser logs itself in, and again as soon as the session expired or the refresh key stops working.
+//   So there's never a login screen: if it fails, the dashboard quietly falls back to localStorage and tries later.
+// - If the account doesn't exist yet, the first linked browser creates it (signup; see README "Supabase").
+// - vault.json doesn't change. A new bundle with a new passphrase converts the Supabase password too (vault.js).
 //
-// Gedeelde instellingen (tabel dashboard_settings, één rij per sleutel, nieuwste wint): SHARED hieronder. Elke schrijfactie
-// naar die sleutels in localStorage wordt opgemerkt (ook uit bestanden die zelf localStorage gebruiken) en gaat mee.
-// Al het andere blijft per apparaat (zie CLAUDE.md, "Supabase").
+// Shared settings (table dashboard_settings, one row per key, newest wins): SHARED below. Every write
+// to those keys in localStorage is noticed (also from files that use localStorage themselves) and goes along.
+// Everything else stays per device (see CLAUDE.md, "Supabase").
 window.DASH_SB = (() => {
   const cfg = (window.DASHBOARD_CONFIG && DASHBOARD_CONFIG.supabase) || {};
   const DEMO = new URLSearchParams(location.search).has('demo');
-  const placeholder = (s) => !s || /_HIER$/.test(s);
+  const placeholder = (s) => !s || /_(HERE|HIER)$/.test(s);
   const configured = !DEMO && !placeholder(cfg.url) && !placeholder(cfg.anonKey) && !placeholder(cfg.email);
   const URL_ = configured ? cfg.url.replace(/\/+$/, '') : '';
 
-  const LOGIN = 'sb.login';       // { email, pw } afgeleid uit de wachtzin
+  const LOGIN = 'sb.login';       // { email, pw } derived from the passphrase
   const SESSION = 'sb.session';   // { access, refresh, expires (ms), user }
-  const STAMPS = 'sb.stamps';     // { sleutel: ms } wanneer deze browser een gedeelde instelling het laatst aanpaste
-  const STATE = 'sb.state';       // laatste stand voor Instellingen: { ok, at, msg }
+  const STAMPS = 'sb.stamps';     // { key: ms } when this browser last changed a shared setting
+  const STATE = 'sb.state';       // last status for Settings: { ok, at, msg }
   const SALT = 'dashboard-supabase-v1';
   const ITER = 600000;
 
-  // Gelijk op elk apparaat. Alleen dingen die de gebruiker zelf instelt; caches en apparaatkeuzes staan er bewust niet in.
+  // The same on every device. Only things the user sets; caches and device choices are deliberately not in it.
   const SHARED = ['dash.links', 'health.goal', 'todo.items'];
 
-  // ---------- Opslag (rauw, zonder de haak hieronder) ----------
+  // ---------- Storage (raw, without the hook below) ----------
   const proto = window.Storage && Storage.prototype;
   const rawSet = proto && proto.setItem, rawRemove = proto && proto.removeItem;
   const ls = () => window.localStorage;
@@ -46,14 +46,14 @@ window.DASH_SB = (() => {
     window.dispatchEvent(new CustomEvent('dash:sb-state'));
   }
 
-  // ---------- Wachtwoord uit de wachtzin ----------
+  // ---------- Password from the passphrase ----------
   async function derive(passphrase) {
     const enc = new TextEncoder();
     const base = await crypto.subtle.importKey('raw', enc.encode(passphrase), 'PBKDF2', false, ['deriveBits']);
     const bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: enc.encode(`${SALT}:${URL_}`), iterations: ITER }, base, 256);
     return btoa(String.fromCharCode(...new Uint8Array(bits))).replace(/=+$/, '');
   }
-  // Na het ontgrendelen (vault.js) of "Supabase koppelen": inloggegevens voor deze browser klaarzetten
+  // After unlocking (vault.js) or "Link Supabase": get the login details ready for this browser
   async function prepare(passphrase) {
     if (!configured) return false;
     put(LOGIN, { email: cfg.email, pw: await derive(passphrase) });
@@ -62,7 +62,7 @@ window.DASH_SB = (() => {
   }
   const linked = () => configured && !!(get(LOGIN) || {}).pw;
 
-  // ---------- Auth (gewone fetch naar GoTrue, geen bibliotheek) ----------
+  // ---------- Auth (plain fetch to GoTrue, no library) ----------
   async function auth(path, body, token) {
     const res = await fetch(`${URL_}/auth/v1/${path}`, {
       method: body ? (path === 'user' ? 'PUT' : 'POST') : 'GET',
@@ -71,7 +71,7 @@ window.DASH_SB = (() => {
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
-      const e = new Error(data.msg || data.error_description || data.message || `Supabase-fout ${res.status}`);
+      const e = new Error(data.msg || data.error_description || data.message || `Supabase error ${res.status}`);
       e.status = res.status;
       e.code = data.error_code || data.code || data.error;
       throw e;
@@ -89,16 +89,16 @@ window.DASH_SB = (() => {
       return keep(await auth('token?grant_type=password', { email: login.email, password: login.pw }));
     } catch (e) {
       if (e.status !== 400 || !/invalid_credentials|invalid_grant/.test(e.code || '') && !/invalid login/i.test(e.message)) throw e;
-      // Nog geen account: de eerste gekoppelde browser maakt het aan (werkt alleen zolang "Allow new users to sign up" aan staat)
-      const made = await auth('signup', { email: login.email, password: login.pw }).catch((x) => { x.message = `Inloggen lukt niet en een account maken ook niet (${x.message})`; throw x; });
+      // No account yet: the first linked browser creates it (only works while "Allow new users to sign up" is on)
+      const made = await auth('signup', { email: login.email, password: login.pw }).catch((x) => { x.message = `Logging in failed and creating an account failed too (${x.message})`; throw x; });
       if (made.access_token) return keep(made);
-      throw new Error('Account gemaakt, maar Supabase wil eerst een bevestigingsmail (zet "Confirm email" uit, README "Supabase")');
+      throw new Error('Account created, but Supabase wants a confirmation email first (turn "Confirm email" off, README "Supabase")');
     }
   }
-  // Geldig toegangstoken; vernieuwt of logt opnieuw in als het moet. Eén tegelijk.
+  // Valid access token; refreshes or logs in again when needed. One at a time.
   let pending = null;
   function token(force) {
-    if (!linked()) return Promise.reject(new Error('niet gekoppeld'));
+    if (!linked()) return Promise.reject(new Error('not linked'));
     const s = get(SESSION);
     if (!force && s && s.access && s.expires - Date.now() > 60000) return Promise.resolve(s);
     if (pending) return pending;
@@ -106,7 +106,7 @@ window.DASH_SB = (() => {
       try {
         if (s && s.refresh) {
           try { return keep(await auth('token?grant_type=refresh_token', { refresh_token: s.refresh })); } catch (e) {
-            if (!e.status) throw e;   // geen internet: niet opnieuw inloggen, gewoon later
+            if (!e.status) throw e;   // no internet: don't log in again, just later
           }
         }
         return await passwordLogin();
@@ -127,13 +127,13 @@ window.DASH_SB = (() => {
     if (res.status === 401 && !retried) { await token(true); return rest(path, { method, body, prefer }, true); }
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
-      throw new Error(data.message || `Supabase-fout ${res.status}`);
+      throw new Error(data.message || `Supabase error ${res.status}`);
     }
-    setState(true, 'Gesynchroniseerd');
+    setState(true, 'Synced');
     return res.status === 204 ? null : res.json().catch(() => null);
   }
   const userId = () => (get(SESSION) || {}).user;
-  // Upsert met vaste user_id (een bulk-insert vult ontbrekende kolommen anders met null in plaats van de standaardwaarde)
+  // Upsert with a fixed user_id (a bulk insert otherwise fills missing columns with null instead of the default)
   async function upsert(table, rows, conflict) {
     if (!rows.length) return;
     await token();
@@ -141,12 +141,12 @@ window.DASH_SB = (() => {
     await rest(`${table}?on_conflict=${conflict}`, { method: 'POST', body: rows.map((r) => ({ user_id: uid, ...r })), prefer: 'resolution=merge-duplicates,return=minimal' });
   }
 
-  // ---------- Gedeelde instellingen ----------
+  // ---------- Shared settings ----------
   const stamps = () => get(STAMPS) || {};
   function stamp(key) { const s = stamps(); s[key] = Date.now(); put(STAMPS, s); }
   let applying = false, pushTimer = null;
 
-  // Elke schrijfactie naar een gedeelde sleutel opmerken, ongeacht welk bestand hem doet
+  // Notice every write to a shared key, whichever file does it
   if (configured && proto) {
     proto.setItem = function (k, v) {
       rawSet.call(this, k, v);
@@ -178,7 +178,7 @@ window.DASH_SB = (() => {
         }
         st[key] = theirs;
       } else if (mine > theirs || (!r && local != null)) {
-        // Nieuwer hier, of nog niet online (eerste keer: met tijd 1, zodat elke echte wijziging elders wint)
+        // Newer here, or not online yet (first time: with time 1, so any real change elsewhere wins)
         let value = null;
         try { value = local == null ? null : JSON.parse(local); } catch {}
         const t = mine || 1;
@@ -191,7 +191,7 @@ window.DASH_SB = (() => {
     for (const key of changed) window.dispatchEvent(new CustomEvent('dash:synced', { detail: { key } }));
   }
 
-  // Interne vlaggen (begint met _), bijv. of de Canvas-vinkjes uit het archief al zijn overgezet
+  // Internal flags (starting with _), e.g. whether the Canvas check marks from the archive were already copied
   async function flag(key, value) {
     if (value === undefined) {
       const r = await rest(`dashboard_settings?select=value&key=eq.${encodeURIComponent(key)}`);
@@ -200,7 +200,7 @@ window.DASH_SB = (() => {
     await upsert('dashboard_settings', [{ key, value, updated_at: new Date().toISOString() }], 'user_id,key');
   }
 
-  // ---------- Supabase-wachtwoord omzetten (nieuwe bundel met een nieuwe wachtzin, vault.js) ----------
+  // ---------- Convert the Supabase password (new bundle with a new passphrase, vault.js) ----------
   async function changePassphrase(passphrase) {
     if (!linked()) return false;
     const s = await token();
@@ -213,7 +213,7 @@ window.DASH_SB = (() => {
   // ---------- Ritme ----------
   function fail(e) {
     const offline = !navigator.onLine || e instanceof TypeError;
-    setState(false, offline ? 'Geen verbinding, werkt lokaal verder' : (e && e.message) || 'Onbekende fout');
+    setState(false, offline ? 'No connection, carrying on locally' : (e && e.message) || 'Unknown error');
     if (!offline) console.warn('[sync]', e);
   }
   const tick = () => { if (linked()) syncSettings().catch(fail); };
@@ -226,36 +226,36 @@ window.DASH_SB = (() => {
     });
   }
 
-  // ---------- Instellingen › Inloggen ----------
+  // ---------- Settings › Log in ----------
   function settingsPart(root) {
     const h = DASH.h;
     const box = h('div', 'sb-part');
     root.append(box);
     function draw() {
-      box.replaceChildren(h('h3', 'sb-head', 'Supabase (gedeelde instellingen en Canvas-vinkjes)'));
+      box.replaceChildren(h('h3', 'sb-head', 'Supabase (shared settings and Canvas check marks)'));
       if (!configured) {
-        box.append(h('p', 'w-note', 'Nog niet ingesteld: vul in config.js bij supabase de URL, anon key en het e-mailadres in (README "Supabase"). Tot die tijd blijft alles in deze browser.'));
+        box.append(h('p', 'w-note', 'Not set up yet: fill in the URL, anon key and email address under supabase in config.js (README "Supabase"). Until then everything stays in this browser.'));
         return;
       }
       const st = get(STATE);
       if (linked()) {
-        const when = st && st.at ? new Date(st.at).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' }) : '';
-        box.append(h('p', `w-note ${st && st.ok === false ? 'sb-bad' : ''}`, st ? `${st.msg}${when ? ` (${when})` : ''}` : 'Gekoppeld, nog niet gesynchroniseerd.'));
+        const when = st && st.at ? new Date(st.at).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : '';
+        box.append(h('p', `w-note ${st && st.ok === false ? 'sb-bad' : ''}`, st ? `${st.msg}${when ? ` (${when})` : ''}` : 'Linked, not synced yet.'));
       } else {
-        box.append(h('p', 'w-note', 'Deze browser is nog niet gekoppeld. Eén keer je wachtzin hier invullen; daarna logt hij zelf in en blijft hij ingelogd.'));
+        box.append(h('p', 'w-note', 'This browser isn\'t linked yet. Type your passphrase here once; after that it logs itself in and stays logged in.'));
       }
       const pw = h('input', 'vault-input');
-      Object.assign(pw, { type: 'password', autocomplete: 'current-password', placeholder: 'Wachtzin' });
-      const go = h('button', 'w-btn', linked() ? 'Opnieuw koppelen' : 'Supabase koppelen');
+      Object.assign(pw, { type: 'password', autocomplete: 'current-password', placeholder: 'Passphrase' });
+      const go = h('button', 'w-btn', linked() ? 'Link again' : 'Link Supabase');
       go.type = 'button';
       const out = h('p', 'w-note');
       go.onclick = async () => {
         go.disabled = true;
-        out.textContent = 'Controleren…';
+        out.textContent = 'Checking…';
         try {
-          // Eerst controleren dat het de echte wachtzin is (de bundel moet opengaan)
+          // First check it's the real passphrase (the bundle has to open)
           const res = await fetch(`vault.json?t=${Date.now()}`, { cache: 'no-store' });
-          if (!res.ok) throw new Error('Er staat geen bundel online');
+          if (!res.ok) throw new Error('There is no bundle online');
           await DASH_VAULT.open(pw.value, await res.json());
           await prepare(pw.value);
           await token(true);
@@ -264,7 +264,7 @@ window.DASH_SB = (() => {
           pw.value = '';
           draw();
         } catch (e) {
-          out.textContent = `Mislukt: ${e.message}`;
+          out.textContent = `Failed: ${e.message}`;
           go.disabled = false;
         }
       };

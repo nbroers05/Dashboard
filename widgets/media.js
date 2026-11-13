@@ -1,8 +1,8 @@
 'use strict';
 
-// Mediastapel in Now Bar-stijl: Spotify (via de Spotify-koppeling, werkt overal) plus wat er verder op deze pc
-// afspeelt (YouTube in de browser, de Spotify-app, VLC, ...) via het hulpprogramma (helper/media.py, alleen op deze pc).
-// De kaart vooraan speelt; de volgende steekt er onderaan smaller uit. Klik daarop of veeg om te wisselen.
+// Media stack in Now Bar style: Spotify (via the Spotify link, works everywhere) plus whatever else plays on this PC
+// (YouTube in the browser, the Spotify app, VLC, ...) via the helper (helper/media.py, only on this PC).
+// The front card plays; the next one peeks out narrower at the bottom. Click it or swipe to switch.
 (() => {
   const { h, DEMO } = DASH;
   const stack = document.getElementById('media-stack');
@@ -14,7 +14,7 @@
   let sessions = [];
   let order = [];
   let front = null;
-  let wasPlaying = new Set();   // wat er de vorige keer speelde (om te zien wat nét begint)
+  let wasPlaying = new Set();   // what played last time (to see what JUST started)
 
   const svgIcon = (d) => `<svg viewBox="0 0 24 24"><path d="${d}"/></svg>`;
   const ICON = {
@@ -29,7 +29,7 @@
     return hh ? `${hh}:${String(mm).padStart(2, '0')}:${ss}` : `${mm}:${ss}`;
   };
 
-  // ---------- Kaarten ----------
+  // ---------- Cards ----------
   function makeCard(id) {
     const el = h('section', 'card player media-card');
     el.dataset.state = 'player';
@@ -62,20 +62,20 @@
       b.onclick = (e) => { e.stopPropagation(); control(id, action); };
       return b;
     };
-    const prev = btn('btn', 'Vorige', ICON.prev, 'prev');
+    const prev = btn('btn', 'Previous', ICON.prev, 'prev');
     const play = btn('btn pill play-btn', 'Afspelen/pauzeren', ICON.play, 'playpause');
-    const next = btn('btn', 'Volgende', ICON.next, 'next');
+    const next = btn('btn', 'Next', ICON.next, 'next');
     main.append(prev, play, next);
-    // Zelfde knoppen rechts als bij Spotify, zodat de layout niet verspringt; hier gedimd met uitleg
+    // The same buttons on the right as for Spotify, so the layout doesn't jump; dimmed here with an explanation
     const extra = h('div', 'group extra');
-    const why = 'Alleen bij Spotify: deze bron geeft dit niet door';
-    for (const [label, src] of [['Shuffle', 'shuffle'], ['Herhalen', 'repeat'], ['Songtekst', 'lyrics-btn'], ['Opslaan in bibliotheek', 'save']]) {
+    const why = 'Only for Spotify: this source doesn\'t pass this on';
+    for (const [label, src] of [['Shuffle', 'shuffle'], ['Repeat', 'repeat'], ['Lyrics', 'lyrics-btn'], ['Save to library', 'save']]) {
       const b = h('button', 'btn small off');
       b.type = 'button';
       b.setAttribute('aria-label', label);
       b.setAttribute('aria-disabled', 'true');
       b.title = why;
-      // Hetzelfde icoon als op de Spotify-kaart (de eerste variant)
+      // The same icon as on the Spotify card (the first variant)
       const svg = document.querySelector(`#${src} svg`);
       if (svg) b.append(svg.cloneNode(true));
       b.onclick = (e) => e.stopPropagation();
@@ -91,7 +91,7 @@
       const c = DASH.coverTint(cover);
       if (c) DASH.tint(id, c);
     };
-    // Klik op een kaart die erachter steekt: naar voren
+    // Click on a card peeking out behind: to the front
     el.addEventListener('click', () => { if (el.dataset.pos !== '0') choose(id); });
     stack.append(el);
     const card = { el, refs: { app, title, artist, cover, fill, pos, dur, prev, play, next, device, progress } };
@@ -101,16 +101,16 @@
 
   function fillCard(card, s) {
     const r = card.refs;
-    // Nieuwe gegevens van het hulpprogramma: vanaf nu doortikken
+    // New data from the helper: tick on from now
     if (card.data !== s) card.at = Date.now();
     card.data = s;
     r.app.textContent = s.album ? `${s.app} · ${s.album}` : s.app;
     r.title.textContent = s.title || s.app;
     r.title.title = s.title;
     r.artist.textContent = s.artist || '';
-    r.device.replaceChildren(h('i'), document.createTextNode(`Op deze pc · ${s.app}`));
+    r.device.replaceChildren(h('i'), document.createTextNode(`On this PC · ${s.app}`));
     card.el.classList.toggle('playing', !!s.playing);
-    r.play.setAttribute('aria-label', s.playing ? 'Pauzeren' : 'Afspelen');
+    r.play.setAttribute('aria-label', s.playing ? 'Pause' : 'Play');
     r.play.disabled = !s.canPlayPause;
     r.prev.disabled = !s.canPrev;
     r.next.disabled = !s.canNext;
@@ -124,14 +124,14 @@
     tick(card);
   }
 
-  // Geen hoes: kleurvlak met de eerste letter van de app
+  // No cover: a color block with the app's first letter
   function fallbackCover(app) {
     const letter = (app || '?')[0].toUpperCase();
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5b5bd6"/><stop offset="1" stop-color="#d65b9a"/></linearGradient></defs><rect width="100" height="100" fill="url(#g)"/><text x="50" y="64" font-family="sans-serif" font-size="44" font-weight="700" fill="#fff" text-anchor="middle">${letter}</text></svg>`;
     return `data:image/svg+xml,${encodeURIComponent(svg)}`;
   }
 
-  // Positie doortikken tussen twee keer ophalen
+  // Tick the position on between two fetches
   function tick(card) {
     const s = card.data;
     if (!s || !s.duration) return;
@@ -148,8 +148,8 @@
   })();
 
   // ---------- Volgorde ----------
-  // Als er niets speelt, geven Spotify en Windows soms heel even "niets" terug: dan verdween een kaart een halve
-  // seconde en kwam hij terug. Daarom telt een kaart pas als weg na een paar seconden zonder hem (GRACE).
+  // When nothing plays, Spotify and Windows sometimes return "nothing" for a moment: then a card disappeared for half a
+  // second and came back. So a card only counts as gone after a few seconds without it (GRACE).
   const GRACE = 6000;
   let spotifySeen = 0;
   const spotifyHasTrack = () => {
@@ -159,17 +159,17 @@
   const isPlaying = (id) => (id === 'spotify' ? spotify.classList.contains('playing') : !!(cards.get(id) && cards.get(id).data && cards.get(id).data.playing));
 
   function layout() {
-    // Spotify-app dubbel? Als de Spotify-koppeling al een nummer toont, de Windows-versie ervan weglaten
+    // Spotify app twice? If the Spotify link already shows a track, leave out the Windows version of it
     const others = sessions.filter((s) => !(spotifyHasTrack() && s.app === 'Spotify'));
     const ids = others.map((s) => s.id);
-    // Spotify-kaart: als hij iets toont, of als er verder niets is (dan inloggen/niets aan het spelen zoals altijd)
+    // Spotify card: when it shows something, or when there's nothing else (then log in/nothing playing as always)
     if (spotifyHasTrack() || !ids.length) ids.unshift('spotify');
 
     for (const s of others) fillCard(cards.get(s.id) || makeCard(s.id), s);
     for (const [id, c] of cards) if (!ids.includes(id)) { c.el.remove(); cards.delete(id); }
 
-    // Wie vooraan: je eigen keuze blijft staan. Alleen als de voorste weg is, of als er iets nieuw begint te spelen
-    // terwijl de voorste stilstaat, schuift dat vanzelf naar voren.
+    // Who's in front: your own choice stays. Only when the front one is gone, or something new starts playing
+    // while the front one is paused, does that move to the front by itself.
     const nowPlaying = new Set(ids.filter(isPlaying));
     const started = ids.find((id) => nowPlaying.has(id) && !wasPlaying.has(id) && id !== front);
     if (!ids.includes(front)) front = ids.find(isPlaying) || ids[0];
@@ -194,7 +194,7 @@
     let box = stack.querySelector('.media-dots');
     if (order.length < 2) { if (box) box.remove(); return; }
     if (!box) { box = h('div', 'media-dots'); stack.append(box); }
-    // Vaste volgorde voor de bolletjes (niet de stapelvolgorde)
+    // A fixed order for the dots (not the stack order)
     const fixed = [...order].sort((a, b) => (a === 'spotify' ? -1 : b === 'spotify' ? 1 : a.localeCompare(b)));
     box.replaceChildren(...fixed.map((id) => {
       const b = h('button');
@@ -211,10 +211,10 @@
     layout();
   }
 
-  // Klik op de Spotify-kaart als die erachter steekt: naar voren (de andere kaarten doen dit zelf)
+  // Click on the Spotify card when it peeks out behind: to the front (the other cards do this themselves)
   spotify.addEventListener('click', () => { if (spotify.dataset.pos !== '0') choose('spotify'); });
 
-  // Vegen (telefoon/touchscreen): naar de volgende kaart
+  // Swipe (phone/touchscreen): to the next card
   let startX = null;
   stack.addEventListener('pointerdown', (e) => { startX = e.clientX; });
   stack.addEventListener('pointerup', (e) => {
@@ -224,7 +224,7 @@
     if (Math.abs(dx) > 60 && !e.target.closest('.bar, button')) choose(dx < 0 ? order[1] : order[order.length - 1]);
   });
 
-  // ---------- Ophalen en bedienen ----------
+  // ---------- Fetching and controlling ----------
   let demoState = { playing: false, position: 1234 };
   function demoSessions() {
     return [{
@@ -238,7 +238,7 @@
   const seen = new Map();   // sessie-id -> { s, at }: laatst gezien
   async function load() {
     if (DEMO) { sessions = demoSessions(); return layout(); }
-    // Niet bereikbaar (telefoon, andere pc, hulpprogramma uit): steeds minder vaak proberen
+    // Not reachable (phone, other PC, helper off): try less and less often
     if (failures && Date.now() % (Math.min(failures, 15) * 2000) > 2000) return;
     try {
       const ctrl = new AbortController();
@@ -263,14 +263,14 @@
       }
       return load();
     }
-    // Meteen tonen, daarna de echte stand ophalen
+    // Show right away, then fetch the real state
     const c = cards.get(id);
     if (c && c.data && action === 'playpause') { c.data.playing = !c.data.playing; c.el.classList.toggle('playing', c.data.playing); }
     try { await fetch(`${HELPER}/media/${action}?id=${encodeURIComponent(id)}`, { method: 'POST' }); } catch {}
     setTimeout(load, 400);
   }
 
-  // Spotify verandert (ander nummer, pauze, inloggen): opnieuw ordenen
+  // Spotify changes (another track, pause, login): order again
   new MutationObserver(() => layout()).observe(spotify, { attributes: true, attributeFilter: ['class', 'data-state'] });
 
   DASH.every(2000, load);

@@ -1,12 +1,12 @@
 'use strict';
 
-// Tentamenweek: de week (ma t/m zo) waarin je agenda een tentamen heeft. Herkend aan de titel, Nederlands of Engels
-// (dezelfde woorden als EXAM in scripts/lib.py van het archief): tentamen, hertentamen, herkansing, toets, exam(s),
+// Exam week: the week (Mon to Sun) in which your agenda has an exam. Recognised by the title, Dutch or English
+// (the same words as EXAM in scripts/lib.py of the archive): tentamen, hertentamen, herkansing, toets, exam(s),
 // examen, examination, resit, retake, midterm, final exam, finals.
-// Alleen uit de agenda in je browser, niets uit het archief. Gedempt: alles wat beweegt gaat uit (ook bij een feestdag),
-// alleen een rustige rand om de topbalk.
+// Only from the agenda in your browser, nothing from the archive. Muted: everything that moves goes off (also on a holiday),
+// only a calm border around the top bar.
 DASH_THEMES.add({
-  id: 'tentamen', name: 'Tentamenweek', icon: '📚', tier: 'event', prio: 50, c1: '#8fa3bf', c2: '#56657a', topbar: 'soft', quiet: true,
+  id: 'exams', name: 'Exam week', icon: '📚', tier: 'event', prio: 50, c1: '#8fa3bf', c2: '#56657a', topbar: 'soft', quiet: true,
   when(day, data) {
     const { isoDay, addDays } = DASH_THEMES.util;
     const mon = addDays(day, -((day.getDay() + 6) % 7));

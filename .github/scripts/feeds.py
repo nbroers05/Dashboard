@@ -71,7 +71,7 @@ def rss_feeds(key, keep, with_intro=False):
 
 def youtube():
     videos, channels = [], []
-    for c in config_items("youtubeKanalen"):
+    for c in config_items("youtubeChannels"):
         cid, name = c.get("id", ""), c.get("name", "")
         if is_placeholder(cid) or not re.fullmatch(r"UC[\w-]{22}", cid):
             continue
@@ -97,7 +97,7 @@ def youtube():
 
 
 def main():
-    data = {"news": rss_feeds("nieuwsFeeds", NEWS_KEEP), "film": rss_feeds("filmFeeds", FILM_KEEP, True), "youtube": youtube()}
+    data = {"news": rss_feeds("newsFeeds", NEWS_KEEP), "film": rss_feeds("filmFeeds", FILM_KEEP, True), "youtube": youtube()}
     if write_json("data/feeds.json", data):
         log("feeds.json bijgewerkt")
 

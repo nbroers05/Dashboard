@@ -1,7 +1,7 @@
 'use strict';
 
-// Eenvoudige to-do-lijst, alleen in deze browser bewaard (geen koppeling).
-// Typ en druk Enter om toe te voegen; rondje = afvinken; dubbelklik op de tekst = aanpassen; × = weg.
+// A simple to-do list (shared between devices via Supabase since 1.1.0, otherwise only in this browser).
+// Type and press Enter to add; circle = check off; double-click the text = edit; × = remove.
 DASH.widget('w-todo', (card, body, guard) => {
   const { h, store } = DASH;
   const KEY = 'todo.items';
@@ -12,12 +12,12 @@ DASH.widget('w-todo', (card, body, guard) => {
   const head = h('div', 'w-big');
   const form = h('form', 'td-add');
   const input = h('input');
-  input.placeholder = 'Nieuwe taak…';
-  input.setAttribute('aria-label', 'Nieuwe taak');
+  input.placeholder = 'New task…';
+  input.setAttribute('aria-label', 'New task');
   input.maxLength = 200;
   const add = h('button', 'w-btn', '+');
   add.type = 'submit';
-  add.setAttribute('aria-label', 'Toevoegen');
+  add.setAttribute('aria-label', 'Add');
   form.append(input, add);
   const list = h('ul', 'td-list');
   const foot = h('div', 'td-foot');
@@ -56,15 +56,15 @@ DASH.widget('w-todo', (card, body, guard) => {
     const open = items.filter((t) => !t.done);
     const done = items.filter((t) => t.done);
     head.textContent = String(open.length);
-    head.append(h('small', null, open.length === 1 ? 'taak open' : 'taken open'));
+    head.append(h('small', null, open.length === 1 ? 'task open' : 'tasks open'));
 
     list.replaceChildren(...[...open, ...done].map((t) => {
       const li = h('li', `td-item${t.done ? ' done' : ''}`);
       const check = h('button', 'td-check', t.done ? '✓' : '');
-      check.setAttribute('aria-label', t.done ? 'Weer open zetten' : 'Afvinken');
+      check.setAttribute('aria-label', t.done ? 'Open again' : 'Check off');
       check.onclick = () => update(t.id, { done: !t.done });
       const text = h('span', 'td-text', t.text);
-      text.title = 'Dubbelklik om aan te passen';
+      text.title = 'Double-click to edit';
       text.ondblclick = () => edit(text, t);
       const del = h('button', 'td-del', '×');
       del.setAttribute('aria-label', `Verwijder "${t.text}"`);
@@ -72,20 +72,20 @@ DASH.widget('w-todo', (card, body, guard) => {
       li.append(check, text, del);
       return li;
     }));
-    if (!items.length) list.append(h('li', 'w-note', 'Nog niks. Typ hierboven een taak en druk op Enter.'));
+    if (!items.length) list.append(h('li', 'w-note', 'Nothing yet. Type a task above and press Enter.'));
 
     foot.replaceChildren();
     if (done.length) {
-      const clear = h('button', 'text-btn', `Wis afgevinkt (${done.length})`);
+      const clear = h('button', 'text-btn', `Clear checked (${done.length})`);
       clear.onclick = () => { save(load().filter((t) => !t.done)); render(); };
-      foot.append(h('span', 'w-sub', 'Alleen in deze browser'), clear);
+      foot.append(h('span', 'w-sub', window.DASH_SB && DASH_SB.linked() ? 'On all your devices' : 'Only in this browser'), clear);
     } else {
-      foot.append(h('span', 'w-sub', 'Alleen in deze browser'));
+      foot.append(h('span', 'w-sub', window.DASH_SB && DASH_SB.linked() ? 'On all your devices' : 'Only in this browser'));
     }
   }
 
-  // Ander tabblad met het dashboard? Dan ook hier bijwerken
+  // Another tab with the dashboard? Then update here too
   window.addEventListener('storage', guard((e) => { if (e.key === KEY) render(); }));
-  window.addEventListener('dash:synced', guard((e) => { if (e.detail.key === KEY) render(); }));   // van een ander apparaat (sync.js)
+  window.addEventListener('dash:synced', guard((e) => { if (e.detail.key === KEY) render(); }));   // from another device (sync.js)
   render();
 });

@@ -8,6 +8,7 @@ Everything before 1.0.0 (versions 1 to 0.60.2): `docs/archive/CHANGELOG-pre-1.0.
 
 | Version | What |
 |---|---|
+| 1.7.0 | **English, part 1.** The dashboard's screen text, code comments and internal names are now English (themes, house style, room, settings keys, config fields, URL options like `?date`, `?theme`, `?style`, `?mood`). Saved settings are converted automatically. AH is always the bright AH blue, also in the agenda and Y2K. Dates and numbers in English format. Still Dutch: the helper program's code, the data Action scripts, the planner and the phone app. |
 | 1.6.1 | **Cleanup after the review.** The agenda timeline on the portrait screen no longer sometimes ends up far too tall after a reload (it measured itself while still hidden). Mensen is removed completely (settings tab, the pages for other people and their encrypted files). The map in My data and the 3D room only run their outside code if it matches a fixed fingerprint. The wish list tile reads the new `WISHES.md`. README rewritten in English. |
 
 

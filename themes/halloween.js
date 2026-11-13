@@ -1,12 +1,12 @@
 'use strict';
 
-// Halloween (24 t/m 31 oktober): oranje/paars, spinnenweb in een hoek van een paar vakken, een spinnetje dat één keer
-// langzaam aan een draadje zakt (bij beweging beperken hangt hij meteen stil), lampjes boven de topbalk, pompoen in de
-// dagregel. Groet "Happy Halloween" op de 31e, de dagen ervoor "Halloween over n dagen".
+// Halloween (24 to 31 October): orange/purple, a cobweb in a corner of a few tiles, a little spider that slowly drops
+// on a thread once (with reduced motion it just hangs still), lights above the top bar, a pumpkin in the day line.
+// Greeting "Happy Halloween" on the 31st, the days before "Halloween in n days".
 (() => {
   const { daysUntil, inDays } = DASH_THEMES.util;
   const p = (r, a) => `${(r * Math.cos(a)).toFixed(1)} ${(r * Math.sin(a)).toFixed(1)}`;
-  // Web vanuit de hoek linksboven (0,0); andere hoeken worden gespiegeld
+  // Web from the top-left corner (0,0); other corners are mirrored
   function web(R) {
     const ang = [2, 22, 45, 68, 88].map((a) => (a * Math.PI) / 180);
     let d = '';
@@ -21,7 +21,7 @@
     + '<circle cx="10" cy="5.6" r="2.6" fill="#1b1424"/><circle cx="9" cy="5.2" r=".7" fill="#ff8a1f"/><circle cx="11" cy="5.2" r=".7" fill="#ff8a1f"/></svg>';
 
   DASH_THEMES.add({
-    id: 'halloween', name: 'Halloween', icon: '🎃', tier: 'feest', prio: 60, c1: '#ff8a1f', c2: '#8b5cf6', topbar: 'strong',
+    id: 'halloween', name: 'Halloween', icon: '🎃', tier: 'holiday', prio: 60, c1: '#ff8a1f', c2: '#8b5cf6', topbar: 'strong',
     when: (day) => DASH_THEMES.util.between(day, '10-24', '10-31'),
     greeting(day, { fixed }) {
       const n = daysUntil(day, '10-31');
@@ -31,7 +31,7 @@
     bg: 'radial-gradient(60% 50% at 100% 0%, rgba(139,92,246,.2), transparent 70%), radial-gradient(60% 50% at 0% 100%, rgba(255,138,31,.15), transparent 70%)',
     topDeco: { type: 'lights', colors: ['#ff8a1f', '#8b5cf6', '#ffb347', '#b48cff'] },
     deco: [
-      { type: 'corner', id: 'spin', size: 64, inset: [0, 0], mirror: true, max: 2, corners: ['tr', 'tl', 'br', 'bl'], svg: () => web(64) },
+      { type: 'corner', id: 'web', size: 64, inset: [0, 0], mirror: true, max: 2, corners: ['tr', 'tl', 'br', 'bl'], svg: () => web(64) },
       { type: 'corner', id: 'spider', w: 22, h: 60, inset: [64, 0], max: 1, corners: ['tr', 'tl'], svg: SPIDER },
     ],
     css: `

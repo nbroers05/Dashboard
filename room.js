@@ -1,17 +1,17 @@
-// Kamer als startscherm (groot idee "Kamer als startscherm", stap 1: blokkenkamer met de drie overgangen).
-// Start in de app (html.app) altijd, in de browser alleen met ?kamer. Niet bij ?mini, ?code (Spotify-inlog komt terug),
-// #dashboard of een ander diep adres, de minimale modus, of zonder WebGL. Het dashboard laadt er gewoon onder.
-// Eén kamer, drie camera's, gekozen op de vorm van het scherm:
-//   liggend  = de kamerhoek; inzoomen tot de CRT de hoogte vult, de zijkanten van het dashboard schuiven uit het scherm
-//   staand   = zittend aan het bureau; inzoomen tot de CRT de breedte vult, dan kantelt het beeld een kwartslag
-//   telefoon = bij het bed (≤ 700px breed, staand); de klaptelefoon klapt open en het schermpje groeit tot het hele scherm
-// Tijdens de overgang toont het scherm een vaste tekening van het dashboard in Y2K-stijl (drawDash); daarna het echte.
+// Room as a start screen (big idea "Room as start screen", step 1: block room with the three transitions; parked).
+// Always starts in the app (html.app), in the browser only with ?room. Not with ?mini, ?code (the Spotify login returns),
+// #dashboard or another deep address, minimal mode, or without WebGL. The dashboard simply loads underneath.
+// One room, three cameras, picked by the shape of the screen:
+//   landscape = the corner of the room; zoom in until the CRT fills the height, the dashboard's sides slide off screen
+//   portrait  = sitting at the desk; zoom in until the CRT fills the width, then the picture tilts a quarter turn
+//   phone     = by the bed (≤ 700px wide, portrait); the flip phone flips open and its little screen grows to the whole screen
+// During the transition the screen shows a fixed drawing of the dashboard in Y2K style (drawDash); after that the real one.
 (() => {
   const root = document.documentElement;
   const params = new URLSearchParams(location.search);
   const SKIP_HASH = /^#(dashboard|feeds|mydata|games|canvas|agenda|checkin)/;
   const minimal = (() => { try { return JSON.parse(localStorage.getItem('dash.minimal')) === true; } catch { return false; } })();
-  const want = (root.classList.contains('app') || params.has('kamer'))
+  const want = (root.classList.contains('app') || params.has('room'))
     && !params.has('mini') && !params.has('code') && !SKIP_HASH.test(location.hash) && !minimal;
   if (!want) return;
   const gl = (() => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch { return false; } })();
@@ -29,22 +29,22 @@
   }
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // ---------- Laag over het dashboard (meteen, zodat het dashboard niet eerst flitst) ----------
+  // ---------- Layer over the dashboard (right away, so the dashboard doesn't flash first) ----------
   const layer = document.createElement('div');
-  layer.className = 'kamer';
+  layer.className = 'room';
   layer.innerHTML = `
-    <canvas class="kamer-gl" aria-label="Kamer: klik op de monitor (of druk op Enter) om het dashboard te openen"></canvas>
-    <div class="kamer-grain" aria-hidden="true"></div>
-    <button type="button" class="kamer-box">
-      <span class="kamer-who">Kamer</span>
-      <span class="kamer-line"></span>
+    <canvas class="room-gl" aria-label="Room: click the monitor (or press Enter) to open the dashboard"></canvas>
+    <div class="room-grain" aria-hidden="true"></div>
+    <button type="button" class="room-box">
+      <span class="room-who">Room</span>
+      <span class="room-line"></span>
     </button>`;
   document.body.prepend(layer);
-  document.body.classList.add('kamer-on');
-  const cv = layer.querySelector('.kamer-gl');
-  const grain = layer.querySelector('.kamer-grain');
-  const box = layer.querySelector('.kamer-box');
-  const line = layer.querySelector('.kamer-line');
+  document.body.classList.add('room-on');
+  const cv = layer.querySelector('.room-gl');
+  const grain = layer.querySelector('.room-grain');
+  const box = layer.querySelector('.room-box');
+  const line = layer.querySelector('.room-line');
 
   let done = false;
   function finish() {
@@ -52,15 +52,15 @@
     done = true;
     stopLoop();
     layer.remove();
-    document.body.classList.remove('kamer-on');
+    document.body.classList.remove('room-on');
     removeEventListener('keydown', onKey);
     removeEventListener('resize', onResize);
     try { renderer?.dispose(); renderer?.forceContextLoss(); } catch {}
-    window.dispatchEvent(new Event('resize'));   // indelingen opnieuw laten meten
-    window.dispatchEvent(new CustomEvent('dash:kamer', { detail: 'dashboard' }));
+    window.dispatchEvent(new Event('resize'));   // let the layouts measure again
+    window.dispatchEvent(new CustomEvent('dash:room', { detail: 'dashboard' }));
   }
 
-  // ---------- Modus uit de vorm van het scherm ----------
+  // ---------- Mode from the shape of the screen ----------
   const modeNow = () => {
     const w = layer.clientWidth || innerWidth, h = layer.clientHeight || innerHeight;
     if (w <= 700 && h >= w) return 'phone';
@@ -70,9 +70,9 @@
 
   const two = (n) => String(n).padStart(2, '0');
   const clock = () => { const d = new Date(); return `${two(d.getHours())}:${two(d.getMinutes())}`; };
-  const who = layer.querySelector('.kamer-who');
+  const who = layer.querySelector('.room-who');
   let said = null, typing = 0;
-  // Tekst verschijnt letter voor letter, zoals in een DS-spel (één keer per bericht; niet bij minder beweging)
+  // Text appears letter by letter, like in a DS game (once per message; not with reduced motion)
   function type(text) {
     clearInterval(typing);
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) { line.textContent = text; return; }
@@ -82,28 +82,28 @@
   }
   const setLine = () => {
     if (said) return;
-    who.textContent = 'Kamer';
+    who.textContent = 'Room';
     clearInterval(typing);
     line.textContent = mode === 'phone'
-      ? `Het is ${clock()}. Tik op je telefoon.`
-      : `Het is ${clock()}. Klik op de monitor of druk op Enter.`;
+      ? `It's ${clock()}. Tap your phone.`
+      : `It's ${clock()}. Click the monitor or press Enter.`;
   };
   setLine();
 
-  // ---------- Wat de voorwerpen zeggen (gegevens die het dashboard al heeft) ----------
-  const DAYS = ['zo', 'ma', 'di', 'wo', 'do', 'vr', 'za'];
+  // ---------- What the objects say (data the dashboard already has) ----------
+  const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const when = (ms) => {
     const d = new Date(ms), t = `${two(d.getHours())}:${two(d.getMinutes())}`;
     const day0 = new Date(); day0.setHours(0, 0, 0, 0);
     const diff = Math.floor((new Date(d).setHours(0, 0, 0, 0) - day0) / 864e5);
-    return diff === 0 ? `vandaag ${t}` : diff === 1 ? `morgen ${t}` : `${DAYS[d.getDay()]} ${d.getDate()}/${d.getMonth() + 1} ${t}`;
+    return diff === 0 ? `today ${t}` : diff === 1 ? `tomorrow ${t}` : `${DAYS[d.getDay()]} ${d.getDate()}/${d.getMonth() + 1} ${t}`;
   };
   const nextAH = () => {
     const ev = (window.DASH_CALENDAR?.events || []).filter((e) => window.DASH?.isAH(e) && e.start > Date.now()).sort((a, b) => a.start - b.start)[0];
     return ev ? when(ev.start) : null;
   };
   const SAY = {
-    async raam() {
+    async window() {
       const temp = window.DASH_WEATHER?.current?.temperature_2m;
       const t = temp != null ? ` ${Math.round(temp)}°C.` : '';
       try {
@@ -113,40 +113,40 @@
         const wetNow = slots[0] && slots[0].mmh >= MIN;
         if (wetNow) {
           const dry = slots.find((x) => x.mmh < MIN);
-          return dry ? `Het regent. Droog om ${when(dry.start).replace(/^vandaag /, '')}, zegt Buienradar.${t}` : `Het regent, en de komende 2 uur blijft dat zo.${t}`;
+          return dry ? `It's raining. Dry at ${when(dry.start).replace(/^today /, '')}, says Buienradar.${t}` : `It's raining, and it'll stay that way for the next 2 hours.${t}`;
         }
         const wet = slots.find((x) => x.mmh >= MIN);
-        return wet ? `Nog droog. Om ${when(wet.start).replace(/^vandaag /, '')} begint het te regenen.${t}` : `Droog buiten, de komende 2 uur ook.${t}`;
-      } catch { return temp != null ? `Buiten is het${t}` : 'Het weer is nog niet geladen.'; }
+        return wet ? `Still dry. At ${when(wet.start).replace(/^today /, '')} it starts raining.${t}` : `Dry outside, for the next 2 hours too.${t}`;
+      } catch { return temp != null ? `Outside it's${t}` : 'The weather hasn\'t loaded yet.'; }
     },
     poster() {
       const tr = window.DASH_TRACK;
-      return tr ? `Nu op Spotify: ${tr.name} van ${tr.artist}.` : 'Op Spotify speelt nu niets.';
+      return tr ? `Now on Spotify: ${tr.name} by ${tr.artist}.` : 'Nothing is playing on Spotify right now.';
     },
     async cds() {
       try {
         const d = await window.DASH.getJSON(`data/letterboxd.json?t=${Math.floor(Date.now() / 900000)}`);
         const f = d.logs && d.logs[0];
-        if (!f) return 'Nog niets gelogd op Letterboxd.';
-        const stars = f.rating ? `${String(f.rating).replace('.', ',')} ${f.rating === 1 ? 'ster' : 'sterren'}` : 'zonder cijfer';
-        return `Laatst gelogd op Letterboxd: ${f.title} (${f.year}), ${stars}${f.liked ? ', met een hartje' : ''}.`;
-      } catch { return 'Letterboxd is nog niet geladen.'; }
+        if (!f) return 'Nothing logged on Letterboxd yet.';
+        const stars = f.rating ? `${f.rating} ${f.rating === 1 ? 'star' : 'stars'}` : 'without a rating';
+        return `Last logged on Letterboxd: ${f.title} (${f.year}), ${stars}${f.liked ? ', with a heart' : ''}.`;
+      } catch { return 'Letterboxd hasn\'t loaded yet.'; }
     },
     ps2() {
       let d = null; try { d = JSON.parse(localStorage.getItem('episodes.data')); } catch {}
       const rows = (d && d.rows) || [];
-      if (!rows.length) return 'Episodes Left heeft hier nog geen gegevens (de extensie werkt alleen in Firefox).';
+      if (!rows.length) return 'Episodes Left has no data here yet (the extension only works in Firefox).';
       const total = rows.reduce((n, r) => n + (r.left || 0), 0);
       const top = rows.slice().sort((a, b) => (b.left || 0) - (a.left || 0))[0];
-      return total ? `Episodes Left: nog ${total} ${total === 1 ? 'aflevering' : 'afleveringen'}, de meeste van ${top.title} (${top.left}).` : 'Episodes Left: je bent overal bij.';
+      return total ? `Episodes Left: ${total} ${total === 1 ? 'episode' : 'episodes'} left, most of them ${top.title} (${top.left}).` : 'Episodes Left: you\'re all caught up.';
     },
     bed() {
       const ah = nextAH();
-      return `Bed for sleeping in. ${ah ? `Volgende AH-dienst: ${ah}.` : 'Geen AH-dienst in de agenda.'}`;
+      return `Bed for sleeping in. ${ah ? `Next AH shift: ${ah}.` : 'No AH shift in the agenda.'}`;
     },
     phone() {
       const n = (window.DASH?.allAlerts?.() || []).length;
-      return n ? `Je mobiel. ${n} ${n === 1 ? 'melding' : 'meldingen'}.` : 'Je mobiel. Niks nieuws.';
+      return n ? `Your phone. ${n} ${n === 1 ? 'notification' : 'notifications'}.` : 'Your phone. Nothing new.';
     },
   };
   async function say(key) {
@@ -158,18 +158,18 @@
     if (said === key) type(text);
   }
 
-  // ---------- Vaste tekening van het dashboard (Y2K) ----------
-  // Zelfde grove indeling als het echte dashboard in die modus: vensters met blauwe titelbalk op een blauw bureaublad.
+  // ---------- Fixed drawing of the dashboard (Y2K) ----------
+  // The same rough layout as the real dashboard in that mode: windows with a blue title bar on a blue desktop.
   function drawDash(W, H, m) {
     const c = document.createElement('canvas');
-    const s = Math.min(1, 1400 / Math.max(W, H));          // hooguit ~1400px, groter levert niets op
+    const s = Math.min(1, 1400 / Math.max(W, H));          // at most ~1400px, bigger adds nothing
     c.width = Math.round(W * s); c.height = Math.round(H * s);
     const x = c.getContext('2d');
     x.scale(c.width / W, c.height / H);
     const g = x.createLinearGradient(0, 0, 0, H);
     g.addColorStop(0, '#1a3d8f'); g.addColorStop(1, '#081436');
     x.fillStyle = g; x.fillRect(0, 0, W, H);
-    const u = m === 'phone' ? W / 408 : m === 'portrait' ? W / 1350 : H / 1149;   // 1 = één CSS-pixel bij Noahs maten
+    const u = m === 'phone' ? W / 408 : m === 'portrait' ? W / 1350 : H / 1149;   // 1 = one CSS pixel at Noah's sizes
     const bar = 22 * u;
     const win = (wx, wy, ww, wh, cream = '#f1ecdf') => {
       x.fillStyle = 'rgba(0,0,0,.45)'; x.fillRect(wx + 3 * u, wy + 3 * u, ww, wh);
@@ -260,18 +260,18 @@
     draw();
   });
 
-  // Kleuren per dagdeel (zoals de klikbare mockup); later uit de echte zonnetijden
+  // Colors per part of the day (like the clickable mockup); later from the real sun times
   const PAL = {
-    nacht: { wallL: 0x2a2352, wallB: 0x352b63, floor: 0x4a3426, ceil: 0x1b1638, sky: 0x0c1236, sun: 0x7fa8ff, sunI: .25, amb: .35, lamp: 1.6 },
-    avond: { wallL: 0x4a2f4f, wallB: 0x5a3a5e, floor: 0x5a3c2a, ceil: 0x3a2440, sky: 0xf08a5d, sun: 0xffb38a, sunI: .9, amb: .45, lamp: 1.1 },
-    dag: { wallL: 0x9c94c4, wallB: 0xaaa3d0, floor: 0x8a6446, ceil: 0xc9c3e6, sky: 0x8fd0ff, sun: 0xfff6d8, sunI: 1.6, amb: .7, lamp: .2 },
+    night: { wallL: 0x2a2352, wallB: 0x352b63, floor: 0x4a3426, ceil: 0x1b1638, sky: 0x0c1236, sun: 0x7fa8ff, sunI: .25, amb: .35, lamp: 1.6 },
+    evening: { wallL: 0x4a2f4f, wallB: 0x5a3a5e, floor: 0x5a3c2a, ceil: 0x3a2440, sky: 0xf08a5d, sun: 0xffb38a, sunI: .9, amb: .45, lamp: 1.1 },
+    day: { wallL: 0x9c94c4, wallB: 0xaaa3d0, floor: 0x8a6446, ceil: 0xc9c3e6, sky: 0x8fd0ff, sun: 0xfff6d8, sunI: 1.6, amb: .7, lamp: .2 },
   };
-  // ---------- Zon en weer ----------
-  // Zonnestand voor Rotterdam (zelfde formules als SunCalc), zodat de kamer niet op het weervak hoeft te wachten.
-  // Testen: ?kamertijd=17:30 (met ?datum=JJJJ-MM-DD van de thema's) en ?kamerweer=regen|bewolkt|zon.
+  // ---------- Sun and weather ----------
+  // Sun position for Rotterdam (the same formulas as SunCalc), so the room doesn't have to wait for the weather tile.
+  // Testing: ?roomtime=17:30 (with the themes' ?date=YYYY-MM-DD) and ?roomweather=rain|cloudy|sun.
   const HOME = { lat: 51.9225, lon: 4.4792 };
   const now = () => {
-    const t = /^(\d{1,2}):(\d{2})$/.exec(params.get('kamertijd') || ''), day = params.get('datum');
+    const t = /^(\d{1,2}):(\d{2})$/.exec(params.get('roomtime') || ''), day = params.get('date');
     if (!t && !day) return new Date();
     const d = day && /^\d{4}-\d{2}-\d{2}$/.test(day) ? new Date(`${day}T12:00`) : new Date();
     if (t) d.setHours(+t[1], +t[2], 0, 0);
@@ -285,10 +285,10 @@
     const dec = Math.asin(Math.sin(L) * Math.sin(e)), ra = Math.atan2(Math.sin(L) * Math.cos(e), Math.cos(L));
     const phi = rad * HOME.lat, H = rad * (280.16 + 360.9856235 * d) + rad * HOME.lon - ra;
     const alt = Math.asin(Math.sin(phi) * Math.sin(dec) + Math.cos(phi) * Math.cos(dec) * Math.cos(H));
-    const az = Math.atan2(Math.sin(H), Math.cos(H) * Math.sin(phi) - Math.tan(dec) * Math.cos(phi)) + Math.PI;   // vanaf het noorden, met de klok mee
+    const az = Math.atan2(Math.sin(H), Math.cos(H) * Math.sin(phi) - Math.tan(dec) * Math.cos(phi)) + Math.PI;   // from the north, clockwise
     return { alt: alt / rad, az: az / rad };
   }
-  // Kleuren tussen de dagdelen in: nacht → avond rond zonsondergang (-8° .. 0°), avond → dag (0° .. 12°)
+  // Colors between the parts of the day: night → evening around sunset (-8° .. 0°), evening → day (0° .. 12°)
   const COLORS = ['wallL', 'wallB', 'floor', 'ceil', 'sky', 'sun'];
   function palAt(alt) {
     const mix = (a, b, t) => {
@@ -297,11 +297,11 @@
       return o;
     };
     const cl = (x) => Math.max(0, Math.min(1, x));
-    return alt < 0 ? mix(PAL.nacht, PAL.avond, cl((alt + 8) / 8)) : mix(PAL.avond, PAL.dag, cl(alt / 12));
+    return alt < 0 ? mix(PAL.night, PAL.evening, cl((alt + 8) / 8)) : mix(PAL.evening, PAL.day, cl(alt / 12));
   }
-  const daypart = () => { const a = sunPos(now()).alt; return a > 6 ? 'dag' : a > -6 ? 'avond' : 'nacht'; };
-  // Weer: 'zon', 'bewolkt' of 'regen' (Buienradar nu, anders de weercode van het weervak)
-  let weather = { kind: 'zon', mm: 0 };
+  const daypart = () => { const a = sunPos(now()).alt; return a > 6 ? 'day' : a > -6 ? 'evening' : 'night'; };
+  // Weather: 'sun', 'cloudy' or 'rain' (Buienradar now, otherwise the weather tile's weather code)
+  let weather = { kind: 'sun', mm: 0 };
 
   function crtIdle() {
     const W = crtTex.image.width, H = crtTex.image.height;
@@ -311,15 +311,15 @@
     crtCtx.fillStyle = '#fff'; crtCtx.textAlign = 'center'; crtCtx.textBaseline = 'middle';
     crtCtx.font = `${Math.round(H * .3)}px VT323, monospace`; crtCtx.fillText(clock(), W / 2, H * .45);
     crtCtx.fillStyle = '#d6ecff'; crtCtx.font = `${Math.round(H * .1)}px VT323, monospace`;
-    crtCtx.fillText(mode === 'phone' ? '' : 'klik om op te starten', W / 2, H * .72);
+    crtCtx.fillText(mode === 'phone' ? '' : 'click to start up', W / 2, H * .72);
     crtTex.needsUpdate = true;
   }
 
   // ---------- PS1-look ----------
-  // Laag renderen (± 240 pixels op de korte kant) en met image-rendering: pixelated opschalen; vertices springen naar
-  // een grof raster (wiebelen als de camera beweegt); 15-bits kleur met een 4×4-ditherpatroon; pixeltexturen met
-  // NearestFilter; vaste korrel erover. Tijdens het inzoomen loopt de resolutie op tot scherp, zodat het scherm
-  // naadloos overgaat in de DOM-kopie.
+  // Render low (± 240 pixels on the short side) and scale up with image-rendering: pixelated; vertices snap to
+  // a rough grid (wobbling as the camera moves); 15-bit color with a 4×4 dither pattern; pixel textures with
+  // NearestFilter; a fixed grain on top. While zooming in the resolution rises to sharp, so the screen
+  // passes seamlessly into the DOM copy.
   const LOW = 240;
   const baseScale = () => Math.max(2, Math.min(layer.clientWidth, layer.clientHeight) / LOW);
   let scale = 2;
@@ -329,7 +329,7 @@
     const w = layer.clientWidth, h = layer.clientHeight;
     renderer.setPixelRatio(1);
     renderer.setSize(Math.max(1, Math.round(w / s)), Math.max(1, Math.round(h / s)), false);
-    // raster voor de vertices: de helft van de lage basisresolutie, zoals de PS1 zonder subpixels
+    // grid for the vertices: half the low base resolution, like the PS1 without subpixels
     const b = baseScale();
     PSX.uSnap.value.set(w / b / 2, h / b / 2);
   }
@@ -351,7 +351,7 @@
     return m;
   }
 
-  // Pixeltexturen (4-32 px), getekend op een canvas
+  // Pixel textures (4-32 px), drawn on a canvas
   function pix(w, h, paint, rx = 1, ry = 1) {
     const c = document.createElement('canvas'); c.width = w; c.height = h;
     const x = c.getContext('2d'); x.imageSmoothingEnabled = false;
@@ -428,23 +428,23 @@
       m.position.set(x, y, z); parent.add(m); return m;
     };
 
-    // Kamer: x 0..4 (linkermuur op x=0), z 0..4 (achtermuur op z=0), y 0..2.6
+    // Room: x 0..4 (left wall at x=0), z 0..4 (back wall at z=0), y 0..2.6
     boxAt(4, .02, 4, 2, -.01, 2, T.floor);
     boxAt(4, .02, 4, 2, 2.61, 2, T.ceil);
     boxAt(4, 2.6, .02, 2, 1.3, -.01, T.wallB);
     boxAt(.02, 2.6, 4, -.01, 1.3, 2, T.wallL);
-    // Raam met jaloezieën (linkermuur)
-    tag('raam', boxAt(.04, 1.2, 1.5, .01, 1.55, 2.0, T.beige));
+    // Window with blinds (left wall)
+    tag('window', boxAt(.04, 1.2, 1.5, .01, 1.55, 2.0, T.beige));
     skyCanvas = document.createElement('canvas'); skyCanvas.width = 48; skyCanvas.height = 36;
     skyTex = new THREE.CanvasTexture(skyCanvas);
     skyTex.magFilter = skyTex.minFilter = THREE.NearestFilter; skyTex.generateMipmaps = false; skyTex.colorSpace = THREE.SRGBColorSpace;
-    tag('raam', boxAt(.02, 1.08, 1.38, .03, 1.55, 2.0, basic({ map: skyTex })));
-    for (let i = 0; i < 9; i++) tag('raam', boxAt(.03, .04, 1.36, .05, 2.04 - i * .12, 2.0, T.blinds));
+    tag('window', boxAt(.02, 1.08, 1.38, .03, 1.55, 2.0, basic({ map: skyTex })));
+    for (let i = 0; i < 9; i++) tag('window', boxAt(.03, .04, 1.36, .05, 2.04 - i * .12, 2.0, T.blinds));
     sun = new THREE.DirectionalLight(p.sun, p.sunI);
     sun.position.set(-2, 2.4, 2.2); sun.target.position.set(2, 0, 1.8);
     scene.add(sun, sun.target);
     amb = new THREE.AmbientLight(0xffffff, p.amb); scene.add(amb);
-    // Lichtvlek door het raam op de vloer (met de lamellen erin), vorm volgt de zon
+    // Light patch through the window on the floor (with the slats in it), the shape follows the sun
     const slats = pix(4, 16, (x, w, h) => { x.fillStyle = '#fff'; x.fillRect(0, 0, w, h); x.fillStyle = '#000'; for (let y = 2; y < h; y += 4) x.fillRect(0, y, w, 1); });
     patch = new THREE.Mesh(new THREE.BufferGeometry(), new THREE.MeshBasicMaterial({ map: slats, transparent: true, blending: THREE.AdditiveBlending, depthWrite: false, opacity: 0, side: THREE.DoubleSide }));
     patch.geometry.setAttribute('position', new THREE.Float32BufferAttribute(new Float32Array(12), 3));
@@ -454,10 +454,10 @@
     scene.add(patch);
     // Kleed
     boxAt(1.6, .01, 1.2, 1.5, .005, 2.2, T.rug);
-    // Bureau tegen de achtermuur
+    // Desk against the back wall
     boxAt(1.5, .05, .7, 1.6, .73, .35, T.wood);
     for (const [lx, lz] of [[.9, .05], [2.3, .05], [.9, .65], [2.3, .65]]) boxAt(.05, .73, .05, lx, .365, lz, 0x5e4229);
-    // CRT: beige kast met bol scherm (schermvlak 0,32 × 0,24 = 4:3)
+    // CRT: a beige case with a curved screen (screen area 0.32 × 0.24 = 4:3)
     crt = new THREE.Group(); crt.position.set(1.55, .755, .3); scene.add(crt);
     boxAt(.2, .03, .18, 0, .015, 0, 0xb5ac92, crt);
     boxAt(.42, .38, .42, 0, .22, 0, T.beige, crt);
@@ -470,7 +470,7 @@
     boxAt(.012, .008, .005, .17, .05, .212, basic({ color: 0x4ade80 }), crt);
     const glow = new THREE.PointLight(0x4aa8ff, .6, 1.6); glow.position.set(0, .23, .5); crt.add(glow);
     crtIdle();
-    // Toetsenbord, muis, pc-kast, lamp, cd-plank, posters
+    // Keyboard, mouse, PC case, lamp, CD shelf, posters
     boxAt(.44, .025, .15, 1.55, .765, .6, T.keys);
     boxAt(.06, .02, .1, 1.95, .76, .6, 0xe0d8c0);
     boxAt(.2, .45, .45, 2.15, .225, .3, T.beige);
@@ -482,28 +482,28 @@
       .forEach((c, i) => tag('cds', boxAt(.025, .14, .12, 1.25 + i * .045, 1.535, .1, new THREE.Color(c).getHex())));
     tag('poster', boxAt(.7, .9, .01, 3.0, 1.6, .005, T.poster1));
     tag('poster', boxAt(.4, .55, .01, 3.65, 1.55, .005, T.poster2));
-    // PS2 + controller op de vloer
+    // PS2 + controller on the floor
     tag('ps2', boxAt(.3, .07, .2, 1.4, .045, 2.1, T.ps2));
     tag('ps2', boxAt(.12, .03, .07, 1.7, .025, 2.4, 0x2a2a34));
-    // Onzichtbaar, groter klikvlak: de PS2 is van een afstand maar een paar pixels
+    // An invisible, bigger click area: from a distance the PS2 is only a few pixels
     tag('ps2', boxAt(.7, .25, .6, 1.5, .12, 2.25, new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false })));
-    // Bed rechts tegen de achtermuur, klaptelefoon op het dekbed
+    // Bed on the right against the back wall, flip phone on the duvet
     tag('bed', boxAt(1.0, .35, 2.0, 3.45, .175, 1.05, 0x2c3fa8));
     tag('bed', boxAt(1.0, .1, 2.0, 3.45, .4, 1.05, T.duvet));
     tag('bed', boxAt(.7, .12, .35, 3.45, .51, .25, 0xf4f4f4));
     tag('bed', boxAt(1.05, .7, .06, 3.45, .35, .02, T.wood));
-    // Klaptelefoon: onderkant ligt plat, het klepje scharniert aan de verre kant (kleinere z)
+    // Flip phone: the bottom lies flat, the lid hinges at the far side (smaller z)
     phone = new THREE.Group(); phone.position.set(3.3, .455, 1.25); phone.rotation.y = -.35; phone.scale.setScalar(1.6); scene.add(phone);
     boxAt(.055, .014, .1, 0, .007, 0, 0xc8ccd8, phone);
     for (let r = 0; r < 4; r++) for (let k = 0; k < 3; k++) boxAt(.01, .003, .008, -.015 + k * .015, .015, .01 + r * .018, 0x7a8090, phone);
     lid = new THREE.Group(); lid.position.set(0, .016, -.05); phone.add(lid);
     boxAt(.055, .012, .1, 0, .006, .05, 0xc8ccd8, lid);
-    boxAt(.03, .002, .018, 0, .0125, .06, basic({ color: 0x7fd0ff }), lid);   // klein buitenschermpje
+    boxAt(.03, .002, .018, 0, .0125, .06, basic({ color: 0x7fd0ff }), lid);   // small outer screen
     phoneScreen = new THREE.Mesh(new THREE.PlaneGeometry(.045, .06), basic({ color: 0x7fd0ff }));
-    phoneScreen.rotation.x = Math.PI / 2;           // naar de onderkant van het klepje, "boven" = weg van het scharnier
+    phoneScreen.rotation.x = Math.PI / 2;           // to the underside of the lid, "up" = away from the hinge
     phoneScreen.position.set(0, -.0005, .05); lid.add(phoneScreen);
 
-    // Vaste korrel over het beeld (beweegt niet), even grof als de lage pixels
+    // A fixed grain over the picture (doesn't move), as coarse as the low pixels
     const g = document.createElement('canvas'); g.width = g.height = 64;
     const gx = g.getContext('2d');
     for (let y = 0; y < 64; y++) for (let x = 0; x < 64; x++) { const v = Math.floor(rnd() * 255); gx.fillStyle = `rgb(${v},${v},${v})`; gx.fillRect(x, y, 1, 1); }
@@ -521,23 +521,23 @@
     applySky();
     refreshWeather();
     addEventListener('dash:weather', refreshWeather);
-    setInterval(() => { if (!busy && !done) { setLine(); crtIdle(); applySky(); } }, 20000);   // setLine laat een bericht staan
+    setInterval(() => { if (!busy && !done) { setLine(); crtIdle(); applySky(); } }, 20000);   // setLine leaves a message alone
     setInterval(() => { if (!busy && !done) refreshWeather(); }, 5 * 60000);
     layer.classList.add('ready');
   }
 
-  // Raam op de linkermuur (x = 0) kijkt naar het zuidwesten; vanuit de kamer gezien is +z rechts van het raam
+  // The window on the left wall (x = 0) faces south-west; seen from the room +z is to the right of the window
   const WINDOW_AZ = 225;
   const WIN = { y0: 1.01, y1: 2.09, z0: 1.31, z1: 2.69 };
   async function refreshWeather() {
-    const force = params.get('kamerweer');
-    if (/^(regen|bewolkt|zon)$/.test(force || '')) { weather = { kind: force, mm: force === 'regen' ? 1.5 : 0 }; return applySky(); }
+    const force = params.get('roomweather');
+    if (/^(rain|cloudy|sun)$/.test(force || '')) { weather = { kind: force, mm: force === 'rain' ? 1.5 : 0 }; return applySky(); }
     const code = window.DASH_WEATHER?.current?.weather_code;
-    let kind = code == null ? 'zon' : code >= 51 ? 'regen' : code >= 2 ? 'bewolkt' : 'zon', mm = 0;
+    let kind = code == null ? 'sun' : code >= 51 ? 'rain' : code >= 2 ? 'cloudy' : 'sun', mm = 0;
     try {
       const r = await window.DASH?.radar();
       const first = r && r.slots && r.slots[0];
-      if (first) { mm = first.mmh; if (mm >= (window.DASH.RAIN_MIN || .1)) kind = 'regen'; else if (kind === 'regen') kind = 'bewolkt'; }
+      if (first) { mm = first.mmh; if (mm >= (window.DASH.RAIN_MIN || .1)) kind = 'rain'; else if (kind === 'rain') kind = 'cloudy'; }
     } catch {}
     weather = { kind, mm };
     applySky();
@@ -545,9 +545,9 @@
   function applySky() {
     if (!renderer || done) return;
     const t = now(), sp = sunPos(t), q = palAt(sp.alt);
-    const grey = weather.kind === 'regen' ? .75 : weather.kind === 'bewolkt' ? .45 : 0;
+    const grey = weather.kind === 'rain' ? .75 : weather.kind === 'cloudy' ? .45 : 0;
     const sky = new THREE.Color(q.sky).lerp(new THREE.Color(sp.alt > 0 ? 0x8a93a3 : 0x1c2030), grey);
-    // Zon door het raam: alleen als hij boven de horizon staat en aan de kant van het raam
+    // Sun through the window: only when it's above the horizon and on the window's side
     const rad = Math.PI / 180, rel = (sp.az - WINDOW_AZ) * rad, h = Math.max(sp.alt, 0) * rad;
     const toSun = new THREE.Vector3(-Math.cos(rel) * Math.cos(h), Math.sin(h), Math.sin(rel) * Math.cos(h));
     const facing = Math.max(0, Math.cos(rel));
@@ -558,13 +558,13 @@
     amb.intensity = q.amb * (1 - grey * .25);
     lamp.intensity = q.lamp;
     scene.background.set(q.ceil); scene.fog.color.set(q.ceil);
-    // Lichtvlek: de hoeken van het raam langs de zonnestraal op de vloer (of de muur ertegenover) geprojecteerd
+    // Light patch: the window's corners projected along the sun's ray onto the floor (or the opposite wall)
     const pos = patch.geometry.attributes.position;
     if (strength > .02 && toSun.y > .02) {
       const d = toSun.clone().negate();
       const corners = [[WIN.y1, WIN.z0], [WIN.y1, WIN.z1], [WIN.y0, WIN.z1], [WIN.y0, WIN.z0]];
-      const hits = corners.map(([y, z]) => { const k = (y - .012) / -d.y; return [d.x * k, z, d.z * k]; });   // tot de vloer
-      // Lage zon (herfst/winter) zou ver achter het bed uitkomen: de vlek in dezelfde vorm terugschalen naar de vloer voor het raam
+      const hits = corners.map(([y, z]) => { const k = (y - .012) / -d.y; return [d.x * k, z, d.z * k]; });   // to the floor
+      // A low sun (autumn/winter) would land far behind the bed: scale the patch in the same shape back to the floor in front of the window
       const f = Math.min(1, 2.3 / Math.max(...hits.map((q) => q[0])));
       hits.forEach(([px, z, dz], i) => pos.setXYZ(i, Math.max(.02, px * f), .012, Math.min(3.98, Math.max(.02, z + dz * f))));
       pos.needsUpdate = true;
@@ -572,15 +572,15 @@
       patch.material.opacity = .55 * strength;
       patch.visible = true;
     } else patch.visible = false;
-    // Lucht in het raam: verloop, maan 's nachts, regen als strepen op het glas (staan stil)
+    // Sky in the window: a gradient, the moon at night, rain as streaks on the glass (they stand still)
     const x = skyCanvas.getContext('2d'), W = skyCanvas.width, H = skyCanvas.height;
     const top = sky.clone().multiplyScalar(.75), g = x.createLinearGradient(0, 0, 0, H);
     g.addColorStop(0, '#' + top.getHexString()); g.addColorStop(1, '#' + sky.getHexString());
     x.fillStyle = g; x.fillRect(0, 0, W, H);
-    if (sp.alt < -4 && weather.kind === 'zon') { x.fillStyle = '#e8ecff'; x.fillRect(10, 6, 5, 5); x.fillStyle = 'rgba(255,255,255,.7)'; for (const [a, b] of [[30, 4], [38, 12], [22, 15], [42, 3]]) x.fillRect(a, b, 1, 1); }
-    if (sp.alt > 0 && weather.kind === 'zon' && facing > .2) { x.fillStyle = '#fff6d0'; x.fillRect(Math.round(24 - Math.sin(rel) * 18), Math.round(H - 6 - Math.min(sp.alt, 40) / 40 * (H - 12)), 5, 5); }
-    if (weather.kind !== 'zon') { x.fillStyle = 'rgba(255,255,255,.18)'; for (let i = 0; i < 6; i++) x.fillRect((i * 9 + 3) % W, 3 + (i % 3) * 4, 10, 3); }
-    if (weather.kind === 'regen') {
+    if (sp.alt < -4 && weather.kind === 'sun') { x.fillStyle = '#e8ecff'; x.fillRect(10, 6, 5, 5); x.fillStyle = 'rgba(255,255,255,.7)'; for (const [a, b] of [[30, 4], [38, 12], [22, 15], [42, 3]]) x.fillRect(a, b, 1, 1); }
+    if (sp.alt > 0 && weather.kind === 'sun' && facing > .2) { x.fillStyle = '#fff6d0'; x.fillRect(Math.round(24 - Math.sin(rel) * 18), Math.round(H - 6 - Math.min(sp.alt, 40) / 40 * (H - 12)), 5, 5); }
+    if (weather.kind !== 'sun') { x.fillStyle = 'rgba(255,255,255,.18)'; for (let i = 0; i < 6; i++) x.fillRect((i * 9 + 3) % W, 3 + (i % 3) * 4, 10, 3); }
+    if (weather.kind === 'rain') {
       x.fillStyle = 'rgba(200,225,255,.75)';
       let sd = 3;
       const r = () => ((sd = (sd * 16807) % 2147483647) / 2147483647);
@@ -618,7 +618,7 @@
   }
 
   const ray = () => new THREE.Raycaster();
-  // Wat er onder de muis ligt: 'enter' (monitor, of de telefoon op de telefoon), een voorwerp dat iets zegt, of null
+  // What's under the mouse: 'enter' (monitor, or the phone in phone mode), an object that says something, or null
   function hit(e) {
     if (!renderer || busy) return null;
     const r = cv.getBoundingClientRect();
@@ -634,7 +634,7 @@
     return null;
   }
 
-  // Camera recht voor een schermvlak, op de afstand waarop het de breedte ('w') of hoogte ('h') van het beeld vult
+  // Camera straight in front of a screen area, at the distance at which it fills the picture's width ('w') or height ('h')
   function poseFor(screen, sw, sh, fill) {
     screen.updateWorldMatrix(true, false);
     const c = new THREE.Vector3(), q = new THREE.Quaternion();
@@ -646,7 +646,7 @@
     const d = fill === 'h' ? sh / (2 * tan) : sw / (2 * tan * camera.aspect);
     return { pos: c.clone().addScaledVector(n, d), look: c, up };
   }
-  // Rechthoek van het schermvlak in CSS-pixels van de laag
+  // Rectangle of the screen area in the layer's CSS pixels
   function rectOf(screen, sw, sh) {
     const W = layer.clientWidth, H = layer.clientHeight;
     const pts = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([a, b]) => {
@@ -669,16 +669,16 @@
     });
   }
 
-  // Het scherm in 3D krijgt dezelfde tekening als de DOM-kopie straks, in dezelfde stand
+  // The 3D screen gets the same drawing as the DOM copy later, in the same orientation
   function screenImage(img, orient) {
     const W = crtTex.image.width, H = crtTex.image.height;
     crtCtx.fillStyle = '#0f2c6e'; crtCtx.fillRect(0, 0, W, H);
     crtCtx.save();
-    if (orient === 'rot') {          // staand dashboard, een kwartslag gedraaid (bovenkant links)
+    if (orient === 'rot') {          // portrait dashboard, turned a quarter (top on the left)
       const s = Math.min(W / img.height, H / img.width);
       crtCtx.translate(W / 2, H / 2); crtCtx.rotate(-Math.PI / 2);
       crtCtx.drawImage(img, -img.width * s / 2, -img.height * s / 2, img.width * s, img.height * s);
-    } else {                         // liggend: het middenstuk ter breedte van het scherm
+    } else {                         // landscape: the middle part at the width of the screen
       const sw = img.height * W / H;
       crtCtx.drawImage(img, (img.width - sw) / 2, 0, sw, img.height, 0, 0, W, H);
     }
@@ -687,7 +687,7 @@
   }
 
   // ---------- Overgang ----------
-  // Van lage PS1-resolutie naar scherp naarmate de camera het scherm nadert (eind = gewone pixels, net als de DOM-kopie)
+  // From low PS1 resolution to sharp as the camera approaches the screen (end = normal pixels, just like the DOM copy)
   let base0 = 2;
   const sharpen = (k) => {
     const e = k * k;
@@ -702,14 +702,14 @@
     layer.classList.add('going');
     const W = layer.clientWidth, H = layer.clientHeight;
     const img = drawDash(W, H, mode);
-    img.className = 'kamer-copy';
+    img.className = 'room-copy';
     base0 = baseScale();
     renderer.setPixelRatio(1);
 
     if (mode === 'phone') {
       phoneScreen.material = new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(img) });
       phoneScreen.material.map.colorSpace = THREE.SRGBColorSpace;
-      // Openklappen en inzoomen tegelijk: eerst de eindstand uitrekenen met het klepje open
+      // Flip open and zoom in at the same time: first work out the end position with the lid open
       lid.rotation.x = -.95 * Math.PI;
       const pose = poseFor(phoneScreen, .045, .06, 'w');
       lid.rotation.x = 0;
@@ -727,21 +727,21 @@
     }
   }
 
-  // DOM-kopie van het scherm groeit tot het hele beeld, dan verdwijnt de laag en staat het echte dashboard er
+  // The DOM copy of the screen grows to the whole picture, then the layer disappears and the real dashboard is there
   function grow(img, r, how) {
     const W = layer.clientWidth, H = layer.clientHeight;
     const wrap = document.createElement('div');
-    wrap.className = 'kamer-copies';
+    wrap.className = 'room-copies';
     const ms = still ? 0 : 380;
     const opts = { duration: ms, easing: 'cubic-bezier(.65,0,.35,1)', fill: 'forwards' };
     const anims = [];
     if (how === 'slide') {
-      // Middenstuk staat precies in het scherm; linker- en rechterdeel schuiven er aan de zijkanten uit
+      // The middle part is exactly in the screen; the left and right parts slide off at the sides
       const part = (x0, x1, cls) => {
         const c = document.createElement('canvas');
         c.width = Math.round((x1 - x0) / W * img.width); c.height = img.height;
         c.getContext('2d').drawImage(img, x0 / W * img.width, 0, c.width, img.height, 0, 0, c.width, c.height);
-        c.className = `kamer-part ${cls}`;
+        c.className = `room-part ${cls}`;
         Object.assign(c.style, { left: `${x0}px`, width: `${x1 - x0}px`, height: `${H}px` });
         wrap.append(c);
         return c;
@@ -765,7 +765,7 @@
     layer.append(wrap);
     cv.style.visibility = 'hidden';
     Promise.all(anims.map((a) => a.finished)).then(() => {
-      document.body.classList.remove('kamer-on');
+      document.body.classList.remove('room-on');
       window.dispatchEvent(new Event('resize'));
       const fade = layer.animate([{ opacity: 1 }, { opacity: 0 }], { duration: still ? 0 : 180, fill: 'forwards' });
       fade.finished.then(finish);
@@ -779,8 +779,8 @@
   }
   addEventListener('keydown', onKey);
   box.addEventListener('click', () => enter());
-  // #dashboard tijdens de kamer = meteen door
+  // #dashboard during the room = straight through
   addEventListener('hashchange', () => { if (location.hash === '#dashboard') finish(); });
 
-  build().catch(() => finish());   // Three.js niet te laden: gewoon het dashboard
+  build().catch(() => finish());   // Three.js can't be loaded: just the dashboard
 })();

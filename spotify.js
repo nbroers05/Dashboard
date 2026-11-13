@@ -2,23 +2,23 @@
 
 (() => {
   const CLIENT_ID = (window.DASHBOARD_CONFIG || {}).spotifyClientId || '';
-  const CONFIGURED = CLIENT_ID && !/PLAK_HIER/.test(CLIENT_ID);
+  const CONFIGURED = CLIENT_ID && !/PLAK_HIER|_HERE/.test(CLIENT_ID);
   const SCOPES = [
     'user-read-currently-playing',
     'user-read-playback-state',
     'user-modify-playback-state',
     'user-library-read',
     'user-library-modify',
-    'user-top-read',   // maandoverzicht (widgets/spotify-top.js); oudere logins missen deze en moeten opnieuw inloggen
+    'user-top-read',   // monthly overview (widgets/spotify-top.js); older logins lack this and have to log in again
   ].join(' ');
   const AUTH_URL = 'https://accounts.spotify.com/authorize';
   const TOKEN_URL = 'https://accounts.spotify.com/api/token';
   const API = 'https://api.spotify.com/v1';
-  // Moet exact gelijk zijn aan een Redirect URI in het Spotify-dashboard
+  // Must be exactly equal to a Redirect URI in the Spotify dashboard
   const REDIRECT_URI = location.origin + location.pathname.replace(/index\.html$/, '');
   const DEMO = new URLSearchParams(location.search).has('demo');
 
-  // Hoe vaak we Spotify vragen wat er speelt (ms). Tussendoor tikt de balk lokaal door.
+  // How often we ask Spotify what's playing (ms). In between the bar ticks on locally.
   const POLL_PLAYING = 5000;
   const POLL_PAUSED = 10000;
   const POLL_IDLE = 15000;
@@ -50,7 +50,7 @@
     constructor(status, message, reason) { super(message); this.status = status; this.reason = reason; }
   }
 
-  // ---------- Inloggen (Authorization Code + PKCE) ----------
+  // ---------- Logging in (Authorization Code + PKCE) ----------
   function randomString(len) {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     return Array.from(crypto.getRandomValues(new Uint8Array(len)), (x) => chars[x % chars.length]).join('');
@@ -79,7 +79,7 @@
     location.assign(`${AUTH_URL}?${params}`);
   }
 
-  // Terugkomst van Spotify na inloggen: ?code=... of ?error=...
+  // Return from Spotify after logging in: ?code=... or ?error=...
   async function handleRedirect() {
     const q = new URLSearchParams(location.search);
     const code = q.get('code');
@@ -87,8 +87,8 @@
     if (!code && !error) return;
     history.replaceState(null, '', REDIRECT_URI);
 
-    if (error) throw new AuthError(error === 'access_denied' ? 'Inloggen geannuleerd.' : `Inloggen mislukt (${error}).`);
-    if (q.get('state') !== store.get(KEY.state)) throw new AuthError('Inloggen mislukt, probeer het opnieuw.');
+    if (error) throw new AuthError(error === 'access_denied' ? 'Login cancelled.' : `Login failed (${error}).`);
+    if (q.get('state') !== store.get(KEY.state)) throw new AuthError('Login failed, please try again.');
 
     const verifier = store.get(KEY.verifier);
     store.del(KEY.verifier);
@@ -102,7 +102,7 @@
     });
   }
 
-  // secret: alleen bij een inlog uit de bundel (vault.js): die sleutel is gemaakt met de Client Secret en vervalt niet bij gebruik
+  // secret: only for a login from the bundle (vault.js): that key was made with the Client Secret and doesn't expire on use
   async function tokenRequest(params, secret) {
     const res = await fetch(TOKEN_URL, {
       method: 'POST',
@@ -114,9 +114,9 @@
     });
     const data = await res.json().catch(() => ({}));
     if (res.status === 400 || res.status === 401) {
-      throw new AuthError(data.error_description || data.error || 'Inloggen mislukt.');
+      throw new AuthError(data.error_description || data.error || 'Login failed.');
     }
-    if (!res.ok) throw new ApiError(res.status, data.error_description || 'Tokenfout');
+    if (!res.ok) throw new ApiError(res.status, data.error_description || 'Token error');
     const old = store.get(KEY.tokens) || {};
     const tokens = {
       access: data.access_token,
@@ -133,7 +133,7 @@
   function refreshTokens() {
     if (!refreshing) {
       const t = store.get(KEY.tokens);
-      if (!t || !t.refresh) return Promise.reject(new AuthError('Niet ingelogd.'));
+      if (!t || !t.refresh) return Promise.reject(new AuthError('Not logged in.'));
       refreshing = tokenRequest(t.secret ? { grant_type: 'refresh_token', refresh_token: t.refresh } : { grant_type: 'refresh_token', refresh_token: t.refresh, client_id: CLIENT_ID }, t.secret)
         .finally(() => { refreshing = null; });
     }
@@ -142,7 +142,7 @@
 
   async function accessToken() {
     const t = store.get(KEY.tokens);
-    if (!t) throw new AuthError('Niet ingelogd.');
+    if (!t) throw new AuthError('Not logged in.');
     if (Date.now() > t.expires - 60000) return (await refreshTokens()).access;
     return t.access;
   }
@@ -150,7 +150,7 @@
   // ---------- Web API ----------
   let backoffUntil = 0;
 
-  let lastTiming = null;          // { sent, got } van het laatste GET /me/player: de positie hoort bij het midden daarvan
+  let lastTiming = null;          // { sent, got } of the last GET /me/player: the position belongs to the middle of that
   async function api(method, path, body, retry = true) {
     if (DEMO) return demoApi(method, path);
     const token = await accessToken();
@@ -183,14 +183,14 @@
   }
 
   // ---------- Toestand ----------
-  let playback = null;           // laatste antwoord van /me/player
+  let playback = null;           // last answer from /me/player
   let base = { progress: 0, at: 0, duration: 0, playing: false };
   let currentTrackId = null;
   let currentCover = null;
   let saved = false;
-  let libMode = null;            // 'new' (/me/library) of 'old' (/me/tracks)
+  let libMode = null;            // 'new' (/me/library) or 'old' (/me/tracks)
   let pollTimer = null;
-  let resync = 0;                // aantal snelle controles na een nieuw nummer of na starten
+  let resync = 0;                // number of quick checks after a new track or after starting
   let endPollFired = false;
   let lastSec = -1;
   let dragging = false;
@@ -221,7 +221,7 @@
   function nextDelay() {
     if (!playback || !playback.item) return POLL_IDLE;
     if (!base.playing) return POLL_PAUSED;
-    if (resync > 0) { resync--; return 2000; }   // net een nieuw nummer of net gestart: snel nog eens kijken
+    if (resync > 0) { resync--; return 2000; }   // just a new track or just started: check again quickly
     const left = base.duration - position();
     return Math.max(1500, Math.min(POLL_PLAYING, left + 700));
   }
@@ -236,8 +236,8 @@
     } catch (e) {
       if (e instanceof AuthError) return authTrouble();
       if (card.dataset.state === 'loading') {
-        el.idleTitle.textContent = 'Spotify niet bereikbaar';
-        el.idleMsg.textContent = e instanceof ApiError ? `Spotify zegt: ${e.message}` : 'Controleer je internetverbinding.';
+        el.idleTitle.textContent = 'Spotify not reachable';
+        el.idleMsg.textContent = e instanceof ApiError ? `Spotify says: ${e.message}` : 'Check your internet connection.';
         setState('idle');
       }
       schedule(POLL_ERROR);
@@ -258,18 +258,18 @@
     el.title.title = it.name;
     el.artist.textContent = artists;
     el.dur.textContent = fmt(it.duration_ms);
-    el.device.textContent = d.device ? `Op ${d.device.name}` : '';
-    // Paginatitel blijft altijd "Dashboard" (ook als er muziek speelt)
+    el.device.textContent = d.device ? `On ${d.device.name}` : '';
+    // The page title always stays "Dashboard" (also when music is playing)
 
     const images = isEpisode ? it.images : it.album && it.album.images;
     setCover(images && images[0] && images[0].url);
 
-    // De positie die Spotify geeft hoort bij het moment dat Spotify het verzoek kreeg, niet bij het moment dat het antwoord
-    // binnenkwam: het eerste verzoek (koude verbinding) kan seconden duren, en dan liep de songtekst het hele eerste nummer achter.
+    // The position Spotify gives belongs to the moment Spotify got the request, not the moment the answer
+    // arrived: the first request (cold connection) can take seconds, and then the lyrics lagged the whole first track.
     const t = lastTiming;
     const at = t && t.got - t.sent < 10000 ? Math.round((t.sent + t.got) / 2) : Date.now();
     const remote = (d.progress_ms || 0) + (d.is_playing ? Date.now() - at : 0);
-    // Kleine afwijkingen negeren, anders springt de balk heen en weer (vlak na een nieuw nummer of start strenger)
+    // Ignore small differences, otherwise the bar jumps back and forth (stricter right after a new track or start)
     const sameTrack = it.id === currentTrackId;
     const started = base.playing !== d.is_playing;
     const drift = Math.abs(position() - remote);
@@ -281,18 +281,18 @@
     endPollFired = false;
 
     card.classList.toggle('playing', d.is_playing);
-    el.play.setAttribute('aria-label', d.is_playing ? 'Pauzeren' : 'Afspelen');
+    el.play.setAttribute('aria-label', d.is_playing ? 'Pause' : 'Play');
     el.shuffle.setAttribute('aria-pressed', String(!!d.shuffle_state));
     el.repeat.dataset.mode = d.repeat_state || 'off';
 
-    // Knoppen blijven altijd staan (geen verspringende layout); wat nu niet kan wordt gedimd, met uitleg bij hover
+    // Buttons always stay (no jumping layout); what can't be done right now is dimmed, with an explanation on hover
     const dis = (d.actions && d.actions.disallows) || {};
-    setOff(el.prev, dis.skipping_prev && dis.seeking, 'Terug kan nu niet (Spotify staat het niet toe)');
-    setOff(el.next, dis.skipping_next, 'Overslaan kan nu niet (bijv. tijdens een advertentie)');
-    setOff(el.play, d.is_playing ? dis.pausing : dis.resuming, 'Spotify staat dit nu niet toe');
-    setOff(el.shuffle, dis.toggling_shuffle, 'Shuffle kan nu niet (bijv. bij een podcast of advertentie)');
-    setOff(el.repeat, dis.toggling_repeat_context && dis.toggling_repeat_track, 'Herhalen kan nu niet (bijv. bij een podcast of advertentie)');
-    setOff($('lyrics-btn'), isEpisode, 'Geen songtekst bij een podcast');
+    setOff(el.prev, dis.skipping_prev && dis.seeking, 'Back isn\'t possible right now (Spotify doesn\'t allow it)');
+    setOff(el.next, dis.skipping_next, 'Skipping isn\'t possible right now (e.g. during an ad)');
+    setOff(el.play, d.is_playing ? dis.pausing : dis.resuming, 'Spotify doesn\'t allow this right now');
+    setOff(el.shuffle, dis.toggling_shuffle, 'Shuffle isn\'t possible right now (e.g. with a podcast or ad)');
+    setOff(el.repeat, dis.toggling_repeat_context && dis.toggling_repeat_track, 'Repeat isn\'t possible right now (e.g. with a podcast or ad)');
+    setOff($('lyrics-btn'), isEpisode, 'No lyrics for a podcast');
 
     if (!sameTrack) {
       currentTrackId = it.id;
@@ -305,7 +305,7 @@
     } : null);
   }
 
-  // Het songtekstvak (lyrics.js) leest het huidige nummer en de positie hieruit
+  // The lyrics tile (lyrics.js) reads the current track and the position from this
   window.spotifyPosition = () => position();
   let publishedId = undefined;
   function publish(track) {
@@ -323,12 +323,12 @@
     card.classList.remove('playing');
     document.title = 'Dashboard';
     if (d) {
-      el.idleTitle.textContent = 'Niets aan het spelen';
-      el.idleMsg.textContent = d.device ? `Spotify staat open op ${d.device.name}. Start daar iets.` : 'Start iets in Spotify.';
+      el.idleTitle.textContent = 'Nothing playing';
+      el.idleMsg.textContent = d.device ? `Spotify is open on ${d.device.name}. Start something there.` : 'Start something in Spotify.';
       el.devices.replaceChildren();
     } else {
-      el.idleTitle.textContent = 'Geen actief apparaat';
-      el.idleMsg.textContent = 'Open Spotify op je telefoon, pc of speaker, of kies hieronder een apparaat.';
+      el.idleTitle.textContent = 'No active device';
+      el.idleMsg.textContent = 'Open Spotify on your phone, PC or speaker, or pick a device below.';
       loadDevices();
     }
     setState('idle');
@@ -353,7 +353,7 @@
   function setCover(url) {
     if (url === currentCover) return;
     currentCover = url;
-    // Vervaagde hoes als achtergrond van het hele vak
+    // Blurred cover as the background of the whole tile
     card.style.setProperty('--cover', url ? `url("${url}")` : 'none');
     if (!url) { el.cover.removeAttribute('src'); return; }
     const img = new Image();
@@ -361,7 +361,7 @@
     img.onload = () => {
       if (currentCover !== url) return;
       const swap = () => { el.cover.src = url; applyColor(img); };
-      // Nieuwe hoes vloeit over de oude heen (View Transitions); zonder ondersteuning of bij "beweging beperken" gewoon wisselen
+      // A new cover flows over the old one (View Transitions); without support or with "reduce motion" it just switches
       const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (document.startViewTransition && el.cover.getAttribute('src') && !calm && !document.hidden) document.startViewTransition(swap);
       else swap();
@@ -370,13 +370,13 @@
     img.src = url;
   }
 
-  // Achtergrondkleur uit de hoes (berekening in dash.js); de kaart die vooraan staat in de mediastapel bepaalt de kleur
+  // Background color from the cover (calculated in dash.js); the front card in the media stack decides the color
   function applyColor(img) {
     const c = DASH.coverTint(img);
     if (c) DASH.tint('spotify', c);
   }
 
-  // Lokaal doortikken van de voortgang
+  // Tick the progress on locally
   function tick() {
     requestAnimationFrame(tick);
     if (!base.duration || dragging) return;
@@ -386,7 +386,7 @@
     if (sec !== lastSec) {
       lastSec = sec;
       el.pos.textContent = fmt(pos);
-      el.bar.setAttribute('aria-valuetext', `${fmt(pos)} van ${fmt(base.duration)}`);
+      el.bar.setAttribute('aria-valuetext', `${fmt(pos)} of ${fmt(base.duration)}`);
     }
     if (base.playing && pos >= base.duration && !endPollFired) {
       endPollFired = true;
@@ -398,10 +398,10 @@
   function setSaved(v) {
     saved = v;
     el.save.setAttribute('aria-pressed', String(v));
-    el.save.setAttribute('aria-label', v ? 'Verwijderen uit bibliotheek' : 'Opslaan in bibliotheek');
+    el.save.setAttribute('aria-label', v ? 'Remove from library' : 'Save to library');
   }
 
-  // Spotify heeft in 2026 de bibliotheek-endpoints vervangen; we proberen de nieuwe eerst.
+  // In 2026 Spotify replaced the library endpoints; we try the new ones first.
   async function libContains(it) {
     if (libMode !== 'old') {
       try {
@@ -413,7 +413,7 @@
         libMode = 'old';
       }
     }
-    if (it.type !== 'track') throw new ApiError(0, 'Niet ondersteund');
+    if (it.type !== 'track') throw new ApiError(0, 'Not supported');
     const r = await api('GET', `/me/tracks/contains?ids=${it.id}`);
     return !!(r && r[0]);
   }
@@ -431,11 +431,11 @@
       setOff(el.save, false);
       if (currentTrackId === it.id) setSaved(v);
     } catch {
-      setOff(el.save, true, 'Opslaan kan niet bij dit nummer (bijv. een podcast of lokaal bestand)');
+      setOff(el.save, true, 'Saving isn\'t possible for this track (e.g. a podcast or local file)');
     }
   }
 
-  // Gedimde knop: blijft op zijn plek, klikken doet niets, de tooltip zegt waarom
+  // Dimmed button: stays in its place, clicking does nothing, the tooltip says why
   function setOff(btn, off, why) {
     if (!btn) return;
     btn.disabled = false;
@@ -462,12 +462,12 @@
   function handleActionError(e) {
     if (e instanceof AuthError) return authTrouble();
     if (e instanceof ApiError) {
-      if (e.status === 404 || e.reason === 'NO_ACTIVE_DEVICE') return toast('Geen actief apparaat. Open Spotify ergens.');
-      if (e.status === 403) return toast('Dat staat Spotify nu niet toe.');
-      if (e.status === 429) return toast('Even rustig aan, Spotify remt af.');
-      return toast(`Spotify-fout: ${e.message}`);
+      if (e.status === 404 || e.reason === 'NO_ACTIVE_DEVICE') return toast('No active device. Open Spotify somewhere.');
+      if (e.status === 403) return toast('Spotify doesn\'t allow that right now.');
+      if (e.status === 429) return toast('Easy now, Spotify is slowing us down.');
+      return toast(`Spotify error: ${e.message}`);
     }
-    toast('Geen verbinding met Spotify.');
+    toast('No connection with Spotify.');
   }
 
   function rebase(playing) {
@@ -484,7 +484,7 @@
 
   el.next.onclick = () => action(() => api('POST', '/me/player/next'));
 
-  // Zoals in de auto: na 3 seconden eerst terug naar het begin
+  // Like in the car: after 3 seconds back to the start first
   el.prev.onclick = () => {
     if (position() > 3000) {
       action(() => api('PUT', '/me/player/seek?position_ms=0'), () => { base = { ...base, progress: 0, at: Date.now() }; });
@@ -511,14 +511,14 @@
     setSaved(target);
     try {
       await libSet(it, target);
-      toast(target ? 'Opgeslagen in je bibliotheek' : 'Verwijderd uit je bibliotheek');
+      toast(target ? 'Saved to your library' : 'Removed from your library');
     } catch (e) {
       setSaved(!target);
       handleActionError(e);
     }
   };
 
-  // Spoelen door op de balk te tikken of te slepen
+  // Seek by tapping or dragging on the bar
   function seekRatio(ev) {
     const rect = el.bar.getBoundingClientRect();
     return Math.max(0, Math.min(1, (ev.clientX - rect.left) / rect.width));
@@ -543,7 +543,7 @@
   });
   el.bar.addEventListener('pointercancel', () => { dragging = false; });
 
-  // Voor het songtekstvak: klik op een regel = daarheen spoelen
+  // For the lyrics tile: click on a line = seek there
   window.spotifySeek = (ms) => action(() => api('PUT', `/me/player/seek?position_ms=${ms}`), () => { base = { ...base, progress: ms, at: Date.now() }; lastSec = -1; });
   el.bar.addEventListener('keydown', (ev) => {
     if (ev.key !== 'ArrowLeft' && ev.key !== 'ArrowRight') return;
@@ -560,14 +560,14 @@
     toastTimer = setTimeout(() => el.toast.classList.remove('show'), 3200);
   }
 
-  // Spotify weigert de sleutel (sinds 0.59.0, 1.0-zelfherstel): niet meer uitloggen en de sleutel wissen, want vaak is het
-  // tijdelijk (slaapstand midden in een verzoek, Spotify-storing) en de sleutel uit de inlogbundel kun je niet zelf terugzetten.
-  // Dus: inlogscherm met uitleg, sleutel bewaren en elke 5 minuten stil opnieuw proberen. Lukt het, dan is de speler terug.
+  // Spotify refuses the key (since 0.59.0, 1.0 self-recovery): don't log out and wipe the key anymore, because it's often
+  // temporary (sleep in the middle of a request, a Spotify outage) and you can't put the key from the login bundle back yourself.
+  // So: a login screen with an explanation, keep the key and quietly try again every 5 minutes. If it works, the player is back.
   const AUTH_RETRY = 5 * 60 * 1000;
   function authTrouble() {
     clearTimeout(pollTimer);
     if (!store.get(KEY.tokens)) return showLogin();
-    showLogin('Spotify weigert de inlog even. Het dashboard probeert het elke 5 minuten opnieuw; lukt het niet, log dan opnieuw in.');
+    showLogin('Spotify is refusing the login for now. The dashboard tries again every 5 minutes; if that doesn\'t work, log in again.');
     pollTimer = setTimeout(poll, AUTH_RETRY);
   }
 
@@ -579,10 +579,10 @@
 
   function showLogin(msg) {
     if (!CONFIGURED) {
-      el.loginMsg.textContent = 'Vul eerst je Spotify Client ID in config.js in.';
+      el.loginMsg.textContent = 'Fill in your Spotify Client ID in config.js first.';
       el.login.disabled = true;
     } else {
-      el.loginMsg.textContent = msg || 'Log in om je speler hier te zien.';
+      el.loginMsg.textContent = msg || 'Log in to see your player here.';
     }
     document.title = 'Dashboard';
     setState('login');
@@ -597,10 +597,10 @@
     if (document.hidden) clearTimeout(pollTimer);
     else if (card.dataset.state !== 'login' || store.get(KEY.tokens)) poll();
   });
-  // Na slaapstand of als internet terug is (dash.js): meteen kijken
+  // After sleep or when the internet is back (dash.js): check right away
   window.addEventListener('dash:wake', () => { if (!DEMO && store.get(KEY.tokens)) poll(); });
 
-  // ---------- Demo (?demo): nep-data om de look te testen ----------
+  // ---------- Demo (?demo): fake data to test the look ----------
   const demo = {
     device: { name: 'Demo-apparaat' },
     is_playing: true,
@@ -610,10 +610,10 @@
     saved: false,
     actions: { disallows: {} },
     item: {
-      id: 'demo', uri: 'spotify:track:demo', type: 'track', name: 'Nachtrit over de A2', duration_ms: 214000,
-      artists: [{ name: 'Voorbeeldband' }, { name: 'Gastzanger' }],
+      id: 'demo', uri: 'spotify:track:demo', type: 'track', name: 'Night drive on the A2', duration_ms: 214000,
+      artists: [{ name: 'Example band' }, { name: 'Guest singer' }],
       album: {
-        name: 'Lichten van de stad',
+        name: 'City lights',
         images: [{ url: 'data:image/svg+xml,' + encodeURIComponent(
           '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
           '<stop offset="0" stop-color="#ff7a59"/><stop offset=".55" stop-color="#c2366b"/><stop offset="1" stop-color="#3a1c71"/></linearGradient></defs>' +
@@ -622,16 +622,16 @@
     },
   };
   let demoAt = Date.now();
-  // Nep-maandoverzicht: kleurvlakken als hoes/foto
+  // Fake monthly overview: color blocks as cover/photo
   const swatch = (a, b) => `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="200" height="200" fill="url(#g)"/></svg>`)}`;
   const DEMO_COLORS = [['#ff7a59', '#3a1c71'], ['#36d1dc', '#5b86e5'], ['#f7971e', '#ffd200'], ['#ee0979', '#ff6a00'], ['#11998e', '#38ef7d']];
   function demoTop(artists) {
-    const names = artists ? ['Voorbeeldband', 'De Gastzangers', 'Nachtbus', 'Maanlicht', 'Rotterdam Ritme'] : ['Nachtrit over de A2', 'Kade bij nacht', 'Regen op het raam', 'Laatste tram', 'Ochtendlicht'];
+    const names = artists ? ['Example band', 'The Guest Singers', 'Night Bus', 'Moonlight', 'Rotterdam Rhythm'] : ['Night drive on the A2', 'Quay by night', 'Rain on the window', 'Last tram', 'Morning light'];
     return { items: names.map((name, i) => ({
       name,
       external_urls: { spotify: 'https://open.spotify.com/' },
       images: [{ url: swatch(...DEMO_COLORS[i]) }],
-      ...(artists ? { genres: ['indie'] } : { artists: [{ name: 'Voorbeeldband' }], album: { images: [{ url: swatch(...DEMO_COLORS[i]) }] } }),
+      ...(artists ? { genres: ['indie'] } : { artists: [{ name: 'Example band' }], album: { images: [{ url: swatch(...DEMO_COLORS[i]) }] } }),
     })) };
   }
 
@@ -653,11 +653,11 @@
     return Promise.resolve(null);
   }
 
-  // Voor andere vakken (maandoverzicht, focusmodus): dezelfde inlog en dezelfde API-aanroep
+  // For other tiles (monthly overview, focus mode): the same login and the same API call
   window.DASH_SPOTIFY = {
     api: (method, path, body) => api(method, path, body),
     connected: () => DEMO || !!store.get(KEY.tokens),
-    // Heeft deze inlog toestemming voor scope? (oude inlog zonder scope-informatie: onbekend = null)
+    // Does this login have permission for scope? (an old login without scope information: unknown = null)
     hasScope: (scope) => { if (DEMO) return true; const t = store.get(KEY.tokens); return t && t.scope ? t.scope.split(' ').includes(scope) : null; },
     login: () => login(),
   };

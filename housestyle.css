@@ -1,17 +1,17 @@
-/* ---------- Noah Huisstijl (sinds 1.2.0) ----------
-   Ontwerp: design system "Noah Huisstijl" (claude.ai/artifact/1uHEFBcpmD23vuaQRoQED9). Alles is een venster uit 2001
-   met een bestandsnaam en een Japans woord in de titelbalk, blauw met rood op papier.
-   Aan via html.nh (Instellingen › Thema › Stijl, standaard). De stand staat op html[data-stand]: digital (ochtend),
-   poster (middag), titel (avond); huisstijl.js kiest hem. Venstertitels komen uit data-nh-exe / data-nh-kanji (huisstijl.js).
-   Alleen opmaak: indeling, volgorde en functies blijven gelijk. Alles begint met html.nh. */
+/* ---------- Noah's house style (since 1.2.0) ----------
+   Design: the design system "Noah Huisstijl" (claude.ai/artifact/1uHEFBcpmD23vuaQRoQED9). Everything is a window from 2001
+   with a file name and a Japanese word in the title bar, blue with red on paper.
+   On via html.nh (Settings › Theme › Style, the default). The mood is on html[data-mood]: digital (morning),
+   poster (afternoon), titlecard (evening); housestyle.js picks it. Window titles come from data-nh-exe / data-nh-kanji (housestyle.js).
+   Styles only: layout, order and functions stay the same. Everything starts with html.nh. */
 
-/* ---------- Tokens (uit tokens.json van het design system) ---------- */
+/* ---------- Tokens (from the design system's tokens.json) ---------- */
 html.nh {
   --paper: #efe9dc; --paper-raised: #f8f4ea; --ink: #16130f; --nh-muted: #5e574c;
   --line: #16130f; --line-soft: #d3c9b6;
   --eva: #1b2a8c; --sky: #8cc0e8; --red: #d7261e; --titlebar: var(--eva);
   --on-eva: #fff; --ah-c: #00ade6; --on-ah: #04263a; --focus: #d7261e;
-  --feest: var(--feest-p, var(--red));   /* feestkleur van het thema (themes.js zet --feest-p / --feest-t), anders red */
+  --holiday: var(--holiday-p, var(--red));   /* the theme's holiday color (themes.js sets --holiday-p / --holiday-t), otherwise red */
   --shadow-window: 4px 4px 0 #16130f; --shadow-control: 2px 2px 0 #16130f;
   --font-display: "Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
   --font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
@@ -19,7 +19,7 @@ html.nh {
   --nh-bar: 30px;
   --nh-gap: 14px;
 
-  /* De gewone dashboardvariabelen volgen de huisstijl */
+  /* The normal dashboard variables follow the house style */
   --bg: var(--paper);
   --text: var(--ink);
   --muted: var(--nh-muted);
@@ -28,22 +28,22 @@ html.nh {
   --accent: var(--eva);
   color-scheme: light;
 }
-html.nh[data-stand="digital"] {
+html.nh[data-mood="digital"] {
   --paper: #eef5fb; --paper-raised: #fff; --ink: #0e2240; --nh-muted: #46576f;
   --line: #1d4f9e; --line-soft: #c9dbef;
   --eva: #1556cf; --sky: #bfe6fa; --red: #de2f1f; --focus: #de2f1f;
   --shadow-window: 0 1px 0 #1d4f9e, 0 10px 24px rgba(21, 86, 207, .18); --shadow-control: 0 1px 0 #1d4f9e;
 }
-html.nh[data-stand="titel"] {
+html.nh[data-mood="titlecard"] {
   --paper: #0b0b0d; --paper-raised: #141417; --ink: #f2efe8; --nh-muted: #a7a29a;
   --line: #5c5852; --line-soft: #2a2a30;
   --eva: #1b2a8c; --sky: #1c2e52; --red: #e3241b; --titlebar: #000; --focus: #e3241b;
   --shadow-window: none; --shadow-control: none;
-  --feest: var(--feest-t, var(--red));
+  --holiday: var(--holiday-t, var(--red));
   color-scheme: dark;
 }
 
-/* ---------- Bureaublad ---------- */
+/* ---------- Desktop ---------- */
 html.nh body {
   font-family: var(--font-body);
   font-variant-numeric: tabular-nums;
@@ -51,24 +51,24 @@ html.nh body {
   background: var(--paper);
   -webkit-font-smoothing: antialiased;
 }
-html.nh[data-stand="digital"] body { background: #b9def3 url("huisstijl/lucht-licht-liggend.jpg") center top / cover no-repeat fixed; }
-html.nh[data-stand="digital"].portrait-wide body,
-html.nh[data-stand="digital"].phone-mode body { background-image: url("huisstijl/lucht-licht-staand.jpg"); }
-/* Titelkaart: zwart met één dunne lijn */
-html.nh[data-stand="titel"] body { background: var(--paper) linear-gradient(var(--line-soft), var(--line-soft)) 0 62% / 100% 1px no-repeat fixed; }
+html.nh[data-mood="digital"] body { background: #b9def3 url("housestyle/sky-light-landscape.jpg") center top / cover no-repeat fixed; }
+html.nh[data-mood="digital"].portrait-wide body,
+html.nh[data-mood="digital"].phone-mode body { background-image: url("housestyle/sky-light-portrait.jpg"); }
+/* Title card: black with one thin line */
+html.nh[data-mood="titlecard"] body { background: var(--paper) linear-gradient(var(--line-soft), var(--line-soft)) 0 62% / 100% 1px no-repeat fixed; }
 
-/* Hoeskleur (--tint, uit dash.js): Poster een gezeefdrukt vlak rechtsboven, Digital een gloed, Titelkaart gloed aan de horizon.
-   Raakt alleen het bureaublad, nooit de vensters. */
+/* Cover color (--tint, from dash.js): Poster a screen-printed patch top right, Digital a glow, Title card a glow at the horizon.
+   Only touches the desktop, never the windows. */
 html.nh body::before {
   background: linear-gradient(var(--tint), var(--tint)) right top / 46% 38% no-repeat;
   mix-blend-mode: multiply;
   opacity: .55;
   transition: background-color 1.2s ease;
 }
-html.nh[data-stand="digital"] body::before { background: radial-gradient(70% 45% at 85% 0%, var(--tint), transparent 70%); opacity: .45; mix-blend-mode: soft-light; }
-html.nh[data-stand="titel"] body::before { background: radial-gradient(90% 30% at 50% 100%, var(--tint), transparent 70%); opacity: .5; mix-blend-mode: normal; }
+html.nh[data-mood="digital"] body::before { background: radial-gradient(70% 45% at 85% 0%, var(--tint), transparent 70%); opacity: .45; mix-blend-mode: soft-light; }
+html.nh[data-mood="titlecard"] body::before { background: radial-gradient(90% 30% at 50% 100%, var(--tint), transparent 70%); opacity: .5; mix-blend-mode: normal; }
 
-/* Korrel over de hele pagina: sterk in Poster en Titelkaart, bijna niks in Digital Future */
+/* Grain over the whole page: strong in Poster and Title card, almost nothing in Digital Future */
 html.nh body::after {
   content: "";
   position: fixed;
@@ -79,22 +79,22 @@ html.nh body::after {
   opacity: .11;
   mix-blend-mode: multiply;
 }
-html.nh[data-stand="digital"] body::after { opacity: .045; }
-html.nh[data-stand="titel"] body::after { opacity: .16; mix-blend-mode: screen; filter: invert(1); }
+html.nh[data-mood="digital"] body::after { opacity: .045; }
+html.nh[data-mood="titlecard"] body::after { opacity: .16; mix-blend-mode: screen; filter: invert(1); }
 
-/* Thema-achtergronden en -topbalkkleuren horen niet bij de huisstijl (een thema mag het bureaublad niet kleuren) */
+/* Theme backgrounds and top bar colors don't belong to the house style (a theme may not color the desktop) */
 html.nh .th-bg { display: none !important; }
 
 html.nh :focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 html.nh a { color: var(--eva); }
-html.nh[data-stand="titel"] a { color: var(--ink); }
+html.nh[data-mood="titlecard"] a { color: var(--ink); }
 html.nh * { scrollbar-color: var(--line-soft) transparent; }
 
-/* ---------- Indeling: vensters liggen dichter op elkaar ---------- */
+/* ---------- Layout: windows are closer together ---------- */
 html.nh .dashboard { gap: var(--nh-gap); }
 html.nh .tall-row { gap: var(--nh-gap); }
 
-/* ---------- Venster ---------- */
+/* ---------- Window ---------- */
 html.nh .card,
 html.nh .tile {
   --c: var(--eva);
@@ -107,11 +107,11 @@ html.nh .tile {
   -webkit-backdrop-filter: none;
   color: var(--ink);
 }
-html.nh[data-stand="titel"] :is(.card, .tile) { --ct: var(--ink); }
+html.nh[data-mood="titlecard"] :is(.card, .tile) { --ct: var(--ink); }
 html.nh .tile { padding: 0 16px 14px !important; border-color: var(--line) !important; }
 html.nh .tile.clickable:hover { filter: none; border-color: var(--line); background: color-mix(in srgb, var(--sky) 18%, var(--paper-raised)); }
 
-/* Titelbalk: het kopje van het vak (tekst verborgen), met bestandsnaam en Japans woord uit huisstijl.js */
+/* Title bar: the tile's heading (text hidden), with the file name and Japanese word from housestyle.js */
 html.nh .tile > .eyebrow,
 html.nh #lyrics > .w-row {
   position: relative;
@@ -149,14 +149,14 @@ html.nh :is(.tile > .eyebrow, #lyrics .eyebrow)[data-nh-kanji]::after {
   letter-spacing: .1em;
   opacity: .85;
 }
-/* Drie knopjes rechts: versiering, doen niks */
+/* Three buttons on the right: decoration, they do nothing */
 html.nh .tile > .eyebrow,
 html.nh :is(.player, #calendar) {
   --nh-ctl: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='16'%3E%3Cg fill='none' stroke='%23fff'%3E%3Crect x='.5' y='.5' width='16' height='15'/%3E%3Crect x='19.5' y='.5' width='16' height='15'/%3E%3Crect x='38.5' y='.5' width='16' height='15'/%3E%3C/g%3E%3C/svg%3E");
 }
 html.nh .tile > .eyebrow { background: var(--nh-ctl) right 6px center / 56px 16px no-repeat, var(--titlebar); }
 
-/* Speler en agenda hebben geen kopje-als-balk: titelbalk via ::before, Japans woord + knopjes via ::after */
+/* Player and agenda have no heading-as-bar: title bar via ::before, Japanese word + buttons via ::after */
 html.nh :is(.player, #calendar) { position: relative; padding-top: calc(var(--nh-bar) + 16px) !important; overflow: hidden; }
 html.nh :is(.player, #calendar)::before {
   content: attr(data-nh-exe);
@@ -190,34 +190,34 @@ html.nh :is(.player, #calendar)::after {
   letter-spacing: .1em;
 }
 
-/* Digital Future: glanzende titelbalk, knopjes met ronde hoekjes en een rode sluitknop */
-html.nh[data-stand="digital"] .tile > .eyebrow,
-html.nh[data-stand="digital"] #lyrics > .w-row,
-html.nh[data-stand="digital"] :is(.player, #calendar)::before {
+/* Digital Future: a glossy title bar, buttons with round corners and a red close button */
+html.nh[data-mood="digital"] .tile > .eyebrow,
+html.nh[data-mood="digital"] #lyrics > .w-row,
+html.nh[data-mood="digital"] :is(.player, #calendar)::before {
   background: linear-gradient(180deg, rgba(255, 255, 255, .42) 0%, rgba(255, 255, 255, .08) 48%, rgba(0, 0, 0, 0) 52%), var(--titlebar);
 }
-html.nh[data-stand="digital"] .tile > .eyebrow,
-html.nh[data-stand="digital"] :is(.player, #calendar) {
+html.nh[data-mood="digital"] .tile > .eyebrow,
+html.nh[data-mood="digital"] :is(.player, #calendar) {
   --nh-ctl: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='16'%3E%3Cdefs%3E%3ClinearGradient id='g' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23fff' stop-opacity='.55'/%3E%3Cstop offset='1' stop-color='%23fff' stop-opacity='.1'/%3E%3C/linearGradient%3E%3ClinearGradient id='r' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%23f08a76'/%3E%3Cstop offset='1' stop-color='%23de2f1f'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cg stroke='%23fff' stroke-opacity='.85'%3E%3Crect x='.5' y='.5' width='16' height='15' rx='3' fill='url(%23g)'/%3E%3Crect x='19.5' y='.5' width='16' height='15' rx='3' fill='url(%23g)'/%3E%3Crect x='38.5' y='.5' width='16' height='15' rx='3' fill='url(%23r)'/%3E%3C/g%3E%3C/svg%3E");
 }
-html.nh[data-stand="digital"] .tile > .eyebrow { background: var(--nh-ctl) right 6px center / 56px 16px no-repeat, linear-gradient(180deg, rgba(255, 255, 255, .42) 0%, rgba(255, 255, 255, .08) 48%, rgba(0, 0, 0, 0) 52%), var(--titlebar); }
+html.nh[data-mood="digital"] .tile > .eyebrow { background: var(--nh-ctl) right 6px center / 56px 16px no-repeat, linear-gradient(180deg, rgba(255, 255, 255, .42) 0%, rgba(255, 255, 255, .08) 48%, rgba(0, 0, 0, 0) 52%), var(--titlebar); }
 
-/* Titelkaart: zwarte balk, naam zonder .exe in hoofdletters in de schreefletter, Japans woord rood, geen knopjes */
-html.nh[data-stand="titel"] .tile > .eyebrow,
-html.nh[data-stand="titel"] #lyrics > .w-row { background: var(--titlebar); border-bottom-color: var(--line-soft); padding-right: 10px; }
-html.nh[data-stand="titel"] :is(.tile > .eyebrow, #lyrics .eyebrow)[data-nh-name]::before,
-html.nh[data-stand="titel"] :is(.player, #calendar)::before {
+/* Title card: a black bar, the name without .exe in capitals in the serif font, the Japanese word red, no buttons */
+html.nh[data-mood="titlecard"] .tile > .eyebrow,
+html.nh[data-mood="titlecard"] #lyrics > .w-row { background: var(--titlebar); border-bottom-color: var(--line-soft); padding-right: 10px; }
+html.nh[data-mood="titlecard"] :is(.tile > .eyebrow, #lyrics .eyebrow)[data-nh-name]::before,
+html.nh[data-mood="titlecard"] :is(.player, #calendar)::before {
   content: attr(data-nh-name);
   font: 800 15px/1 var(--font-display);
   letter-spacing: .16em;
   text-transform: uppercase;
 }
-html.nh[data-stand="titel"] :is(.player, #calendar)::before { line-height: var(--nh-bar); border-bottom-color: var(--line-soft); }
-html.nh[data-stand="titel"] :is(.tile > .eyebrow, #lyrics .eyebrow)::after,
-html.nh[data-stand="titel"] :is(.player, #calendar)::after { color: var(--feest); opacity: 1; }
-html.nh[data-stand="titel"] :is(.player, #calendar)::after { background: none; padding-right: 4px; }
+html.nh[data-mood="titlecard"] :is(.player, #calendar)::before { line-height: var(--nh-bar); border-bottom-color: var(--line-soft); }
+html.nh[data-mood="titlecard"] :is(.tile > .eyebrow, #lyrics .eyebrow)::after,
+html.nh[data-mood="titlecard"] :is(.player, #calendar)::after { color: var(--holiday); opacity: 1; }
+html.nh[data-mood="titlecard"] :is(.player, #calendar)::after { background: none; padding-right: 4px; }
 
-/* ---------- Tekst ---------- */
+/* ---------- Text ---------- */
 html.nh .eyebrow { color: var(--nh-muted); font-family: var(--font-pixel); font-weight: 400; letter-spacing: .02em; }
 html.nh .title { font-family: var(--font-display); font-weight: 800; letter-spacing: 0; color: var(--ink); }
 html.nh .w-big,
@@ -235,7 +235,7 @@ html.nh :is(.w-label, .ws-head, .ci-label) { font-family: var(--font-pixel); fon
 html.nh :is(.w-note, .w-sub, .muted, .artist, .times) { color: var(--nh-muted); }
 html.nh .w-note a { color: var(--eva); }
 
-/* ---------- Knoppen ---------- */
+/* ---------- Buttons ---------- */
 html.nh :is(.w-btn, .pill-btn, .cal-nav-btn, .ph-btn, .desk-more-chev) {
   border: 1px solid var(--line);
   border-radius: 0;
@@ -252,12 +252,12 @@ html.nh .pill-btn { background: var(--red); color: var(--on-eva); border-color: 
 html.nh .w-btn.lb { background: var(--paper-raised); color: var(--ink); }
 html.nh .text-btn { color: var(--nh-muted); text-decoration: underline; text-underline-offset: 3px; }
 html.nh .text-btn:hover { color: var(--ink); }
-html.nh[data-stand="digital"] :is(.w-btn, .pill-btn, .cal-nav-btn) { border-radius: 3px; background: linear-gradient(180deg, #fff 0%, #e4f1fb 100%); }
-html.nh[data-stand="digital"] .pill-btn { background: linear-gradient(180deg, rgba(255, 255, 255, .35) 0%, rgba(255, 255, 255, 0) 50%), var(--eva); color: var(--on-eva); }
-html.nh[data-stand="titel"] :is(.w-btn, .pill-btn, .cal-nav-btn) { background: transparent; font-family: var(--font-display); font-weight: 800; letter-spacing: .12em; text-transform: uppercase; font-size: .75rem; }
-html.nh[data-stand="titel"] .pill-btn { background: var(--red); border-color: var(--red); }
+html.nh[data-mood="digital"] :is(.w-btn, .pill-btn, .cal-nav-btn) { border-radius: 3px; background: linear-gradient(180deg, #fff 0%, #e4f1fb 100%); }
+html.nh[data-mood="digital"] .pill-btn { background: linear-gradient(180deg, rgba(255, 255, 255, .35) 0%, rgba(255, 255, 255, 0) 50%), var(--eva); color: var(--on-eva); }
+html.nh[data-mood="titlecard"] :is(.w-btn, .pill-btn, .cal-nav-btn) { background: transparent; font-family: var(--font-display); font-weight: 800; letter-spacing: .12em; text-transform: uppercase; font-size: .75rem; }
+html.nh[data-mood="titlecard"] .pill-btn { background: var(--red); border-color: var(--red); }
 
-/* Spelerknoppen: vierkant */
+/* Player buttons: square */
 html.nh .btn { border: 1px solid var(--line); border-radius: 0; background: var(--paper-raised); box-shadow: var(--shadow-control); color: var(--ink); }
 html.nh .btn svg { fill: currentColor; }
 html.nh .btn:hover { background: var(--sky); }
@@ -266,26 +266,26 @@ html.nh .btn.small:hover { background: var(--sky); border-color: var(--line); }
 html.nh .btn.pill { background: var(--eva); color: var(--on-eva); border-color: var(--line); }
 html.nh .btn[aria-pressed="true"], html.nh #repeat:not([data-mode="off"]) { color: var(--red); }
 html.nh .btn.off { opacity: .35; }
-html.nh[data-stand="digital"] .btn { border-radius: 3px; background: linear-gradient(180deg, #fff 0%, #e4f1fb 100%); }
-html.nh[data-stand="digital"] .btn.small { background: transparent; }
-html.nh[data-stand="digital"] .btn.pill { background: linear-gradient(180deg, rgba(255, 255, 255, .35) 0%, rgba(255, 255, 255, 0) 50%), var(--eva); }
-html.nh[data-stand="titel"] .btn { background: transparent; }
-html.nh[data-stand="titel"] .btn.pill { background: var(--red); border-color: var(--red); }
+html.nh[data-mood="digital"] .btn { border-radius: 3px; background: linear-gradient(180deg, #fff 0%, #e4f1fb 100%); }
+html.nh[data-mood="digital"] .btn.small { background: transparent; }
+html.nh[data-mood="digital"] .btn.pill { background: linear-gradient(180deg, rgba(255, 255, 255, .35) 0%, rgba(255, 255, 255, 0) 50%), var(--eva); }
+html.nh[data-mood="titlecard"] .btn { background: transparent; }
+html.nh[data-mood="titlecard"] .btn.pill { background: var(--red); border-color: var(--red); }
 
-/* Segmentknoppen (Lijst/Week enz.) = tabjes */
+/* Segment buttons (List/Week etc.) = tabs */
 html.nh .seg { padding: 0; gap: 0; border-radius: 0; background: none; border: 1px solid var(--line); }
 html.nh .seg button { padding: 5px 12px; border: 0; border-right: 1px solid var(--line-soft); border-radius: 0; background: transparent; color: var(--nh-muted); font: 400 .85rem/1.2 var(--font-pixel); }
 html.nh .seg button:last-child { border-right: 0; }
 html.nh .seg button[aria-pressed="true"] { background: var(--eva); color: var(--on-eva); }
-html.nh[data-stand="titel"] .seg { border-color: var(--line-soft); }
-html.nh[data-stand="titel"] .seg button[aria-pressed="true"] { background: transparent; color: var(--ink); box-shadow: inset 0 -2px 0 var(--red); }
+html.nh[data-mood="titlecard"] .seg { border-color: var(--line-soft); }
+html.nh[data-mood="titlecard"] .seg button[aria-pressed="true"] { background: transparent; color: var(--ink); box-shadow: inset 0 -2px 0 var(--red); }
 
-/* Labels (pillen) */
+/* Labels (pills) */
 html.nh .w-pill { border: 1px solid var(--line); border-radius: 999px; background: var(--paper-raised); color: var(--ink); font: 700 .75rem/1.3 var(--font-body); }
 html.nh .w-pill.good { background: var(--paper-raised); color: var(--ink); }
 html.nh .w-pill.bad, html.nh .w-pill.live { background: var(--red); color: var(--on-eva); border-color: var(--red); }
 
-/* Lijstjes: rijen met een dunne lijn ertussen; geen gekleurde streep links, geen ronde hoeken */
+/* Lists: rows with a thin line between them; no colored stripe on the left, no round corners */
 html.nh :is(.al-item, .ml-item, .ds-row, .cv-item, .td-item, .ws-item) {
   border: 0;
   border-bottom: 1px solid var(--line-soft);
@@ -299,7 +299,7 @@ html.nh button.al-item:hover { background: color-mix(in srgb, var(--sky) 30%, tr
 html.nh :is(.u-red, .u-late) .cv-when, html.nh .al-item.lv-urgent :is(b, strong) { color: var(--red); }
 html.nh .u-orange .cv-when { color: var(--ink); }
 
-/* Invoervelden */
+/* Input fields */
 html.nh :is(input, select, textarea):not([type="checkbox"]):not([type="radio"]):not([type="range"]) {
   border: 1px solid var(--line);
   border-radius: 0;
@@ -308,9 +308,9 @@ html.nh :is(input, select, textarea):not([type="checkbox"]):not([type="radio"]):
   font-family: var(--font-body);
   box-shadow: inset 2px 2px 0 var(--line-soft);
 }
-html.nh[data-stand="titel"] :is(input, select, textarea):not([type="checkbox"]):not([type="radio"]):not([type="range"]) { box-shadow: none; }
+html.nh[data-mood="titlecard"] :is(input, select, textarea):not([type="checkbox"]):not([type="radio"]):not([type="range"]) { box-shadow: none; }
 
-/* ---------- Topbalk: geen venster, gewoon op het bureaublad. Klok in pixel, dag in de schreefletter ---------- */
+/* ---------- Top bar: no window, simply on the desktop. Clock in pixels, day in the serif font ---------- */
 html.nh .topbar {
   background: transparent !important;
   border: 0 !important;
@@ -322,24 +322,24 @@ html.nh .topbar {
   --muted: var(--nh-muted);
 }
 html.nh .tb-time { font: 400 4.6rem/1 var(--font-pixel); letter-spacing: 0; color: var(--ink); }
-html.nh[data-stand="digital"] .tb-time { color: var(--eva); }
+html.nh[data-mood="digital"] .tb-time { color: var(--eva); }
 html.nh .tb-date { font: 800 1.45rem/1.15 var(--font-display); color: var(--ink); }
 html.nh .tb-week { color: var(--nh-muted); font-size: .9rem; }
 html.nh .tb-dayline { color: var(--nh-muted); font-weight: 500; }
-html.nh .tb-greet { color: var(--feest); }
+html.nh .tb-greet { color: var(--holiday); }
 html.nh .tb-search { border: 1px solid var(--line); border-radius: 0; background: var(--paper-raised); box-shadow: inset 2px 2px 0 var(--line-soft); }
 html.nh .tb-search input { color: var(--ink); box-shadow: none; border: 0; background: transparent; }
 html.nh .tb-search svg { fill: var(--nh-muted); }
 html.nh .tb-search kbd { border-radius: 0; background: var(--paper); color: var(--nh-muted); border: 1px solid var(--line-soft); font-family: var(--font-pixel); }
 html.nh .tb-search:focus-within { border-color: var(--line); background: var(--paper-raised); }
-html.nh[data-stand="titel"] .tb-search { background: transparent; border: 0; border-bottom: 1px solid var(--line); box-shadow: none; }
+html.nh[data-mood="titlecard"] .tb-search { background: transparent; border: 0; border-bottom: 1px solid var(--line); box-shadow: none; }
 html.nh .tb-btn { border-radius: 0; color: var(--ink); }
 html.nh .tb-btn:hover, html.nh .tb-link:hover { background: var(--sky); }
 html.nh .tb-badge { border-radius: 0; background: var(--red); color: var(--on-eva); }
 html.nh .tb-handle { border-radius: 0; }
 
-/* ---------- Speler ---------- */
-/* Geen vervaagde hoes: de hoes is het enige plaatje met eigen kleur, hij kleurt het bureaublad (Hoeskleur) */
+/* ---------- Player ---------- */
+/* No blurred cover: the cover is the only image with its own color, it colors the desktop (cover color) */
 html.nh .media-stack > .player { background: var(--paper-raised); }
 html.nh .media-stack > .player[data-pos="1"], html.nh .media-stack > .player[data-pos="2"] { background: var(--paper); border-color: var(--line); filter: none; }
 html.nh .player .cover { border-radius: 0; border: 1px solid var(--line); box-shadow: none; }
@@ -359,13 +359,13 @@ html.nh .tall.player-thin .player-view .title { font-size: 1.6rem; }
 html.nh .tall.player-thin .media-stack > .player { border-radius: 0; padding: calc(var(--nh-bar) + 12px) 18px 14px !important; }
 html.nh .player-view { row-gap: 14px; }
 
-/* Songtekst: de regel die nu klinkt groot in de schreefletter, de rest klein */
+/* Lyrics: the line playing now big in the serif font, the rest small */
 html.nh #lyrics .ly-line { color: var(--nh-muted); font-weight: 400; }
 html.nh #lyrics .ly-line.past { color: color-mix(in srgb, var(--nh-muted) 70%, transparent); }
 html.nh #lyrics .ly-line.now { color: var(--ink); font-family: var(--font-display); font-weight: 800; text-shadow: none; }
 html.nh #lyrics-close { color: var(--on-eva); text-decoration: underline; font-family: var(--font-pixel); }
 
-/* ---------- Weer en buienalarm (één venster) ---------- */
+/* ---------- Weather and rain alarm (one window) ---------- */
 html.nh .tall .desk-weather, html.nh .desk-weather {
   border-radius: 0;
   border: 1px solid var(--line);
@@ -377,7 +377,7 @@ html.nh .desk-weather > .tile { border: 0; box-shadow: none; background: none; }
 html.nh .desk-weather > #w-rain { border-top: 1px solid var(--line-soft); padding-top: 10px !important; }
 html.nh .desk-weather > #w-rain > .eyebrow { height: auto; margin: 0 0 4px; padding: 0; background: none; border: 0; font: 400 .85rem/1.2 var(--font-pixel); color: var(--nh-muted); overflow: visible; }
 html.nh .desk-weather > #w-rain > .eyebrow[data-nh-exe]::before, html.nh .desk-weather > #w-rain > .eyebrow[data-nh-kanji]::after,
-html.nh[data-stand="titel"] .desk-weather > #w-rain > .eyebrow[data-nh-name]::before { content: none; }
+html.nh[data-mood="titlecard"] .desk-weather > #w-rain > .eyebrow[data-nh-name]::before { content: none; }
 html.nh :is(.rn-chart, .rn-flat) { border-radius: 0; }
 html.nh .rn-chart { gap: 2px; }
 html.nh .rn-bar i { border-radius: 0; background: var(--eva); }
@@ -386,7 +386,7 @@ html.nh .rn-flat::before { background: var(--line-soft); }
 html.nh .rn-flat span { border-radius: 0; border: 1px solid var(--line-soft); background: var(--paper-raised); color: var(--nh-muted); }
 html.nh #w-weather { --c: var(--eva); }
 
-/* ---------- AH-uren: alleen hier en in de agenda het felle AH-blauw ---------- */
+/* ---------- AH hours: the bright AH blue ---------- */
 html.nh #w-ah { --ct: var(--ah-c); }
 html.nh .ah-bar .stack { border-radius: 0; background: var(--line-soft); }
 html.nh .ah-bar .w { background: var(--ah-c); }
@@ -394,28 +394,28 @@ html.nh .ah-bar .p { background: repeating-linear-gradient(45deg, var(--ah-c) 0 
 html.nh .ah-bar .v { font-family: var(--font-pixel); }
 html.nh .ah-pay { border-top-color: var(--line-soft); }
 
-/* ---------- Stappen ---------- */
+/* ---------- Steps ---------- */
 html.nh #w-health { --ct: var(--eva); }
 html.nh .hl-ring-bg { stroke: var(--line-soft); }
 html.nh .hl-ring-fg { stroke: var(--eva); stroke-linecap: butt; }
 html.nh .hl-bar i { border-radius: 0; background: var(--sky); }
 html.nh .hl-bar.goal i { background: var(--eva); }
 html.nh .hl-bar span { font-family: var(--font-pixel); }
-html.nh[data-stand="titel"] .hl-ring-fg { stroke: var(--red); }
-html.nh[data-stand="titel"] .hl-bar i { background: var(--nh-muted); }
-html.nh[data-stand="titel"] .hl-bar.goal i { background: var(--red); }
+html.nh[data-mood="titlecard"] .hl-ring-fg { stroke: var(--red); }
+html.nh[data-mood="titlecard"] .hl-bar i { background: var(--nh-muted); }
+html.nh[data-mood="titlecard"] .hl-bar.goal i { background: var(--red); }
 
 /* ---------- F1 ---------- */
 html.nh #w-f1 { --ct: var(--ink); }
 html.nh .f1-pod { border-radius: 0; border: 1px solid var(--line-soft); background: transparent; }
 html.nh .f1-pod.p1 { border-color: var(--line); }
 
-/* ---------- Canvas en meldingen ---------- */
+/* ---------- Canvas and notifications ---------- */
 html.nh #w-canvas, html.nh #w-alerts { --ct: var(--ink); }
 
-/* ---------- Roterend vak: posters met een rand, sterren in pixel, streepjes onderaan ---------- */
+/* ---------- Rotating tile: posters with a border, stars in pixels, dashes at the bottom ---------- */
 html.nh :is(.lb-row img, .lb-row .img-box, .film-poster, .ep-cover .img-box, .mm-poster, .sp-img, .fr-poster) { border-radius: 0 !important; box-shadow: none !important; }
-html.nh :is(.lb-stars, .mm-stars, .fr-stars) { color: var(--feest); font-family: var(--font-pixel); }
+html.nh :is(.lb-stars, .mm-stars, .fr-stars) { color: var(--holiday); font-family: var(--font-pixel); }
 html.nh .tall-nav { gap: 8px; }
 html.nh .tall-arrow { border-radius: 0; background: transparent; color: var(--ink); }
 html.nh .tall-arrow:hover { background: var(--sky); }
@@ -426,10 +426,10 @@ html.nh #w-episodes { --ct: var(--ink); }
 html.nh .ep-badge { border-radius: 0; background: var(--red); color: var(--on-eva); }
 html.nh .tall #w-sptop .sp-col:last-child .sp-rank { border-radius: 0; background: var(--ink); color: var(--paper); }
 
-/* Memory Lane: het jaar groot in de feestkleur */
+/* Memory Lane: the year big in the holiday color */
 html.nh #w-memory .mm-date { color: var(--ink); font-family: var(--font-display); font-weight: 800; }
 html.nh #w-memory .mm-label { color: var(--nh-muted); font-family: var(--font-pixel); font-weight: 400; letter-spacing: .02em; text-transform: none; }
-html.nh #w-memory .mm-year b { color: var(--feest); font-family: var(--font-display); font-weight: 800; }
+html.nh #w-memory .mm-year b { color: var(--holiday); font-family: var(--font-display); font-weight: 800; }
 html.nh #w-memory .mm-year:hover { background: color-mix(in srgb, var(--sky) 30%, transparent); }
 html.nh #w-memory .mm-year { border-radius: 0; }
 html.nh #w-memory .mm-stat { border-radius: 0; background: transparent; border: 1px solid var(--line-soft); }
@@ -440,7 +440,7 @@ html.nh #calendar .cal-head .eyebrow { display: none; }
 html.nh #calendar .title, html.nh .cal-day h3 { font-family: var(--font-display); font-weight: 800; color: var(--ink); }
 html.nh .cal-day h3 { border-bottom: 1px solid var(--line); font-size: 1.05rem; letter-spacing: .02em; }
 html.nh .event { border-radius: 0; background: var(--paper-raised); border: 1px solid var(--line-soft); color: var(--ink); grid-template-columns: 10px minmax(0, 1fr) auto; }
-/* Geen gekleurde streep links: de categorie als klein vierkantje */
+/* No colored stripe on the left: the category as a small square */
 html.nh .event .dot { border-radius: 0; align-self: center; width: 10px; height: 10px; border: 1px solid var(--line); }
 html.nh .event .sub { color: var(--nh-muted); }
 html.nh .event .badge { border-radius: 999px; font-family: var(--font-body); }
@@ -457,7 +457,7 @@ html.nh .wk-col.today { background-color: color-mix(in srgb, var(--sky) 18%, tra
 html.nh :is(.wk-ev, .wk-chip) { border-radius: 0; border: 1px solid var(--line); box-shadow: none; text-shadow: none; }
 html.nh .wk-now, html.nh .cal-now { background: var(--red); }
 
-/* ---------- Agenda op tall: dagtijdlijn (calendar.js renderDay, sinds 1.3.0) ---------- */
+/* ---------- Agenda on tall: day timeline (calendar.js renderDay, since 1.3.0) ---------- */
 html.nh #calendar.cal-dayview { padding: var(--nh-bar) 0 0 !important; }
 html.nh .cal-dayview :is(.cal-head, .cal-weeknav) { display: none; }
 html.nh .cal-dayview .cal-list { max-height: none; overflow: visible; }
@@ -496,33 +496,33 @@ html.nh .dy-ev:hover { filter: brightness(1.06); }
 html.nh .dy-now { position: absolute; left: 56px; right: 0; height: 2px; background: var(--red); z-index: 3; pointer-events: none; }
 html.nh .dy-now::before { content: ""; position: absolute; left: -5px; top: -4px; width: 10px; height: 10px; border-radius: 50%; background: var(--red); }
 html.nh .dy-empty { position: absolute; left: 64px; right: 12px; bottom: 16px; margin: 0; font: 900 1.1rem/1.3 var(--font-body); letter-spacing: .01em; color: var(--nh-muted); }
-html.nh[data-stand="titel"] .dy-ev.k-college { background: var(--eva); }
-html.nh[data-stand="digital"] .dy-ev.k-college { background: linear-gradient(180deg, rgba(255, 255, 255, .25), rgba(255, 255, 255, 0) 40%), var(--eva); }
+html.nh[data-mood="titlecard"] .dy-ev.k-college { background: var(--eva); }
+html.nh[data-mood="digital"] .dy-ev.k-college { background: linear-gradient(180deg, rgba(255, 255, 255, .25), rgba(255, 255, 255, 0) 40%), var(--eva); }
 
-/* ---------- Feestdagen en seizoenen (sinds 1.4.0; design system › Feestdagen) ----------
-   Het thema zet alleen --feest, een teken, een slinger, hooguit drie hoeken en wat deeltjes. Geen achtergrond, geen gekleurde topbalk. */
+/* ---------- Holidays and seasons (since 1.4.0; design system › Holidays) ----------
+   The theme only sets --holiday, a mark, a garland, at most three corners and a few particles. No background, no colored top bar. */
 html.nh .tb-dayline, html.nh[data-theme]:not([data-theme-soft]) .tb-dayline { color: var(--nh-muted) !important; }
-html.nh .tb-greet, html.nh[data-theme="verjaardag"] .tb-greet { color: var(--feest) !important; font: 700 1em/1.3 var(--font-body); }
+html.nh .tb-greet, html.nh[data-theme="birthday"] .tb-greet { color: var(--holiday) !important; font: 700 1em/1.3 var(--font-body); }
 html.nh .tb-greet.small { font-size: .9em; }
-html.nh .nh-teken { margin-right: 10px; font: 800 1.35em/1 var(--font-display); color: var(--feest); letter-spacing: .06em; vertical-align: -0.08em; }
-html.nh .nh-teken[hidden] { display: none; }
+html.nh .nh-mark { margin-right: 10px; font: 800 1.35em/1 var(--font-display); color: var(--holiday); letter-spacing: .06em; vertical-align: -0.08em; }
+html.nh .nh-mark[hidden] { display: none; }
 html.nh .th-top, html.nh .th-drops { display: none; }
-html.nh .nh-slinger-wrap { position: absolute; left: 0; right: 0; top: -20px; height: 22px; pointer-events: none; z-index: 1; overflow: hidden; color: var(--ink); }
-html.nh .nh-slinger-wrap svg { display: block; width: 100%; height: 22px; }
-html.nh .nh-slinger .vlag { fill: var(--feest); }
-html.nh[data-stand="titel"] .nh-slinger-wrap { opacity: .75; }
-html.nh .th-deco.nh-hoek { color: var(--ink); }
-html.nh .th-deco.nh-hoek .vul { fill: var(--feest); }
-html.nh[data-stand="titel"] .th-deco.nh-hoek { opacity: .75; }
-/* F1-raceweekend: geblokte rand om het F1-venster */
-html.nh .th-deco.nh-geblokt { inset: -1px; border: 5px solid transparent; border-image: repeating-linear-gradient(90deg, var(--ink) 0 5px, var(--paper-raised) 5px 10px) 5; }
-/* Instellingen: themakaartjes met het teken in plaats van emoji, effen feestkleur */
+html.nh .nh-garland-wrap { position: absolute; left: 0; right: 0; top: -20px; height: 22px; pointer-events: none; z-index: 1; overflow: hidden; color: var(--ink); }
+html.nh .nh-garland-wrap svg { display: block; width: 100%; height: 22px; }
+html.nh .nh-garland .nh-flag { fill: var(--holiday); }
+html.nh[data-mood="titlecard"] .nh-garland-wrap { opacity: .75; }
+html.nh .th-deco.nh-corner { color: var(--ink); }
+html.nh .th-deco.nh-corner .nh-fill { fill: var(--holiday); }
+html.nh[data-mood="titlecard"] .th-deco.nh-corner { opacity: .75; }
+/* F1 race weekend: a checkered border around the F1 window */
+html.nh .th-deco.nh-checkered { inset: -1px; border: 5px solid transparent; border-image: repeating-linear-gradient(90deg, var(--ink) 0 5px, var(--paper-raised) 5px 10px) 5; }
+/* Settings: theme cards with the mark instead of emoji, a plain holiday color */
 html.nh .th-card { background: var(--a); border: 1px solid var(--line); }
-html.nh .th-card-icon.nh-teken { margin: 0; font-size: 1.4rem; color: #fff; }
+html.nh .th-card-icon.nh-mark { margin: 0; font-size: 1.4rem; color: #fff; }
 html.nh .th-card-name { color: #fff; }
 html.nh .th-parts { opacity: .9; }
 
-/* ---------- Desk: zijbalk en tabjes ---------- */
+/* ---------- Desk: sidebar and tabs ---------- */
 html.nh .rail { background: var(--paper-raised); border-right: 1px solid var(--line); box-shadow: none; }
 html.nh .rail-btn, html.nh .rail :is(a, button) { color: var(--ink); border-radius: 0; }
 html.nh .rail-btn:hover, html.nh :is(.rail-btn[aria-current="page"], .rail-btn[aria-pressed="true"]) { background: var(--eva); color: var(--on-eva); }
@@ -533,7 +533,7 @@ html.nh .desk-tabbar { border-bottom: 1px solid var(--line); background: var(--t
 html.nh .desk-tabbar button { border: 0; border-right: 1px solid color-mix(in srgb, var(--on-eva) 25%, transparent); border-radius: 0; background: transparent; color: var(--on-eva); font-family: var(--font-pixel); opacity: .75; }
 html.nh .desk-tabbar button[aria-selected="true"] { background: var(--paper-raised); color: var(--ink); opacity: 1; }
 
-/* ---------- Meer-balk onderaan en de lade ---------- */
+/* ---------- More bar at the bottom and the drawer ---------- */
 html.nh .desk-more-bar, html.nh .tall .desk-more-bar, html.nh .tall .desk-more-bar:hover {
   border-radius: 0;
   border: 1px solid var(--line);
@@ -558,8 +558,8 @@ html.nh .panel-dialog {
   --muted: var(--nh-muted);
 }
 html.nh .panel-dialog::backdrop { background: rgba(11, 11, 13, .35); backdrop-filter: none; }
-html.nh[data-stand="digital"] .panel-dialog::backdrop { background: rgba(21, 86, 207, .18); }
-html.nh[data-stand="titel"] .panel-dialog::backdrop { background: rgba(0, 0, 0, .7); }
+html.nh[data-mood="digital"] .panel-dialog::backdrop { background: rgba(21, 86, 207, .18); }
+html.nh[data-mood="titlecard"] .panel-dialog::backdrop { background: rgba(0, 0, 0, .7); }
 html.nh .panel-dialog .panel-head { background: var(--titlebar); color: var(--on-eva); border: 0; font-family: var(--font-pixel); }
 html.nh .panel-dialog .panel-head .w-btn { padding: 2px 10px; }
 html.nh .st-tab { border-radius: 0; font-family: var(--font-pixel); }
@@ -573,10 +573,10 @@ html.nh .th-set-h { color: var(--ink); font-family: var(--font-display); font-we
 html.nh #toast { border-radius: 0; background: var(--ink); color: var(--paper); font-family: var(--font-pixel); }
 html.nh #offline-note { border-radius: 0; background: var(--ink); color: var(--paper); font-family: var(--font-pixel); }
 
-/* Lege vakken en fouten: droge zin in hoofdletters */
+/* Empty tiles and errors: a dry sentence in capitals */
 html.nh .w-empty { font-family: var(--font-body); }
 
-/* ---------- Beweging beperken ---------- */
+/* ---------- Reduce motion ---------- */
 @media (prefers-reduced-motion: reduce) {
   html.nh body::before { transition: none; }
 }

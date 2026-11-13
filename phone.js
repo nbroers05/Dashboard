@@ -1,32 +1,33 @@
 'use strict';
 
-// Telefoon (tot 700px breed, sinds 0.45.0): vaste tabbalk onderaan met Vandaag, Agenda, Media en Data, elk tabblad
-// zoveel mogelijk in één scherm. desk.js schakelt deze indeling aan en uit (MODES.phone) en zet de vakken daarna
-// precies terug, net als bij desk en tall.
-// - Vandaag: topbalk (klok, groet, knoppen), dagregel als chips, en korte samenvattingen van weer+buienalarm, AH,
-//   Canvas, meldingen, to-do en check-in. De echte vakken laden gewoon (verborgen) en een tik op een samenvatting
-//   opent hun pop-up/pagina. Gegevens via DASH_WEATHER, DASH_DAYLINE, DASH_CANVAS, DASH.allAlerts(), DASH_CHECKIN.
-// - Agenda: eigen lijst per dag met dagstrip (puntjes per categorie), aftellen bij een deadline van vandaag en
-//   regencheck onder AH-diensten; "Week" toont de gewone agenda (calendar.js) in weekstand.
-// - Media: grote speler + songtekst, filterchips (Alles/Film/Series/F1, Feeds opent de Feeds-pagina), film met
-//   tabje Laatst gekeken, Episodes, F1, vrienden, Spotify-maandoverzicht.
-// - Data: check-in (alleen invullen), kerncijfers (Spotify en pc-uren deze week, AH deze maand, buiten, stappen),
-//   plek voor Memory Lane, gezondheid, en "Alle grafieken" naar Mijn data.
-// Minispeler boven de tabbalk (niet op Media) zolang Spotify iets heeft. Tabblad in phone.tab en in het adres
-// (#vandaag, #agenda, #media, #data), zodat de terug-knop werkt; andere adressen (#checkin-…, #feeds, #canvas) blijven
-// van hun eigen script.
+// Phone (up to 700px wide, since 0.45.0): a fixed tab bar at the bottom with Today, Agenda, Media and Data, each tab
+// on one screen as much as possible. desk.js turns this layout on and off (MODES.phone) and afterwards puts the tiles
+// back exactly, just like with desk and tall.
+// - Today: top bar (clock, greeting, buttons), the day line as chips, and short summaries of weather+rain alarm, AH,
+//   Canvas, notifications, to-do and check-in. The real tiles simply load (hidden) and a tap on a summary
+//   opens their pop-up/page. Data via DASH_WEATHER, DASH_DAYLINE, DASH_CANVAS, DASH.allAlerts(), DASH_CHECKIN.
+// - Agenda: own list per day with a day strip (dots per category), a countdown for a deadline today and
+//   a rain check under AH shifts; "Week" shows the normal agenda (calendar.js) in week view.
+// - Media: big player + lyrics, filter chips (All/Film/Series/F1, Feeds opens the Feeds page), film with
+//   a Last watched tab, Episodes, F1, friends, Spotify month.
+// - Data: check-in (fill in only), key numbers (Spotify and PC hours this week, AH this month, outside, steps),
+//   a spot for Memory Lane, health, and "All charts" to My data.
+// Mini player above the tab bar (not on Media) while Spotify has something. Tab in phone.tab and in the address
+// (#today, #agenda, #media, #data), so the back button works; other addresses (#checkin-…, #feeds, #canvas) stay
+// with their own script. The old address #vandaag still works.
 window.DASH_PHONE = (() => {
-  const { h, store, fmtTime, startOfDay, addDays, startOfWeek, isAH, nl } = DASH;
+  const { h, store, fmtTime, startOfDay, addDays, startOfWeek, isAH, dec } = DASH;
   const $ = (id) => document.getElementById(id);
   const DAY = 86400000;
   const ICON = {
-    vandaag: '<svg viewBox="0 0 24 24"><path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0-5 1.4 3h-2.8L12 2zm0 20-1.4-3h2.8L12 22zM2 12l3-1.4v2.8L2 12zm20 0-3 1.4v-2.8l3 1.4z"/></svg>',
+    today: '<svg viewBox="0 0 24 24"><path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0-5 1.4 3h-2.8L12 2zm0 20-1.4-3h2.8L12 22zM2 12l3-1.4v2.8L2 12zm20 0-3 1.4v-2.8l3 1.4z"/></svg>',
     agenda: '<svg viewBox="0 0 24 24"><path d="M7 2h2v2h6V2h2v2h2a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2V2zM5 9v10h14V9H5zm2 2h4v4H7v-4z"/></svg>',
     media: '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7L8 5z"/></svg>',
     data: '<svg viewBox="0 0 24 24"><path d="M5 13h3v7H5v-7zm5.5-5h3v12h-3V8zM16 3h3v17h-3V3z"/></svg>',
   };
-  const TABS = [['vandaag', 'Vandaag'], ['agenda', 'Agenda'], ['media', 'Media'], ['data', 'Data']];
+  const TABS = [['today', 'Today'], ['agenda', 'Agenda'], ['media', 'Media'], ['data', 'Data']];
   const isTab = (t) => TABS.some(([id]) => id === t);
+  const OLD_TAB = { vandaag: 'today' };   // addresses and saved tabs from before 1.7.0
 
   let active = false, tab = null, timer = null;
   const panes = {};
@@ -34,9 +35,9 @@ window.DASH_PHONE = (() => {
     panes[id] = h('section', 'ph-pane');
     panes[id].dataset.tab = id;
   }
-  const hidden = h('div', 'ph-hidden');   // echte vakken die wel laden maar niet getoond worden
+  const hidden = h('div', 'ph-hidden');   // real tiles that do load but aren't shown
   const bar = h('nav', 'ph-bar');
-  bar.setAttribute('aria-label', 'Tabbladen');
+  bar.setAttribute('aria-label', 'Tabs');
   const barBtns = {};
   for (const [id, label] of TABS) {
     const b = h('button', 'ph-tab');
@@ -48,7 +49,7 @@ window.DASH_PHONE = (() => {
     bar.append(b);
   }
 
-  // Kopregel van de tabbladen zonder topbalk
+  // Header of the tabs without a top bar
   function header(title, extra) {
     const head = h('div', 'ph-head');
     head.append(h('h2', null, title));
@@ -62,9 +63,10 @@ window.DASH_PHONE = (() => {
   };
   const clickEl = (id) => () => { const el = $(id); if (el) el.click(); };
 
-  // ---------- Tabblad wisselen ----------
+  // ---------- Switching tabs ----------
   function setTab(id, push) {
-    if (!isTab(id)) id = 'vandaag';
+    if (OLD_TAB[id]) id = OLD_TAB[id];
+    if (!isTab(id)) id = 'today';
     const changed = id !== tab;
     tab = id;
     store.set('phone.tab', id);
@@ -80,12 +82,12 @@ window.DASH_PHONE = (() => {
   }
   window.addEventListener('popstate', () => {
     if (!active) return;
-    const t = location.hash.slice(1);
+    const t = OLD_TAB[location.hash.slice(1)] || location.hash.slice(1);
     if (isTab(t)) setTab(t, false);
-    else if (!location.hash) setTab('vandaag', false);
+    else if (!location.hash) setTab('today', false);
   });
 
-  // ================= Vandaag =================
+  // ================= Today =================
   const chips = h('div', 'ph-chips');
   const today = h('div', 'ph-today');
   const DOT = { ah: '#00ADE6', rain: 'var(--c-sky)', canvas: 'var(--c-study)', bday: '#c58bff', f1: 'var(--c-f1)' };
@@ -99,11 +101,11 @@ window.DASH_PHONE = (() => {
     return c;
   }
   function f1Chip() {
-    // Alleen op een raceweekend: eerstvolgende sessie als er vandaag of morgen een is
+    // Only on a race weekend: the next session if there's one today or tomorrow
     const s = ((store.get('f1.schedule.v2') || {}).sessions || []).filter((x) => x.end > Date.now()).sort((a, b) => a.start - b.start)[0];
     if (!s || s.start - Date.now() > 2 * DAY) return null;
     const live = s.start <= Date.now();
-    return chip('f1', `F1 ${s.name.toLowerCase()} ${live ? 'nu' : `${DASH.fmtWeekday ? DASH.fmtWeekday(s.start) : ''} ${fmtTime(s.start)}`.trim()}`, () => setTab('media', true));
+    return chip('f1', `F1 ${s.name.toLowerCase()} ${live ? 'now' : `${DASH.fmtWeekday ? DASH.fmtWeekday(s.start) : ''} ${fmtTime(s.start)}`.trim()}`, () => setTab('media', true));
   }
   function renderChips() {
     const items = (window.DASH_DAYLINE && window.DASH_DAYLINE.items) || [];
@@ -122,22 +124,22 @@ window.DASH_PHONE = (() => {
     chips.hidden = !list.length;
   }
 
-  // Weer + buienalarm in één kaart
+  // Weather + rain alarm in one card
   let radar = null;
   function rainLine() {
-    if (!radar || !radar.slots.length) return { text: 'Buienalarm laden…', slots: [] };
+    if (!radar || !radar.slots.length) return { text: 'Loading rain alarm…', slots: [] };
     const now = Date.now();
     const slots = radar.slots.filter((s) => s.end > now).slice(0, 24);
     const wet = (s) => s.mmh >= DASH.RAIN_MIN;
     const first = slots.find(wet);
     let text;
-    if (!first) text = 'Geen regen de komende 2 uur';
+    if (!first) text = 'No rain in the next 2 hours';
     else if (first.start <= now) {
       const dry = slots.find((s) => !wet(s));
-      text = dry ? `Regen tot ${fmtTime(dry.start)}` : 'Regen de komende 2 uur';
+      text = dry ? `Rain until ${fmtTime(dry.start)}` : 'Rain for the next 2 hours';
     } else {
       const lastDry = slots[slots.indexOf(first) - 1];
-      text = `Droog tot ${fmtTime(lastDry ? lastDry.end : first.start)}`;
+      text = `Dry until ${fmtTime(lastDry ? lastDry.end : first.start)}`;
     }
     return { text, slots };
   }
@@ -149,8 +151,8 @@ window.DASH_PHONE = (() => {
       const c = wx.current;
       const info = window.DASH_WEATHER_INFO;
       const [desc] = info ? info.code(c.weather_code) : [''];
-      left.append(h('div', 'ph-big', `${Math.round(c.temperature_2m)}°`), h('div', 'ph-sub', `${desc}${desc ? ' · ' : ''}voelt als ${Math.round(c.apparent_temperature)}°`));
-    } else left.append(h('div', 'ph-big', '–'), h('div', 'ph-sub', 'Weer laden…'));
+      left.append(h('div', 'ph-big', `${Math.round(c.temperature_2m)}°`), h('div', 'ph-sub', `${desc}${desc ? ' · ' : ''}feels like ${Math.round(c.apparent_temperature)}°`));
+    } else left.append(h('div', 'ph-big', '–'), h('div', 'ph-sub', 'Loading weather…'));
     const right = h('div', 'ph-wx-rain');
     const r = rainLine();
     const bars = h('div', 'ph-rainbars');
@@ -166,7 +168,7 @@ window.DASH_PHONE = (() => {
     return el;
   }
 
-  // AH: volgende dienst en uren deze week
+  // AH: next shift and hours this week
   function shifts() {
     const cal = window.DASH_CALENDAR;
     return cal && cal.connected ? cal.events.filter(isAH) : null;
@@ -181,17 +183,17 @@ window.DASH_PHONE = (() => {
     }
     return { worked: worked / 3600000, all: all / 3600000 };
   }
-  const fmtH = (v) => nl(v, v % 1 ? 1 : 0);
+  const fmtH = (v) => dec(v, v % 1 ? 1 : 0);
   const dayName = (ms) => {
     const d = Math.round((startOfDay(ms) - startOfDay(Date.now())) / DAY);
-    if (d === 0) return 'vandaag';
-    if (d === 1) return 'morgen';
-    return new Date(ms).toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short' }).replace(/\./g, '');
+    if (d === 0) return 'today';
+    if (d === 1) return 'tomorrow';
+    return new Date(ms).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }).replace(/\./g, '');
   };
   function ahCard() {
     const el = card('ph-ah', clickEl('w-ah'));
     const list = shifts();
-    if (!list) { el.append(h('span', 'ph-label', 'AH'), h('div', 'ph-sub', 'Koppel je agenda (tabblad Agenda)')); return el; }
+    if (!list) { el.append(h('span', 'ph-label', 'AH'), h('div', 'ph-sub', 'Link your agenda (Agenda tab)')); return el; }
     const now = Date.now();
     const week = startOfWeek(now);
     const wk = hoursIn(list, week, addDays(week, 7), now);
@@ -199,11 +201,11 @@ window.DASH_PHONE = (() => {
     const left = h('div');
     left.append(h('span', 'ph-label', 'AH'));
     if (next) {
-      left.append(h('div', 'ph-sub', next.start <= now ? 'Nu aan het werk' : 'Volgende dienst'),
-        h('b', 'ph-ah-next', next.start <= now ? `tot ${fmtTime(next.end)}` : `${dayName(next.start)} · ${fmtTime(next.start)}–${fmtTime(next.end)}`));
-    } else left.append(h('div', 'ph-sub', 'Geen dienst gepland'));
+      left.append(h('div', 'ph-sub', next.start <= now ? 'Working now' : 'Next shift'),
+        h('b', 'ph-ah-next', next.start <= now ? `until ${fmtTime(next.end)}` : `${dayName(next.start)} · ${fmtTime(next.start)}–${fmtTime(next.end)}`));
+    } else left.append(h('div', 'ph-sub', 'No shift planned'));
     const right = h('div', 'ph-ah-hours');
-    right.append(h('b', 'ph-num', `${fmtH(wk.worked)} u`), h('span', null, wk.all > wk.worked ? `deze week · ${fmtH(wk.all)} u gepland` : 'deze week'));
+    right.append(h('b', 'ph-num', `${fmtH(wk.worked)} h`), h('span', null, wk.all > wk.worked ? `this week · ${fmtH(wk.all)} h planned` : 'this week'));
     const prog = h('div', 'ph-prog');
     const fill = h('i');
     fill.style.width = `${wk.all ? Math.min(100, (wk.worked / wk.all) * 100) : 0}%`;
@@ -212,17 +214,17 @@ window.DASH_PHONE = (() => {
     return el;
   }
 
-  // Canvas: de twee urgentste + "+N"
+  // Canvas: the two most urgent + "+N"
   function canvasCard() {
     const C = window.DASH_CANVAS;
     const el = card('ph-canvas', () => C && C.openPage());
     const title = h('span', 'ph-title', 'Canvas');
     el.append(title);
     const all = C && C.items();
-    if (!all) { el.append(h('div', 'ph-sub', C ? 'Koppel je agenda (tabblad Agenda)' : 'Laden…')); return el; }
+    if (!all) { el.append(h('div', 'ph-sub', C ? 'Link your agenda (Agenda tab)' : 'Loading…')); return el; }
     const now = Date.now();
     const open = all.filter((it) => !it.done);
-    if (!open.length) { el.append(h('div', 'ph-sub', 'Niks open 🎉')); return el; }
+    if (!open.length) { el.append(h('div', 'ph-sub', 'Nothing open 🎉')); return el; }
     title.append(h('small', null, `${open.length} open`));
     for (const it of open.slice(0, 2)) {
       const row = h('div', 'ph-row');
@@ -234,22 +236,22 @@ window.DASH_PHONE = (() => {
     return el;
   }
 
-  // Meldingen: de laatste paar + mail; tik = alles in een pop-up
+  // Notifications: the last few + mail; tap = everything in a pop-up
   let mailCount = null;
-  window.addEventListener('dash:mail', (e) => { mailCount = e.detail ? e.detail.count : null; if (active && tab === 'vandaag') render(); });
+  window.addEventListener('dash:mail', (e) => { mailCount = e.detail ? e.detail.count : null; if (active && tab === 'today') render(); });
   function alertsCard() {
     const list = DASH.allAlerts();
     const el = card('ph-alerts', openAlerts);
     const head = h('div', 'ph-title');
-    head.append('Meldingen');
+    head.append('Notifications');
     const n = list.length + (mailCount ? 1 : 0);
     if (n) head.append(h('span', 'ph-badge', String(n)));
-    if (n > 2) head.append(h('small', null, 'tik voor alles'));
+    if (n > 2) head.append(h('small', null, 'tap for all'));
     el.append(head);
     const rows = [];
-    if (mailCount) rows.push(['✉️', `Mail · ${mailCount} ongelezen`, '']);
+    if (mailCount) rows.push(['✉️', `Mail · ${mailCount} unread`, '']);
     for (const a of list) rows.push([a.icon || '•', a.text, a.sub && a.sub.length < 16 ? a.sub : '']);
-    if (!rows.length) el.append(h('div', 'ph-sub', 'Niks aan de hand'));
+    if (!rows.length) el.append(h('div', 'ph-sub', 'All quiet'));
     for (const [icon, text, sub] of rows.slice(0, 2)) {
       const r = h('div', 'ph-row');
       r.append(h('span', 'ph-row-icon', icon), h('span', 'ph-row-text', text), h('span', 'ph-row-when', sub));
@@ -259,7 +261,7 @@ window.DASH_PHONE = (() => {
   }
   let alertPop = null;
   function openAlerts() {
-    if (!alertPop) alertPop = DASH.panel('Meldingen', '#a78bfa');
+    if (!alertPop) alertPop = DASH.panel('Notifications', '#a78bfa');
     const fill = () => {
       const box = h('div', 'ph-alert-list');
       if (mailCount) {
@@ -267,7 +269,7 @@ window.DASH_PHONE = (() => {
         m.href = 'https://mail.google.com/';
         m.target = '_blank';
         m.rel = 'noopener';
-        m.append(h('span', 'ph-row-icon', '✉️'), h('b', null, `${mailCount} ongelezen mail`));
+        m.append(h('span', 'ph-row-icon', '✉️'), h('b', null, `${mailCount} unread mail`));
         box.append(m);
       }
       for (const a of DASH.allAlerts()) {
@@ -280,24 +282,24 @@ window.DASH_PHONE = (() => {
         if (a.onDismiss) {
           const x = h('button', 'ph-x', '✕');
           x.type = 'button';
-          x.setAttribute('aria-label', 'Weg');
+          x.setAttribute('aria-label', 'Remove');
           x.onclick = (e) => { e.stopPropagation(); a.onDismiss(); setTimeout(fill, 50); };
           r.append(x);
         }
         box.append(r);
       }
-      if (!box.children.length) box.append(h('p', 'w-note', 'Niks aan de hand.'));
+      if (!box.children.length) box.append(h('p', 'w-note', 'All quiet.'));
       alertPop.body.replaceChildren(box);
     };
     fill();
     alertPop.open();
   }
 
-  // To-do: tik = het echte to-do-vak in een pop-up (toevoegen, afvinken)
+  // To-do: tap = the real to-do tile in a pop-up (add, check off)
   function todoCard() {
     const items = (store.get('todo.items') || []).filter((x) => !x.done);
     const el = card('ph-todo', openTodo);
-    el.append(h('span', 'ph-title', 'To-do'), h('b', 'ph-num', items.length ? `${items.length} open` : 'Niks open'));
+    el.append(h('span', 'ph-title', 'To-do'), h('b', 'ph-num', items.length ? `${items.length} open` : 'Nothing open'));
     if (items[0]) el.append(h('span', 'ph-sub ph-ellipsis', items[0].text));
     return el;
   }
@@ -314,13 +316,13 @@ window.DASH_PHONE = (() => {
     todoPop.open();
   }
 
-  // Check-in: alleen hoeveel vandaag + knop
+  // Check-in: only how many today + button
   function checkinCard() {
     const C = window.DASH_CHECKIN;
     const el = card('ph-checkin');
     const n = C ? C.today() : 0;
-    el.append(h('span', 'ph-title', 'Check-in'), h('span', 'ph-sub', n ? `${n}× ingevuld vandaag` : 'nog niet gedaan'));
-    const b = h('button', 'ph-btn', 'Inchecken');
+    el.append(h('span', 'ph-title', 'Check-in'), h('span', 'ph-sub', n ? `${n}× filled in today` : 'not done yet'));
+    const b = h('button', 'ph-btn', 'Check in');
     b.type = 'button';
     b.onclick = () => C && C.open();
     el.append(b);
@@ -338,7 +340,7 @@ window.DASH_PHONE = (() => {
   let weekStart = startOfWeek(Date.now()), listFrom = null;
   const agView = () => (store.get('phone.agendaView') === 'week' ? 'week' : 'list');
   const agSeg = h('div', 'seg ph-seg');
-  for (const [v, label] of [['list', 'Lijst'], ['week', 'Week']]) {
+  for (const [v, label] of [['list', 'List'], ['week', 'Week']]) {
     const b = h('button', null, label);
     b.type = 'button';
     b.dataset.v = v;
@@ -350,9 +352,9 @@ window.DASH_PHONE = (() => {
   const agNext = h('button', 'ph-round', '›');
   const agLabel = h('button', 'ph-weeklabel');
   [agPrev, agNext, agLabel].forEach((b) => { b.type = 'button'; });
-  agPrev.setAttribute('aria-label', 'Vorige week');
-  agNext.setAttribute('aria-label', 'Volgende week');
-  agLabel.title = 'Terug naar deze week';
+  agPrev.setAttribute('aria-label', 'Previous week');
+  agNext.setAttribute('aria-label', 'Next week');
+  agLabel.title = 'Back to this week';
   agPrev.onclick = () => { weekStart = addDays(weekStart, -7); listFrom = null; renderAgenda(); };
   agNext.onclick = () => { weekStart = addDays(weekStart, 7); listFrom = null; renderAgenda(); };
   agLabel.onclick = () => { weekStart = startOfWeek(Date.now()); listFrom = null; renderAgenda(); };
@@ -360,7 +362,7 @@ window.DASH_PHONE = (() => {
   const strip = h('div', 'ph-strip');
   const agList = h('div', 'ph-aglist');
 
-  // Zelfde kleuren als de agenda (calendar.js colorOf)
+  // The same colors as the agenda (calendar.js colorOf)
   const IS_F1 = /formula\s*1|(^|\W)f1\b/i;
   function colorOf(ev) {
     if (!ev.allDay && /\bAH\b/.test(ev.title)) return '#00ADE6';
@@ -373,7 +375,7 @@ window.DASH_PHONE = (() => {
   const cleanTitle = (t) => t.replace(/\s*\[[^\]]+\]\s*$/, '').replace(/^[🏁⏱️🏎️\s]+/u, '');
   const onDay = (ev, day) => ev.start < addDays(day, 1) && (ev.end > day || (ev.start >= day && ev.end === ev.start));
 
-  // Regen bij een AH-dienst: vertrek 25 min ervoor, daarna per uur tijdens de dienst (Open-Meteo per uur)
+  // Rain at an AH shift: leaving 25 min before, then per hour during the shift (Open-Meteo hourly)
   function shiftRain(ev) {
     const wx = window.DASH_WEATHER;
     if (!wx || !wx.hourly || ev.end < Date.now()) return null;
@@ -384,13 +386,13 @@ window.DASH_PHONE = (() => {
     if (!leave) return null;
     const wet = (x) => x && x.mm >= 0.2;
     const during = hr.find((x) => x.t + 3600000 > ev.start && x.t < ev.end && wet(x));
-    const first = wet(leave) ? 'Regen bij vertrek' : 'Droog bij vertrek';
-    if (during && !wet(leave)) return { text: `${first} · regen vanaf ${fmtTime(Math.max(during.t, ev.start))}`, wet: true };
-    return { text: during && wet(leave) ? first : `${first}${during ? '' : ' en tijdens je dienst'}`, wet: wet(leave) };
+    const first = wet(leave) ? 'Rain when leaving' : 'Dry when leaving';
+    if (during && !wet(leave)) return { text: `${first} · rain from ${fmtTime(Math.max(during.t, ev.start))}`, wet: true };
+    return { text: during && wet(leave) ? first : `${first}${during ? '' : ' and during your shift'}`, wet: wet(leave) };
   }
   function countdown(ms) {
     const m = Math.max(0, Math.round(ms / 60000));
-    return m < 60 ? `${m} min` : `${Math.floor(m / 60)}u ${String(m % 60).padStart(2, '0')}m`;
+    return m < 60 ? `${m} min` : `${Math.floor(m / 60)}h ${String(m % 60).padStart(2, '0')}m`;
   }
 
   function evRow(ev, day, now) {
@@ -398,10 +400,10 @@ window.DASH_PHONE = (() => {
     if (ev.canvasUrl || ev.link) { a.href = ev.canvasUrl || ev.link; a.target = '_blank'; a.rel = 'noopener'; }
     a.style.setProperty('--c', colorOf(ev));
     if (ev.end < now && !(ev.allDay && onDay(ev, startOfDay(now)))) a.classList.add('past');
-    const time = ev.allDay ? 'hele dag' : isDeadline(ev) ? `${fmtTime(ev.end)} · deadline`
+    const time = ev.allDay ? 'all day' : isDeadline(ev) ? `${fmtTime(ev.end)} · deadline`
       : `${ev.start < day ? '…' : fmtTime(ev.start)} – ${ev.end > addDays(day, 1) ? '…' : fmtTime(ev.end)}`;
     const txt = h('div', 'ph-ev-txt');
-    txt.append(h('span', 'ph-ev-time', time), h('b', null, ev.birthday ? `🎂 ${ev.birthday} jarig` : cleanTitle(ev.title)));
+    txt.append(h('span', 'ph-ev-time', time), h('b', null, ev.birthday ? `🎂 ${ev.birthday}'s birthday` : cleanTitle(ev.title)));
     if (isAH(ev)) {
       const r = shiftRain(ev);
       if (r) txt.append(h('span', `ph-ev-rain${r.wet ? ' wet' : ''}`, r.text));
@@ -418,7 +420,7 @@ window.DASH_PHONE = (() => {
     [...agSeg.children].forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === view)));
     agSeg.hidden = !connected;
     const calEl = $('calendar');
-    // Week = de gewone agenda (die heeft zelf vorige/volgende); niet gekoppeld = zijn inlogscherm
+    // Week = the normal agenda (it has its own previous/next); not linked = its login screen
     if (calEl) {
       calEl.hidden = view !== 'week';
       if (view === 'week' && connected) {
@@ -433,10 +435,10 @@ window.DASH_PHONE = (() => {
     const thisWeek = startOfWeek(now);
     const events = cal.events.filter(visible);
     const end = addDays(weekStart, 7);
-    agLabel.textContent = `${new Date(weekStart).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })} – ${new Date(end - 1).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' })}`.replace(/\./g, '');
+    agLabel.textContent = `${new Date(weekStart).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })} – ${new Date(end - 1).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}`.replace(/\./g, '');
     agLabel.disabled = weekStart === thisWeek;
 
-    // Dagstrip: ma–zo met een puntje per categorie (max 3)
+    // Day strip: Mon–Sun with a dot per category (max 3)
     strip.replaceChildren();
     for (let i = 0; i < 7; i++) {
       const day = addDays(weekStart, i);
@@ -445,7 +447,7 @@ window.DASH_PHONE = (() => {
       if (day === startOfDay(now)) b.classList.add('today');
       if (listFrom === day) b.classList.add('sel');
       const d = new Date(day);
-      b.append(h('span', 'ph-day-name', d.toLocaleDateString('nl-NL', { weekday: 'short' }).replace('.', '')), h('b', null, String(d.getDate())));
+      b.append(h('span', 'ph-day-name', d.toLocaleDateString('en-GB', { weekday: 'short' }).replace('.', '')), h('b', null, String(d.getDate())));
       const dots = h('span', 'ph-day-dots');
       const colors = [...new Set(events.filter((e) => onDay(e, day)).map(colorOf))].slice(0, 3);
       for (const c of colors) { const dot = h('i'); dot.style.background = c; dots.append(dot); }
@@ -459,7 +461,7 @@ window.DASH_PHONE = (() => {
       strip.append(b);
     }
 
-    // Lijst per dag: vanaf vandaag (deze week) of het begin van de gekozen week, twee weken lang
+    // List per day: from today (this week) or the start of the chosen week, two weeks long
     const from = listFrom != null && listFrom < weekStart + 7 * DAY ? Math.min(listFrom, weekStart === thisWeek ? startOfDay(now) : weekStart)
       : weekStart === thisWeek ? startOfDay(now) : weekStart;
     agList.replaceChildren();
@@ -467,19 +469,19 @@ window.DASH_PHONE = (() => {
       const list = events.filter((e) => onDay(e, day)).sort((a, b) => (b.allDay - a.allDay) || a.start - b.start);
       if (!list.length) continue;
       const diff = Math.round((day - startOfDay(now)) / DAY);
-      const date = new Date(day).toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short' }).replace(/\./g, '');
-      const head = h('p', 'ph-dayhead', diff === 0 ? `Vandaag · ${date}` : diff === 1 ? `Morgen · ${date}` : date);
+      const date = new Date(day).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }).replace(/\./g, '');
+      const head = h('p', 'ph-dayhead', diff === 0 ? `Today · ${date}` : diff === 1 ? `Tomorrow · ${date}` : date);
       head.dataset.day = day;
       agList.append(head, ...list.map((e) => evRow(e, day, now)));
     }
-    if (!agList.children.length) agList.append(h('p', 'w-note', 'Niets gepland in deze twee weken.'));
+    if (!agList.children.length) agList.append(h('p', 'w-note', 'Nothing planned in these two weeks.'));
   }
 
   // ================= Media =================
-  const KIND = { 'w-stars': 'film', 'w-letterboxd': 'film', 'w-friends': 'film', 'w-episodes': 'series', 'w-f1': 'f1', 'w-sptop': 'muziek' };
+  const KIND = { 'w-stars': 'film', 'w-letterboxd': 'film', 'w-friends': 'film', 'w-episodes': 'series', 'w-f1': 'f1', 'w-sptop': 'music' };
   const mediaChips = h('div', 'ph-filter');
   const filmTabs = h('div', 'seg ph-seg ph-filmtabs');
-  const FILTERS = [['alles', 'Alles'], ['film', 'Film'], ['series', 'Series'], ['f1', 'F1'], ['feeds', 'Feeds']];
+  const FILTERS = [['all', 'All'], ['film', 'Film'], ['series', 'Series'], ['f1', 'F1'], ['feeds', 'Feeds']];
   for (const [f, label] of FILTERS) {
     const b = h('button', 'ph-fchip', label);
     b.type = 'button';
@@ -491,7 +493,7 @@ window.DASH_PHONE = (() => {
     };
     mediaChips.append(b);
   }
-  for (const [id, label] of [['w-stars', 'Film van vanavond'], ['w-letterboxd', 'Laatst gekeken']]) {
+  for (const [id, label] of [['w-stars', 'Film tonight'], ['w-letterboxd', 'Last watched']]) {
     const b = h('button', null, label);
     b.type = 'button';
     b.dataset.id = id;
@@ -499,19 +501,19 @@ window.DASH_PHONE = (() => {
     filmTabs.append(b);
   }
   function renderMedia() {
-    const f = store.get('phone.mediaFilter') || 'alles';
+    const f = { alles: 'all' }[store.get('phone.mediaFilter')] || store.get('phone.mediaFilter') || 'all';
     const film = store.get('phone.filmTab') || 'w-stars';
     [...mediaChips.children].forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.f === f)));
     [...filmTabs.children].forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.id === film)));
     for (const [id, kind] of Object.entries(KIND)) {
       const el = $(id);
       if (!el) continue;
-      let show = f === 'alles' ? true : kind === f;
-      if (id === 'w-sptop') show = f === 'alles';
+      let show = f === 'all' ? true : kind === f;
+      if (id === 'w-sptop') show = f === 'all';
       if (id === 'w-stars' || id === 'w-letterboxd') show = show && id === film;
       el.hidden = !show;
     }
-    filmTabs.hidden = !(f === 'alles' || f === 'film');
+    filmTabs.hidden = !(f === 'all' || f === 'film');
   }
 
   // ================= Data =================
@@ -519,19 +521,19 @@ window.DASH_PHONE = (() => {
   function renderCheckin() {
     const C = window.DASH_CHECKIN;
     const head = h('div', 'ph-ci-head');
-    head.append(h('span', 'ph-title', 'Check-in'), h('span', 'ph-sub', C && C.today() ? `${C.today()}× vandaag` : 'alleen invullen'));
-    if (!C) { ciBox.replaceChildren(head, h('p', 'ph-sub', 'Laden…')); return; }
-    if (ciBox.querySelector('form') && ciBox.dataset.built) { ciBox.firstChild.replaceWith(head); return; }   // half ingevuld: laten staan
+    head.append(h('span', 'ph-title', 'Check-in'), h('span', 'ph-sub', C && C.today() ? `${C.today()}× today` : 'fill in only'));
+    if (!C) { ciBox.replaceChildren(head, h('p', 'ph-sub', 'Loading…')); return; }
+    if (ciBox.querySelector('form') && ciBox.dataset.built) { ciBox.firstChild.replaceWith(head); return; }   // half filled in: leave it
     ciBox.dataset.built = '1';
     ciBox.replaceChildren(head, C.form(() => {
-      toast('Check-in opgeslagen ✓');
+      toast('Check-in saved ✓');
       delete ciBox.dataset.built;
       renderCheckin();
     }));
   }
-  window.addEventListener('dash:checkin', () => { if (active) { renderCheckin(); if (tab === 'vandaag') render(); } });
+  window.addEventListener('dash:checkin', () => { if (active) { renderCheckin(); if (tab === 'today') render(); } });
 
-  // Kerncijfers: uit de samenvattingen van Mijn data (archief-token), AH uit de agenda, stappen live uit Gezondheid
+  // Key numbers: from the My data summaries (archive token), AH from the agenda, steps live from Health
   function toast(msg) {
     const t = $('toast');
     if (!t) return;
@@ -564,7 +566,7 @@ window.DASH_PHONE = (() => {
   }
   const iso = (ms) => { const d = new Date(ms); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
   const last7 = () => Array.from({ length: 7 }, (_, i) => iso(addDays(startOfDay(Date.now()), i - 6)));
-  const fmtMin = (m) => (m >= 60 ? `${Math.floor(m / 60)}u ${String(Math.round(m % 60)).padStart(2, '0')}m` : `${Math.round(m)} min`);
+  const fmtMin = (m) => (m >= 60 ? `${Math.floor(m / 60)}h ${String(Math.round(m % 60)).padStart(2, '0')}m` : `${Math.round(m)} min`);
   function latest(series) {
     const keys = Object.keys(series || {}).sort();
     const k = keys[keys.length - 1];
@@ -603,38 +605,38 @@ window.DASH_PHONE = (() => {
     const days = last7();
     const sum = (series) => days.reduce((t, d) => t + (Number((series || {})[d]) || 0), 0);
     const tiles = [];
-    // Spotify deze week (laatste 7 dagen)
+    // Spotify this week (last 7 days)
     const sp = a && a.spotify.minutes;
-    tiles.push(kpi('ph-kpi-sp', 'Spotify · 7 dagen', sp ? fmtMin(sum(sp)) : '–', null, sp ? miniBars(days.map((d) => Number(sp[d]) || 0)) : null));
-    // AH deze maand (agenda)
+    tiles.push(kpi('ph-kpi-sp', 'Spotify · 7 days', sp ? fmtMin(sum(sp)) : '–', null, sp ? miniBars(days.map((d) => Number(sp[d]) || 0)) : null));
+    // AH this month (agenda)
     const list = shifts();
     const now = new Date();
     const m0 = new Date(now.getFullYear(), now.getMonth(), 1).getTime(), m1 = new Date(now.getFullYear(), now.getMonth() + 1, 1).getTime();
     const ah = list ? hoursIn(list, m0, m1, Date.now()) : null;
-    tiles.push(kpi('ph-kpi-ah', `AH ${now.toLocaleDateString('nl-NL', { month: 'long' })}`, ah ? `${fmtH(ah.worked)} u` : '–', ah ? (ah.all > ah.worked ? `+${fmtH(ah.all - ah.worked)} u gepland` : 'gewerkt') : 'agenda nodig'));
-    // Buiten de deur (laatste dag met data)
+    tiles.push(kpi('ph-kpi-ah', `AH ${now.toLocaleDateString('en-GB', { month: 'long' })}`, ah ? `${fmtH(ah.worked)} h` : '–', ah ? (ah.all > ah.worked ? `+${fmtH(ah.all - ah.worked)} h planned` : 'worked') : 'agenda needed'));
+    // Out of the house (last day with data)
     const away = a && latest(a.places.away_min);
-    tiles.push(kpi('ph-kpi-out', 'Buiten de deur', away ? fmtMin(Number(away.v) || 0) : '–', away ? dayName(Date.parse(`${away.day}T12:00`)) : null));
-    // Stappen + slaap (live uit Gezondheid, anders archief)
+    tiles.push(kpi('ph-kpi-out', 'Out of the house', away ? fmtMin(Number(away.v) || 0) : '–', away ? dayName(Date.parse(`${away.day}T12:00`)) : null));
+    // Steps + sleep (live from Health, otherwise the archive)
     const H = window.DASH_HEALTH;
     const todaySteps = H && (H.steps.find((x) => x.day === startOfDay(Date.now())) || {}).count;
-    const st = todaySteps != null ? { v: todaySteps, sub: 'vandaag' } : (a && latest(a.body.steps)) ? { v: latest(a.body.steps).v, sub: dayName(Date.parse(`${latest(a.body.steps).day}T12:00`)) } : null;
+    const st = todaySteps != null ? { v: todaySteps, sub: 'today' } : (a && latest(a.body.steps)) ? { v: latest(a.body.steps).v, sub: dayName(Date.parse(`${latest(a.body.steps).day}T12:00`)) } : null;
     const sleep = H && H.sleep ? (H.sleep.asleep != null ? H.sleep.asleep : (H.sleep.end - H.sleep.start) / 60000) : null;
-    tiles.push(kpi('ph-kpi-steps', 'Stappen', st ? Math.round(st.v).toLocaleString('nl-NL') : '–', st ? `${st.sub}${sleep ? ` · ${fmtMin(sleep)} slaap` : ''}` : null));
-    // Pc-uren deze week, met staafjes per dag
+    tiles.push(kpi('ph-kpi-steps', 'Steps', st ? Math.round(st.v).toLocaleString('en-GB') : '–', st ? `${st.sub}${sleep ? ` · ${fmtMin(sleep)} sleep` : ''}` : null));
+    // PC hours this week, with bars per day
     const pc = a && a.computer.pc_active_min;
-    tiles.push(kpi('ph-kpi-pc ph-wide', 'Pc actief · 7 dagen', pc ? `${fmtH(Math.round(sum(pc) / 6) / 10)} u` : '–', null, pc ? miniBars(days.map((d) => Number(pc[d]) || 0)) : null));
+    tiles.push(kpi('ph-kpi-pc ph-wide', 'PC active · 7 days', pc ? `${fmtH(Math.round(sum(pc) / 6) / 10)} h` : '–', null, pc ? miniBars(days.map((d) => Number(pc[d]) || 0)) : null));
     kpiBox.replaceChildren(...tiles);
     if (!DASH.DEMO && !(window.DASH_DATA && DASH_DATA.token())) {
-      const note = h('button', 'ph-note-btn', 'Koppel het data-archief voor Spotify, buiten en pc-uren (Instellingen › Data)');
+      const note = h('button', 'ph-note-btn', 'Link the data archive for Spotify, outside and PC hours (Settings › Data)');
       note.type = 'button';
       note.onclick = () => window.DASH_SETTINGS && DASH_SETTINGS.open('data');
       kpiBox.append(note);
-    } else if (aggError) kpiBox.append(h('p', 'ph-sub ph-wide', `Archief niet gelezen: ${aggError}`));
+    } else if (aggError) kpiBox.append(h('p', 'ph-sub ph-wide', `Archive not read: ${aggError}`));
   }
   const memory = h('div', 'ph-card ph-memory');
-  memory.append(h('span', 'ph-title', 'Vandaag in het verleden'), h('span', 'ph-sub', 'Komt hier zodra Memory Lane er is.'));
-  const allCharts = h('button', 'ph-link', 'Alle grafieken ›');
+  memory.append(h('span', 'ph-title', 'Today in the past'), h('span', 'ph-sub', 'Appears here once Memory Lane is here.'));
+  const allCharts = h('button', 'ph-link', 'All charts ›');
   allCharts.type = 'button';
   allCharts.onclick = () => { const b = document.querySelector('.tb-mydata'); if (b) b.click(); };
 
@@ -669,15 +671,15 @@ window.DASH_PHONE = (() => {
     if (miniPlay.dataset.p !== String(playing)) {
       miniPlay.dataset.p = String(playing);
       miniPlay.innerHTML = playing ? PAUSE : PLAY;
-      miniPlay.setAttribute('aria-label', playing ? 'Pauzeren' : 'Afspelen');
+      miniPlay.setAttribute('aria-label', playing ? 'Pause' : 'Play');
     }
     miniProg.style.width = (($('fill') || {}).style || {}).width || '0%';
   }
 
-  // Zoekknop in de topbalk: de zoekbalk zelf staat op de telefoon pas na een tik in beeld
+  // Search button in the top bar: on the phone the search bar itself only shows after a tap
   const searchBtn = h('button', 'tb-btn ph-search-btn');
   searchBtn.type = 'button';
-  searchBtn.setAttribute('aria-label', 'Zoeken');
+  searchBtn.setAttribute('aria-label', 'Search');
   searchBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>';
   searchBtn.onclick = () => {
     const tb = $('topbar');
@@ -686,28 +688,28 @@ window.DASH_PHONE = (() => {
     if (open) tb.querySelector('.tb-search input').focus();
   };
 
-  // ================= Alles tekenen =================
+  // ================= Draw everything =================
   function render() {
     if (!active) return;
     try {
-      if (tab === 'vandaag') renderToday();
+      if (tab === 'today') renderToday();
       else if (tab === 'agenda') renderAgenda();
       else if (tab === 'media') renderMedia();
       else if (tab === 'data') { renderCheckin(); renderKpis(); loadAgg(); }
-    } catch (e) { console.warn('[telefoon]', e); }
+    } catch (e) { console.warn('[phone]', e); }
   }
   let queued = false;
   const soon = () => { if (queued || !active) return; queued = true; requestAnimationFrame(() => { queued = false; render(); }); };
   ['dash:calendar', 'dash:weather', 'dash:dayline', 'dash:canvas', 'dash:alerts', 'dash:health', 'dash:data-token'].forEach((ev) => window.addEventListener(ev, soon));
   const loadRadar = () => DASH.radar().then((r) => { radar = r; soon(); }).catch(() => {});
 
-  // ---------- Aan en uit (vanuit desk.js) ----------
+  // ---------- On and off (from desk.js) ----------
   function enter({ remember, put, dash }) {
     active = true;
     const ids = ['media-stack', 'lyrics', 'calendar', 'version', 'w-weather', 'w-rain', 'w-ah', 'w-canvas', 'w-alerts', 'w-mail', 'w-todo', 'w-checkin', 'w-wishes',
       'w-stars', 'w-letterboxd', 'w-friends', 'w-episodes', 'w-f1', 'w-sptop', 'w-health'];
     remember(ids);
-    panes.vandaag.replaceChildren(chips, today);
+    panes.today.replaceChildren(chips, today);
     panes.agenda.replaceChildren(header('Agenda', agSeg), agNav, strip, agList);
     put(panes.agenda, ['calendar']);
     panes.media.replaceChildren(header('Media'), mediaChips);
@@ -722,14 +724,14 @@ window.DASH_PHONE = (() => {
     const actions = document.querySelector('#topbar .tb-actions');
     if (actions) actions.prepend(searchBtn);
     const fromHash = location.hash.slice(1);
-    const start = isTab(fromHash) ? fromHash : /^checkin/.test(fromHash) ? 'data' : store.get('phone.tab') || 'vandaag';
+    const start = isTab(fromHash) || OLD_TAB[fromHash] ? fromHash : /^checkin/.test(fromHash) ? 'data' : store.get('phone.tab') || 'today';
     if (!location.hash) history.replaceState(null, '', `#${start}`);
     setTab(start, false);
     loadRadar();
-    // Minispeler elke seconde; Vandaag/Agenda elke minuut opnieuw (aftellen, "nu aan het werk"), niet vaker: anders
-    // verspringt alles terwijl je tikt
+    // Mini player every second; Today/Agenda again every minute (countdown, "working now"), no more often: otherwise
+    // everything jumps while you tap
     let ticks = 0;
-    timer = setInterval(() => { mini(); if (++ticks % 60 === 0 && (tab === 'vandaag' || tab === 'agenda')) soon(); }, 1000);
+    timer = setInterval(() => { mini(); if (++ticks % 60 === 0 && (tab === 'today' || tab === 'agenda')) soon(); }, 1000);
   }
   DASH.every(5 * 60 * 1000, () => { if (active) loadRadar(); });
   function leave() {

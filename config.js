@@ -1,80 +1,80 @@
-// Vul hier je eigen gegevens in. De Client ID is niet geheim, dit mag gewoon op GitHub.
+// Fill in your own details here. The Client ID isn't secret, so this may simply be on GitHub.
 window.DASHBOARD_CONFIG = {
   spotifyClientId: '4da05ad75fe84a41859a6a18ef2eef70',
-  // AH-loon (uurloon, toeslagen, percentages) staat sinds 0.44.18 in het privé data-archief: config.json → ahLoon.
-  // widgets/ah.js leest het met het archief-token; hier dus niets meer invullen.
-  // Letterboxd-onderzoek: vaste knop in de topbalk (los van je eigen snelkoppelingen)
-  onderzoek: [
+  // AH wage settings (hourly wage, allowances, percentages) live in the private data archive since 0.44.18: config.json → ahWage.
+  // widgets/ah.js reads them with the archive token; so nothing to fill in here.
+  // Letterboxd research: a fixed button in the top bar (separate from your own shortcuts)
+  research: [
     { name: 'Paper', url: 'https://claude.ai/code/artifact/89ee7dac-4563-47d1-a358-3df7a9b0d813' },
-    { name: 'Review-labels (Sheet)', url: 'https://docs.google.com/spreadsheets/d/1kf305bm5mv6RfPXRklkZ1Yd50Xdh_XcuwbrRiJPxFW4/edit' },
+    { name: 'Review labels (Sheet)', url: 'https://docs.google.com/spreadsheets/d/1kf305bm5mv6RfPXRklkZ1Yd50Xdh_XcuwbrRiJPxFW4/edit' },
     { name: 'Sterrenvoorspeller', url: 'https://claude.ai/artifact/AUgYvmNHZW9xwNn7jGZVhP' },
   ],
-  // Letterboxd van vrienden: de GitHub Action leest deze lijst (user = gebruikersnaam op Letterboxd, name = hoe hij op het dashboard staat).
-  // Hou het formaat precies zo: { user: '...', name: '...' }, met enkele aanhalingstekens.
-  vrienden: [
+  // Friends on Letterboxd: the GitHub Action reads this list (user = Letterboxd username, name = how they show on the dashboard).
+  // Keep the format exactly like this: { user: '...', name: '...' }, with single quotes.
+  friends: [
     { user: 'loekatheactor', name: 'Loeka' },
     { user: 'Marrie01', name: 'Margriet' },
     { user: 'marijn2005', name: 'Marijn' },
   ],
-  // Focusmodus (knop met het klokje in de topbalk). playlist = het ID uit de Spotify-link van je studieplaylist:
-  // open.spotify.com/playlist/<DIT DEEL>?si=...
+  // Focus mode (the button with the clock in the top bar). playlist = the ID from the Spotify link of your study playlist:
+  // open.spotify.com/playlist/<THIS PART>?si=...
   focus: {
-    werkMinuten: 50,
-    pauzeMinuten: 10,
-    playlist: '43DsRhxuUHK4mphwDGEs2L', // studieplaylist
+    workMinutes: 50,
+    breakMinutes: 10,
+    playlist: '43DsRhxuUHK4mphwDGEs2L', // study playlist
   },
-  // ---------- Feeds-pagina (icoon met de krant in de topbalk) ----------
-  // Nieuws, filmnieuws en YouTube haalt de GitHub Action elk half uur op (data/feeds.json); hou het formaat precies zo.
-  nieuwsFeeds: [
+  // ---------- Feeds page (newspaper icon in the top bar) ----------
+  // The GitHub Action fetches news, film news and YouTube every half hour (data/feeds.json); keep the format exactly like this.
+  newsFeeds: [
     { name: 'NOS', url: 'https://feeds.nos.nl/nosnieuwsalgemeen' },
     { name: 'NOS Sport', url: 'https://feeds.nos.nl/nossportalgemeen' },
     { name: 'NU.nl', url: 'https://www.nu.nl/rss/Algemeen' },
   ],
-  // Filmnieuws (vervangt Reddit: Reddit laat geen nieuwe API-apps meer toe). Meer bronnen mag, zelfde formaat.
+  // Film news (replaces Reddit: Reddit doesn't allow new API apps anymore). More sources are fine, same format.
   filmFeeds: [
     { name: 'Letterboxd Journal', url: 'https://letterboxd.com/journal/rss/' },
   ],
-  // YouTube-kanalen: id = kanaal-ID (begint met UC, 24 tekens; staat in de pagina-bron van het kanaal als "channelId")
-  youtubeKanalen: [
+  // YouTube channels: id = channel ID (starts with UC, 24 characters; it's in the channel page's source as "channelId")
+  youtubeChannels: [
     { name: 'Patrick (H) Willems', id: 'UCF1fG3gT44nGTPU2sVLoFWg' },
     { name: 'The Yard', id: 'UCGbg3DjQdcqWwqOLHpYHXIg' },
     { name: 'Ken', id: 'UCiFOL6V9KbvxfXvzdFSsqCw' }, // @kenforrest
   ],
-  // Markten: alleen koers, verandering vandaag en een lijntje van de afgelopen maand. Geen advies.
-  // Aandelen/indexen via Twelve Data (gratis key, vul je op de Feeds-pagina zelf in; blijft in je browser).
-  // Crypto via CoinGecko (geen key): zet coingecko: '<id>' erbij.
-  markten: [
-    // De AEX (en andere indexen) zit niet in het gratis plan van Twelve Data
+  // Markets: only the price, today's change and a line for the last month. No advice.
+  // Stocks/indexes via Twelve Data (free key, you fill it in on the Feeds page itself; it stays in your browser).
+  // Crypto via CoinGecko (no key): add coingecko: '<id>'.
+  markets: [
+    // The AEX (and other indexes) isn't in Twelve Data's free plan
     { symbol: 'ASML', name: 'ASML' },
     { symbol: 'AAPL', name: 'Apple' },
     { symbol: 'BTC', name: 'Bitcoin', coingecko: 'bitcoin' },
   ],
-  // Snelle sync (sinds 1.1.0, sync.js): eigen Supabase-project "dashboard", los van de planner. README "Supabase".
-  // url en anonKey uit Supabase › Project Settings › API (de anon/publishable key is bedoeld om openbaar te zijn; de
-  // beveiliging zit in supabase.sql). email = het account van het dashboard; mag een adres zijn dat je nergens anders
-  // gebruikt, want dit bestand is openbaar. Nooit de service_role/secret key of een wachtwoord hier plakken.
-  // Zolang hier _HIER staat werkt alles zoals vóór 1.1.0 (alles per browser).
+  // Fast sync (since 1.1.0, sync.js): own Supabase project "dashboard", separate from the planner. README "Supabase".
+  // url and anonKey from Supabase › Project Settings › API (the anon/publishable key is meant to be public; the
+  // security is in supabase.sql). email = the dashboard's account; it may be an address you use nowhere else,
+  // because this file is public. Never paste the service_role/secret key or a password here.
+  // As long as a value here ends in _HERE, everything works like before 1.1.0 (everything per browser).
   supabase: {
     url: 'https://pakweewdaxaaxupdpfyu.supabase.co',
     anonKey: 'sb_publishable_htAR8KMBf2SJaQJ-qY9AUw_hxtzTaDR',
     email: 'broersnoah@gmail.com',
   },
-  // Privé data-archief (check-ins en het Data-overzicht). Het token staat alleen in je browser, nooit hier.
+  // Private data archive (check-ins and the Data overview). The token is only in your browser, never here.
   dataRepo: 'nbroers05/dashboard-data',
-  // Gezondheid (Google Health): je dagelijkse stappendoel
-  gezondheid: { stappenDoel: 10000 },
-  // Voor filmposters (themoviedb.org → Instellingen → API → "API Key"). Leeg laten mag: dan een kleurvlak.
+  // Health (Google Health): your daily step goal
+  health: { stepGoal: 10000 },
+  // For film posters (themoviedb.org → Settings → API → "API Key"). Leaving it empty is fine: then a color block.
   tmdbApiKey: '0d5a58e53bb2d4420ee65e51e1d6f63a',
   googleClientId: '149288254289-i5t6b2sc6gio1r92nioscj61ij2n098c.apps.googleusercontent.com',
-  // Standaard-snelkoppelingen in de topbalk. Je kunt ze ook op het dashboard zelf aanpassen (knop + naast de icoontjes);
-  // dat wordt dan in die browser bewaard en gaat vóór deze lijst.
-  // name = tekst bij het icoontje, url = waar hij heen gaat. Het icoontje is het logo van die site,
-  // tenzij je zelf een plaatje opgeeft met icon (een adres, of 'agenda' voor het ingebouwde agenda-icoon).
-  snelkoppelingen: [
+  // Default shortcuts in the top bar. You can also change them on the dashboard itself (+ button next to the icons);
+  // that's saved in that browser and goes before this list.
+  // name = text by the icon, url = where it goes. The icon is that site's logo,
+  // unless you give your own image with icon (an address, or 'agenda' for the built-in calendar icon).
+  shortcuts: [
     { name: 'Canvas', url: 'https://canvas.eur.nl/' },
     { name: 'Letterboxd', url: 'https://letterboxd.com/nbroers05/' },
     { name: 'Gmail', url: 'https://mail.google.com/', icon: 'https://ssl.gstatic.com/ui/v1/icons/mail/rfr/gmail.ico' },
-    { name: 'Agenda', url: 'https://calendar.google.com/', icon: 'agenda' },
+    { name: 'Calendar', url: 'https://calendar.google.com/', icon: 'agenda' },
     { name: 'Spotify', url: 'https://open.spotify.com/' },
   ],
 };

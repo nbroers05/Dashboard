@@ -3,14 +3,14 @@ rem Start het hulpprogramma voor het dashboard (telefoonmeldingen en Google-toke
 rem De eerste keer installeert hij wat hij nodig heeft (duurt even). Daarna draait hij onzichtbaar op de achtergrond.
 rem Draait er al een (oudere) versie, dan wordt die eerst gestopt.
 cd /d "%~dp0"
-powershell -NoProfile -Command "Get-CimInstance Win32_Process -Filter \"Name like 'python%%'\" | Where-Object { $_.CommandLine -like '*meldingen.py*' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }" >nul 2>&1
+powershell -NoProfile -Command "Get-CimInstance Win32_Process -Filter \"Name like 'python%%'\" | Where-Object { ($_.CommandLine -like '*meldingen.py*' -or $_.CommandLine -like '*server.py*') } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }" >nul 2>&1
 if not exist ".venv\Scripts\pythonw.exe" (
   echo Eerste keer: benodigdheden installeren...
   python -m venv .venv || (echo Python niet gevonden. Installeer Python via python.org of de Microsoft Store. & pause & exit /b 1)
 )
 rem Elke keer bijwerken: nieuwe onderdelen (bijv. media) komen er zo vanzelf bij; is alles er al, dan gaat dit snel
 ".venv\Scripts\python.exe" -m pip install --quiet --disable-pip-version-check -r requirements.txt || (echo Installeren mislukt. & pause & exit /b 1)
-start "" ".venv\Scripts\pythonw.exe" meldingen.py
+start "" ".venv\Scripts\pythonw.exe" server.py
 echo Hulpprogramma gestart.
 if not exist "tokens.json" (
   if exist "google-client.json" (

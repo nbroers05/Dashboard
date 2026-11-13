@@ -1,8 +1,8 @@
 'use strict';
 
-// Canvas-deadlines op urgentie: wat het eerst moet, staat bovenaan.
-// Vak: de 3 urgentste. Knop "Alle deadlines" (of #canvas in de adresbalk) opent de volledige pagina.
-// De Canvas-agenda zegt niet of je iets hebt ingeleverd: dat vink je zelf af (sinds 0.59.0 gedeeld via het privé archief).
+// Canvas deadlines by urgency: what's due first is at the top.
+// Tile: the 3 most urgent. The "All deadlines" button (or #canvas in the address bar) opens the full page.
+// The Canvas calendar doesn't say whether you handed something in: you check that off yourself (shared between devices since 0.59.0).
 DASH.widget('w-canvas', (card, body, guard) => {
   const { h, fmtTime, startOfDay, startOfWeek, addDays, store } = DASH;
   const PALETTE = ['#2fbf71', '#4fc3f7', '#ffb74d', '#ba68c8', '#f06292', '#aed581', '#4db6ac', '#ffd54f'];
@@ -11,27 +11,27 @@ DASH.widget('w-canvas', (card, body, guard) => {
   const HOUR = 3600000, DAY = 24 * HOUR;
   let calendar = null;
 
-  // "Essay week 6 [ESSB-MP6020]" → titel + vak
+  // "Essay week 6 [ESSB-MP6020]" → title + course
   function split(title) {
     const m = title.match(/^(.*?)\s*\[([^\]]+)\]\s*$/);
     return m ? { name: m[1], course: m[2] } : { name: title, course: '' };
   }
-  // Vaste kleur per vak (zelfde vak = altijd dezelfde kleur)
+  // A fixed color per course (same course = always the same color)
   function courseColor(course) {
     let n = 0;
     for (const ch of course) n = (n * 31 + ch.charCodeAt(0)) >>> 0;
     return PALETTE[n % PALETTE.length];
   }
 
-  // ---------- Ingeleverd, gedeeld tussen apparaten (sinds 0.59.0) ----------
-  // Per opdracht { id: [1 = ingeleverd / 0 = niet, tijd van afvinken] } in deze browser (canvas.doneMap) én in het privé
-  // archief (state/canvas-done.json, via het archief-token). Bij verschil wint het laatst aangepaste. Zonder token of
-  // offline blijft het gewoon in deze browser en gaat het mee bij de volgende keer dat het lukt.
+  // ---------- Handed in, shared between devices (since 0.59.0) ----------
+  // Per assignment { id: [1 = handed in / 0 = not, time of checking off] } in this browser (canvas.doneMap) and in the private
+  // archive (state/canvas-done.json, via the archive token). On a difference the last change wins. Without a token or
+  // offline it simply stays in this browser and goes along the next time it works.
   const MAP_KEY = 'canvas.doneMap';
   const SYNC_PATH = 'state/canvas-done.json';
   function doneMap() {
     let m = store.get(MAP_KEY);
-    if (!m) {   // oude lijst (vóór 0.59.0) overnemen
+    if (!m) {   // take over the old list (before 0.59.0)
       m = {};
       for (const id of store.get(DONE_KEY) || []) m[id] = [1, 0];
       store.set(MAP_KEY, m);
@@ -51,7 +51,7 @@ DASH.widget('w-canvas', (card, body, guard) => {
     clearTimeout(syncTimer);
     syncTimer = setTimeout(sync, 1500);
   }
-  // Nieuwste per id wint; geeft true als `into` veranderde
+  // Newest per id wins; returns true if `into` changed
   function merge(into, from) {
     let changed = false;
     for (const [id, v] of Object.entries(from || {})) {
@@ -61,10 +61,10 @@ DASH.widget('w-canvas', (card, body, guard) => {
     return changed;
   }
   let syncTimer = null, syncing = false;
-  // Sinds 1.1.0: is deze browser gekoppeld aan Supabase (sync.js), dan leest en schrijft hij alleen de tabel
-  // dashboard_canvas_done (één rij per opdracht). De dagelijkse kopie naar state/canvas-done.json maakt het archief zelf
-  // (dashboard-data, scripts/canvas_copy.py). Eenmalig worden de vinkjes uit het archief overgezet (vlag _canvas.imported).
-  // Niet gekoppeld of Supabase nog niet ingesteld: zoals vóór 1.1.0 via het archief.
+  // Since 1.1.0: if this browser is linked to Supabase (sync.js), it only reads and writes the table
+  // dashboard_canvas_done (one row per assignment). The archive makes the daily copy to state/canvas-done.json itself
+  // (dashboard-data, scripts/canvas_copy.py). The check marks from the archive are copied once (flag _canvas.imported).
+  // Not linked or Supabase not set up yet: via the archive, like before 1.1.0.
   const SB = () => window.DASH_SB && DASH_SB.linked() ? DASH_SB : null;
   let imported = false;
   async function syncSupabase(sb) {
@@ -104,10 +104,10 @@ DASH.widget('w-canvas', (card, body, guard) => {
       const remote = (f && JSON.parse(f.text).items) || {};
       const local = doneMap();
       if (merge(local, remote)) { saveMap(local); render(); }
-      // Heeft deze browser iets wat het archief nog niet heeft? Dan wegschrijven
+      // Does this browser have something the archive doesn't have yet? Then write it
       const probe = { ...remote };
       if (merge(probe, local)) {
-        await D.updateJson(SYNC_PATH, (data) => { data.items = data.items || {}; merge(data.items, local); }, 'Canvas: ingeleverd bijgewerkt');
+        await D.updateJson(SYNC_PATH, (data) => { data.items = data.items || {}; merge(data.items, local); }, 'Canvas: handed-in marks updated');
       }
     } catch (e) {
       console.warn('[canvas] synchroniseren', e);
@@ -117,7 +117,7 @@ DASH.widget('w-canvas', (card, body, guard) => {
   }
   window.addEventListener('dash:data-token', () => sync());
   window.addEventListener('dash:sb-linked', () => sync());
-  setTimeout(sync, 3000);   // datarepo.js laadt na dit bestand
+  setTimeout(sync, 3000);   // datarepo.js loads after this file
   DASH.every(5 * 60 * 1000, () => sync());
   document.addEventListener('visibilitychange', () => { if (!document.hidden) sync(); });
 
@@ -131,7 +131,7 @@ DASH.widget('w-canvas', (card, body, guard) => {
       .sort((a, b) => a.due - b.due);
   }
 
-  // Groep en urgentie
+  // Group and urgency
   function group(it, now) {
     if (it.done) return 'done';
     if (it.due < now) return 'late';
@@ -141,51 +141,51 @@ DASH.widget('w-canvas', (card, body, guard) => {
     if (it.due < addDays(startOfWeek(now), 7)) return 'week';
     return 'later';
   }
-  const GROUPS = [['late', 'Te laat'], ['today', 'Vandaag'], ['tomorrow', 'Morgen'], ['week', 'Deze week'], ['later', 'Later'], ['done', 'Ingeleverd']];
+  const GROUPS = [['late', 'Late'], ['today', 'Today'], ['tomorrow', 'Tomorrow'], ['week', 'This week'], ['later', 'Later'], ['done', 'Handed in']];
   function urgency(it, now) {
     if (it.done) return 'done';
     const left = it.due - now;
     return left < 0 ? 'late' : left < DAY ? 'red' : left < 3 * DAY ? 'orange' : 'calm';
   }
 
-  // "nog 5 uur", "morgen 23:59", "2 dagen te laat"
+  // "5 hours left", "tomorrow 23:59", "2 days late"
   function when(it, now) {
     const left = it.due - now;
     const time = it.allDay ? '' : ` ${fmtTime(it.due)}`;
     if (left < 0) {
       const ago = -left;
-      if (ago < HOUR) return `${Math.max(1, Math.round(ago / 60000))} min te laat`;
-      if (ago < DAY) return `${Math.round(ago / HOUR)} uur te laat`;
+      if (ago < HOUR) return `${Math.max(1, Math.round(ago / 60000))} min late`;
+      if (ago < DAY) return `${Math.round(ago / HOUR)} ${Math.round(ago / HOUR) === 1 ? 'hour' : 'hours'} late`;
       const d = Math.round(ago / DAY);
-      return `${d} ${d === 1 ? 'dag' : 'dagen'} te laat`;
+      return `${d} ${d === 1 ? 'day' : 'days'} late`;
     }
-    if (!it.allDay && left < HOUR) return `nog ${Math.max(1, Math.round(left / 60000))} min`;
-    if (!it.allDay && left < 12 * HOUR) return `nog ${Math.round(left / HOUR)} uur`;
+    if (!it.allDay && left < HOUR) return `${Math.max(1, Math.round(left / 60000))} min left`;
+    if (!it.allDay && left < 12 * HOUR) return `${Math.round(left / HOUR)} ${Math.round(left / HOUR) === 1 ? 'hour' : 'hours'} left`;
     const diff = Math.round((startOfDay(it.due) - startOfDay(now)) / DAY);
-    if (diff === 0) return `vandaag${time}`;
-    if (diff === 1) return `morgen${time}`;
-    if (diff < 7) return `${new Date(it.due).toLocaleDateString('nl-NL', { weekday: 'short' })}${time}`;
-    return `${new Date(it.due).toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short' })}${time}`;
+    if (diff === 0) return `today${time}`;
+    if (diff === 1) return `tomorrow${time}`;
+    if (diff < 7) return `${new Date(it.due).toLocaleDateString('en-GB', { weekday: 'short' })}${time}`;
+    return `${new Date(it.due).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })}${time}`;
   }
-  const fullDate = (it) => new Date(it.due).toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' }) + (it.allDay ? '' : ` ${fmtTime(it.due)}`);
+  const fullDate = (it) => new Date(it.due).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }) + (it.allDay ? '' : ` ${fmtTime(it.due)}`);
 
-  // Eén deadline als rij (in het vak compact, op de pagina met vinkje en link)
+  // One deadline as a row (compact in the tile, with a check mark and link on the page)
   function row(it, now, full) {
     const r = h('div', `cv-item u-${urgency(it, now)}`);
     r.style.setProperty('--dot', courseColor(it.course || it.name));
     const check = h('button', 'cv-check');
     check.type = 'button';
     check.setAttribute('aria-pressed', it.done);
-    check.setAttribute('aria-label', it.done ? `${it.name}: niet ingeleverd` : `${it.name}: ingeleverd`);
-    check.title = it.done ? 'Toch niet ingeleverd' : 'Markeer als ingeleverd';
+    check.setAttribute('aria-label', it.done ? `${it.name}: not handed in` : `${it.name}: handed in`);
+    check.title = it.done ? 'Not handed in after all' : 'Mark as handed in';
     check.onclick = (e) => { e.stopPropagation(); setDone(it.id, !it.done); };
     const txt = h('div', 'cv-txt');
     const name = h(it.url && full ? 'a' : 'b', 'cv-name', it.name);
     if (it.url && full) { name.href = it.url; name.target = '_blank'; name.rel = 'noopener'; }
     name.title = it.name;
     const meta = h('div', 'cv-meta');
-    const whenEl = h('span', 'cv-when', it.done ? 'ingeleverd' : when(it, now));
-    // In het smalle vak staat de tijd onder de naam, op de pagina rechts
+    const whenEl = h('span', 'cv-when', it.done ? 'handed in' : when(it, now));
+    // In the narrow tile the time is below the name, on the page on the right
     if (!full) meta.append(whenEl);
     if (it.course) meta.append(h('span', 'cv-course', it.course));
     if (full) meta.append(h('span', null, fullDate(it)));
@@ -203,12 +203,12 @@ DASH.widget('w-canvas', (card, body, guard) => {
     body.replaceChildren(box);
   }
 
-  // ---------- Het vak: alleen de 3 urgentste ----------
+  // ---------- The tile: only the 3 most urgent ----------
   function render() {
     if (!calendar) return;
     queueMicrotask(() => window.dispatchEvent(new CustomEvent('dash:canvas')));
-    if (!calendar.connected) { DASH.alert('canvas', null); body.replaceChildren(DASH.problem('Koppel je Google Agenda om je deadlines te zien.', 'Agenda koppelen', DASH.connectGoogle)); return; }
-    if (!calendar.events.some((e) => e.canvas)) return empty('Nog geen Canvas-agenda gevonden (zie README, stap 4).');
+    if (!calendar.connected) { DASH.alert('canvas', null); body.replaceChildren(DASH.problem('Link your Google Calendar to see your deadlines.', 'Link agenda', DASH.connectGoogle)); return; }
+    if (!calendar.events.some((e) => e.canvas)) return empty('No Canvas calendar found yet (see README, step 4).');
     const now = Date.now();
     const all = items();
     const open = all.filter((it) => !it.done);
@@ -217,32 +217,32 @@ DASH.widget('w-canvas', (card, body, guard) => {
     const top = [...late, ...upcoming].slice(0, 3);
 
     card.classList.toggle('has-late', late.length > 0);
-    card.classList.toggle('cv-none', open.length === 0);   // tall: vak valt dan weg (sinds 0.59.0)
+    card.classList.toggle('cv-none', open.length === 0);   // tall: the tile then drops out (since 0.59.0)
 
-    // Meldingen: te laat, of binnen 24 uur
+    // Notifications: late, or within 24 hours
     const soon = upcoming.filter((it) => it.due - now < DAY);
     DASH.alert('canvas', [
-      ...(late.length ? [{ level: 'urgent', icon: '📚', text: late.length === 1 ? `Te laat: ${late[0].name}` : `${late.length} Canvas-deadlines te laat`, sub: late.length === 1 ? when(late[0], now) : late.map((x) => x.name).join(', '), onClick: openPage }] : []),
+      ...(late.length ? [{ level: 'urgent', icon: '📚', text: late.length === 1 ? `Late: ${late[0].name}` : `${late.length} Canvas deadlines late`, sub: late.length === 1 ? when(late[0], now) : late.map((x) => x.name).join(', '), onClick: openPage }] : []),
       ...soon.map((it) => ({ level: it.due - now < 6 * HOUR ? 'urgent' : 'warn', icon: '📚', text: it.name, sub: `Canvas · ${when(it, now)}${it.course ? ` · ${it.course}` : ''}`, onClick: openPage })),
     ]);
     const head = h('div', 'w-row');
     const big = h('div', 'w-big', String(open.length));
     big.append(h('small', null, open.length === 1 ? 'deadline open' : 'deadlines open'));
     head.append(big);
-    if (late.length) head.append(h('span', 'w-pill cv-late-pill', `${late.length} te laat`));
+    if (late.length) head.append(h('span', 'w-pill cv-late-pill', `${late.length} late`));
 
     const list = h('div', 'cv-list');
     if (top.length) top.forEach((it) => list.append(row(it, now, false)));
-    else list.append(h('p', 'w-note', 'Niks meer in te leveren 🎉'));
+    else list.append(h('p', 'w-note', 'Nothing left to hand in 🎉'));
 
-    const more = h('button', 'w-btn ghost cv-more', open.length > 3 ? `Alle deadlines (${open.length}) →` : 'Alle deadlines →');
+    const more = h('button', 'w-btn ghost cv-more', open.length > 3 ? `All deadlines (${open.length}) →` : 'All deadlines →');
     more.type = 'button';
     more.onclick = openPage;
     body.replaceChildren(head, list, more);
     if (page && page.dialog.open) fillPage();
   }
 
-  // ---------- De pagina met alles ----------
+  // ---------- The page with everything ----------
   let page = null;
   function fillPage() {
     const now = Date.now();
@@ -251,8 +251,8 @@ DASH.widget('w-canvas', (card, body, guard) => {
     const doneCount = all.filter((it) => it.done).length;
 
     const toolbar = h('div', 'cvp-bar');
-    const intro = h('p', 'w-note', 'Gesorteerd op wat het eerst moet. Canvas geeft niet door of je iets hebt ingeleverd: vink het zelf af met het rondje.');
-    const toggle = h('button', 'w-btn ghost', showDone ? `Verberg ingeleverd (${doneCount})` : `Toon ingeleverd (${doneCount})`);
+    const intro = h('p', 'w-note', 'Sorted by what\'s due first. Canvas doesn\'t pass on whether you handed something in: check it off yourself with the circle.');
+    const toggle = h('button', 'w-btn ghost', showDone ? `Hide handed in (${doneCount})` : `Show handed in (${doneCount})`);
     toggle.type = 'button';
     toggle.setAttribute('aria-pressed', showDone);
     toggle.onclick = () => { store.set(SHOW_KEY, !showDone); fillPage(); };
@@ -271,7 +271,7 @@ DASH.widget('w-canvas', (card, body, guard) => {
       list.forEach((it) => sec.append(row(it, now, true)));
       wrap.append(sec);
     }
-    if (!wrap.children.length) wrap.append(h('p', 'w-note', 'Niks meer in te leveren 🎉'));
+    if (!wrap.children.length) wrap.append(h('p', 'w-note', 'Nothing left to hand in 🎉'));
 
     const inner = h('div', 'cvp-inner');
     inner.append(toolbar, wrap);
@@ -280,7 +280,7 @@ DASH.widget('w-canvas', (card, body, guard) => {
     page.body.scrollTop = scroll;
   }
 
-  // Voor de telefoon (phone.js): open deadlines (null = geen agenda), tekst als "4 dagen te laat", en de pagina
+  // For the phone (phone.js): open deadlines (null = no agenda), text like "4 days late", and the page
   window.DASH_CANVAS = { items: () => (calendar && calendar.connected ? items() : null), when, openPage: () => openPage() };
 
   function openPage() {
@@ -288,7 +288,7 @@ DASH.widget('w-canvas', (card, body, guard) => {
     if (!page) {
       page = DASH.panel('Canvas-deadlines', 'var(--c-study)');
       page.dialog.classList.add('page-dialog', 'cv-page');
-      // Adresbalk: #canvas zolang de pagina open is (terug-knop sluit hem)
+      // Address bar: #canvas while the page is open (the back button closes it)
       page.dialog.addEventListener('close', () => {
         if (location.hash !== '#canvas') return;
         if (pushed) history.back();
@@ -310,6 +310,6 @@ DASH.widget('w-canvas', (card, body, guard) => {
     render();
     if (location.hash === '#canvas' && !(page && page.dialog.open)) openPage();
   }));
-  // Elke minuut de tijden ("nog 5 uur") en groepen bijwerken
+  // Every minute update the times ("5 hours left") and groups
   DASH.every(60 * 1000, guard(render));
 });

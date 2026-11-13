@@ -1,11 +1,11 @@
 'use strict';
 
-// Afleveringen die je nog moet kijken, doorgegeven door de Episodes Left-extensie (v0.1.2+).
-// Covers komen van AniList (gratis, geen sleutel nodig) en worden een maand bewaard.
+// Episodes you still have to watch, passed on by the Episodes Left extension (v0.1.2+).
+// Covers come from AniList (free, no key needed) and are kept for a month.
 DASH.widget('w-episodes', (card, body, guard) => {
   const { h, store, img } = DASH;
   const KEY = 'episodes.data';
-  const COVERS = 'anilist.covers.v3';   // v3: opnieuw zoeken na de fix voor krul-apostroffen (0.46.4)
+  const COVERS = 'anilist.covers.v3';   // v3: search again after the fix for curly apostrophes (0.46.4)
   const MONTH = 30 * 86400000;
   const DAY = 86400000;
 
@@ -16,7 +16,7 @@ DASH.widget('w-episodes', (card, body, guard) => {
 
   function emptyState() {
     const box = h('div', 'w-empty');
-    box.append(h('p', null, 'Nog geen gegevens van Episodes Left.'));
+    box.append(h('p', null, 'No data from Episodes Left yet.'));
     const a = h('a', 'w-btn', 'Open LiveChart');
     a.href = 'https://www.livechart.me/users/library';
     a.target = '_blank';
@@ -25,15 +25,15 @@ DASH.widget('w-episodes', (card, body, guard) => {
     body.replaceChildren(box);
   }
 
-  // Een gevonden cover blijft een maand bewaard; "niet gevonden" maar een dag, zodat het vanzelf opnieuw geprobeerd wordt
+  // A found cover is kept for a month; "not found" only for a day, so it's tried again by itself
   const fresh = (c) => c && Date.now() - c.at < (c.img ? MONTH : DAY);
 
-  // Zonder "Season 2", "3rd Season", "(2024)" enz. vindt AniList een titel vaak wel
+  // Without "Season 2", "3rd Season", "(2024)" etc. AniList often does find a title
   const simplify = (t) => t.replace(/\(\d{4}\)|\b(\d+(st|nd|rd|th)\s+season|season\s+\d+|part\s+\d+|cour\s+\d+)\b/gi, '').replace(/\s+/g, ' ').trim();
 
-  // Let op: met Media(search) maakt één onbekende titel het héle verzoek leeg (404).
-  // Page(...){ media(...) } geeft dan alleen voor die ene titel een lege lijst.
-  // Krul-apostroffen ("JoJo’s") vindt AniList niet, gewone wel: die zoeken we dus met '.
+  // Note: with Media(search) one unknown title empties the WHOLE request (404).
+  // Page(...){ media(...) } then only gives an empty list for that one title.
+  // AniList doesn't find curly apostrophes ("JoJo’s"), straight ones it does: so we search for those with '.
   async function anilist(titles) {
     const term = (t) => JSON.stringify(t.replace(/[‘’]/g, "'"));
     const query = `{ ${titles.map((t, i) => `a${i}: Page(perPage: 1) { media(search: ${term(t)}, type: ANIME) { coverImage { large color } siteUrl } }`).join(' ')} }`;
@@ -43,12 +43,12 @@ DASH.widget('w-episodes', (card, body, guard) => {
       body: JSON.stringify({ query }),
     });
     const json = await res.json().catch(() => ({}));
-    // Geen data = echt mislukt (bijv. te veel verzoeken): dan niets onthouden
+    // No data = really failed (e.g. too many requests): then remember nothing
     if (!res.ok || !json.data) throw new Error(`AniList ${res.status}`);
     return titles.map((t, i) => (json.data[`a${i}`] && json.data[`a${i}`].media[0]) || null);
   }
 
-  // Covers voor alle titels in één verzoek ophalen (alleen wat we nog niet hebben); nooit twee verzoeken tegelijk
+  // Fetch covers for all titles in one request (only what we don't have yet); never two requests at the same time
   function loadCovers(titles) {
     if (inflight) return inflight;
     inflight = (async () => {
@@ -56,7 +56,7 @@ DASH.widget('w-episodes', (card, body, guard) => {
       const missing = titles.filter((t) => !fresh(cache[t])).slice(0, 20);
       if (!missing.length) return cache;
       let found = await anilist(missing);
-      // Niet gevonden: nog één keer met een kortere titel
+      // Not found: once more with a shorter title
       const retry = missing.filter((t, i) => !found[i] && simplify(t) !== t);
       if (retry.length) {
         const second = await anilist(retry.map(simplify)).catch(() => []);
@@ -72,14 +72,14 @@ DASH.widget('w-episodes', (card, body, guard) => {
     return inflight;
   }
 
-  // Melding bij een nieuwe aflevering: er staan er meer open dan de vorige keer dat je keek.
-  // De eerste keer wordt alleen onthouden. ✕ (gezien) of zelf kijken zet de teller bij.
+  // Notification for a new episode: more are open than the last time you looked.
+  // The first time is only remembered. ✕ (seen) or watching yourself moves the counter along.
   const SEEN = 'episodes.seen';
   function newEpisodeAlerts(all) {
     const now = Object.fromEntries(all.map((r) => [r.title, r.left]));
     let seen = store.get(SEEN);
     if (!seen) { store.set(SEEN, now); seen = now; }
-    // Gekeken (minder over): meteen bijwerken, dat is geen melding
+    // Watched (fewer left): update right away, that's not a notification
     let changed = false;
     for (const [t, left] of Object.entries(now)) if (seen[t] != null && left < seen[t]) { seen[t] = left; changed = true; }
     if (changed) store.set(SEEN, seen);
@@ -89,8 +89,8 @@ DASH.widget('w-episodes', (card, body, guard) => {
       return {
         level: 'info',
         icon: '📺',
-        text: extra === 1 ? `Nieuwe aflevering: ${r.title}` : `${extra} nieuwe afleveringen: ${r.title}`,
-        sub: `Episodes Left · nog ${r.left} te kijken`,
+        text: extra === 1 ? `New episode: ${r.title}` : `${extra} new episodes: ${r.title}`,
+        sub: `Episodes Left · ${r.left} still to watch`,
         onDismiss: () => { const s = store.get(SEEN) || {}; s[r.title] = r.left; store.set(SEEN, s); newEpisodeAlerts(current.rows); },
       };
     }));
@@ -102,14 +102,14 @@ DASH.widget('w-episodes', (card, body, guard) => {
     const rows = data.rows.filter((r) => r.left > 0).sort((a, b) => b.left - a.left || a.title.localeCompare(b.title));
     if (!rows.length) {
       const box = h('div', 'w-empty');
-      box.append(h('div', 'w-big', '✓'), h('p', null, 'Alles bijgekeken.'));
+      box.append(h('div', 'w-big', '✓'), h('p', null, 'All caught up.'));
       body.replaceChildren(box);
       return;
     }
     newEpisodeAlerts(data.rows);
     const total = rows.reduce((a, r) => a + r.left, 0);
     const head = h('div', 'w-big', String(total));
-    head.append(h('small', null, total === 1 ? 'aflevering te gaan' : 'afleveringen te gaan'));
+    head.append(h('small', null, total === 1 ? 'episode to go' : 'episodes to go'));
 
     const strip = h('div', 'ep-covers');
     for (const r of rows) {
@@ -118,7 +118,7 @@ DASH.widget('w-episodes', (card, body, guard) => {
       a.href = r.url || c.url || '#';
       a.target = '_blank';
       a.rel = 'noopener';
-      a.title = `${r.title}: nog ${r.left}`;
+      a.title = `${r.title}: ${r.left} left`;
       a.append(img(c.img, '', r.title, c.color), h('span', 'ep-badge', `+${r.left}`), h('span', 'ep-name', r.title));
       strip.append(a);
     }
@@ -128,7 +128,7 @@ DASH.widget('w-episodes', (card, body, guard) => {
     if (missing) {
       loadCovers(rows.map((r) => r.title))
         .then((cv) => { if (current === data) render(data, cv); })
-        // Mislukt (bijv. AniList druk)? Over 2 minuten nog eens
+        // Failed (e.g. AniList busy)? Try again in 2 minutes
         .catch(() => { clearTimeout(retryTimer); retryTimer = setTimeout(() => current && render(current), 120000); });
     }
   }
@@ -136,7 +136,7 @@ DASH.widget('w-episodes', (card, body, guard) => {
   window.addEventListener('message', guard((e) => {
     if (e.source !== window || !e.data || e.data.source !== 'episodes-left') return;
     const data = { rows: e.data.rows, updatedAt: e.data.updatedAt };
-    // De extensie stuurt vaak dezelfde lijst meerdere keren: alleen opnieuw tekenen als er iets veranderd is
+    // The extension often sends the same list several times: only redraw when something changed
     const json = JSON.stringify(data.rows);
     if (json === lastJson) return;
     lastJson = json;

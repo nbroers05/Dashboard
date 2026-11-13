@@ -1,14 +1,14 @@
 'use strict';
 
-// Subtiele animaties bij het laden: vakken schuiven zacht in (van boven naar beneden) en grote cijfers tellen kort op.
-// Alles eenmalig; bij "beweging beperken" (prefers-reduced-motion) gebeurt er niets.
+// Subtle animations on load: tiles slide in softly (top to bottom) and big numbers count up briefly.
+// All one-off; with "reduce motion" (prefers-reduced-motion) nothing happens.
 (() => {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const dash = document.querySelector('.dashboard');
   if (!dash) return;
 
   // ---------- Inschuiven ----------
-  // Volgorde zoals je ze ziet (na de indeling uit desk.js), daarna één voor één met een klein verschil
+  // Order as you see them (after the layout from desk.js), then one by one with a small delay
   const cards = [...dash.querySelectorAll(':scope > .card, :scope > .media-stack, .widgets > .tile, .desk-col > *, .desk-more, .tall-row > *, .tall-rot')]
     .filter((c) => c.offsetParent !== null)
     .map((c) => ({ c, r: c.getBoundingClientRect() }))
@@ -16,12 +16,12 @@
   cards.forEach(({ c }, i) => c.style.setProperty('--i', Math.min(i, 12)));
   document.body.classList.add('intro');
   document.body.classList.remove('booting');
-  // Daarna weghalen, anders speelt het opnieuw als een vak later verschijnt (songtekst, minimale modus uit)
+  // Remove afterwards, otherwise it plays again when a tile appears later (lyrics, minimal mode off)
   setTimeout(() => document.body.classList.remove('intro'), 2600);
 
   // ---------- Cijfers optellen ----------
-  // De eerste keer dat een vak een groot getal laat zien, telt het vanaf 0 op. Latere verversingen niet.
-  // Per vak de starttijd: tekent het vak zich tijdens het optellen opnieuw (weer + regen komen los binnen), dan loopt het gewoon door
+  // The first time a tile shows a big number, it counts up from 0. Later refreshes don't.
+  // A start time per tile: if the tile redraws during the count (weather + rain arrive separately), it simply carries on
   const started = new WeakMap();
   const seen = new WeakSet();
   const DURATION = 1200;
@@ -44,7 +44,7 @@
       node.nodeValue = `${pre}${(target * ease(t)).toFixed(decimals).replace('.', ',')}${post}`;
       if (t < 1) requestAnimationFrame(step);
     };
-    step(performance.now()); // meteen, anders flitst het eindgetal één beeld lang
+    step(performance.now()); // right away, otherwise the final number flashes for one frame
   }
 
   const scan = () => {
@@ -61,6 +61,6 @@
   const obs = new MutationObserver(scan);
   obs.observe(dash, { childList: true, subtree: true });
   scan();
-  // Alleen "bij laden": na een halve minuut niet meer kijken (agenda en extensies zijn dan binnen)
+  // Only "on load": stop looking after half a minute (agenda and extensions are in by then)
   setTimeout(() => obs.disconnect(), 30000);
 })();

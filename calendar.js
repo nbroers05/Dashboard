@@ -2,19 +2,19 @@
 
 (() => {
   const CLIENT_ID = (window.DASHBOARD_CONFIG || {}).googleClientId || '';
-  const CONFIGURED = CLIENT_ID && !/PLAK_HIER/.test(CLIENT_ID);
+  const CONFIGURED = CLIENT_ID && !/PLAK_HIER|_HERE/.test(CLIENT_ID);
   const SCOPE = 'https://www.googleapis.com/auth/calendar.readonly';
-  // Gmail alleen lezen, voor het mailvak (widgets/mail.js). Mag ontbreken: dan werkt de agenda gewoon en vraagt het mailvak erom.
+  // Gmail read-only, for the mail tile (widgets/mail.js). May be missing: then the agenda works normally and the mail tile asks for it.
   const GMAIL = 'https://www.googleapis.com/auth/gmail.readonly';
-  // Google Health API (stappen, slaap, hartslag) voor widgets/health.js; alleen lezen.
-  // Eigen token met álleen deze scopes: Google Health weigert een token waar ook agenda/Gmail in zit (DISALLOWED_OAUTH_SCOPES).
+  // Google Health API (steps, sleep, heart rate) for widgets/health.js; read-only.
+  // Own token with ONLY these scopes: Google Health refuses a token that also has agenda/Gmail in it (DISALLOWED_OAUTH_SCOPES).
   const HEALTH = ['activity_and_fitness', 'sleep', 'health_metrics_and_measurements'].map((s) => `https://www.googleapis.com/auth/googlehealth.${s}.readonly`);
   const API = 'https://www.googleapis.com/calendar/v3';
   const DEMO = new URLSearchParams(location.search).has('demo');
 
-  const DAYS = 7;                    // hoeveel dagen vooruit
-  const REFETCH = 5 * 60 * 1000;     // afspraken opnieuw ophalen
-  const SOON = 2 * 60 * 60 * 1000;   // "over 25 min" tonen binnen deze tijd
+  const DAYS = 7;                    // how many days ahead
+  const REFETCH = 5 * 60 * 1000;     // fetch appointments again
+  const SOON = 2 * 60 * 60 * 1000;   // show "in 25 min" within this time
 
   const KEY = { healthToken: 'google.healthToken', token: 'google.token', hint: 'google.hint', cache: 'google.events', view: 'calendar.view', fit: 'calendar.fit' };
 
@@ -39,9 +39,9 @@
   let fetchedAt = 0;
   let fetchTimer = null;
 
-  // ---------- Inloggen via Google Identity Services ----------
-  // Google geeft in de browser geen refresh token; een toegangstoken is 1 uur geldig.
-  // Daarna vraagt "Vernieuwen" een nieuw token, zonder opnieuw toestemming te vragen.
+  // ---------- Logging in via Google Identity Services ----------
+  // In the browser Google gives no refresh token; an access token is valid for 1 hour.
+  // After that "Refresh" asks for a new token, without asking for permission again.
   let tokenClient = null;
 
   function waitForGoogle() {
@@ -49,7 +49,7 @@
       const started = Date.now();
       (function check() {
         if (window.google && google.accounts && google.accounts.oauth2) return resolve();
-        if (Date.now() - started > 10000) return reject(new Error('Google-login laadt niet.'));
+        if (Date.now() - started > 10000) return reject(new Error('The Google login doesn\'t load.'));
         setTimeout(check, 100);
       })();
     });
@@ -69,7 +69,7 @@
         callback: onToken,
         error_callback: (err) => {
           if (err && err.type === 'popup_closed') return;
-          showMessage('Het Google-venster kon niet openen. Sta pop-ups toe voor deze site.');
+          showMessage('The Google window couldn\'t open. Allow pop-ups for this site.');
         },
       });
     }
@@ -78,9 +78,9 @@
   }
 
   function onToken(resp) {
-    if (resp.error) return showMessage(`Google-login mislukt (${resp.error}).`);
+    if (resp.error) return showMessage(`Google login failed (${resp.error}).`);
     if (!google.accounts.oauth2.hasGrantedAllScopes(resp, SCOPE)) {
-      return showLogin('Geef bij het inloggen toegang tot je agenda (vinkje aanzetten).');
+      return showLogin('When logging in, give access to your calendar (tick the box).');
     }
     store.set(KEY.token, { access: resp.access_token, expires: Date.now() + resp.expires_in * 1000, gmail: google.accounts.oauth2.hasGrantedAllScopes(resp, GMAIL) });
     el.reconnect.hidden = true;
@@ -88,7 +88,7 @@
     load();
   }
 
-  // Los token voor Google Health (zie HEALTH hierboven)
+  // Separate token for Google Health (see HEALTH above)
   let healthClient = null;
   async function connectHealth() {
     try { await waitForGoogle(); } catch { return; }
@@ -127,10 +127,10 @@
     showLogin();
   }
 
-  // ---------- Afspraken ophalen ----------
-  // ---------- Tokens van het hulpprogramma op deze pc (helper/, README stap 9) ----------
-  // Is dat gekoppeld met Google, dan haalt het dashboard zelf een nieuw token als het oude verloopt: geen "Vernieuwen" meer.
-  // Niet bereikbaar (telefoon, andere pc, programma uit): dan gewoon de knop zoals altijd.
+  // ---------- Fetching appointments ----------
+  // ---------- Tokens from the helper on this PC (helper/, README step 8) ----------
+  // If it's linked with Google, the dashboard fetches a new token itself when the old one expires: no more "Refresh".
+  // Not reachable (phone, other PC, program off): then simply the button as always.
   const HELPER = 'http://127.0.0.1:8765/token';
   let helperUp = null;
   async function fromHelper(which) {
@@ -142,14 +142,14 @@
       helperUp = true;
       return res.ok ? await res.json() : null;
     } catch {
-      // Even niet meer proberen; na 5 minuten weer
+      // Stop trying for a bit; again after 5 minutes
       helperUp = false;
       setTimeout(() => { helperUp = null; }, 5 * 60 * 1000);
       return null;
     }
   }
-  // Zonder hulpprogramma (laptop, andere pc): de blijvende sleutels uit de inlogbundel (vault.js, `google.refresh`).
-  // Google staat het vernieuwen vanuit de browser toe (CORS), dus geen server nodig.
+  // Without the helper (laptop, other PC): the lasting keys from the login bundle (vault.js, `google.refresh`).
+  // Google allows refreshing from the browser (CORS), so no server needed.
   async function fromBundle(which) {
     const g = store.get('google.refresh');
     if (DEMO || !g || !g[which]) return null;
@@ -194,12 +194,12 @@
     let res = await fetch(API + path, { headers: { Authorization: `Bearer ${access}` } });
     if (res.status === 401) {
       store.del(KEY.token);
-      // Token toch verlopen: één keer stil een nieuwe proberen
+      // Token expired after all: quietly try a new one once
       if (!(await refreshFromHelper()) || !token()) throw new AuthError();
       res = await fetch(API + path, { headers: { Authorization: `Bearer ${token()}` } });
       if (res.status === 401) { store.del(KEY.token); throw new AuthError(); }
     }
-    if (!res.ok) throw new Error(`Google-fout ${res.status}`);
+    if (!res.ok) throw new Error(`Google error ${res.status}`);
     return res.json();
   }
 
@@ -211,12 +211,12 @@
       const primary = cals.items.find((c) => c.primary);
       if (primary) store.set(KEY.hint, primary.id);
 
-      // Hele maand + deze week ophalen: de AH-urenteller telt ook terug
+      // Fetch the whole month + this week: the AH hours counter also counts back
       const today = startOfDay(Date.now());
       const d = new Date(today);
       const monday = addDays(today, -((d.getDay() + 6) % 7));
-      // Ook 5 weken terug en 6 vooruit: daar staat altijd een "Salaris" voor de AH-periode
-      // En de week die je bekijkt (vorige/volgende week)
+      // Also 5 weeks back and 6 ahead: there's always a "Salaris" (pay day) for the AH period there
+      // And the week you're viewing (previous/next week)
       const shown = viewWeekStart();
       const from = Math.min(monday, new Date(d.getFullYear(), d.getMonth(), 1).getTime(), addDays(today, -35), shown);
       const to = Math.max(addDays(today, 42), addDays(monday, 7), new Date(d.getFullYear(), d.getMonth() + 1, 1).getTime(), addDays(shown, 7));
@@ -228,8 +228,8 @@
         orderBy: 'startTime',
         maxResults: '250',
       });
-      // Canvas altijd ophalen (voor het deadlinesvak), ook als die agenda in Google verborgen is
-      // En de verjaardagen-agenda (contacten), voor de dagregel, ook als die verborgen is
+      // Always fetch Canvas (for the deadlines tile), even if that calendar is hidden in Google
+      // And the birthdays calendar (contacts), for the day line, even if it's hidden
       const visible = cals.items.filter((c) => c.selected || c.primary || isCanvasCal(c) || isBirthdayCal(c));
       const lists = await Promise.all(visible.map((cal) =>
         api(`/calendars/${encodeURIComponent(cal.id)}/events?${qs}`)
@@ -246,12 +246,12 @@
     } catch (e) {
       if (e instanceof AuthError) return expired();
       render();
-      el.updated.textContent = 'Kon agenda niet bijwerken';
+      el.updated.textContent = 'Couldn\'t update the agenda';
       fetchTimer = setTimeout(load, REFETCH);
     }
   }
 
-  // Alleen wat we nodig hebben bewaren
+  // Keep only what we need
   function simplify(e, cal) {
     if (e.status === 'cancelled') return null;
     const me = (e.attendees || []).find((a) => a.self);
@@ -260,13 +260,13 @@
     const canvas = isCanvasCal(cal) || /instructure\.com|\/courses\/\d+/.test(e.description || '');
     return {
       id: `${cal.id}/${e.id}`,
-      title: e.summary || '(Geen titel)',
+      title: e.summary || '(No title)',
       location: e.location || '',
       allDay,
       start: allDay ? parseDate(e.start.date) : Date.parse(e.start.dateTime),
       end: allDay ? parseDate(e.end.date) : Date.parse(e.end.dateTime),
       color: cal.backgroundColor || null,
-      calName: cal.summaryOverride || cal.summary || '',   // voor de dagtijdlijn (huisstijl): rooster = college
+      calName: cal.summaryOverride || cal.summary || '',   // for the day timeline (house style): timetable = lecture
       link: e.htmlLink || null,
       hidden: !(cal.selected || cal.primary),
       ...(birthdayName(e, cal) ? { birthday: birthdayName(e, cal) } : {}),
@@ -274,13 +274,14 @@
     };
   }
 
-  // Link naar de opdracht in Canvas, als die in de beschrijving staat
+  // Link to the assignment in Canvas, if it's in the description
   function canvasLink(text) {
     const m = (text || '').match(/https?:\/\/[^\s"'<>]*(?:instructure\.com|\/courses\/\d+)[^\s"'<>]*/);
     return m ? m[0] : null;
   }
 
-  // Verjaardagen: Google zet ze in een eigen agenda (#contacts@group.v.calendar.google.com) of als eventType 'birthday'
+  // Birthdays: Google puts them in their own calendar (#contacts@group.v.calendar.google.com) or as eventType 'birthday'.
+  // The titles can be Dutch or English depending on the Google account's language, so both are stripped.
   function isBirthdayCal(cal) {
     return /#contacts@group\.v\.calendar\.google\.com$/.test(cal.id || '');
   }
@@ -296,7 +297,7 @@
     return /canvas/i.test(`${cal.summary || ''} ${cal.summaryOverride || ''}`);
   }
 
-  // Het mailvak gebruikt hetzelfde Google-token (geen tweede inlog)
+  // The mail tile uses the same Google token (no second login)
   function shareToken() {
     const t = store.get(KEY.token);
     window.dispatchEvent(new CustomEvent('dash:google', { detail: { gmail: !!(t && t.gmail), health: !!healthToken() } }));
@@ -308,12 +309,12 @@
     healthEverGranted: () => { const t = store.get(KEY.healthToken); return !!(t && t.granted); },
     connectHealth: () => connectHealth(),
     connected: () => !!store.get(KEY.hint) || !!token(),
-    // Vóór elk gebruik: verlopen tokens zo mogelijk stil vernieuwen via het hulpprogramma
+    // Before every use: quietly refresh expired tokens via the helper if possible
     refresh: () => refreshFromHelper(),
     connect: () => connect(),
   };
 
-  // Andere vakken (weer, AH-uren, Canvas) lezen de afspraken hieruit
+  // Other tiles (weather, AH hours, Canvas) read the appointments from this
   function publish(connected) {
     window.DASH_CALENDAR = { connected, events, fetchedAt };
     window.dispatchEvent(new CustomEvent('dash:calendar', { detail: window.DASH_CALENDAR }));
@@ -333,30 +334,30 @@
     const d = new Date(ms);
     return new Date(d.getFullYear(), d.getMonth(), d.getDate() + n).getTime();
   }
-  const fmtTime = (ms) => new Date(ms).toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
-  const fmtLong = (ms) => new Date(ms).toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' });
-  const fmtShort = (ms) => new Date(ms).toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'short' });
+  const fmtTime = (ms) => new Date(ms).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  const fmtLong = (ms) => new Date(ms).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+  const fmtShort = (ms) => new Date(ms).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short' });
 
   function untilText(ms) {
     const min = Math.round(ms / 60000);
-    if (min < 1) return 'zo';
-    if (min < 60) return `over ${min} min`;
+    if (min < 1) return 'now';
+    if (min < 60) return `in ${min} min`;
     const h = Math.floor(min / 60);
     const m = min % 60;
-    return m ? `over ${h}u${String(m).padStart(2, '0')}` : `over ${h} uur`;
+    return m ? `in ${h}h${String(m).padStart(2, '0')}` : `in ${h} hours`;
   }
 
-  // ---------- Korte titels ----------
+  // ---------- Short titles ----------
   // "🏁 FORMULA 1 GRAN PREMIO DE LA CIUDAD DE MÉXICO 2026 - Race" → "F1 Mexico - Race"
   const F1_PLACES = [
-    [/m[eé]xico/i, 'Mexico'], [/s[aã]o paulo|brazil|brasil/i, 'Brazilië'], [/las vegas/i, 'Las Vegas'],
+    [/m[eé]xico/i, 'Mexico'], [/s[aã]o paulo|brazil|brasil/i, 'Brazil'], [/las vegas/i, 'Las Vegas'],
     [/qatar/i, 'Qatar'], [/abu dhabi/i, 'Abu Dhabi'], [/miami/i, 'Miami'],
     [/united states|\busa?\b|austin|am[eé]ricas/i, 'Austin'], [/singapore/i, 'Singapore'],
-    [/azerbaijan|baku/i, 'Bakoe'], [/madrid/i, 'Madrid'], [/barcelona|catalunya/i, 'Barcelona'],
-    [/espa[ñn]a|spain/i, 'Spanje'], [/australia/i, 'Australië'], [/china|chinese/i, 'China'],
-    [/japan/i, 'Japan'], [/bahrain/i, 'Bahrein'], [/saudi/i, 'Saoedi-Arabië'], [/canad/i, 'Canada'],
-    [/monaco/i, 'Monaco'], [/austria|österreich/i, 'Oostenrijk'], [/british|britain|silverstone/i, 'Silverstone'],
-    [/belgi/i, 'België'], [/hungar|magyar/i, 'Hongarije'], [/dutch|netherlands|nederland|zandvoort/i, 'Zandvoort'],
+    [/azerbaijan|baku/i, 'Baku'], [/madrid/i, 'Madrid'], [/barcelona|catalunya/i, 'Barcelona'],
+    [/espa[ñn]a|spain/i, 'Spain'], [/australia/i, 'Australia'], [/china|chinese/i, 'China'],
+    [/japan/i, 'Japan'], [/bahrain/i, 'Bahrain'], [/saudi/i, 'Saudi Arabia'], [/canad/i, 'Canada'],
+    [/monaco/i, 'Monaco'], [/austria|österreich/i, 'Austria'], [/british|britain|silverstone/i, 'Silverstone'],
+    [/belgi/i, 'Belgium'], [/hungar|magyar/i, 'Hungary'], [/dutch|netherlands|nederland|zandvoort/i, 'Zandvoort'],
     [/emilia|imola/i, 'Imola'], [/ital|monza/i, 'Monza'],
   ];
   const F1_SESSIONS = [
@@ -401,7 +402,7 @@
   }
 
   function renderList(now, today) {
-    // Afspraken per dag indelen (meerdaagse "hele dag" afspraken op elke dag)
+    // Group appointments per day (multi-day "all day" appointments on every day)
     const days = [];
     for (let i = 0; i < DAYS; i++) days.push({ start: addDays(today, i), items: [] });
     const dayIndex = (ms) => days.findIndex((d) => d.start === startOfDay(ms));
@@ -428,10 +429,10 @@
     days.forEach((day, i) => {
       if (i > 0 && !day.items.length) return;
       const section = h('section', 'cal-day');
-      section.append(h('h3', null, i === 0 ? 'Vandaag' : i === 1 ? 'Morgen' : fmtShort(day.start)));
+      section.append(h('h3', null, i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : fmtShort(day.start)));
 
       if (!day.items.length) {
-        section.append(h('p', 'cal-empty', 'Niks meer gepland vandaag.'));
+        section.append(h('p', 'cal-empty', 'Nothing more planned today.'));
         frag.append(section);
         return;
       }
@@ -443,25 +444,25 @@
       frag.append(section);
     });
 
-    // Vandaag leeg en verder ook niks
+    // Today empty and nothing after it either
     if (!shown.some((e) => e.end > now)) {
-      frag.replaceChildren(h('p', 'cal-empty', `Niks gepland de komende ${DAYS} dagen.`));
+      frag.replaceChildren(h('p', 'cal-empty', `Nothing planned in the next ${DAYS} days.`));
     }
 
     el.list.replaceChildren(frag);
   }
 
-  // ---------- Dagtijdlijn (sinds 1.3.0, huisstijl op tall; design system › AgendaWeek en MockupDashboard) ----------
-  // Alleen vandaag, zonder klik: uren links in pixel, colleges eva, appie AH-blauw, de rest papier, nu-lijn rood.
-  // Venster van uren: van 2 uur vóór nu (min 07, max 15) tot 24:00. Uurhoogte vult de ruimte tot onderaan het scherm
-  // (min 44px; meer uren dan dat = de agenda loopt onder de rand door, mag van Noah).
+  // ---------- Day timeline (since 1.3.0, house style on tall; design system › AgendaWeek and MockupDashboard) ----------
+  // Only today, without a click: hours on the left in pixels, lectures eva, AH in AH blue, the rest paper, the now line red.
+  // Window of hours: from 2 hours before now (min 07, max 15) to 24:00. The hour height fills the space to the bottom of the screen
+  // (min 44px; more hours than that = the agenda continues below the edge, Noah is fine with that).
   const HOUR_MS = 3600000;
   const dayMode = () => document.documentElement.classList.contains('nh') && document.documentElement.classList.contains('tall-mode');
   const COLLEGE = /rooster|timetable|erasmus|\beur\b|college|lecture|werkgroep|tutorial/i;
   function kindOf(ev) {
     if (/\bAH\b/.test(ev.title)) return 'ah';
     if (COLLEGE.test(ev.calName || '') || COLLEGE.test(ev.title) || (/\bESSB\b/.test(ev.title) && !ev.canvas)) return 'college';
-    return 'eigen';
+    return 'own';
   }
   let dayHours = 0;
   function renderDay(now, today) {
@@ -473,7 +474,7 @@
     for (const ev of shown.filter((e) => !e.allDay)) {
       let s = Math.max(ev.start, today), e = Math.min(ev.end, end);
       const top = today + first * HOUR_MS;
-      if (e <= top) continue;   // al voorbij vóór het venster
+      if (e <= top) continue;   // already over before the window
       if (s < top) s = top;
       if (e - s < HOUR_MS / 4) e = s + HOUR_MS / 4;
       timed.push({ ev, s, e });
@@ -483,7 +484,7 @@
     const allDay = shown.filter((e) => e.allDay);
     if (allDay.length) {
       const row = h('div', 'dy-allday');
-      for (const ev of allDay) row.append(block(ev, 'dy-chip', ev.birthday ? `${ev.birthday} jarig` : label(ev)));
+      for (const ev of allDay) row.append(block(ev, 'dy-chip', ev.birthday ? `${ev.birthday}'s birthday` : label(ev)));
       wrap.append(row);
     }
     const grid = h('div', 'dy-grid');
@@ -515,7 +516,7 @@
       grid.append(line);
     }
     if (!timed.some((t) => t.ev.end > now)) {
-      const empty = h('p', 'dy-empty', 'NIKS MEER GEPLAND. VERDACHT.');
+      const empty = h('p', 'dy-empty', 'NOTHING MORE PLANNED. SUSPICIOUS.');
       grid.append(empty);
     }
     wrap.append(grid);
@@ -532,19 +533,19 @@
       if (!el.list.style.getPropertyValue('--hour')) el.list.style.setProperty('--hour', '44px');
       return;
     }
-    // offsetTop in plaats van getBoundingClientRect: de inschuif-animatie (transform) telt dan niet mee
+    // offsetTop instead of getBoundingClientRect: then the slide-in animation (transform) doesn't count
     let top = 0;
     for (let n = grid; n; n = n.offsetParent) top += n.offsetTop;
     const more = document.querySelector('.desk-more');
-    const bottomGap = (more ? more.getBoundingClientRect().height : 0) + 64;   // Meer-balk + rand van het venster
+    const bottomGap = (more ? more.getBoundingClientRect().height : 0) + 64;   // More bar + the window edge
     const avail = innerHeight - top - bottomGap;
     const hourPx = Math.max(44, Math.floor(avail / dayHours));
     el.list.style.setProperty('--hour', `${hourPx}px`);
     grid.querySelectorAll('.dy-ev').forEach((b) => b.classList.toggle('tight', b.dataset.dur * hourPx < 46));
   }
   window.addEventListener('resize', () => { if (dayMode() && card.dataset.state === 'main') fitDay(); });
-  // Wat erboven staat verandert van hoogte (vakken laden, roterend vak, inschuif-animatie): opnieuw meten.
-  // Hangt alleen af van waar de tijdlijn begint, niet van zijn eigen hoogte, dus geen lus.
+  // What's above changes height (tiles load, rotating tile, slide-in animation): measure again.
+  // Only depends on where the timeline starts, not on its own height, so no loop.
   // Also watch the agenda itself: when it goes from hidden to visible, the dashboard around it doesn't always change size.
   let fitQueued = false;
   const fitObserver = new ResizeObserver(() => {
@@ -555,12 +556,12 @@
   });
   fitObserver.observe(document.querySelector('.dashboard') || document.body);
   fitObserver.observe(card);
-  // Stand of indeling gewisseld (huisstijl aan/uit, tall ↔ desk): opnieuw tekenen
-  for (const ev of ['dash:stand', 'dash:layout']) window.addEventListener(ev, () => { if (card.dataset.state === 'main') render(); });
+  // Mood or layout changed (house style on/off, tall ↔ desk): draw again
+  for (const ev of ['dash:mood', 'dash:layout']) window.addEventListener(ev, () => { if (card.dataset.state === 'main') render(); });
 
-  // ---------- Weekweergave: 7 kolommen met tijdlijn ----------
+  // ---------- Week view: 7 columns with a timeline ----------
 
-  // Week die je bekijkt: maandag t/m zondag, verschuift met vorige/volgende week
+  // The week you're viewing: Monday to Sunday, moves with previous/next week
   let weekOffset = 0;
   let loaded = [0, 0];
   const mondayOf = (ms) => addDays(startOfDay(ms), -((new Date(ms).getDay() + 6) % 7));
@@ -572,14 +573,14 @@
     return Math.ceil(((t - Date.UTC(t.getUTCFullYear(), 0, 1)) / 86400000 + 1) / 7);
   }
 
-  // Passend: 08–24 past in de hoogte van het vak. Scrollen: normale uurhoogte, het raster scrolt zelf.
+  // Fit: 08–24 fits the tile's height. Scroll: normal hour height, the grid scrolls itself.
   let fitMode = store.get(KEY.fit) === 'scroll' ? 'scroll' : 'fit';
-  let scrollPending = true;   // na openen/wisselen: naar het eerstvolgende evenement (of het huidige uur) scrollen
+  let scrollPending = true;   // after opening/switching: scroll to the next event (or the current hour)
 
   function renderWeek(now, today) {
     const weekStart = viewWeekStart();
     const days = Array.from({ length: 7 }, (_, i) => ({ start: addDays(weekStart, i), end: addDays(weekStart, i + 1), allDay: [], timed: [] }));
-    const short = (ms) => new Date(ms).toLocaleDateString('nl-NL', { day: 'numeric', month: 'short' }).replace('.', '');
+    const short = (ms) => new Date(ms).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }).replace('.', '');
     if (el.weekLabel) el.weekLabel.textContent = `week ${isoWeek(weekStart)} · ${short(weekStart)} – ${short(addDays(weekStart, 6))}`;
     if (el.thisWeek) el.thisWeek.disabled = weekOffset === 0;
 
@@ -592,8 +593,8 @@
       }
     }
 
-    // Passend: precies 08–24. Een afspraak (deels) vóór 8 uur staat bovenaan vanaf 08:00 (echte tijd in de tooltip).
-    // Scrollen: de hele dag.
+    // Fit: exactly 08–24. An appointment (partly) before 8 o'clock is at the top from 08:00 (real time in the tooltip).
+    // Scroll: the whole day.
     const first = fitMode === 'fit' ? 8 : 0;
     const last = 24;
     if (first) {
@@ -605,7 +606,7 @@
         }
       }
     }
-    // Posities in uren; CSS rekent ze om met --hour (px per uur), zodat we die later kunnen oprekken
+    // Positions in hours; CSS converts them with --hour (px per hour), so we can stretch it later
     const at = (hours) => `calc(var(--hour) * ${hours})`;
     const hoursFrom = (ms) => ms / HOUR_MS - first;
 
@@ -618,7 +619,7 @@
     head.append(h('div'));
     days.forEach((day) => {
       const d = new Date(day.start);
-      const cell = h('div', `wk-day${day.start === today ? ' today' : ''}`, d.toLocaleDateString('nl-NL', { weekday: 'short' }));
+      const cell = h('div', `wk-day${day.start === today ? ' today' : ''}`, d.toLocaleDateString('en-GB', { weekday: 'short' }));
       cell.append(h('b', null, d.getDate()));
       head.append(cell);
     });
@@ -626,7 +627,7 @@
 
     if (days.some((d) => d.allDay.length)) {
       const row = h('div', 'wk-row wk-allday');
-      row.append(h('div', 'wk-label', 'hele dag'));
+      row.append(h('div', 'wk-label', 'all day'));
       for (const day of days) {
         const cell = h('div', 'cell');
         for (const ev of day.allDay) cell.append(block(ev, 'wk-chip', label(ev)));
@@ -649,7 +650,7 @@
         const dur = (t.e - t.s) / HOUR_MS;
         b.append(h('b', 'clip', label(t.ev)), h('span', null, `${fmtTime(t.ev.start)} – ${fmtTime(t.ev.end)}`));
         if (dur < 0.75) b.classList.add('short');
-        // Naast elkaar: alleen de titel, zodat die leesbaar blijft
+        // Side by side: only the title, so it stays readable
         if (t.lanes > 1) b.classList.add('narrow');
         b.dataset.dur = dur;
         b.style.top = at(hoursFrom(t.s - day.start));
@@ -672,7 +673,7 @@
     weekHours = last - first;
     fitWeek();
 
-    // Scrollen: na openen naar het eerstvolgende evenement van vandaag, anders het huidige uur; daarna de positie houden
+    // Scroll: after opening to the next event of today, otherwise the current hour; after that keep the position
     if (fitMode === 'scroll') {
       const hourPx = parseFloat(el.list.style.getPropertyValue('--hour')) || 44;
       if (scrollTop != null) body.scrollTop = scrollTop;
@@ -689,8 +690,8 @@
     scrollPending = false;
   }
 
-  // Hoogte van het raster: het vak zelf (brede indeling) of een vaste hoogte uit CSS (--fit-h).
-  // Passend: de uurrijen zo hoog dat alles in die hoogte past. Scrollen: normale uurhoogte, het raster scrolt.
+  // Height of the grid: the tile itself (wide layout) or a fixed height from CSS (--fit-h).
+  // Fit: hour rows so tall that everything fits that height. Scroll: normal hour height, the grid scrolls.
   let weekHours = 0;
   function fitWeek() {
     const body = el.list.querySelector('.wk-body');
@@ -704,17 +705,17 @@
     const hourPx = fitMode === 'fit' ? Math.max(14, Math.floor(avail / weekHours)) : parseFloat(cs.getPropertyValue('--hour-base')) || 44;
     el.list.style.setProperty('--hour', `${hourPx}px`);
     body.style.height = fitMode === 'fit' ? '' : `${avail}px`;
-    // Zoveel titelregels als er in het blok passen
+    // As many title lines as fit in the block
     const lineH = parseFloat(getComputedStyle(body).fontSize) * 1.25 || 18;
     body.querySelectorAll('.wk-ev').forEach((b) => {
       const px = b.dataset.dur * hourPx - 10 - (b.classList.contains('narrow') || b.classList.contains('short') ? 0 : lineH);
       b.style.setProperty('--lines', Math.max(1, Math.floor(px / lineH)));
-      // Weinig ruimte: alleen de titel op één regel (afgekapt met puntjes, volledige titel bij hover)
+      // Little room: only the title on one line (cut off with dots, full title on hover)
       b.classList.toggle('tight', b.dataset.dur * hourPx < 34);
     });
   }
 
-  // Vorige/volgende week en terug naar deze week; buiten wat er al opgehaald is: opnieuw ophalen
+  // Previous/next week and back to this week; outside what's already fetched: fetch again
   function goWeek(offset) {
     weekOffset = offset;
     scrollPending = true;
@@ -738,7 +739,7 @@
 
   new ResizeObserver(() => { if (view === 'week') fitWeek(); }).observe(el.list);
 
-  // Overlappende afspraken naast elkaar zetten
+  // Put overlapping appointments side by side
   function lanes(items) {
     items.sort((a, b) => a.s - b.s || b.e - a.e);
     let cluster = [], laneEnds = [], clusterEnd = 0;
@@ -765,16 +766,16 @@
   }
 
   // ---------- Kleur per categorie ----------
-  // AH houdt de kleur van je AH-agenda; F1 rood; Canvas/ESSB groen; de rest de kleur van zijn agenda
+  // AH always the bright AH blue (preference); F1 red; Canvas/ESSB green; the rest its calendar's color
   const IS_F1 = /formula\s*1|(^|\W)f1\b/i;
   function colorOf(ev) {
-    if (!ev.allDay && /\bAH\b/.test(ev.title)) return ev.color || '#3f51b5';
+    if (!ev.allDay && /\bAH\b/.test(ev.title)) return '#00ADE6';
     if (IS_F1.test(ev.title)) return '#e10600';
     if (ev.canvas || /\bESSB\b/.test(ev.title)) return '#2fbf71';
     return ev.color || '#8a8aa0';
   }
   const rgb = (hex) => { const n = parseInt(hex.replace('#', '').padEnd(6, '0'), 16); return [n >> 16, (n >> 8) & 255, n & 255]; };
-  // Achtergrond = 30% categoriekleur op donker; tekst donker als die achtergrond licht genoeg is
+  // Background = 30% category color on dark; text dark when that background is light enough
   function paint(node, ev) {
     const c = colorOf(ev);
     const [r, g, b] = rgb(c).map((v, i) => Math.round(v * 0.3 + [31, 31, 35][i] * 0.7));
@@ -785,7 +786,7 @@
     tipEvent.set(node, ev);
   }
 
-  // ---------- Tooltip: volledige titel bij hover (pc) of eerste tik (telefoon) ----------
+  // ---------- Tooltip: full title on hover (PC) or first tap (phone) ----------
   const tipEvent = new WeakMap();
   const tip = h('div', 'cal-tip');
   tip.hidden = true;
@@ -797,7 +798,7 @@
     const ev = tipEvent.get(node);
     if (!ev) return;
     tipFor = node;
-    const when = ev.allDay ? 'Hele dag' : `${fmtTime(ev.start)} – ${fmtTime(ev.end)}`;
+    const when = ev.allDay ? 'All day' : `${fmtTime(ev.start)} – ${fmtTime(ev.end)}`;
     tip.style.setProperty('--c', colorOf(ev));
     tip.replaceChildren(h('b', null, ev.title), h('span', null, ev.location ? `${when} · ${ev.location}` : when));
     tip.hidden = false;
@@ -823,12 +824,12 @@
   el.list.addEventListener('click', (e) => {
     const node = e.target.closest('.wk-ev, .wk-chip, .event');
     if (!node || lastPointer !== 'touch') return;
-    // Telefoon: eerste tik toont de volledige titel, tweede tik opent de afspraak
+    // Phone: the first tap shows the full title, the second tap opens the appointment
     if (tipFor !== node) { e.preventDefault(); showTip(node); }
   });
   window.addEventListener('scroll', hideTip, { passive: true });
 
-  // ---------- Wissel Lijst / Week ----------
+  // ---------- Switch List / Week ----------
   let view = store.get(KEY.view) === 'week' ? 'week' : 'list';
 
   function setView(v) {
@@ -849,8 +850,8 @@
     paint(row, ev);
 
     let time;
-    if (ev.allDay) time = 'Hele dag';
-    else if (ev.start < dayStart) time = `tot ${fmtTime(ev.end)}`;
+    if (ev.allDay) time = 'All day';
+    else if (ev.start < dayStart) time = `until ${fmtTime(ev.end)}`;
     else time = `${fmtTime(ev.start)} – ${fmtTime(ev.end)}`;
 
     const body = h('div');
@@ -860,16 +861,16 @@
 
     if (!ev.allDay) {
       if (ev.end <= now) row.classList.add('past');
-      else if (ev.start <= now) { row.classList.add('now'); row.append(h('span', 'badge', 'Nu')); }
+      else if (ev.start <= now) { row.classList.add('now'); row.append(h('span', 'badge', 'Now')); }
       else if (isNext && ev.start - now < SOON) row.append(h('span', 'badge', untilText(ev.start - now)));
     }
     li.append(row);
     return li;
   }
 
-  // Token verlopen en stil vernieuwen lukte niet (hulpprogramma nog niet op na het opstarten, internet nog weg na slaapstand).
-  // Sinds 0.59.0 (1.0-zelfherstel): gewoon elke 5 minuten opnieuw stil proberen, en de knop "Vernieuwen" pas tonen als
-  // het een uur lang niet lukt. Daarvoor bleef de agenda hier staan tot je het tabblad wisselde.
+  // Token expired and quietly refreshing failed (helper not up yet after starting, internet still gone after sleep).
+  // Since 0.59.0 (1.0 self-recovery): simply try quietly again every 5 minutes, and only show the "Refresh" button when
+  // it fails for an hour. Before that the agenda stayed stuck here until you switched tabs.
   let failSince = 0;
   const RETRY_AUTH = 5 * 60 * 1000;
   const showReconnect = () => { el.reconnect.hidden = !failSince || Date.now() - failSince < 3600000; };
@@ -888,8 +889,8 @@
 
   function showLogin(msg) {
     el.loginMsg.textContent = !CONFIGURED
-      ? 'Vul eerst je Google Client ID in config.js in.'
-      : msg || 'Koppel je Google Agenda om je afspraken hier te zien.';
+      ? 'Fill in your Google Client ID in config.js first.'
+      : msg || 'Link your Google Calendar to see your appointments here.';
     el.connect.disabled = !CONFIGURED;
     card.dataset.state = 'login';
     publish(false);
@@ -904,7 +905,7 @@
   el.refresh.onclick = connect;
   el.logout.onclick = () => (DEMO ? null : disconnect());
 
-  // Elke minuut "Nu"/"over X min" bijwerken; bij terugkomen naar het tabblad verversen
+  // Every minute update "Now"/"in X min"; refresh when coming back to the tab
   setInterval(() => {
     if (card.dataset.state !== 'main' || document.hidden) return;
     render();
@@ -917,9 +918,9 @@
     if (token() && Date.now() - fetchedAt > 60000) load();
     else if (!token()) retryAuth();
   });
-  // Na slaapstand of als internet terug is (dash.js): meteen opnieuw ophalen
+  // After sleep or when the internet is back (dash.js): fetch again right away
   window.addEventListener('dash:wake', () => { if (!DEMO && card.dataset.state === 'main') (token() ? load() : retryAuth()); });
-  // Een ander vak (mail, gezondheid) haalde een nieuw token terwijl de agenda vastzat: meteen laden
+  // Another tile (mail, health) got a new token while the agenda was stuck: load right away
   window.addEventListener('dash:google', () => { if (!DEMO && failSince && token()) load(); });
 
   // ---------- Demo (?demo) ----------
@@ -928,16 +929,16 @@
     const at = (day, hh, mm = 0) => addDays(t, day) + (hh * 60 + mm) * 60000;
     const now = Date.now();
     return [
-      { id: '21', title: 'Practical Programming Experiments', location: 'Mandeville T4-95A', allDay: false, start: at(0, 9), end: at(0, 11, 45), color: '#039be5', calName: 'Rooster EUR' },
+      { id: '21', title: 'Practical Programming Experiments', location: 'Mandeville T4-95A', allDay: false, start: at(0, 9), end: at(0, 11, 45), color: '#039be5', calName: 'Timetable EUR' },
       { id: '22', title: 'AH BERKEL EN RODENRIJS', location: 'Westerwater', allDay: false, start: at(0, 17), end: at(0, 21, 30), color: '#3f51b5' },
-      { id: '1', title: 'Ontbijt met Sam', location: 'Café de Hoek', allDay: false, start: at(0, 8, 30), end: at(0, 9, 30), color: '#f6bf26' },
-      { id: '2', title: 'Werkblok', location: '', allDay: false, start: now - 20 * 60000, end: now + 40 * 60000, color: '#7986cb' },
-      { id: '3', title: 'Tandarts', location: 'Hoofdstraat 12', allDay: false, start: now + 95 * 60000, end: now + 125 * 60000, color: '#e67c73' },
-      { id: '4', title: 'Filmavond', location: '', allDay: false, start: at(0, 20), end: at(0, 23), color: '#33b679' },
-      { id: '5', title: 'Verjaardag oma', location: '', allDay: true, start: addDays(t, 1), end: addDays(t, 2), color: '#8e24aa', birthday: 'Oma' },
-      { id: '20', title: "Loeka's verjaardag", location: '', allDay: true, start: addDays(t, 3), end: addDays(t, 4), color: '#8e24aa', birthday: 'Loeka', hidden: true },
-      { id: '6', title: 'Sporten', location: 'Sportschool', allDay: false, start: at(1, 18), end: at(1, 19, 30), color: '#039be5' },
-      { id: '7', title: 'Weekendje weg', location: 'Texel', allDay: true, start: addDays(t, 3), end: addDays(t, 5), color: '#33b679' },
+      { id: '1', title: 'Breakfast with Sam', location: 'Café de Hoek', allDay: false, start: at(0, 8, 30), end: at(0, 9, 30), color: '#f6bf26' },
+      { id: '2', title: 'Work block', location: '', allDay: false, start: now - 20 * 60000, end: now + 40 * 60000, color: '#7986cb' },
+      { id: '3', title: 'Dentist', location: 'Hoofdstraat 12', allDay: false, start: now + 95 * 60000, end: now + 125 * 60000, color: '#e67c73' },
+      { id: '4', title: 'Film night', location: '', allDay: false, start: at(0, 20), end: at(0, 23), color: '#33b679' },
+      { id: '5', title: "Grandma's birthday", location: '', allDay: true, start: addDays(t, 1), end: addDays(t, 2), color: '#8e24aa', birthday: 'Grandma' },
+      { id: '20', title: "Loeka's birthday", location: '', allDay: true, start: addDays(t, 3), end: addDays(t, 4), color: '#8e24aa', birthday: 'Loeka', hidden: true },
+      { id: '6', title: 'Gym', location: 'Gym', allDay: false, start: at(1, 18), end: at(1, 19, 30), color: '#039be5' },
+      { id: '7', title: 'Weekend away', location: 'Texel', allDay: true, start: addDays(t, 3), end: addDays(t, 5), color: '#33b679' },
       { id: '8', title: 'AH BERKEL EN RODENRIJS', location: 'Westerwater', allDay: false, start: at(2, 8), end: at(2, 13), color: '#3f51b5' },
       { id: '16', title: 'Salaris', location: '', allDay: true, start: parseDate('2026-11-09'), end: parseDate('2026-11-10'), color: '#33b679' },
       { id: '9', title: 'AH BERKEL EN RODENRIJS', location: 'Westerwater', allDay: false, start: at(-1, 17), end: at(-1, 21, 30), color: '#3f51b5' },
@@ -945,11 +946,11 @@
       { id: '11', title: '🏁 FORMULA 1 GRAN PREMIO DE LA CIUDAD DE MÉXICO 2026 - Race', location: '', allDay: false, start: at(5, 21), end: at(5, 23), color: '#f09300' },
       { id: '12', title: '⏱️ FORMULA 1 GRAN PREMIO DE LA CIUDAD DE MÉXICO 2026 - Qualifying', location: '', allDay: false, start: at(4, 22), end: at(4, 23), color: '#f09300' },
       { id: '13', title: 'Essay week 6 [ESSB-MP6020]', location: '', allDay: false, start: at(1, 23, 59), end: at(1, 23, 59), color: '#9e69af', canvas: true, assignment: true, hidden: true },
-      { id: '14', title: 'Quiz hoofdstuk 4 [ESSB-MP6020]', location: '', allDay: false, start: at(3, 12), end: at(3, 12), color: '#9e69af', canvas: true, assignment: true, hidden: true },
-      { id: '15', title: 'Reflectieverslag [ESSB-BS2100]', location: '', allDay: false, start: at(-1, 17), end: at(-1, 17), color: '#9e69af', canvas: true, assignment: true, hidden: true },
-      { id: '17', title: 'Leesopdracht hoofdstuk 5 [ESSB-BS2100]', location: '', allDay: false, start: now + 5 * 3600000, end: now + 5 * 3600000, color: '#9e69af', canvas: true, assignment: true, hidden: true },
-      { id: '18', title: 'Groepspresentatie [ESSB-PS3040]', location: '', allDay: false, start: at(9, 9), end: at(9, 9), color: '#9e69af', canvas: true, assignment: true, hidden: true },
-      { id: '19', title: 'Logboek week 7 [ESSB-PS3040]', location: '', allDay: false, start: at(-4, 23, 59), end: at(-4, 23, 59), color: '#9e69af', canvas: true, assignment: true, hidden: true },
+      { id: '14', title: 'Quiz chapter 4 [ESSB-MP6020]', location: '', allDay: false, start: at(3, 12), end: at(3, 12), color: '#9e69af', canvas: true, assignment: true, hidden: true },
+      { id: '15', title: 'Reflection report [ESSB-BS2100]', location: '', allDay: false, start: at(-1, 17), end: at(-1, 17), color: '#9e69af', canvas: true, assignment: true, hidden: true },
+      { id: '17', title: 'Reading assignment chapter 5 [ESSB-BS2100]', location: '', allDay: false, start: now + 5 * 3600000, end: now + 5 * 3600000, color: '#9e69af', canvas: true, assignment: true, hidden: true },
+      { id: '18', title: 'Group presentation [ESSB-PS3040]', location: '', allDay: false, start: at(9, 9), end: at(9, 9), color: '#9e69af', canvas: true, assignment: true, hidden: true },
+      { id: '19', title: 'Logbook week 7 [ESSB-PS3040]', location: '', allDay: false, start: at(-4, 23, 59), end: at(-4, 23, 59), color: '#9e69af', canvas: true, assignment: true, hidden: true },
     ];
   }
 
@@ -961,7 +962,7 @@
     const cache = store.get(KEY.cache);
     if (cache) { events = cache.events || []; fetchedAt = cache.fetchedAt || 0; }
     if (token()) return load();
-    // Eerst stil proberen via het hulpprogramma; lukt dat niet, dan de knop
+    // First try quietly via the helper; if that fails, the button
     if (cache) render();
     refreshFromHelper().then(() => {
       if (token()) load();

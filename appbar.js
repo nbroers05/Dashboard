@@ -1,7 +1,7 @@
-// Titelbalk voor de Windows-app (repo nbroers05/dashboard-app). Alleen met ?app=pc (onthouden voor dit tabblad,
-// html.app wordt al in de <head> gezet). De app heeft geen Windows-rand, dus de site tekent zelf de balk:
-// slepen, dubbelklik = maximaliseren, minimaliseren / maximaliseren / sluiten, F11 = schermvullend.
-// Zonder window.__TAURI__ (gewone browser met ?app=pc) staat de balk er wel, maar doen de knoppen niets.
+// Title bar for the Windows app (repo nbroers05/dashboard-app). Only with ?app=pc (remembered for this tab,
+// html.app is already set in the <head>). The app has no Windows border, so the site draws the bar itself:
+// drag, double-click = maximise, minimise / maximise / close, F11 = full screen.
+// Without window.__TAURI__ (a normal browser with ?app=pc) the bar is there, but the buttons do nothing.
 (() => {
   const root = document.documentElement;
   if (!root.classList.contains('app')) return;
@@ -15,17 +15,17 @@
   bar.innerHTML = `
     <span class="app-bar-title"><img src="favicon.svg" alt="" width="16" height="16"><span>Dashboard</span></span>
     <span class="app-bar-btns">
-      <button type="button" class="app-btn app-min" aria-label="Minimaliseren" title="Minimaliseren">${icon('M1 8h8')}</button>
-      <button type="button" class="app-btn app-max" aria-label="Maximaliseren" title="Maximaliseren">${icon('M1.5 1.5h7v7h-7z')}</button>
-      <button type="button" class="app-btn app-close" aria-label="Sluiten" title="Sluiten (naar het systeemvak)">${icon('M1.5 1.5l7 7M8.5 1.5l-7 7')}</button>
+      <button type="button" class="app-btn app-min" aria-label="Minimise" title="Minimise">${icon('M1 8h8')}</button>
+      <button type="button" class="app-btn app-max" aria-label="Maximise" title="Maximise">${icon('M1.5 1.5h7v7h-7z')}</button>
+      <button type="button" class="app-btn app-close" aria-label="Close" title="Close (to the system tray)">${icon('M1.5 1.5l7 7M8.5 1.5l-7 7')}</button>
     </span>`;
   document.body.prepend(bar);
-  if (!win) bar.title = 'Titelbalk van de app (in de browser doen de knoppen niets)';
+  if (!win) bar.title = 'The app\'s title bar (in the browser the buttons do nothing)';
 
   bar.querySelector('.app-min').addEventListener('click', () => call((w) => w.minimize()));
   bar.querySelector('.app-max').addEventListener('click', () => call((w) => w.toggleMaximize()));
   bar.querySelector('.app-close').addEventListener('click', () => call((w) => w.close()));
-  // Slepen op de balk zelf (niet op de knoppen); dubbelklik = maximaliseren/herstellen
+  // Drag on the bar itself (not on the buttons); double-click = maximise/restore
   bar.addEventListener('mousedown', (e) => {
     if (e.button !== 0 || e.target.closest('.app-btn')) return;
     e.preventDefault();
@@ -33,13 +33,13 @@
     else call((w) => w.startDragging());
   });
 
-  // Knop toont "herstellen" als het venster gemaximaliseerd is; schermvullend = balk weg (F11 terug)
+  // The button shows "restore" when the window is maximised; full screen = bar gone (F11 back)
   const sync = () => call(async (w) => {
     const [max, full] = await Promise.all([w.isMaximized(), w.isFullscreen()]);
     root.classList.toggle('app-maxed', max);
     if (root.classList.contains('app-full') !== full) {
       root.classList.toggle('app-full', full);
-      window.dispatchEvent(new Event('resize'));   // indelingen opnieuw laten meten
+      window.dispatchEvent(new Event('resize'));   // let the layouts measure again
     }
   });
   let t;

@@ -45,9 +45,9 @@
   const mondayOf = (k) => shift(k, -((fromKey(k).getDay() + 6) % 7));
   const fmtMin = (m) => `${pad(Math.floor(m / 60))}:${pad(m % 60)}`;
   const fmtTime = (ms) => { const d = new Date(ms); return `${pad(d.getHours())}:${pad(d.getMinutes())}`; };
-  const weekday = (k) => fromKey(k).toLocaleDateString('nl-NL', { weekday: 'short' }).replace('.', '');
-  const longDay = (k) => fromKey(k).toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long' });
-  const shortDay = (k) => fromKey(k).toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'short' }).replace('.', '');
+  const weekday = (k) => fromKey(k).toLocaleDateString('en-GB', { weekday: 'short' }).replace('.', '');
+  const longDay = (k) => fromKey(k).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long' });
+  const shortDay = (k) => fromKey(k).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'short' }).replace('.', '');
   const capital = (s) => s.charAt(0).toUpperCase() + s.slice(1);
   const dayStart = (k) => fromKey(k).getTime();
 
@@ -249,7 +249,7 @@
   function renderStudy() {
     const end = shift(week, 6);
     const thisWeek = week === mondayOf(today());
-    $('study-title').textContent = thisWeek ? 'Studie deze week' : `Studie week van ${fromKey(week).getDate()} ${fromKey(week).toLocaleDateString('nl-NL', { month: 'short' }).replace('.', '')}`;
+    $('study-title').textContent = thisWeek ? 'Studie deze week' : `Studie week van ${fromKey(week).getDate()} ${fromKey(week).toLocaleDateString('en-GB', { month: 'short' }).replace('.', '')}`;
     // Een leesblok hoort bij de week van zijn college, ook als het op de zondag ervoor staat of nog geen plek heeft
     const weekOf = (t) => t.module_week || t.day;
     const inWeek = tasks().filter((t) => t.kind === 'task' && t.subject_id && t.module_state !== 'skipped' && weekOf(t) && weekOf(t) >= week && weekOf(t) <= end);
@@ -1011,7 +1011,7 @@
 
   function renderWeekGrid() {
     const first = fromKey(week);
-    $('week-label').textContent = `Week van ${first.getDate()} ${first.toLocaleDateString('nl-NL', { month: 'short' }).replace('.', '')}`;
+    $('week-label').textContent = `Week van ${first.getDate()} ${first.toLocaleDateString('en-GB', { month: 'short' }).replace('.', '')}`;
     const startH = 7;
     const span = (24 - startH) * 60;
     const pos = (s, e) => `top:${(((Math.max(s, startH * 60) - startH * 60) / span) * 100).toFixed(2)}%;height:${(((e - Math.max(s, startH * 60)) / span) * 100).toFixed(2)}%;`;

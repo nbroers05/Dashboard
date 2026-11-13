@@ -1,7 +1,7 @@
-/* ---------- Y2K-stijl (early 2000s, Windows XP-achtig) ----------
-   Aan via Instellingen › Thema › Stijl (theme.settings.style = 'y2k' → html.y2k; testen met ?stijl=y2k).
-   Alleen opmaak: indeling, volgorde en functies blijven gelijk. Alles hieronder begint met html.y2k,
-   zodat de gewone stijl er niets van merkt. Het seizoensthema (deeltjes, versiering) blijft gewoon werken. */
+/* ---------- Y2K style (early 2000s, Windows XP-like) ----------
+   On via Settings › Theme › Style (theme.settings.style = 'y2k' → html.y2k; test with ?style=y2k).
+   Styles only: layout, order and functions stay the same. Everything below starts with html.y2k,
+   so the normal style doesn't notice any of it. The seasonal theme (particles, decoration) keeps working. */
 
 html.y2k {
   --bg: #0f2c6e;
@@ -11,7 +11,7 @@ html.y2k {
   --surface-hover: rgba(0, 0, 0, .13);
   --accent: #2a62d9;
 
-  /* eigen tokens */
+  /* own tokens */
   --y2-cream: #f1ecdf;
   --y2-cream2: #e6dfcd;
   --y2-line: #2b2820;
@@ -30,8 +30,8 @@ html.y2k body {
   -webkit-font-smoothing: auto;
   background: #0f2c6e;
 }
-/* Bureaublad: kleurt mee met de hoes van wat er speelt (--tint, net als in Modern), met een vleug XP-blauw
-   en heel lichte beeldlijntjes zoals een oude CRT */
+/* Desktop: follows the cover of what's playing (--tint, just like in Modern), with a touch of XP blue
+   and very light scan lines like an old CRT */
 html.y2k body { background: color-mix(in srgb, var(--tint) 45%, #081436); }
 html.y2k body::before {
   background:
@@ -42,7 +42,7 @@ html.y2k body::before {
 }
 html.y2k :focus-visible { outline: 1px dotted #000; outline-offset: 2px; }
 
-/* ---------- Vensters ---------- */
+/* ---------- Windows ---------- */
 html.y2k .card,
 html.y2k .tile {
   background: var(--y2-cream);
@@ -57,12 +57,12 @@ html.y2k .tile {
   --ct: color-mix(in srgb, var(--c) 72%, black);
   padding: 0 12px 10px !important;
 }
-/* Desk past precies in één scherm: daar wat zuiniger, zodat F1 en Film niet krapper worden dan in de gewone stijl */
+/* Desk fits exactly on one screen: a bit more economical there, so F1 and Film don't get tighter than in the normal style */
 html.y2k .desk .tile { padding-bottom: 6px !important; }
 html.y2k .desk .tile > .eyebrow { margin-bottom: 3px; }
 html.y2k .desk-col { gap: 8px;
 }
-/* Titelbalk = het bestaande kopje van het vak */
+/* Title bar = the tile's existing heading */
 html.y2k .tile > .eyebrow {
   position: relative;
   flex: none;
@@ -77,7 +77,7 @@ html.y2k .tile > .eyebrow {
   text-transform: uppercase;
   text-shadow: 1px 1px 0 rgba(0, 0, 0, .45);
 }
-/* Decoratief sluitknopje */
+/* Decorative close button */
 html.y2k .tile > .eyebrow::after,
 html.y2k :is(#calendar, .player)::after {
   content: '×';
@@ -95,11 +95,11 @@ html.y2k :is(#calendar, .player)::after {
   text-transform: none;
 }
 
-/* Vakken waar het kopje verborgen is (tabjes in desk, compacte check-in): geen titelbalk, wel wat lucht */
+/* Tiles where the heading is hidden (tabs in desk, compact check-in): no title bar, but some air */
 html.y2k .desk-tabs > .tile,
 html.y2k .desk #w-checkin { padding-top: 8px !important; }
 
-/* Speler en agenda hebben geen eigen kopje-als-balk: een titelbalk erboven via ::before */
+/* Player and agenda have no heading-as-bar of their own: a title bar above them via ::before */
 html.y2k .player,
 html.y2k #calendar { padding-top: calc(var(--y2-bar) + 10px) !important; }
 html.y2k .player::before,
@@ -127,10 +127,10 @@ html.y2k :is(#calendar, .player)::after { z-index: 4; inset: auto; top: 3px; rig
 html.y2k .media-stack > .player { background: var(--y2-cream); }
 html.y2k .media-stack > .player[data-pos="1"] { background: #ddd6c3; border-color: var(--y2-line); }
 html.y2k .media-stack > .player[data-pos="2"] { background: #cfc7b2; border-color: var(--y2-line); }
-/* Achter de voorste speler: grijzere titelbalk zoals een inactief venster */
+/* Behind the front player: a greyer title bar like an inactive window */
 html.y2k .media-card:not(:first-child)::before { background: var(--y2-title-dim); }
 
-/* ---------- Tekst ---------- */
+/* ---------- Text ---------- */
 html.y2k .eyebrow { color: var(--muted); }
 html.y2k .title { letter-spacing: 0; color: var(--text); }
 html.y2k .w-big,
@@ -138,7 +138,7 @@ html.y2k :is(.f1-count, .film-score, .cine-score, .hl-num, .ah-month b, .ah-pay 
   font-family: var(--y2-pixel);
   font-weight: 400;
   letter-spacing: 0;
-  font-size-adjust: ex-height .53;   /* VT323 is kleiner dan de gewone letter: even groot maken, dus niets verschuift */
+  font-size-adjust: ex-height .53;   /* VT323 is smaller than the normal font: make it the same size, so nothing shifts */
 }
 html.y2k .w-big { line-height: .9; color: var(--text); }
 html.y2k .w-big small { font-size-adjust: none; }
@@ -148,7 +148,7 @@ html.y2k .w-label, html.y2k .ws-head, html.y2k .ci-label, html.y2k .ph-label { c
 html.y2k a { color: #0b3fc2; }
 html.y2k .w-note a { color: #0b3fc2; }
 
-/* ---------- Knoppen ---------- */
+/* ---------- Buttons ---------- */
 html.y2k :is(.w-btn, .pill-btn, .cal-nav-btn, .ph-btn, .ph-round, .desk-more-chev) {
   border: 1px solid #6f6a5c;
   border-radius: 3px;
@@ -167,7 +167,7 @@ html.y2k .w-btn.ghost { background: var(--y2-btn); color: #111; }
 html.y2k .w-btn.lb { background: linear-gradient(180deg, #5ef08f, #19b44d); color: #062b12; }
 html.y2k .pill-btn { padding: 8px 18px; }
 
-/* Ronde spelerknoppen worden vierkante knopjes */
+/* Round player buttons become square buttons */
 html.y2k .btn {
   border: 1px solid #6f6a5c;
   border-radius: 3px;
@@ -181,7 +181,7 @@ html.y2k .btn.small:hover { background: var(--y2-btn); border-color: #6f6a5c; }
 html.y2k .btn.pill { background: linear-gradient(180deg, #fffdf8 0%, #d9e6fb 100%); color: #0d3a9e; }
 html.y2k .btn[aria-pressed="true"], html.y2k #repeat:not([data-mode="off"]) { color: #1556cf; }
 
-/* Segmentknoppen (Lijst/Week enz.) */
+/* Segment buttons (List/Week etc.) */
 html.y2k .seg { padding: 0; gap: 0; border-radius: 0; background: none; }
 html.y2k .seg button {
   margin-left: -1px;
@@ -202,7 +202,7 @@ html.y2k .w-pill.good { background: #c9f2d5; color: #08210f; }
 html.y2k .w-pill.bad { background: #ffd2bf; color: #2a0d02; }
 html.y2k .w-pill.live { background: var(--c); color: #fff; }
 
-/* Lijstjes en rijtjes: wit vlakje met een dun randje */
+/* Lists and rows: a white patch with a thin border */
 html.y2k :is(.al-item, .ml-item, .ds-row, .cv-item, .ph-alert, .td-item, .ws-item) {
   border-radius: 2px;
   background: #fffdf6;
@@ -212,7 +212,7 @@ html.y2k .al-item { border-left: 4px solid var(--lv); }
 html.y2k .al-item.lv-urgent { background: #ffe3dc; }
 html.y2k button.al-item:hover { background: #fff6d9; }
 
-/* Invoervelden */
+/* Input fields */
 html.y2k :is(input, select, textarea):not([type="checkbox"]):not([type="radio"]):not([type="range"]) {
   border: 1px solid #7f9db9;
   border-radius: 0;
@@ -221,10 +221,10 @@ html.y2k :is(input, select, textarea):not([type="checkbox"]):not([type="radio"])
   font-family: var(--y2-font);
 }
 
-/* Scrollbalken in XP-kleuren (Firefox) */
+/* Scrollbars in XP colors (Firefox) */
 html.y2k * { scrollbar-color: #c3bba8 #ece6d6; }
 
-/* ---------- Topbalk ---------- */
+/* ---------- Top bar ---------- */
 html.y2k .topbar {
   border-radius: 0;
   border: 1px solid #06205e;
@@ -257,7 +257,7 @@ html.y2k .tb-btn:hover, html.y2k .tb-link:hover { background: rgba(255, 255, 255
 html.y2k .tb-icon, html.y2k .tb-link img { image-rendering: pixelated; }
 html.y2k .tb-badge { border-radius: 2px; box-shadow: 0 0 0 1px #fff; }
 
-/* Zijbalk (desk): verticale XP-balk */
+/* Sidebar (desk): a vertical XP bar */
 html.y2k .rail {
   background: linear-gradient(90deg, #1d4fbf 0%, #2a63d8 40%, #1b48ad 100%);
   border-right: 1px solid #06205e;
@@ -267,7 +267,7 @@ html.y2k .rail :is(a, button) { border-radius: 3px; color: #fff; }
 html.y2k .rail :is(a, button):hover,
 html.y2k .rail [aria-current] { background: rgba(255, 255, 255, .2); box-shadow: inset 1px 1px 0 rgba(0, 0, 0, .3); }
 
-/* ---------- Speler ---------- */
+/* ---------- Player ---------- */
 html.y2k .player::after { background: linear-gradient(180deg, #f2f2f2, #c9c6bd); }
 html.y2k .player .cover { border-radius: 0; border: 1px solid var(--y2-line); box-shadow: 2px 2px 0 rgba(0, 0, 0, .4); }
 html.y2k .player .bar { border-radius: 0; background: #fff; border: 1px solid #7f9db9; }
@@ -276,7 +276,7 @@ html.y2k .artist, html.y2k .times { color: var(--muted); }
 html.y2k .media-dots button { border-radius: 0; background: #8d8676; }
 html.y2k .media-dots button[aria-current="true"], html.y2k .media-dots button.on { background: #1556cf; }
 
-/* ---------- Agenda in Outlook-stijl ---------- */
+/* ---------- Agenda in Outlook style ---------- */
 html.y2k .week { background: #fbf7ea; border: 1px solid #a49c86; }
 html.y2k .wk-day { color: #3d3a32; background: #ece4cc; border-bottom: 1px solid #a49c86; padding-top: 4px; }
 html.y2k .wk-day b { color: #111; }
@@ -294,7 +294,7 @@ html.y2k .wk-ev, html.y2k .wk-chip {
   border-radius: 0;
   border: 1px solid rgba(0, 0, 0, .7);
   border-left: 1px solid rgba(0, 0, 0, .7);
-  background: color-mix(in srgb, var(--c, var(--accent)) 68%, black);   /* ook lichte agendakleuren donker genoeg voor witte tekst */
+  background: color-mix(in srgb, var(--c, var(--accent)) 68%, black);   /* light agenda colors too, dark enough for white text */
   color: #fff;
   text-shadow: 1px 1px 0 rgba(0, 0, 0, .35);
   box-shadow: 1px 1px 0 rgba(0, 0, 0, .25);
@@ -304,7 +304,7 @@ html.y2k .cal-day h3 { color: #111; border-bottom: 1px solid #a49c86; }
 html.y2k .event { border-radius: 0; background: #fffdf6; border: 1px solid #bdb5a2; border-left: 4px solid var(--c, var(--accent)); }
 html.y2k .cal-week-label { color: var(--muted); }
 
-/* ---------- Desk: tabjes, onderbalk en lade ---------- */
+/* ---------- Desk: tabs, bottom bar and drawer ---------- */
 html.y2k .desk-tabs {
   border-radius: 0;
   border: 1px solid var(--y2-line);
@@ -329,7 +329,7 @@ html.y2k .desk-tabbar button[aria-selected="true"] {
 }
 html.y2k .desk-tabs > .tile { box-shadow: none; border: 0; }
 
-/* Desk-weer: weer en buienalarm in één venster */
+/* Desk weather: weather and rain alarm in one window */
 html.y2k .desk-weather { border-radius: 0; border: 1px solid var(--y2-line); background: var(--y2-cream); box-shadow: var(--y2-shadow); }
 html.y2k .desk-weather > .tile { border: 0; box-shadow: none; }
 html.y2k .desk-weather > #w-rain { border-top: 1px solid #c8bfa8; }
@@ -340,7 +340,7 @@ html.y2k .desk-weather > #w-rain > .eyebrow {
 html.y2k .desk-weather > #w-rain > .eyebrow::after { content: none; }
 html.y2k .desk-weather > #w-rain { padding-top: 0 !important; }
 
-/* Onderbalk = taakbalk met Start-knop */
+/* Bottom bar = taskbar with a Start button */
 html.y2k .desk-more-bar {
   position: relative;
   padding: 0 14px 0 0;
@@ -409,7 +409,7 @@ html.y2k .rail-btn:hover,
 html.y2k :is(.rail-btn[aria-current="page"], .rail-btn[aria-pressed="true"]) { background: rgba(255, 255, 255, .2); color: #fff; box-shadow: inset 1px 1px 0 rgba(0, 0, 0, .35); border-radius: 3px; }
 html.y2k .rail-dot { box-shadow: 0 0 0 1px #fff; border-radius: 0; }
 
-/* ---------- Telefoon: kaartjes worden kleine vensters, tabbalk wordt taakbalk ---------- */
+/* ---------- Phone: cards become small windows, the tab bar becomes a taskbar ---------- */
 html.y2k :is(.ph-card, .ph-wx, .ph-canvas, .ph-alerts, .ph-checkin, .ph-ci) {
   border: 1px solid var(--y2-line);
   border-radius: 0;
@@ -419,8 +419,8 @@ html.y2k :is(.ph-card, .ph-wx, .ph-canvas, .ph-alerts, .ph-checkin, .ph-ci) {
 }
 html.y2k .ph-card > .ph-title:first-child,
 html.y2k .ph-card > .ph-label:first-child { color: #0d3a9e; }
-/* AH: geen fel AH-blauw meer, alleen een blauwe rand (het felle blauw hoort bij de agenda) */
-html.y2k :is(.ph-ah, .ph-kpi-ah) { background: var(--y2-cream); color: var(--text); border-color: var(--y2-line); box-shadow: inset 5px 0 0 #00ADE6, 2px 2px 0 rgba(0, 0, 0, .5); }
+/* AH: always the bright AH blue (preference, 13 Nov 2026), as an XP window */
+html.y2k :is(.ph-ah, .ph-kpi-ah) { background: #00ADE6; color: #04263a; border-color: var(--y2-line); box-shadow: 2px 2px 0 rgba(0, 0, 0, .5); }
 html.y2k .ph-prog { border-radius: 0; background: #fff; border: 1px solid #7f9db9; }
 html.y2k .ph-prog i { border-radius: 0; background: repeating-linear-gradient(90deg, #2fb34a 0 6px, transparent 6px 8px); }
 html.y2k :is(.ph-chip, .ph-fchip, .ph-day) {
@@ -449,8 +449,8 @@ html.y2k .ph-mini-play svg { fill: #111; }
 html.y2k .ph-mini-prog { background: #2fb34a; }
 html.y2k.phone-mode body:not(.minimal) .topbar { border-radius: 0; }
 
-/* ---------- Elk vak een eigen gezicht (zoals de mockup), zodat ze niet allemaal hetzelfde zijn ---------- */
-/* Klassieke scrollbalk met knopjes (Chrome/Edge); Firefox kent alleen kleur en breedte */
+/* ---------- Every tile its own face (like the mockup), so they're not all the same ---------- */
+/* Classic scrollbar with buttons (Chrome/Edge); Firefox only knows color and width */
 html.y2k .y2-scroll, html.y2k .ly-scroll { scrollbar-width: auto; scrollbar-color: #c9c2ad #f3eccd; }
 html.y2k :is(.y2-scroll, .ly-scroll, .wk-body, .al-list, .cal-list)::-webkit-scrollbar { display: block; width: 16px; height: 16px; }
 html.y2k :is(.y2-scroll, .ly-scroll, .wk-body, .al-list, .cal-list)::-webkit-scrollbar-track { background: repeating-conic-gradient(#f3eccd 0 25%, #e4dcbc 0 50%) 0 0 / 2px 2px; }
@@ -465,9 +465,9 @@ html.y2k :is(.y2-scroll, .ly-scroll, .wk-body, .al-list, .cal-list)::-webkit-scr
   background: var(--y2-btn);
 }
 
-/* Songtekst: geel kladblok met lijntjes en een echte scrollbalk */
+/* Lyrics: a yellow notepad with lines and a real scrollbar */
 html.y2k #lyrics { background: #fff8c9; }
-/* Kopregel (kopje + Sluiten) wordt de titelbalk, Sluiten een knopje erin */
+/* The header row (heading + Close) becomes the title bar, Close a button in it */
 html.y2k #lyrics > .w-row {
   flex: none;
   height: var(--y2-bar);
@@ -498,17 +498,17 @@ html.y2k #lyrics .w-body {
   border-top: 1px solid #c9b25a;
   background: #fffbe0;
 }
-/* De lijntjes scrollen mee met de tekst (background-attachment: local) en elke regel valt precies op een lijntje */
+/* The lines scroll along with the text (background-attachment: local) and every line falls exactly on a line */
 html.y2k #lyrics { --ly-h: 30px; }
 html.y2k .desk #lyrics { --ly-h: 36px; }
 html.y2k .ly-scroll {
   background: repeating-linear-gradient(180deg, transparent 0 calc(var(--ly-h) - 1px), #eadb8f calc(var(--ly-h) - 1px) var(--ly-h)) local;
-  /* zoals Modern 35% boven en onder (huidige regel in het midden), afgerond op hele regels zodat de lijntjes kloppen */
+  /* like Modern 35% top and bottom (current line in the middle), rounded to whole lines so the lines match */
   padding: calc(var(--ly-h) * 6) 10px calc(var(--ly-h) * 6) 14px;
   padding-block: round(down, 35%, var(--ly-h));
   -webkit-mask-image: none;
   mask-image: none;
-  border-left: 2px solid #f0a0a0;   /* rode kantlijn */
+  border-left: 2px solid #f0a0a0;   /* red margin line */
 }
 html.y2k .ly-scroll.plain { padding: 0 10px 0 14px; }
 html.y2k .ly-line { margin: 0; line-height: var(--ly-h); font-weight: 400; color: #9b9070; }
@@ -524,7 +524,7 @@ html.y2k .desk #lyrics:not([hidden]) {
   box-shadow: 0 0 0 100vmax rgba(8, 24, 64, .45), 4px 4px 0 rgba(0, 0, 0, .55);
 }
 
-/* Weer: buienalarm op ruitjespapier met blokjes in plaats van ronde staafjes */
+/* Weather: rain alarm on graph paper with blocks instead of round bars */
 html.y2k :is(.rn-chart, .rn-flat) {
   border: 1px solid #7f9db9;
   background-color: #fbfdff;
@@ -539,18 +539,18 @@ html.y2k .rn-flat::before { background: #7f9db9; height: 1px; }
 html.y2k .rn-flat span { border-radius: 2px; border: 1px solid #7f9db9; background: #fff; color: #0d3a9e; }
 html.y2k #w-weather { background: linear-gradient(180deg, #e6f1fc 0%, var(--y2-cream) 55%); }
 
-/* AH-uren: lichtblauw rekenblad (rustig blauw, niet het felle AH-blauw) */
+/* AH hours: a spreadsheet in the bright AH blue (AH is always AH blue, preference 13 Nov 2026) */
 html.y2k #w-ah {
-  background-color: #e3effa;
-  background-image: linear-gradient(#cbdcee 1px, transparent 1px);
+  background-color: #d4f2fb;
+  background-image: linear-gradient(#9fdcf0 1px, transparent 1px);
   background-size: 100% 22px;
 }
 html.y2k .ah-pay { border-top-color: #9fb6d3; }
 html.y2k .ah-bar .stack { border-radius: 0; background: #fff; border: 1px solid #7f9db9; }
-html.y2k .ah-bar .w { background: linear-gradient(90deg, #4b95f7, #1556cf); }
-html.y2k .ah-bar .p { background: repeating-linear-gradient(45deg, #9cc0f0 0 3px, #d6e6fb 3px 6px); }
+html.y2k .ah-bar .w { background: #00ADE6; }
+html.y2k .ah-bar .p { background: repeating-linear-gradient(45deg, #00ADE6 0 3px, #d4f2fb 3px 6px); }
 
-/* Episodes Left: donker paars scherm, zoals een mediabibliotheek */
+/* Episodes Left: a dark purple screen, like a media library */
 html.y2k #w-episodes {
   --text: #fff;
   --muted: #e2c7d6;
@@ -561,7 +561,7 @@ html.y2k #w-episodes .w-big { color: #ff8fc4; }
 html.y2k .ep-cover .img-box { border-radius: 0; border: 1px solid #000; box-shadow: 2px 2px 0 rgba(0, 0, 0, .6); }
 html.y2k .ep-badge { border-radius: 2px; }
 
-/* F1: podium als knoppen, nummer 1 goud */
+/* F1: podium as buttons, number 1 gold */
 html.y2k .f1-pod {
   border: 1px solid #8b8370;
   border-radius: 2px;
@@ -570,20 +570,20 @@ html.y2k .f1-pod {
 }
 html.y2k .f1-pod.p1 { background: linear-gradient(180deg, #fff6c8, #f2d36b); border-color: #9a7a10; }
 
-/* Speler: zilver met bevel, zoals een oude mediaspeler */
+/* Player: silver with a bevel, like an old media player */
 html.y2k .media-stack > .player[data-pos="0"],
 html.y2k .media-stack > .player:only-of-type { background: linear-gradient(180deg, #f4f3ef 0%, #d9d5ca 100%); }
 
-/* Meldingen: wit lijstje, Canvas: schrift met kantlijn */
+/* Notifications: a white list, Canvas: a notebook with a margin */
 html.y2k #w-alerts .w-body { background: #fff; margin: 0 -12px -10px; padding: 8px 12px 10px; border-top: 1px solid #c8bfa8; }
 html.y2k .desk #w-alerts .w-body { margin-bottom: -6px; }
 html.y2k #w-canvas { background: linear-gradient(90deg, transparent 0 6px, #f0a0a0 6px 7px, transparent 7px), var(--y2-cream); }
 
-/* Film van vanavond / Laatst gekeken: donkere bioscoop-strook achter de posters */
+/* Film tonight / Last watched: a dark cinema strip behind the posters */
 html.y2k :is(.lb-row, .film-poster) { border-radius: 0; }
 html.y2k .film-poster { border: 1px solid #000; box-shadow: 2px 2px 0 rgba(0, 0, 0, .5); }
 
-/* Instellingen: tabbladen, kopjes en themakaartjes op crème */
+/* Settings: tabs, headings and theme cards on cream */
 html.y2k .st-tabs { gap: 2px; border-bottom: 1px solid #8b8370; }
 html.y2k .st-tab {
   margin-bottom: -1px;
@@ -603,7 +603,7 @@ html.y2k .th-sw input[role="switch"] { border-radius: 2px; background: #fff; bor
 html.y2k .th-sw input[role="switch"]::after { border-radius: 1px; background: var(--y2-btn); border: 1px solid #6f6a5c; top: 2px; left: 2px; }
 html.y2k .th-sw input[role="switch"]:checked { background: #2fb34a; }
 
-/* Lichte accentkleuren die voor donker bedoeld waren: donkerder op crème */
+/* Light accent colors meant for dark: darker on cream */
 html.y2k :is(.u-red, .u-late) .cv-when { color: #c4161c; }
 html.y2k .u-orange .cv-when { color: #b35a00; }
 html.y2k :is(.ci-err, .ds-err, .st-state.bad) { color: #c4161c; }
@@ -615,10 +615,10 @@ html.y2k .st-state.ok { color: #1a7a35; }
 html.y2k .st-state.warn { color: #9a5b00; }
 html.y2k .gm-score { color: #8a5a00; }
 
-/* ---------- Versie onderaan (tall/telefoon) ---------- */
+/* ---------- Version at the bottom (tall/phone) ---------- */
 html.y2k .version { color: #c9d7f5; opacity: 1; }
 
-/* ---------- Windows-app (?app=pc): XP-titelbalk ---------- */
+/* ---------- Windows app (?app=pc): XP title bar ---------- */
 html.y2k.app:not(.app-full) { --app-h: 30px; }
 html.y2k.app .app-bar {
   padding: 0 4px 0 6px;
@@ -643,7 +643,7 @@ html.y2k .app-btn.app-close { background: linear-gradient(180deg, #ef8a63 0%, #d
 html.y2k .app-btn.app-close:hover { background: linear-gradient(180deg, #ffa27c 0%, #ee6235 50%, #d44a1f 100%); }
 html.y2k .app-btn:active { box-shadow: inset 1px 1px 0 rgba(0, 0, 10, .35); }
 
-/* Memory Lane (0.60.0): donkerdere kleuren op het crème venster */
+/* Memory Lane (0.60.0): darker colors on the cream window */
 html.y2k #w-memory .mm-date { color: #6a2fa0; }
 html.y2k #w-memory .mm-label, html.y2k #w-memory .mm-year b { color: #4b2a7a; }
 html.y2k #w-memory .mm-stars { color: #a86b00; }
@@ -651,5 +651,5 @@ html.y2k #w-memory .mm-stat { background: rgba(0, 0, 0, .05); border: 1px solid 
 html.y2k #w-memory .mm-year span { color: #333; }
 html.y2k #w-memory .mm-year:hover { background: rgba(0, 0, 0, .06); }
 
-/* Dunne speler (0.60.2): lijntjespapier met maar twee lege regels boven en onder, anders valt de huidige regel eruit */
+/* Thin player (0.60.2): lined paper with only two empty lines top and bottom, otherwise the current line falls out */
 html.y2k .tall.player-thin .ly-scroll { padding: calc(var(--ly-h) * 2) 10px calc(var(--ly-h) * 2) 14px; }

@@ -1,69 +1,96 @@
 <!doctype html>
-<html lang="nl">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0e0e0f">
-  <link rel="manifest" href="manifest.webmanifest?v=1.6.1">
+  <link rel="manifest" href="manifest.webmanifest?v=1.7.0">
   <title>Dashboard</title>
-  <!-- Eigen logo: het dashboard in het klein -->
-  <link rel="icon" href="favicon.svg?v=1.6.1" type="image/svg+xml">
-  <link rel="icon" href="favicon-32.png?v=1.6.1" type="image/png" sizes="32x32">
-  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=1.6.1">
+  <!-- Own logo: the dashboard in small -->
+  <link rel="icon" href="favicon.svg?v=1.7.0" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png?v=1.7.0" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png?v=1.7.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Flex:opsz,wght@8..144,400..800&family=Source+Serif+4:opsz,wght@8..60,400..700&family=VT323&family=DotGothic16&family=Shippori+Mincho+B1:wght@700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap">
-  <!-- ?v=0.MINOR.PATCH: ophogen bij elke wijziging (zie CLAUDE.md); de rest krijgt hetzelfde nummer via dash.js -->
-  <link rel="stylesheet" href="style.css?v=1.6.1">
-  <link rel="stylesheet" href="y2k.css?v=1.6.1">
-  <link rel="stylesheet" href="huisstijl.css?v=1.6.1">
-  <!-- Stijl (Instellingen › Thema): meteen zetten, anders flitst eerst de gewone stijl. Huisstijl is de standaard sinds 1.2.0
-       (oude opgeslagen instellingen zonder styleV gaan ook naar de huisstijl); de stand hier is een eerste gok, huisstijl.js rekent hem precies uit -->
-  <script>try { var d = document.documentElement, s = JSON.parse(localStorage.getItem('theme.settings') || '{}'), p = new URLSearchParams(location.search), q = p.get('stijl'), st = q || (s.styleV === 2 ? s.style : 'huisstijl'); if (st === 'y2k') d.classList.add('y2k'); if (st === 'huisstijl') { d.classList.add('nh-want'); if (innerWidth > 700) d.classList.add('nh'); var hr = new Date().getHours(), so = p.get('stand') || (s.stand && s.stand !== 'auto' ? s.stand : null); d.setAttribute('data-stand', so || (innerWidth > 700 && innerHeight > innerWidth ? (hr >= 7 && hr < 12 ? 'digital' : hr >= 12 && hr < 17 ? 'poster' : 'titel') : 'poster')); } } catch (e) {}</script>
-  <!-- Windows-app (?app=pc): onthouden voor dit tabblad (de Spotify-inlog komt terug zonder ?app), titelbalk uit appbar.js -->
+  <!-- ?v=1.MINOR.PATCH: bump on every change (see CLAUDE.md); everything else gets the same number via dash.js -->
+  <link rel="stylesheet" href="style.css?v=1.7.0">
+  <link rel="stylesheet" href="y2k.css?v=1.7.0">
+  <link rel="stylesheet" href="housestyle.css?v=1.7.0">
+  <!-- One-time conversion of saved settings from before 1.7.0 (Dutch names and values became English).
+       Runs on every load but only changes something once; both storages because "don't remember" uses sessionStorage. -->
+  <script>window.DASH_OLD_THEME_IDS = { standaard: 'default', herfst: 'autumn', lente: 'spring', zomer: 'summer', kerst: 'christmas', oudennieuw: 'newyear', valentijn: 'valentine', pasen: 'easter', koningsdag: 'kingsday', bevrijdingsdag: 'liberationday', verjaardag: 'birthday', tentamen: 'exams' };
+  (function () {
+    var V = { huisstijl: 'housestyle', titel: 'titlecard', rustig: 'calm', normaal: 'normal', feestje: 'party' };
+    [window.localStorage, window.sessionStorage].forEach(function (st) {
+      try {
+        var raw = st.getItem('theme.settings');
+        if (raw) {
+          var s = JSON.parse(raw), was = JSON.stringify(s);
+          if (s.stand && !s.mood) s.mood = s.stand;
+          delete s.stand;
+          ['style', 'mood', 'amount'].forEach(function (k) { if (V[s[k]]) s[k] = V[s[k]]; });
+          if (window.DASH_OLD_THEME_IDS[s.choice]) s.choice = window.DASH_OLD_THEME_IDS[s.choice];
+          if (JSON.stringify(s) !== was) st.setItem('theme.settings', JSON.stringify(s));
+        }
+        var map = { 'phone.tab': { vandaag: 'today' }, 'phone.mediaFilter': { alles: 'all' }, 'settings.tab': { thema: 'theme', inloggen: 'login' } };
+        Object.keys(map).forEach(function (k) {
+          var v = st.getItem(k), j = null;
+          try { j = JSON.parse(v); } catch (e) {}
+          if (j != null && map[k][j]) st.setItem(k, JSON.stringify(map[k][j]));
+        });
+        var wx = st.getItem('theme.wx');
+        if (wx && !/"v":2/.test(wx)) st.removeItem('theme.wx');   // weather kinds were Dutch; fetched again
+      } catch (e) {}
+    });
+  })();</script>
+  <!-- Style (Settings › Theme): set right away, otherwise the plain style flashes first. House style is the default since 1.2.0
+       (old saved settings without styleV also go to the house style); the mood here is a first guess, housestyle.js works it out exactly -->
+  <script>try { var d = document.documentElement, s = JSON.parse(localStorage.getItem('theme.settings') || '{}'), p = new URLSearchParams(location.search), q = p.get('style'), st = q || (s.styleV === 2 ? s.style : 'housestyle'); if (st === 'y2k') d.classList.add('y2k'); if (st === 'housestyle') { d.classList.add('nh-want'); if (innerWidth > 700) d.classList.add('nh'); var hr = new Date().getHours(), so = p.get('mood') || (s.mood && s.mood !== 'auto' ? s.mood : null); d.setAttribute('data-mood', so || (innerWidth > 700 && innerHeight > innerWidth ? (hr >= 7 && hr < 12 ? 'digital' : hr >= 12 && hr < 17 ? 'poster' : 'titlecard') : 'poster')); } } catch (e) {}</script>
+  <!-- Windows app (?app=pc): remembered for this tab (the Spotify login comes back without ?app), title bar from appbar.js -->
   <script>try { var a = new URLSearchParams(location.search).get('app'); if (a === 'pc') sessionStorage.setItem('dash.app', 'pc'); if (sessionStorage.getItem('dash.app') === 'pc') document.documentElement.classList.add('app'); } catch (e) {}</script>
 </head>
 <body>
-  <script src="appbar.js?v=1.6.1"></script>
-  <script src="kamer.js?v=1.6.1"></script>
+  <script src="appbar.js?v=1.7.0"></script>
+  <script src="room.js?v=1.7.0"></script>
   <main class="dashboard">
 
-    <!-- Topbalk: klok, datum, snelkoppelingen, zoeken -->
+    <!-- Top bar: clock, date, shortcuts, search -->
     <header id="topbar" class="topbar">
       <div class="tb-clock">
         <time class="tb-time"></time>
         <p class="tb-day"><span class="tb-date"></span> <span class="tb-week"></span><span class="tb-dayline" aria-live="polite"></span></p>
       </div>
-      <nav class="tb-links" aria-label="Snelkoppelingen"></nav>
+      <nav class="tb-links" aria-label="Shortcuts"></nav>
       <form class="tb-search" action="https://www.google.com/search" method="get" role="search">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-        <input type="search" name="q" placeholder="Zoeken met Google" aria-label="Zoeken met Google" autocomplete="off">
+        <input type="search" name="q" placeholder="Search with Google" aria-label="Search with Google" autocomplete="off">
         <kbd>/</kbd>
       </form>
       <div class="tb-actions">
-        <button class="tb-btn tb-menu" aria-label="Snelkoppelingen" aria-expanded="false">
+        <button class="tb-btn tb-menu" aria-label="Shortcuts" aria-expanded="false">
           <svg viewBox="0 0 24 24"><path d="M4 8h4V4H4v4zm6 12h4v-4h-4v4zm-6 0h4v-4H4v4zm0-6h4v-4H4v4zm6 0h4v-4h-4v4zm6-10v4h4V4h-4zm-6 4h4V4h-4v4zm6 6h4v-4h-4v4zm0 6h4v-4h-4v4z"/></svg>
         </button>
         <button class="tb-btn tb-feeds" aria-label="Feeds" aria-pressed="false" title="Feeds">
           <svg viewBox="0 0 24 24"><path d="M4 4h13v4h3v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4zm2 2v12h11V6H6zm13 4v8h-0.5a.5.5 0 0 1-.5-.5V10h1zM8 8h7v3H8V8zm0 5h7v1.5H8V13zm0 3h5v1.5H8V16z"/></svg>
         </button>
-        <button class="tb-btn tb-mydata" aria-label="Mijn data" aria-pressed="false" title="Mijn data">
+        <button class="tb-btn tb-mydata" aria-label="My data" aria-pressed="false" title="My data">
           <svg viewBox="0 0 24 24"><path d="M4 20V10h3v10H4zm6.5 0V4h3v16h-3zM17 20v-7h3v7h-3z"/></svg>
         </button>
-        <button class="tb-btn tb-games" aria-label="Spelletjes" aria-pressed="false" title="Spelletjes">
+        <button class="tb-btn tb-games" aria-label="Games" aria-pressed="false" title="Games">
           <svg viewBox="0 0 24 24"><path d="M7 7h10a5 5 0 0 1 4.9 6l-.8 4a2.5 2.5 0 0 1-4.3 1.2L14.5 16h-5l-2.3 2.2A2.5 2.5 0 0 1 2.9 17l-.8-4A5 5 0 0 1 7 7zm0 3v1.5H5.5v2H7V15h2v-1.5h1.5v-2H9V10H7zm9.25 1a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5zm-2.5 2.5a1.25 1.25 0 1 0 0 2.5 1.25 1.25 0 0 0 0-2.5z"/></svg>
         </button>
-        <button class="tb-btn tb-focus" aria-label="Focusmodus" aria-pressed="false" title="Focusmodus starten">
+        <button class="tb-btn tb-focus" aria-label="Focus mode" aria-pressed="false" title="Start focus mode">
           <svg viewBox="0 0 24 24"><path d="M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.03-6.61 1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42A8.96 8.96 0 0 0 12 4a9 9 0 1 0 9 9c0-2.12-.74-4.07-1.97-5.61zM12 20a7 7 0 1 1 0-14 7 7 0 0 1 0 14z"/></svg>
         </button>
-        <button class="tb-btn tb-min" aria-label="Minimale modus" aria-pressed="false">
+        <button class="tb-btn tb-min" aria-label="Minimal mode" aria-pressed="false">
           <svg class="i-min" viewBox="0 0 24 24"><path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/></svg>
           <svg class="i-full" viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
         </button>
       </div>
     </header>
 
-    <!-- Mediastapel: Spotify plus wat er verder op deze pc speelt (widgets/media.js); de kaart vooraan speelt, de rest steekt erachter uit -->
+    <!-- Media stack: Spotify plus whatever else plays on this PC (widgets/media.js); the front card plays, the rest peeks out behind it -->
     <div class="media-stack" id="media-stack">
 
     <!-- Spotify -->
@@ -71,20 +98,20 @@
 
       <div class="view login-view">
         <p class="eyebrow">Spotify</p>
-        <h1 class="title">Wat speelt er?</h1>
-        <p class="muted" id="login-msg">Log in om je speler hier te zien.</p>
+        <h1 class="title">What's playing?</h1>
+        <p class="muted" id="login-msg">Log in to see your player here.</p>
         <div class="row">
-          <button id="login" class="pill-btn">Inloggen met Spotify</button>
-          <a id="demo-link" class="text-btn" href="?demo">Demo bekijken</a>
+          <button id="login" class="pill-btn">Log in with Spotify</button>
+          <a id="demo-link" class="text-btn" href="?demo">View demo</a>
         </div>
       </div>
 
       <div class="view idle-view">
         <p class="eyebrow">Spotify</p>
-        <h1 class="title" id="idle-title">Niets aan het spelen</h1>
+        <h1 class="title" id="idle-title">Nothing playing</h1>
         <p class="muted" id="idle-msg"></p>
         <div class="devices" id="devices"></div>
-        <div class="meta"><button class="text-btn logout">Uitloggen</button></div>
+        <div class="meta"><button class="text-btn logout">Log out</button></div>
       </div>
 
       <div class="view player-view">
@@ -97,7 +124,7 @@
         <img class="cover" id="cover" alt="">
 
         <div class="progress">
-          <div class="bar" id="bar" role="slider" aria-label="Voortgang" tabindex="0">
+          <div class="bar" id="bar" role="slider" aria-label="Progress" tabindex="0">
             <div class="fill" id="fill"></div>
           </div>
           <div class="times"><span id="pos">0:00</span><span id="dur">0:00</span></div>
@@ -105,26 +132,26 @@
 
         <div class="controls">
           <div class="group main">
-            <button class="btn" id="prev" aria-label="Vorige"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg></button>
-            <button class="btn pill" id="play" aria-label="Afspelen/pauzeren">
+            <button class="btn" id="prev" aria-label="Previous"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg></button>
+            <button class="btn pill" id="play" aria-label="Play/pause">
               <svg class="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
               <svg class="i-pause" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
             </button>
-            <button class="btn" id="next" aria-label="Volgende"><svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg></button>
+            <button class="btn" id="next" aria-label="Next"><svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg></button>
           </div>
           <div class="group extra">
             <button class="btn small" id="shuffle" aria-label="Shuffle" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M10.59 9.17 5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg></button>
-            <button class="btn small" id="repeat" aria-label="Herhalen" data-mode="off">
+            <button class="btn small" id="repeat" aria-label="Repeat" data-mode="off">
               <svg class="i-repeat" viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
               <svg class="i-repeat-one" viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4zm-4-2V9h-1l-2 1v1h1.5v4H13z"/></svg>
             </button>
-            <button class="btn small" id="player-size" aria-label="Dunne speler" title="Dunne speler" aria-pressed="false">
+            <button class="btn small" id="player-size" aria-label="Thin player" title="Thin player" aria-pressed="false">
               <svg viewBox="0 0 24 24"><path d="M4 11h16v2H4zm8-3.5L8.5 4h7zM12 16.5l3.5 3.5h-7z"/></svg>
             </button>
-            <button class="btn small" id="lyrics-btn" aria-label="Songtekst" aria-pressed="false">
+            <button class="btn small" id="lyrics-btn" aria-label="Lyrics" aria-pressed="false">
               <svg viewBox="0 0 24 24"><path d="M3 6h11v2H3zm0 4h11v2H3zm0 4h7v2H3zM17 4h5v2.5h-3v10a2.5 2.5 0 1 1-2-2.45z"/></svg>
             </button>
-            <button class="btn small" id="save" aria-label="Opslaan in bibliotheek" aria-pressed="false">
+            <button class="btn small" id="save" aria-label="Save to library" aria-pressed="false">
               <svg class="i-add" viewBox="0 0 24 24"><path d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
               <svg class="i-check" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
             </button>
@@ -133,7 +160,7 @@
 
         <div class="meta">
           <span id="device"></span>
-          <button class="text-btn logout">Uitloggen</button>
+          <button class="text-btn logout">Log out</button>
         </div>
       </div>
 
@@ -141,100 +168,100 @@
 
     </div>
 
-    <!-- Songtekst: verschijnt naast de speler als je op de tekst-knop drukt -->
+    <!-- Lyrics: appear next to the player when you press the lyrics button -->
     <section id="lyrics" class="card tile lyrics" hidden>
       <div class="w-row">
-        <p class="eyebrow">Songtekst</p>
-        <button class="text-btn" id="lyrics-close">Sluiten</button>
+        <p class="eyebrow">Lyrics</p>
+        <button class="text-btn" id="lyrics-close">Close</button>
       </div>
       <div class="w-body"><div class="ly-scroll" id="ly-scroll"></div></div>
     </section>
 
-    <!-- Kleine vakken -->
+    <!-- Small tiles -->
     <div class="widgets">
       <section id="w-weather" class="card tile" aria-live="polite">
-        <p class="eyebrow">Weer · Rotterdam</p>
-        <div class="w-body"><p class="w-note">Laden…</p></div>
+        <p class="eyebrow">Weather · Rotterdam</p>
+        <div class="w-body"><p class="w-note">Loading…</p></div>
       </section>
       <section id="w-f1" class="card tile">
-        <p class="eyebrow">Formule 1</p>
-        <div class="w-body"><p class="w-note">Laden…</p></div>
+        <p class="eyebrow">Formula 1</p>
+        <div class="w-body"><p class="w-note">Loading…</p></div>
       </section>
       <section id="w-rain" class="card tile" aria-live="polite">
-        <p class="eyebrow">Buienalarm · komende 2 uur</p>
-        <div class="w-body"><p class="w-note">Laden…</p></div>
+        <p class="eyebrow">Rain alarm · next 2 hours</p>
+        <div class="w-body"><p class="w-note">Loading…</p></div>
       </section>
       <section id="w-alerts" class="card tile" aria-live="polite">
-        <p class="eyebrow">Meldingen</p>
+        <p class="eyebrow">Notifications</p>
         <div class="w-body"></div>
       </section>
       <section id="w-ah" class="card tile">
-        <p class="eyebrow">AH-uren</p>
-        <div class="w-body"><p class="w-note">Wacht op je agenda…</p></div>
+        <p class="eyebrow">AH hours</p>
+        <div class="w-body"><p class="w-note">Waiting for your agenda…</p></div>
       </section>
       <section id="w-canvas" class="card tile">
         <p class="eyebrow">Canvas · deadlines</p>
-        <div class="w-body"><p class="w-note">Wacht op je agenda…</p></div>
+        <div class="w-body"><p class="w-note">Waiting for your agenda…</p></div>
       </section>
       <section id="w-mail" class="card tile">
         <p class="eyebrow">Mail</p>
-        <div class="w-body"><p class="w-note">Laden…</p></div>
+        <div class="w-body"><p class="w-note">Loading…</p></div>
       </section>
       <section id="w-health" class="card tile">
-        <p class="eyebrow">Gezondheid</p>
-        <div class="w-body"><p class="w-note">Laden…</p></div>
+        <p class="eyebrow">Health</p>
+        <div class="w-body"><p class="w-note">Loading…</p></div>
       </section>
       <section id="w-episodes" class="card tile">
         <p class="eyebrow">Episodes Left</p>
-        <div class="w-body"><p class="w-note">Wacht op de extensie…</p></div>
+        <div class="w-body"><p class="w-note">Waiting for the extension…</p></div>
       </section>
       <section id="w-stars" class="card tile">
-        <p class="eyebrow">Film van vanavond</p>
-        <div class="w-body"><p class="w-note">Laden…</p></div>
+        <p class="eyebrow">Film tonight</p>
+        <div class="w-body"><p class="w-note">Loading…</p></div>
       </section>
       <section id="w-letterboxd" class="card tile">
-        <p class="eyebrow">Laatst gekeken</p>
-        <div class="w-body"><p class="w-note">Laden…</p></div>
+        <p class="eyebrow">Last watched</p>
+        <div class="w-body"><p class="w-note">Loading…</p></div>
       </section>
       <section id="w-friends" class="card tile">
-        <p class="eyebrow">Vrienden op Letterboxd</p>
-        <div class="w-body"><p class="w-note">Laden…</p></div>
+        <p class="eyebrow">Friends on Letterboxd</p>
+        <div class="w-body"><p class="w-note">Loading…</p></div>
       </section>
       <section id="w-sptop" class="card tile">
-        <p class="eyebrow">Spotify · afgelopen maand</p>
-        <div class="w-body"><p class="w-note">Laden…</p></div>
+        <p class="eyebrow">Spotify · last month</p>
+        <div class="w-body"><p class="w-note">Loading…</p></div>
       </section>
-      <!-- Memory Lane (widgets/memory.js): alleen op tall, in het roterende vak; desk.js haalt hidden weg -->
+      <!-- Memory Lane (widgets/memory.js): only on tall, in the rotating tile; desk.js removes hidden -->
       <section id="w-memory" class="card tile" hidden>
-        <p class="eyebrow">Vandaag in het verleden</p>
-        <div class="w-body"><p class="w-note">Laden…</p></div>
+        <p class="eyebrow">Today in the past</p>
+        <div class="w-body"><p class="w-note">Loading…</p></div>
       </section>
       <section id="w-checkin" class="card tile">
         <p class="eyebrow">Check-in</p>
-        <div class="w-body"><p class="w-note">Laden…</p></div>
+        <div class="w-body"><p class="w-note">Loading…</p></div>
       </section>
       <section id="w-todo" class="card tile">
         <p class="eyebrow">To-do</p>
         <div class="w-body"></div>
       </section>
 
-      <!-- Wensen (WENSEN.md via het hulpprogramma, alleen op de pc) -->
+      <!-- Wishes (WISHES.md via the helper, only on the PC) -->
       <section id="w-wishes" class="card tile" hidden>
-        <p class="eyebrow">Wensen</p>
+        <p class="eyebrow">Wishes</p>
         <div class="w-body"></div>
       </section>
 
     </div>
 
-    <!-- Google Agenda -->
+    <!-- Google Calendar -->
     <section id="calendar" class="card agenda" data-state="loading" aria-live="polite">
 
       <div class="view cal-login">
         <p class="eyebrow">Agenda</p>
-        <h2 class="title">Je agenda</h2>
-        <p class="muted" id="cal-login-msg">Koppel je Google Agenda om je afspraken hier te zien.</p>
+        <h2 class="title">Your agenda</h2>
+        <p class="muted" id="cal-login-msg">Link your Google Calendar to see your appointments here.</p>
         <div class="row">
-          <button id="cal-connect" class="pill-btn">Verbinden met Google</button>
+          <button id="cal-connect" class="pill-btn">Connect with Google</button>
         </div>
       </div>
 
@@ -245,61 +272,61 @@
             <h2 class="title" id="cal-today"></h2>
           </div>
           <div class="cal-ctl">
-            <div class="seg seg-view" role="group" aria-label="Weergave">
-              <button data-view="list" aria-pressed="true">Lijst</button>
+            <div class="seg seg-view" role="group" aria-label="View">
+              <button data-view="list" aria-pressed="true">List</button>
               <button data-view="week" aria-pressed="false">Week</button>
             </div>
-            <div class="seg seg-fit cal-weekonly" role="group" aria-label="Uren">
-              <button data-fit="fit" aria-pressed="true" title="08:00–24:00 passen in het vak">Passend</button>
-              <button data-fit="scroll" aria-pressed="false" title="Normale uurhoogte, scrollt naar wat er nu komt">Scrollen</button>
+            <div class="seg seg-fit cal-weekonly" role="group" aria-label="Hours">
+              <button data-fit="fit" aria-pressed="true" title="Fit 08:00–24:00 in the tile">Fit</button>
+              <button data-fit="scroll" aria-pressed="false" title="Normal hour height, scrolls to what comes next">Scroll</button>
             </div>
           </div>
         </div>
         <div class="cal-weeknav cal-weekonly">
-          <button class="cal-nav-btn" id="cal-prev" aria-label="Vorige week">‹</button>
-          <button class="cal-nav-btn" id="cal-next" aria-label="Volgende week">›</button>
-          <button class="cal-nav-btn wide" id="cal-this-week">Vandaag</button>
+          <button class="cal-nav-btn" id="cal-prev" aria-label="Previous week">‹</button>
+          <button class="cal-nav-btn" id="cal-next" aria-label="Next week">›</button>
+          <button class="cal-nav-btn wide" id="cal-this-week">Today</button>
           <span class="cal-week-label" id="cal-week-label"></span>
         </div>
         <div class="cal-reconnect" id="cal-reconnect" hidden>
-          <span>Toegang tot je agenda is verlopen.</span>
-          <button class="pill-btn small" id="cal-refresh">Vernieuwen</button>
+          <span>Access to your agenda has expired.</span>
+          <button class="pill-btn small" id="cal-refresh">Refresh</button>
         </div>
         <div class="cal-list" id="cal-list"></div>
         <div class="meta">
           <span id="cal-updated"></span>
-          <button class="text-btn" id="cal-logout">Ontkoppelen</button>
+          <button class="text-btn" id="cal-logout">Unlink</button>
         </div>
       </div>
 
     </section>
 
-    <!-- Versie: komt vanzelf uit ?v=N hieronder (dash.js zet het erin) -->
+    <!-- Version: comes from ?v=N below by itself (dash.js fills it in) -->
     <footer class="version" id="version"></footer>
 
   </main>
 
   <div id="toast" role="status"></div>
 
-  <script src="config.js?v=1.6.1"></script>
-  <script src="vault.js?v=1.6.1"></script>
-  <script src="dash.js?v=1.6.1"></script>
-  <script src="sync.js?v=1.6.1"></script>
-  <script src="topbar.js?v=1.6.1"></script>
-  <script src="settings.js?v=1.6.1"></script>
-  <script src="huisstijl.js?v=1.6.1"></script>
-  <script src="themes.js?v=1.6.1"></script>
-  <script src="focus.js?v=1.6.1"></script>
-  <script src="feeds.js?v=1.6.1"></script>
-  <script src="mydata.js?v=1.6.1"></script>
-  <script src="games.js?v=1.6.1"></script>
-  <!-- De rest laadt dash.js in deze volgorde: meteen, of met ?mini=1 pas als je het volledige dashboard opent -->
+  <script src="config.js?v=1.7.0"></script>
+  <script src="vault.js?v=1.7.0"></script>
+  <script src="dash.js?v=1.7.0"></script>
+  <script src="sync.js?v=1.7.0"></script>
+  <script src="topbar.js?v=1.7.0"></script>
+  <script src="settings.js?v=1.7.0"></script>
+  <script src="housestyle.js?v=1.7.0"></script>
+  <script src="themes.js?v=1.7.0"></script>
+  <script src="focus.js?v=1.7.0"></script>
+  <script src="feeds.js?v=1.7.0"></script>
+  <script src="mydata.js?v=1.7.0"></script>
+  <script src="games.js?v=1.7.0"></script>
+  <!-- dash.js loads the rest in this order: right away, or with ?mini=1 only when you open the full dashboard -->
   <script>
     DASH.boot([
       'phone.js', 'rail.js', 'desk.js', 'motion.js', 'spotify.js', 'https://accounts.google.com/gsi/client', 'calendar.js',
       'widgets/media.js', 'widgets/lyrics.js', 'widgets/weather.js', 'widgets/f1.js', 'widgets/rain.js', 'widgets/ah.js',
       'widgets/canvas.js', 'widgets/stars.js', 'widgets/episodes.js', 'widgets/letterboxd.js', 'widgets/friends.js', 'widgets/spotify-top.js', 'widgets/todo.js', 'widgets/wishes.js',
-      'widgets/mail.js', 'widgets/health.js', 'datarepo.js', 'datastatus.js', 'datarun.js', 'widgets/checkin.js', 'widgets/memory.js', 'widgets/episodes-log.js', 'widgets/alerts.js', 'telefoon.js',
+      'widgets/mail.js', 'widgets/health.js', 'datarepo.js', 'datastatus.js', 'datarun.js', 'widgets/checkin.js', 'widgets/memory.js', 'widgets/episodes-log.js', 'widgets/alerts.js', 'phone-app.js',
     ]);
   </script>
 </body>

@@ -353,7 +353,7 @@ window.PlannerStore = (() => {
     if (clash) return clash;
     const row = { id: uuid(), name, color };
     data.subjects.push({ ...row, created_at: nowIso() });
-    data.subjects.sort((a, b) => a.name.localeCompare(b.name, 'nl'));
+    data.subjects.sort((a, b) => a.name.localeCompare(b.name, 'en'));
     emit('change');
     enqueue({ table: SUBJECTS, op: 'insert', row });
     return row;
