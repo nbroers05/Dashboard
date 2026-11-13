@@ -27,7 +27,7 @@ from winrt.windows.ui.notifications.management import UserNotificationListener, 
 import google_token
 import spotify_token
 import vault
-import wensen
+import wishes
 
 # Media (wat er afspeelt): als dat deel niet laadt, werkt de rest gewoon door
 try:
@@ -255,12 +255,12 @@ a.k{{display:inline-block;margin:6px 8px 6px 0;padding:12px 20px;border-radius:9
             self.end_headers()
             self.wfile.write(t[1])
             return
-        if pad == "/wensen":
-            # Wensenlijst (WENSEN.md naast de repo's), alleen lezen en alleen voor het dashboard
+        if pad in ("/wishes", "/wensen"):
+            # Wish list (WISHES.md next to the repos), read-only and only for the dashboard
             if self.headers.get("Origin") not in TOEGESTAAN:
                 return self.antwoord(403, {"error": "niet toegestaan"})
-            data = wensen.lees()
-            return self.antwoord(200, data) if data else self.antwoord(404, {"error": "WENSEN.md niet gevonden"})
+            data = wishes.read()
+            return self.antwoord(200, data) if data else self.antwoord(404, {"error": "WISHES.md not found"})
         if pad != "/meldingen":
             return self.antwoord(404, {"error": "niet gevonden"})
         # Andere sites mogen niets lezen
