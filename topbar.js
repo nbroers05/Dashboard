@@ -23,6 +23,21 @@
     return Math.ceil(((t - Date.UTC(t.getUTCFullYear(), 0, 1)) / 86400000 + 1) / 7);
   }
 
+  // The date never gets cut off ("13 November 202"): when the space next to the clock is too narrow for it
+  // (the serif font in the house style is wide), the date gets a smaller font size until it fits (at least 60%).
+  function fitDate() {
+    dateEl.style.fontSize = '';
+    const box = dateEl.parentElement;
+    if (!box || !dateEl.offsetWidth) return;
+    const room = box.clientWidth, need = dateEl.scrollWidth;
+    if (need <= room + 1) return;
+    const size = parseFloat(getComputedStyle(dateEl).fontSize);
+    dateEl.style.fontSize = `${Math.max(size * 0.6, Math.floor(size * room / need * 10) / 10)}px`;
+  }
+  for (const ev of ['resize', 'dash:mood', 'dash:layout']) window.addEventListener(ev, () => requestAnimationFrame(fitDate));
+  document.fonts?.ready.then(fitDate);
+  document.fonts?.addEventListener?.('loadingdone', fitDate);
+
   function tick() {
     const now = new Date();
     const time = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
@@ -32,7 +47,7 @@
       timeEl.textContent = time;
       timeEl.dateTime = now.toISOString();
     }
-    if (dateEl.textContent !== date) dateEl.textContent = date;
+    if (dateEl.textContent !== date) { dateEl.textContent = date; fitDate(); }
     if (weekEl.textContent !== week) weekEl.textContent = week;
     // Again exactly at the next second, so the minute flips on time
     setTimeout(tick, 1000 - now.getMilliseconds() + 5);
