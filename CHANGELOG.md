@@ -4,6 +4,13 @@ Every dashboard version, newest first, one table per day. Version is `1.MINOR.PA
 Everything before 1.0.0 (versions 1 to 0.60.2): `docs/archive/CHANGELOG-pre-1.0.md`.
 
 
+## 13 November 2026
+
+| Version | What |
+|---|---|
+| 1.6.1 | **Cleanup after the review.** The agenda timeline on the portrait screen no longer sometimes ends up far too tall after a reload (it measured itself while still hidden). Mensen is removed completely (settings tab, the pages for other people and their encrypted files). The map in My data and the 3D room only run their outside code if it matches a fixed fingerprint. The wish list tile reads the new `WISHES.md`. README rewritten in English. |
+
+
 ## 12 November 2026
 
 | Version | What |

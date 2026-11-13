@@ -33,7 +33,6 @@ window.DASH_HUISSTIJL = (() => {
     'w-checkin': ['checkin.exe', '気分'],
     'w-todo': ['todo.exe', '用事'],
     'w-wishes': ['wishes.exe', '願い'],
-    'w-msg': ['berichten.exe', '手紙'],
     'calendar': ['agenda.exe', '予定'],
   };
 

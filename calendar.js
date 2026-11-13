@@ -526,6 +526,12 @@
   function fitDay() {
     const grid = el.list.querySelector('.dy-grid');
     if (!grid || !dayHours) return;
+    // Still hidden (agenda not shown yet, layout not ready): measuring now gives a top of ~0 and far too tall hours.
+    // The ResizeObserver below measures again as soon as it becomes visible.
+    if (!grid.offsetParent) {
+      if (!el.list.style.getPropertyValue('--hour')) el.list.style.setProperty('--hour', '44px');
+      return;
+    }
     // offsetTop in plaats van getBoundingClientRect: de inschuif-animatie (transform) telt dan niet mee
     let top = 0;
     for (let n = grid; n; n = n.offsetParent) top += n.offsetTop;
@@ -539,12 +545,16 @@
   window.addEventListener('resize', () => { if (dayMode() && card.dataset.state === 'main') fitDay(); });
   // Wat erboven staat verandert van hoogte (vakken laden, roterend vak, inschuif-animatie): opnieuw meten.
   // Hangt alleen af van waar de tijdlijn begint, niet van zijn eigen hoogte, dus geen lus.
+  // Also watch the agenda itself: when it goes from hidden to visible, the dashboard around it doesn't always change size.
   let fitQueued = false;
-  new ResizeObserver(() => {
+  const fitObserver = new ResizeObserver(() => {
     if (fitQueued || !dayMode()) return;
     fitQueued = true;
-    requestAnimationFrame(() => { fitQueued = false; fitDay(); });
-  }).observe(document.querySelector('.dashboard') || document.body);
+    // A timer instead of requestAnimationFrame: that one doesn't run in a background tab or hidden window
+    setTimeout(() => { fitQueued = false; fitDay(); }, 50);
+  });
+  fitObserver.observe(document.querySelector('.dashboard') || document.body);
+  fitObserver.observe(card);
   // Stand of indeling gewisseld (huisstijl aan/uit, tall ↔ desk): opnieuw tekenen
   for (const ev of ['dash:stand', 'dash:layout']) window.addEventListener(ev, () => { if (card.dataset.state === 'main') render(); });
 

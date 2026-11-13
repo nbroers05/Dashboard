@@ -18,6 +18,15 @@
   if (!gl) return;
 
   const THREE_URL = 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js';
+  // Integrity check for the module: import() can't take a hash, so fetch it, compare the SHA-384 and import it from a blob
+  const THREE_SHA384 = 'GY5FqjttLCFRt/McQbyaVdCk2O1IQtOeX8Py6NfD89BIAsIyJFRl4UgSXrk2vXAk';
+  async function importChecked(url, sha384) {
+    const buf = await (await fetch(url, { mode: 'cors', credentials: 'omit' })).arrayBuffer();
+    const hash = btoa(String.fromCharCode(...new Uint8Array(await crypto.subtle.digest('SHA-384', buf))));
+    if (hash !== sha384) throw new Error('three.js integrity check failed');
+    const blob = URL.createObjectURL(new Blob([buf], { type: 'text/javascript' }));
+    try { return await import(blob); } finally { URL.revokeObjectURL(blob); }
+  }
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // ---------- Laag over het dashboard (meteen, zodat het dashboard niet eerst flitst) ----------
@@ -371,7 +380,7 @@
   };
 
   async function build() {
-    THREE = await import(THREE_URL);
+    THREE = await importChecked(THREE_URL, THREE_SHA384);
     if (done) return;
     renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: false, powerPreference: 'low-power' });
     PSX.uSnap.value = new THREE.Vector2(160, 120);

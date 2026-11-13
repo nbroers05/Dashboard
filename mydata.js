@@ -522,8 +522,11 @@
     if (window.L) return Promise.resolve();
     if (leaflet) return leaflet;
     leaflet = new Promise((resolve, reject) => {
+      // Integrity hashes: the browser refuses the files if the CDN ever serves something else
       const css = h('link'); css.rel = 'stylesheet'; css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+      css.integrity = 'sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H'; css.crossOrigin = 'anonymous';
       const js = h('script'); js.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+      js.integrity = 'sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH'; js.crossOrigin = 'anonymous';
       js.onload = resolve; js.onerror = () => { leaflet = null; reject(new Error('Kaart kon niet laden')); };
       document.head.append(css, js);
     });
