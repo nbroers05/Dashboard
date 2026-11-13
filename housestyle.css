@@ -413,6 +413,19 @@ html.nh .f1-pod.p1 { border-color: var(--line); }
 /* ---------- Canvas and notifications ---------- */
 html.nh #w-canvas, html.nh #w-alerts { --ct: var(--ink); }
 
+/* Desk (1.7.4): the notifications window is low, so every notification is one line (title, then the rest greyed out)
+   and the number is smaller: three or more fit instead of one */
+html.nh .desk #w-alerts .w-row { margin-bottom: 2px; }
+html.nh .desk #w-alerts .w-big { font-size: 1.3rem; }
+html.nh .desk #w-alerts .al-list { gap: 0; margin-top: 0; }
+html.nh .desk #w-alerts .al-item { padding: 5px 0; align-items: center; gap: 8px; }
+html.nh .desk #w-alerts .al-icon { font-size: .95rem; line-height: 1; }
+html.nh .desk #w-alerts .al-txt { flex-direction: row; align-items: baseline; gap: 10px; }
+html.nh .desk #w-alerts .al-txt > :first-child { flex: 0 1 auto; min-width: 0; max-width: 65%; }
+html.nh .desk #w-alerts .al-txt > b { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+html.nh .desk #w-alerts .al-txt > :not(:first-child) { flex: 1 1 0; min-width: 0; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--nh-muted); }
+html.nh .desk #w-alerts .al-x { padding: 0 4px; }
+
 /* ---------- Rotating tile: posters with a border, stars in pixels, dashes at the bottom ---------- */
 html.nh :is(.lb-row img, .lb-row .img-box, .film-poster, .ep-cover .img-box, .mm-poster, .sp-img, .fr-poster) { border-radius: 0 !important; box-shadow: none !important; }
 html.nh :is(.lb-stars, .mm-stars, .fr-stars) { color: var(--holiday); font-family: var(--font-pixel); }
