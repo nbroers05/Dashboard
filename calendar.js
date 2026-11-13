@@ -396,7 +396,7 @@
     if (day) renderDay(now, today);
     else if (view === 'week') renderWeek(now, today);
     else renderList(now, today);
-    el.updated.textContent = fetchedAt ? `Bijgewerkt ${fmtTime(fetchedAt)}` : '';
+    el.updated.textContent = fetchedAt ? `Updated ${fmtTime(fetchedAt)}` : '';
     card.dataset.state = 'main';
     publish(true);
   }
@@ -783,6 +783,7 @@
     node.style.setProperty('--c', c);
     node.style.setProperty('--evbg', `rgb(${r} ${g} ${b})`);
     node.style.setProperty('--fg', lum > 0.55 ? '#111' : '#fff');
+    node.classList.add(`k-${kindOf(ev)}`);   // house style: AH and lectures get their own solid color (housestyle.css)
     tipEvent.set(node, ev);
   }
 

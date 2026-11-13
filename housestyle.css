@@ -454,7 +454,18 @@ html.nh .wk-day.today b { border-radius: 0; background: var(--eva); color: var(-
 html.nh .wk-times > div { color: var(--nh-muted); font-family: var(--font-pixel); }
 html.nh .wk-col { border-left: 1px solid var(--line-soft); background-image: linear-gradient(var(--line-soft) 1px, transparent 1px); }
 html.nh .wk-col.today { background-color: color-mix(in srgb, var(--sky) 18%, transparent); }
-html.nh :is(.wk-ev, .wk-chip) { border-radius: 0; border: 1px solid var(--line); box-shadow: none; text-shadow: none; }
+/* Week blocks (1.7.2): ink on paper with a light wash of the category color and a stripe in that color; AH solid AH blue,
+   lectures solid blue, like the day timeline. Past blocks stay readable: lighter color, the text itself doesn't fade. */
+html.nh :is(.wk-ev, .wk-chip) {
+  border-radius: 0; border: 1px solid var(--line); border-left: 5px solid var(--c); box-shadow: none; text-shadow: none;
+  background: color-mix(in srgb, var(--c) 14%, var(--paper-raised)); color: var(--ink);
+}
+html.nh :is(.wk-ev, .wk-chip).k-ah { background: var(--ah-c); color: var(--on-ah); border-left-color: var(--line); }
+html.nh :is(.wk-ev, .wk-chip).k-college { background: var(--eva); color: var(--on-eva); border-left-color: var(--line); }
+html.nh .wk-ev span { opacity: 1; }
+html.nh .wk-ev.past { opacity: 1; background: color-mix(in srgb, var(--c) 7%, var(--paper-raised)); color: var(--nh-muted); }
+html.nh .wk-ev.past:is(.k-ah, .k-college) { background: color-mix(in srgb, var(--c) 30%, var(--paper-raised)); color: var(--ink); }
+html.nh .wk-ev:hover, html.nh .wk-chip:hover { filter: none; outline: 2px solid var(--line); outline-offset: -1px; }
 html.nh .wk-now, html.nh .cal-now { background: var(--red); }
 
 /* ---------- Agenda on tall: day timeline (calendar.js renderDay, since 1.3.0) ---------- */
@@ -491,7 +502,11 @@ html.nh .dy-ev .clip { white-space: nowrap; overflow: hidden; text-overflow: ell
 html.nh .dy-ev.tight { flex-direction: row; align-items: center; gap: 10px; padding-block: 2px; }
 html.nh .dy-ev.k-college { background: var(--eva); border-color: var(--eva); color: var(--on-eva); }
 html.nh .dy-ev.k-ah { background: var(--ah-c); border-color: var(--ah-c); color: var(--on-ah); }
-html.nh .dy-ev.past { opacity: .5; }
+html.nh .dy-ev:is(.k-ah, .k-college) span { opacity: 1; font-weight: 500; }
+/* Past: no transparency (made the text on AH blue too faint), a lighter block with full-strength text instead */
+html.nh .dy-ev.past { opacity: 1; color: var(--nh-muted); }
+html.nh[data-mood] .dy-ev.past.k-ah { background: color-mix(in srgb, var(--ah-c) 35%, var(--paper-raised)); border-color: var(--ah-c); color: var(--ink); }
+html.nh[data-mood] .dy-ev.past.k-college { background: color-mix(in srgb, var(--eva) 30%, var(--paper-raised)); border-color: var(--eva); color: var(--ink); }
 html.nh .dy-ev:hover { filter: brightness(1.06); }
 html.nh .dy-now { position: absolute; left: 56px; right: 0; height: 2px; background: var(--red); z-index: 3; pointer-events: none; }
 html.nh .dy-now::before { content: ""; position: absolute; left: -5px; top: -4px; width: 10px; height: 10px; border-radius: 50%; background: var(--red); }
