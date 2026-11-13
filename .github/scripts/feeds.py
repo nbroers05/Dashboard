@@ -1,11 +1,11 @@
-"""Feeds voor de Feeds-pagina: nieuws, filmnieuws en YouTube (allemaal RSS). Schrijft data/feeds.json, elk half uur.
+"""Feeds for the Feeds page: news, film news and YouTube (all RSS). Writes data/feeds.json, every half hour.
 
-Waarom via de Action: deze RSS-feeds sturen geen CORS-kop mee, dus de browser mag ze niet zelf lezen.
-(Reddit zat hier eerst in, maar Reddit laat sinds 2025 geen nieuwe API-apps meer toe behalve voor moderatie,
-en blokkeert ophalen zonder account. Daarom is dat vak vervangen door filmnieuws.)
+Why via the Action: these RSS feeds send no CORS header, so the browser may not read them itself.
+(Reddit was here first, but since 2025 Reddit allows no new API apps except for moderation,
+and blocks fetching without an account. So that box was replaced by film news.)
 
-Alleen openbare koppen, een korte intro, plaatjes en links (geen hele artikelen). Wat er staat komt uit config.js:
-nieuwsFeeds, filmFeeds, youtubeKanalen. Geen tijdstempel van het ophalen zelf in het bestand.
+Only public headlines, a short intro, images and links (no whole articles). What's in it comes from config.js:
+newsFeeds, filmFeeds, youtubeChannels. No timestamp of the fetch itself in the file.
 """
 
 import email.utils
@@ -30,7 +30,7 @@ def iso(rfc822):
 
 
 def intro(desc):
-    """Eerste alinea uit de RSS-beschrijving, zonder HTML en ingekort."""
+    """First paragraph of the RSS description, without HTML and shortened."""
     m = re.search(r"<p>(.*?)</p>", desc or "", re.S)
     text = html.unescape(re.sub(r"<[^>]+>", "", m.group(1) if m else "")).strip()
     return text if len(text) <= INTRO_MAX else text[:INTRO_MAX].rsplit(" ", 1)[0] + "…"
@@ -64,8 +64,8 @@ def rss_feeds(key, keep, with_intro=False):
                 items.append(item)
             out.append({"name": name, "items": items})
         except Exception as e:
-            log(f"{key} {name} mislukt: {e}")
-            out.append({"name": name, "error": "Feed niet bereikbaar", "items": []})
+            log(f"{key} {name} failed: {e}")
+            out.append({"name": name, "error": "Feed not reachable", "items": []})
     return out
 
 
@@ -91,7 +91,7 @@ def youtube():
                     "short": "/shorts/" in (link.get("href") if link is not None else ""),
                 })
         except Exception as e:
-            log(f"YouTube {name} mislukt: {e}")
+            log(f"YouTube {name} failed: {e}")
     videos.sort(key=lambda v: v["time"] or "", reverse=True)
     return {"channels": channels, "videos": videos}
 
@@ -99,7 +99,7 @@ def youtube():
 def main():
     data = {"news": rss_feeds("newsFeeds", NEWS_KEEP), "film": rss_feeds("filmFeeds", FILM_KEEP, True), "youtube": youtube()}
     if write_json("data/feeds.json", data):
-        log("feeds.json bijgewerkt")
+        log("feeds.json updated")
 
 
 if __name__ == "__main__":

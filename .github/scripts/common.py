@@ -1,9 +1,9 @@
-"""Gedeelde hulpjes voor de scripts van de dashboard-Action (.github/workflows/letterboxd.yml).
+"""Shared helpers for the scripts of the dashboard Action (.github/workflows/letterboxd.yml).
 
-- get(): ophalen met een nette User-Agent en time-out
-- config_items(): lijstjes uit config.js lezen (zo staat alles wat Noah invult op één plek)
-- tmdb_poster(): poster via TMDB met de key uit het repository secret TMDB_API_KEY
-- write_json(): alleen schrijven als de inhoud echt anders is (de Action commit alleen bij verandering)
+- get(): fetch with a proper User-Agent and time-out
+- config_items(): read lists from config.js (so everything Noah fills in is in one place)
+- tmdb_poster(): poster via TMDB with the key from the repository secret TMDB_API_KEY
+- write_json(): only write when the content really is different (the Action only commits on a change)
 """
 
 import json
@@ -13,7 +13,7 @@ import sys
 import urllib.request
 
 ROOT = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", ".."))
-UA = {"User-Agent": "Mozilla/5.0 (dashboard van nbroers05; GitHub Action; github.com/nbroers05/Dashboard)"}
+UA = {"User-Agent": "Mozilla/5.0 (dashboard of nbroers05; GitHub Action; github.com/nbroers05/Dashboard)"}
 
 
 def get(url, headers=None, data=None, timeout=20):
@@ -31,7 +31,7 @@ def log(*args):
 
 
 def _block(src, name):
-    """De tekst tussen `name: [` en de bijbehorende `]` in config.js."""
+    """The text between `name: [` and the matching `]` in config.js."""
     m = re.search(rf"\b{re.escape(name)}\s*:\s*\[", src)
     if not m:
         return ""
@@ -43,14 +43,14 @@ def _block(src, name):
 
 
 def config_items(name):
-    """Objecten als { user: 'x', name: 'Y' } uit een lijst in config.js, als dicts met strings.
-    Losse strings ('AAPL') komen terug als {'value': 'AAPL'}. Commentaar (// ...) wordt overgeslagen."""
+    """Objects like { user: 'x', name: 'Y' } from a list in config.js, as dicts of strings.
+    Bare strings ('AAPL') come back as {'value': 'AAPL'}. Comments (// ...) are skipped."""
     try:
         with open(os.path.join(ROOT, "config.js"), encoding="utf-8") as f:
             src = f.read()
     except OSError:
         return []
-    # Commentaar weghalen, maar niet de // in https://
+    # Remove comments, but not the // in https://
     block = re.sub(r"(^|\s)//[^\n]*", r"\1", _block(src, name), flags=re.M)
     out = []
     for obj in re.findall(r"\{([^{}]*)\}", block):
@@ -61,8 +61,8 @@ def config_items(name):
 
 
 def is_placeholder(value):
-    """Nog niet ingevuld: leeg of iets als 'MARIJN_GEBRUIKERSNAAM' / 'PLAK_HIER'."""
-    return not value or bool(re.fullmatch(r"[A-Z0-9_]+", value) and "_" in value) or "PLAK" in value
+    """Not filled in yet: empty or something like 'MARIJN_USERNAME' / 'PASTE_HERE' (old: 'PLAK_HIER')."""
+    return not value or bool(re.fullmatch(r"[A-Z0-9_]+", value) and "_" in value) or "PLAK" in value or "PASTE" in value
 
 
 def tmdb_poster(key, kind, tmdb_id):
@@ -72,8 +72,8 @@ def tmdb_poster(key, kind, tmdb_id):
         data = get_json(f"https://api.themoviedb.org/3/{kind}/{tmdb_id}?api_key={key}&language=nl-NL")
         path = data.get("poster_path")
         return f"https://image.tmdb.org/t/p/w342{path}" if path else None
-    except Exception as e:  # TMDB even niet bereikbaar: dan de poster uit de RSS
-        log(f"TMDB {kind}/{tmdb_id} mislukt: {e}")
+    except Exception as e:  # TMDB briefly not reachable: then the poster from the RSS
+        log(f"TMDB {kind}/{tmdb_id} failed: {e}")
         return None
 
 

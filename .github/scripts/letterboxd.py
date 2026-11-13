@@ -1,12 +1,12 @@
-"""Haalt de Letterboxd-RSS van nbroers05 en van vrienden op.
+"""Fetches the Letterboxd RSS of nbroers05 and of friends.
 
-- data/letterboxd.json: Noahs eigen logs (Laatst gekeken)
-- data/friends.json: de nieuwste logs van de vrienden uit config.js (`vrienden`), met de naam zoals Noah die wil zien
+- data/letterboxd.json: Noah's own logs (Last watched)
+- data/friends.json: the newest logs of the friends from config.js (`friends`), with the name Noah wants to see
 
-Draait in de GitHub Action (.github/workflows/letterboxd.yml). Posters via TMDB met de
-API-key uit de omgevingsvariabele TMDB_API_KEY (een repository secret, nooit in de code).
-Zonder key of als TMDB faalt: de poster uit de RSS zelf.
-De bestanden bevatten geen tijdstempel, zodat ze alleen veranderen als er echt iets nieuws is.
+Runs in the GitHub Action (.github/workflows/letterboxd.yml). Posters via TMDB with the
+API key from the environment variable TMDB_API_KEY (a repository secret, never in the code).
+Without a key or when TMDB fails: the poster from the RSS itself.
+The files contain no timestamp, so they only change when there really is something new.
 """
 
 import os
@@ -17,7 +17,7 @@ from common import config_items, get, is_placeholder, log, read_json, tmdb_poste
 
 USER = "nbroers05"
 KEEP = 20
-FRIEND_KEEP = 10   # per vriend
+FRIEND_KEEP = 10   # per friend
 FRIENDS_TOTAL = 30
 NS = {"letterboxd": "https://letterboxd.com", "tmdb": "https://themoviedb.org"}
 
@@ -28,12 +28,12 @@ def text(item, tag):
 
 
 def parse(user, key, previous):
-    """Alle film-logs uit de RSS van één gebruiker."""
+    """All film logs from the RSS of one user."""
     root = ET.fromstring(get(f"https://letterboxd.com/{user}/rss/"))
     logs = []
     for item in root.iter("item"):
         title = text(item, "letterboxd:filmTitle")
-        if not title:  # lijsten en andere berichten overslaan
+        if not title:  # skip lists and other posts
             continue
         link = text(item, "link")
         movie_id, tv_id = text(item, "tmdb:movieId"), text(item, "tmdb:tvId")
@@ -42,7 +42,7 @@ def parse(user, key, previous):
         rss_poster = re.search(r'<img src="([^"]+)"', text(item, "description") or "")
         slug = re.search(r"/film/([^/]+)/", link or "")
 
-        # Poster van vorige keer hergebruiken, dan hoeft TMDB niet elk uur opnieuw
+        # Reuse the poster from last time, so TMDB isn't needed again every hour
         old = previous.get(link) or {}
         poster = old.get("poster") if old.get("tmdbId") == tmdb_id and old.get("poster") else None
         poster = poster or tmdb_poster(key, kind, tmdb_id) or (rss_poster.group(1) if rss_poster else None)
@@ -59,7 +59,7 @@ def parse(user, key, previous):
             "tmdbId": tmdb_id,
             "poster": poster,
         })
-    # Nieuwste eerst (op kijkdatum; de RSS staat op publicatiedatum)
+    # Newest first (by watch date; the RSS is ordered by publication date)
     logs.sort(key=lambda x: x["watched"] or "", reverse=True)
     return logs
 
@@ -74,28 +74,28 @@ def main():
 
     own = parse(USER, key, previous_logs("data/letterboxd.json"))
     for x in own:
-        x.pop("slug", None)  # niet nodig voor Laatst gekeken; zo blijft het bestand gelijk aan vroeger
+        x.pop("slug", None)  # not needed for Last watched; this keeps the file the same as before
     if write_json("data/letterboxd.json", {"user": USER, "logs": own[:KEEP]}):
         log(f"letterboxd.json: {len(own[:KEEP])} logs")
 
-    # Vrienden: één mislukte feed (typfout, privéprofiel) laat de rest gewoon doorgaan
+    # Friends: one failed feed (typo, private profile) lets the rest carry on
     previous = previous_logs("data/friends.json")
     friends, logs = [], []
     for f in config_items("friends"):
         user, name = f.get("user", ""), f.get("name") or f.get("user", "")
         if is_placeholder(user):
-            log(f"Vriend {name}: nog geen gebruikersnaam ingevuld, overgeslagen")
+            log(f"Friend {name}: no username filled in yet, skipped")
             continue
         try:
             items = parse(user, key, previous)[:FRIEND_KEEP]
         except Exception as e:
-            log(f"Vriend {name} ({user}) mislukt: {e}")
+            log(f"Friend {name} ({user}) failed: {e}")
             items = [x for x in previous.values() if x.get("user") == user]
         friends.append({"user": user, "name": name})
         logs += [{**x, "user": user, "name": name} for x in items]
     logs.sort(key=lambda x: (x["watched"] or "", x["link"] or ""), reverse=True)
     if write_json("data/friends.json", {"friends": friends, "logs": logs[:FRIENDS_TOTAL]}):
-        log(f"friends.json: {len(logs[:FRIENDS_TOTAL])} logs van {len(friends)} vrienden")
+        log(f"friends.json: {len(logs[:FRIENDS_TOTAL])} logs from {len(friends)} friends")
 
 
 if __name__ == "__main__":

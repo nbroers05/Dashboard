@@ -1,9 +1,9 @@
-# Data voor het dashboard ophalen en in data/ zetten. Eén Action voor alles:
-# - elk uur (:17): Letterboxd (eigen logs + vrienden), en één keer per dag de bioscopen
-# - elk half uur (:17 en :47): feeds (nieuws, filmnieuws, YouTube)
-# Commit alleen als er iets veranderd is. Alles wat hier wordt geschreven is openbaar (GitHub Pages):
-# alleen publieke data, nooit tokens of iets persoonlijks. Keys staan als repository secret.
-name: Dashboard-data
+# Fetch data for the dashboard and put it in data/. One Action for everything:
+# - every hour (:17): Letterboxd (own logs + friends), and the cinemas once a day
+# - every half hour (:17 and :47): feeds (news, film news, YouTube)
+# Only commits when something changed. Everything written here is public (GitHub Pages):
+# only public data, never tokens or anything personal. Keys are repository secrets.
+name: Dashboard data
 
 on:
   schedule:
@@ -25,36 +25,36 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      # Elk onderdeel mag los mislukken: de rest gaat gewoon door
-      - name: Letterboxd (elk uur)
+      # Each part may fail on its own: the rest carries on
+      - name: Letterboxd (every hour)
         if: github.event.schedule != '47 * * * *'
         continue-on-error: true
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
         run: python3 .github/scripts/letterboxd.py
 
-      # Het script kijkt zelf of het vandaag al gedaan is (veld "day" in data/cinema.json); met de hand = altijd
-      - name: Bioscopen (één keer per dag)
+      # The script checks itself whether it was already done today (field "day" in data/cinema.json); by hand = always
+      - name: Cinemas (once a day)
         if: github.event.schedule != '47 * * * *'
         continue-on-error: true
         env:
           FORCE: ${{ github.event_name == 'workflow_dispatch' && '1' || '' }}
         run: python3 .github/scripts/cinema.py
 
-      - name: Feeds (elk half uur)
+      - name: Feeds (every half hour)
         continue-on-error: true
         run: python3 .github/scripts/feeds.py
 
-      - name: Opslaan als er iets veranderd is
+      - name: Save if something changed
         run: |
           if [ -z "$(git status --porcelain -- data/)" ]; then
-            echo "Niets nieuws"
+            echo "Nothing new"
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
           git add data/
-          git commit -m "Dashboard-data bijgewerkt"
-          # Noah of Claude kan intussen gepusht hebben
+          git commit -m "Dashboard data updated"
+          # Noah or Claude may have pushed in the meantime
           git pull --rebase
           git push
