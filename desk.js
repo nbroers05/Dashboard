@@ -5,7 +5,7 @@
 //
 // desk: a wide landscape screen (from 1280px, landscape), with the sidebar from rail.js. Everything on one screen: top bar, three columns
 //       (left weather+rain alarm, notifications, AH; middle player and agenda; right Canvas, F1, Episodes, film/last
-//       watched/friends with tabs) and at the bottom a "More" bar with mail, to-do, health and Spotify month that folds up.
+//       watched/friends with tabs) and at the bottom a "More" bar with mail, to-do, steps and Spotify month that folds up.
 // tall: portrait screen (wider than 700px, not desk), the "new" portrait design: player, row weather/F1/AH (the rain alarm
 //       is in the weather tile), row Canvas/notifications, one rotating tile (last watched, film, Episodes, health),
 //       agenda, and a "More" bar with to-do. (The old portrait design and the toggle button are gone since 0.44.11.)
@@ -164,7 +164,7 @@
         put(mid, ['media-stack', 'calendar']);
         put(right, ['w-canvas', 'w-f1', 'w-episodes', tabs]);
         put(drawer, ['w-mail', 'w-todo', 'w-wishes', 'w-health', 'w-sptop']);
-        moreList.textContent = 'Mail · To-do · Wishes · Health · Spotify';
+        moreList.textContent = 'Mail · To-do · Wishes · Steps · Spotify';
         if ($('version')) moreBar.append($('version'));
         dash.append(left, mid, right, more);
         setTab(store.get(TAB_KEY) || 'w-stars');

@@ -8,6 +8,7 @@ Everything before 1.0.0 (versions 1 to 0.60.2): `docs/archive/CHANGELOG-pre-1.0.
 
 | Version | What |
 |---|---|
+| 1.7.8 | **One name for the steps tile.** It only shows steps, so it is called "Steps" in every style (Modern said "Health", the house style "steps.exe"); also in the More bar on the laptop/desk. |
 | 1.7.7 | **"appie.exe" no longer reads as "apple.exe".** The window names in the title bars use the pixel font VT323, where an i and an l look different (in DotGothic16 they looked the same). The clock and other pixel text stay as they were. |
 | 1.7.6 | **Title-bar decoration no longer looks clickable.** The three outlined window buttons are now three small flat squares (in Digital Future with round corners, the last one red). |
 | 1.7.5 | **One heading in the tabbed window on the laptop/desk.** Under the FILM TONIGHT, LAST WATCHED and FRIENDS tabs there is no second title bar (film.exe, friends.exe) any more; the tab bar is the title bar. |
