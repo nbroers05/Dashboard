@@ -1,17 +1,17 @@
 'use strict';
 
-// Opslag van de planner. Echt: Supabase (inloggen, tabellen uit supabase.sql, realtime). Met ?demo: nepdata in dit tabblad.
-// Wijzigingen staan meteen op het scherm en gaan via een wachtrij naar de server; zonder internet blijft de wachtrij
-// proberen zolang de pagina open is.
+// Storage of the planner. Real: Supabase (log in, tables from supabase.sql, realtime). With ?demo: fake data in this tab.
+// Changes show on screen at once and go to the server via a queue; without internet the queue keeps
+// trying as long as the page is open.
 window.PlannerStore = (() => {
   const LIB = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js';
   const LIB_HASH = 'sha384-uteMfOloLDGt042uDz+xHGF3ym63/WQ6rFq7murQRG8Ih7QrXGEGNtWd8688sb4O';
-  const POLL = 30000;      // vangnet als de realtime-verbinding slaapt (telefoon op de achtergrond)
+  const POLL = 30000;      // safety net when the realtime connection sleeps (phone in the background)
   const RETRY = 5000;
 
   const DEMO = new URLSearchParams(location.search).has('demo');
   const cfg = window.PLANNER_CONFIG || {};
-  const configured = !!cfg.supabaseUrl && !!cfg.supabaseAnonKey && !/_HIER$/.test(cfg.supabaseUrl) && !/_HIER$/.test(cfg.supabaseAnonKey);
+  const configured = !!cfg.supabaseUrl && !!cfg.supabaseAnonKey && !/_(HIER|HERE)$/.test(cfg.supabaseUrl) && !/_(HIER|HERE)$/.test(cfg.supabaseAnonKey);
 
   const TASKS = 'planner_tasks';
   const SUBJECTS = 'planner_subjects';
@@ -26,12 +26,12 @@ window.PlannerStore = (() => {
   const MISSING_TABLE = ['PGRST205', '42P01'];
   const MISSING_COLUMN = ['42703', 'PGRST204'];
   const TASK_FIELDS = 'id,kind,title,done,day,start_min,duration_min,subject_id,created_at';
-  const CHECK_DAYS = 125;   // zo ver terug worden afvinkingen opgehaald; langere reeksen tonen als 120+
+  const CHECK_DAYS = 125;   // check marks are fetched this far back; longer streaks show as 120+
 
   const EMPTY_EXTRAS = { habits: [], checks: [], groceries: [], replies: [] };
   const EMPTY_MODULES = { modules: [], settings: null };
-  // extrasOk = false: de tabellen van ronde 2 bestaan nog niet (supabase.sql nog niet opnieuw gedraaid). Taken blijven dan gewoon werken.
-  // modulesOk = false: de tabellen van de Standaardweek bestaan nog niet; de rest werkt dan gewoon.
+  // extrasOk = false: the round-2 tables don't exist yet (supabase.sql not run again yet). Tasks keep working then.
+  // modulesOk = false: the Standard week tables don't exist yet; the rest keeps working then.
   const data = { tasks: [], subjects: [], ...EMPTY_EXTRAS, ...EMPTY_MODULES, extrasOk: false, modulesOk: false };
   const listeners = { change: new Set(), status: new Set(), error: new Set() };
   const emit = (name, arg) => listeners[name].forEach((f) => f(arg));
@@ -60,26 +60,26 @@ window.PlannerStore = (() => {
     const key = (n) => { const x = new Date(d.getFullYear(), d.getMonth(), d.getDate() + n); return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, '0')}-${String(x.getDate()).padStart(2, '0')}`; };
     const ago = (min) => new Date(Date.now() - min * 60000).toISOString();
     const row = (fields) => ({ id: uuid(), created_at: nowIso(), ...fields });
-    const water = row({ name: 'Water 2L' }), lezen = row({ name: 'Lezen' }), sport = row({ name: 'Sporten' }), slaap = row({ name: 'Voor 00:30 slapen' });
+    const water = row({ name: 'Water 2L' }), reading = row({ name: 'Reading' }), sport = row({ name: 'Exercise' }), sleep = row({ name: 'Asleep before 00:30' });
     return {
       ...EMPTY_MODULES,
-      habits: [water, lezen, sport, slaap],
+      habits: [water, reading, sport, sleep],
       checks: [
-        row({ habit_id: water.id, day: key(0) }), row({ habit_id: lezen.id, day: key(0) }),
+        row({ habit_id: water.id, day: key(0) }), row({ habit_id: reading.id, day: key(0) }),
         ...[1, 2, 3, 4].map((n) => row({ habit_id: sport.id, day: key(-n) })),
       ],
-      groceries: ['Melk', 'Pindakaas', 'Vuilniszakken'].map((title) => row({ title, done: false })),
+      groceries: ['Milk', 'Peanut butter', 'Bin bags'].map((title) => row({ title, done: false })),
       replies: [
-        row({ person: 'Persoon A', app: 'WhatsApp', since: ago(3 * 24 * 60), last_message: 'Voorbeeldbericht dat lang genoeg is om te laten zien wat er gebeurt als de tekst niet op één regel past in dit vak, ook op een smalle telefoon.' }),
-        row({ person: 'Persoon D', app: 'WhatsApp', since: ago(20 * 60), last_message: 'Kort voorbeeldbericht' }),
-        row({ person: 'Persoon E', app: 'WhatsApp', since: ago(9 * 60) }),
-        row({ person: 'Persoon F', app: 'WhatsApp', since: ago(4 * 60) }),
-        row({ person: 'Persoon G', app: 'WhatsApp', since: ago(90) }),
-        row({ person: 'Persoon H', app: 'WhatsApp', since: ago(15) }),
-        row({ person: 'Persoon B', app: 'Instagram', since: ago(5 * 60) }),
-        row({ person: 'Persoon C', app: 'Snapchat', since: ago(40) }),
-        row({ person: 'Persoon I', app: 'Hinge', since: ago(50 * 60) }),
-        row({ person: 'Persoon J', app: 'Bumble', since: ago(2 * 60) }),
+        row({ person: 'Person A', app: 'WhatsApp', since: ago(3 * 24 * 60), last_message: 'Sample message that is long enough to show what happens when the text does not fit on one line in this box, also on a narrow phone.' }),
+        row({ person: 'Person D', app: 'WhatsApp', since: ago(20 * 60), last_message: 'Short sample message' }),
+        row({ person: 'Person E', app: 'WhatsApp', since: ago(9 * 60) }),
+        row({ person: 'Person F', app: 'WhatsApp', since: ago(4 * 60) }),
+        row({ person: 'Person G', app: 'WhatsApp', since: ago(90) }),
+        row({ person: 'Person H', app: 'WhatsApp', since: ago(15) }),
+        row({ person: 'Person B', app: 'Instagram', since: ago(5 * 60) }),
+        row({ person: 'Person C', app: 'Snapchat', since: ago(40) }),
+        row({ person: 'Person I', app: 'Hinge', since: ago(50 * 60) }),
+        row({ person: 'Person J', app: 'Bumble', since: ago(2 * 60) }),
       ],
     };
   }
@@ -92,17 +92,17 @@ window.PlannerStore = (() => {
     return {
       subjects: [
         { id: ds, name: 'Data Science', color: '#7F77DD', created_at: nowIso() },
-        { id: cog, name: 'Cognitie', color: '#1D9E75', created_at: nowIso() },
+        { id: cog, name: 'Cognition', color: '#1D9E75', created_at: nowIso() },
       ],
       tasks: [
-        t('R-opdracht afmaken', key(0), 13 * 60, { duration_min: 120, subject_id: ds }),
-        t('Hoofdstuk 4 lezen', key(0), null, { subject_id: cog }),
-        t('Mail begeleider', key(0), null),
-        t('Was ophangen', key(0), null, { done: true }),
-        t('Sporten', key(0), 19 * 60 + 30, { kind: 'block', duration_min: 60 }),
-        t('Blender tutorial kamer', null, null),
-        t('Film voor vrijdag kiezen', null, null),
-        t('Fietsband plakken', null, null),
+        t('Finish R assignment', key(0), 13 * 60, { duration_min: 120, subject_id: ds }),
+        t('Read chapter 4', key(0), null, { subject_id: cog }),
+        t('Email supervisor', key(0), null),
+        t('Hang up the laundry', key(0), null, { done: true }),
+        t('Exercise', key(0), 19 * 60 + 30, { kind: 'block', duration_min: 60 }),
+        t('Blender tutorial room', null, null),
+        t('Pick a film for Friday', null, null),
+        t('Patch bike tyre', null, null),
       ],
     };
   }
@@ -115,7 +115,7 @@ window.PlannerStore = (() => {
       s.integrity = LIB_HASH;
       s.crossOrigin = 'anonymous';
       s.onload = resolve;
-      s.onerror = () => reject(new Error('De Supabase-bibliotheek laadt niet. Controleer je internet.'));
+      s.onerror = () => reject(new Error('The Supabase library does not load. Check your internet.'));
       document.head.append(s);
     });
   }
@@ -136,10 +136,10 @@ window.PlannerStore = (() => {
   }
 
   function loginMessage(error) {
-    if (/invalid login/i.test(error.message)) return 'Mail of wachtwoord klopt niet.';
-    if (/confirm/i.test(error.message)) return 'Dit account is nog niet bevestigd (zie README, stap 4).';
-    if (/fetch|network/i.test(error.message)) return 'Geen verbinding met Supabase.';
-    return `Inloggen lukt niet: ${error.message}`;
+    if (/invalid login/i.test(error.message)) return 'Email or password is wrong.';
+    if (/confirm/i.test(error.message)) return 'This account is not confirmed yet (see README, step 4).';
+    if (/fetch|network/i.test(error.message)) return 'No connection to Supabase.';
+    return `Logging in failed: ${error.message}`;
   }
 
   async function signIn(email, password) {
@@ -164,7 +164,7 @@ window.PlannerStore = (() => {
     return { tasks: t.data, subjects: s.data, ...(extras || EMPTY_EXTRAS), extrasOk: !!extras, ...(mods || EMPTY_MODULES), modulesOk: !!mods };
   }
 
-  // Staan de kolommen van de Standaardweek er nog niet (supabase.sql nog niet opnieuw gedraaid), dan gewoon de taken
+  // If the Standard week columns aren't there yet (supabase.sql not run again yet), just the tasks
   async function fetchTasks() {
     const get = (fields) => sb.from(TASKS).select(fields).or(`done.eq.false,day.gte.${fromDay}`).order('created_at');
     const res = await get(`${TASK_FIELDS},module_id,slot_key,module_week,module_state`);
@@ -184,7 +184,7 @@ window.PlannerStore = (() => {
     return { modules: m.data, settings: s.data[0] || null };
   }
 
-  // Staat de kolom last_message er nog niet (supabase.sql nog niet opnieuw gedraaid), dan gewoon zonder laatste bericht
+  // If the column last_message isn't there yet (supabase.sql not run again yet), just without the last message
   async function fetchReplies() {
     const res = await sb.from(REPLIES).select('id,person,app,since,created_at,last_message').order('since');
     if (!MISSING_COLUMN.includes(String(res.error?.code))) return res;
@@ -219,18 +219,18 @@ window.PlannerStore = (() => {
     if (res.error) throw res.error;
   }
 
-  // Tijdelijk (geen internet, sleutel net verlopen) = opnieuw proberen. Een geweigerde wijziging heeft geen zin om te herhalen.
+  // Temporary (no internet, key just expired) = try again. A refused change makes no sense to repeat.
   function temporary(error) {
     const code = String(error.code || '');
     return !code || code.startsWith('PGRST3') || /fetch|network|jwt/i.test(error.message || '');
   }
 
-  // ---------- Wachtrij ----------
+  // ---------- Queue ----------
   const queue = [];
   let pumping = false;
   let reloadWanted = false;
   let loadSeq = 0;
-  let ready = false;       // pas true na de eerste keer laden: dan weten we welke vakken er al zijn
+  let ready = false;       // only true after the first load: then we know which subjects already exist
 
   async function pump() {
     if (pumping) return;
@@ -248,11 +248,11 @@ window.PlannerStore = (() => {
           await wait(RETRY);
         } else {
           if (queue[0] === job) queue.shift();
-          // 23505 = naam bestaat al, bijvoorbeeld als twee apparaten tegelijk een Canvas-vak aanmaken: geen probleem
-          // PGRST204 = kolom dismissed bestaat nog niet (supabase.sql nog niet opnieuw gedraaid): dan is er ook nog niets te tellen
+          // 23505 = name already exists, e.g. when two devices create a Canvas subject at the same time: no problem
+          // PGRST204 = column dismissed doesn't exist yet (supabase.sql not run again yet): then there's nothing to count yet
           if (!['23505', 'PGRST204'].includes(String(e.code))) {
-            emit('error', 'Een wijziging werd niet opgeslagen.');
-            console.warn('[planner] opslaan', e);
+            emit('error', 'A change was not saved.');
+            console.warn('[planner] save', e);
           }
           reloadWanted = true;
         }
@@ -271,7 +271,7 @@ window.PlannerStore = (() => {
     const seq = ++loadSeq;
     try {
       const fresh = await fetchAll();
-      if (seq !== loadSeq) { reloadWanted = true; return; }   // intussen iets aangepast: dit antwoord is al oud
+      if (seq !== loadSeq) { reloadWanted = true; return; }   // something changed in the meantime: this answer is already old
       Object.assign(data, fresh);
       ready = true;
       if (data.extrasOk) liveExtras();
@@ -279,12 +279,12 @@ window.PlannerStore = (() => {
       if (status === 'offline') setStatus('saved');
       emit('change');
     } catch (e) {
-      console.warn('[planner] laden', e);
+      console.warn('[planner] load', e);
       setStatus('offline');
     }
   }
 
-  // ---------- Live bijwerken ----------
+  // ---------- Live updates ----------
   let channel = null;
   let debounce = null;
   function changed() { clearTimeout(debounce); debounce = setTimeout(reload, 250); }
@@ -300,7 +300,7 @@ window.PlannerStore = (() => {
     window.addEventListener('online', reload);
   }
 
-  // Apart kanaal: een abonnement op een tabel die nog niet bestaat zou ook de live-updates van de taken breken
+  // Separate channel: a subscription to a table that doesn't exist yet would also break the live updates of the tasks
   let extraChannel = null;
   function liveExtras() {
     if (DEMO || extraChannel) return;
@@ -323,12 +323,12 @@ window.PlannerStore = (() => {
     live();
   }
 
-  // Oudere weken bekijken: afgevinkte taken van verder terug ook ophalen
+  // Viewing older weeks: also fetch checked-off tasks from further back
   function needFrom(day) {
     if (day < fromDay) { fromDay = day; reload(); }
   }
 
-  // ---------- Wijzigen ----------
+  // ---------- Changes ----------
   function addTask(fields) {
     const row = { id: uuid(), kind: 'task', done: false, day: null, start_min: null, duration_min: 60, subject_id: null, ...fields };
     data.tasks.push({ ...row, created_at: nowIso() });
@@ -411,13 +411,13 @@ window.PlannerStore = (() => {
   function clearGroceries() {
     data.groceries.filter((g) => g.done).forEach((g) => removeRow('groceries', GROCERIES, g.id));
   }
-  // Eerst markeren: zelf afhandelen met het kruisje telt in het archief niet als reactie
+  // Mark first: handling it yourself with the cross doesn't count as a reply in the archive
   function deleteReply(id) {
     enqueue({ table: REPLIES, op: 'update', id, patch: { dismissed: true } });
     removeRow('replies', REPLIES, id);
   }
 
-  // ---------- Standaardweek ----------
+  // ---------- Standard week ----------
   const addModule = (fields) => insertRow('modules', MODULES, fields);
   const updateModule = (id, patch) => patchRow('modules', MODULES, id, patch);
   const deleteModule = (id) => removeRow('modules', MODULES, id);
@@ -427,7 +427,7 @@ window.PlannerStore = (() => {
     emit('change');
     enqueue({ table: SETTINGS, op: 'update', id: data.settings.id, patch });
   }
-  // Eén keer per account. De beginmodules hebben vaste id's: doen twee apparaten dit tegelijk, dan weigert de database de tweede.
+  // Once per account. The starting modules have fixed ids: if two devices do this at the same time, the database refuses the second.
   function seedModules(begin, defaults) {
     const row = { id: uuid(), ...defaults };
     data.settings = { ...row };
@@ -436,7 +436,7 @@ window.PlannerStore = (() => {
     enqueue({ table: SETTINGS, op: 'insert', row });
     begin.forEach((m) => enqueue({ table: MODULES, op: 'insert', row: m }));
   }
-  // De uitkomst van PlannerWeek.plan in één keer: één keer hertekenen, de wachtrij doet de rest
+  // The outcome of PlannerWeek.plan in one go: redraw once, the queue does the rest
   function applyPlan(p) {
     for (const fields of p.inserts) {
       const row = { id: uuid(), ...fields };

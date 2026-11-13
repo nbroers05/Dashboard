@@ -25,7 +25,7 @@
   --ct-mix: 48%;
   --ct-base: #000;
   --card-faint: #5f5e58;
-  /* Instelbaar via Vakken en kleuren; app.js overschrijft deze */
+  /* Adjustable via Subjects and colors; app.js overrides these */
   --c-agenda: #378add;
   --c-ah: #00ade6;
   --c-ah-ink: #fff;
@@ -103,7 +103,7 @@ button { cursor: pointer; }
 .btn.danger { color: var(--red-ink); }
 .link { background: none; border: 0; padding: 4px 0; color: var(--muted); text-decoration: underline; text-underline-offset: 2px; }
 
-/* ---------- Inlog en instellen ---------- */
+/* ---------- Log in and setup ---------- */
 .gate { min-height: 100dvh; display: grid; place-items: center; padding: 16px; }
 .gate-card {
   width: min(360px, 100%); display: flex; flex-direction: column; gap: 14px;
@@ -114,7 +114,7 @@ button { cursor: pointer; }
 .gate-card input { height: 40px; padding: 0 10px; background: var(--card); border: 1px solid var(--line); border-radius: 8px; color: var(--ink); font-size: 15px; }
 .gate-card code { font-size: 13px; }
 
-/* ---------- Pagina ---------- */
+/* ---------- Page ---------- */
 .page { max-width: 2000px; margin: 0 auto; padding: 20px 24px; display: flex; flex-direction: column; gap: 14px; }
 .demo-bar { background: var(--amber-bg); color: var(--amber-ink); border-radius: 8px; padding: 6px 12px; font-size: 13px; }
 
@@ -159,7 +159,7 @@ button { cursor: pointer; }
 .cols { display: grid; grid-template-columns: minmax(0, 1.85fr) minmax(0, 1fr) minmax(0, 1fr); gap: 16px; align-items: start; }
 .col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
 .card {
-  /* Zelfde opmaak als .tile op het dashboard; in het lichte thema verloopt de kleur naar wit in plaats van donker */
+  /* Same style as .tile on the dashboard; in the light theme the color fades to white instead of dark */
   --c: #8a8aa0;
   --ct: color-mix(in srgb, var(--c) var(--ct-mix), var(--ct-base));
   --faint: var(--card-faint);
@@ -183,7 +183,7 @@ button { cursor: pointer; }
 .foot { margin-top: 10px; }
 .foot-bar { display: flex; flex-wrap: wrap; gap: 4px 16px; align-items: center; justify-content: flex-end; color: var(--faint); font-size: 12px; }
 
-/* ---------- Tijdlijn ---------- */
+/* ---------- Timeline ---------- */
 .tl { padding: 8px 8px 8px 12px; display: flex; flex-direction: column; height: var(--tl-h); }
 .agenda-note { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 6px 4px 10px; color: var(--muted); font-size: 13px; }
 .agenda-note form { display: flex; gap: 6px; flex: 1 1 220px; }
@@ -241,7 +241,7 @@ button { cursor: pointer; }
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
-/* ---------- Takenlijsten ---------- */
+/* ---------- Task lists ---------- */
 .tasks { display: flex; flex-direction: column; }
 .task { display: flex; align-items: center; gap: 8px; min-height: 34px; border-radius: 6px; cursor: grab; user-select: none; -webkit-user-select: none; }
 .task:hover { background: color-mix(in srgb, var(--c) 14%, transparent); }
@@ -335,7 +335,7 @@ input[type="checkbox"] { flex: none; width: 17px; height: 17px; margin: 0; accen
 .soon .mark.bday { background: var(--c-bday); }
 .soon .mark.f1 { background: var(--c-f1); }
 
-/* ---------- Slepen ---------- */
+/* ---------- Dragging ---------- */
 .ghost {
   position: fixed; z-index: 50; left: 0; top: 0; max-width: 260px; padding: 6px 12px; border-radius: 8px;
   background: var(--solid); color: var(--on-solid); font-size: 13px; pointer-events: none;
@@ -343,7 +343,7 @@ input[type="checkbox"] { flex: none; width: 17px; height: 17px; margin: 0; accen
 }
 body.dragging, body.dragging * { cursor: grabbing !important; }
 
-/* ---------- Dialogen ---------- */
+/* ---------- Dialogs ---------- */
 .dlg { width: min(460px, calc(100vw - 24px)); border: 1px solid var(--line); border-radius: 14px; padding: 20px; background: var(--card); color: var(--ink); }
 .dlg::backdrop { background: rgb(10 10 10 / .5); }
 .dlg h3 { font-size: 13px; font-weight: 600; color: var(--muted); margin: 0 0 8px; }
@@ -384,7 +384,7 @@ body.dragging, body.dragging * { cursor: grabbing !important; }
   max-width: calc(100vw - 32px); padding: 9px 14px; border-radius: 8px; background: var(--solid); color: var(--on-solid); font-size: 13px;
 }
 
-/* ---------- Standaardweek ---------- */
+/* ---------- Standard week ---------- */
 .week-banner {
   --c: #f5b02e; display: flex; flex-direction: column; gap: 8px; padding: 12px 16px; border-radius: 16px;
   background: color-mix(in srgb, var(--c) 16%, var(--card)); border: 1px solid color-mix(in srgb, var(--c) 40%, transparent);
@@ -438,7 +438,7 @@ body.dragging, body.dragging * { cursor: grabbing !important; }
 .mod-rules { display: flex; flex-direction: column; gap: 4px; }
 .dlg .mod-rules label { flex-direction: row; align-items: center; gap: 8px; color: var(--ink); }
 
-/* ---------- Pc (tall en desk): Nog reageren onder de vijf kleine vakken, tot de onderkant van de tijdlijn ---------- */
+/* ---------- PC (tall and desk): Still to reply under the five small boxes, down to the bottom of the timeline ---------- */
 @media (min-width: 1100px) {
   .cols { height: var(--tl-h); grid-template-rows: auto minmax(0, 1fr); }
   .tl { grid-column: 1; grid-row: 1 / span 2; }
@@ -451,7 +451,7 @@ body.dragging, body.dragging * { cursor: grabbing !important; }
   #card-reply { grid-column: 2 / span 2; grid-row: 2; align-self: stretch; display: flex; flex-direction: column; min-height: 0; }
 }
 
-/* ---------- Tussen telefoon en pc ---------- */
+/* ---------- Between phone and PC ---------- */
 @media (min-width: 701px) and (max-width: 1099px) {
   .cols { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); grid-template-rows: auto auto 1fr; }
   .tl { grid-row: 1 / span 3; }
@@ -461,7 +461,7 @@ body.dragging, body.dragging * { cursor: grabbing !important; }
   .top { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); }
 }
 
-/* ---------- Telefoon: één kolom, tijdlijn bovenaan ---------- */
+/* ---------- Phone: one column, timeline at the top ---------- */
 @media (max-width: 700px) {
   :root { --gutter: 34px; }
   .page { padding: 12px 12px 20px; gap: 10px; }
@@ -499,7 +499,7 @@ body.dragging, body.dragging * { cursor: grabbing !important; }
   .dlg .mod-when { grid-template-columns: 1fr 1fr; }
 }
 
-/* Op een aanraakscherm is de greep de enige plek om te slepen, dus iets groter */
+/* On a touch screen the grip is the only place to drag, so a bit bigger */
 @media (pointer: coarse) {
   .grip { width: 30px; height: 36px; font-size: 15px; }
   .ev .grip { width: 28px; height: 28px; right: 0; top: 0; }

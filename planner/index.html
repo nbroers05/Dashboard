@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="nl">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,32 +7,32 @@
   <title>Planner</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231F1F1E'/%3E%3Cpath d='M9 11h14M9 16h14M9 21h8' stroke='%23fff' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
   <script>(function () { var t; try { t = localStorage.getItem('planner.theme'); } catch (e) {} document.documentElement.dataset.theme = t === 'dark' || (t !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light'; })();</script>
-  <link rel="stylesheet" href="planner.css?v=0.4.0">
+  <link rel="stylesheet" href="planner.css?v=0.5.0">
 </head>
 <body>
-  <!-- Inloggen -->
+  <!-- Log in -->
   <main id="login" class="gate" hidden>
     <form id="login-form" class="gate-card">
       <h1>Planner</h1>
-      <p id="login-intro" class="muted">Log in met je mail en wachtwoord.</p>
-      <label>Mail <input id="login-mail" type="email" autocomplete="username" required></label>
-      <label>Wachtwoord <input id="login-pass" type="password" autocomplete="current-password" required></label>
-      <button class="btn dark" type="submit">Inloggen</button>
+      <p id="login-intro" class="muted">Log in with your email and password.</p>
+      <label>Email <input id="login-mail" type="email" autocomplete="username" required></label>
+      <label>Password <input id="login-pass" type="password" autocomplete="current-password" required></label>
+      <button class="btn dark" type="submit">Log in</button>
       <p id="login-err" class="err" role="alert"></p>
     </form>
   </main>
 
-  <!-- Nog niet ingesteld -->
+  <!-- Not set up yet -->
   <main id="setup" class="gate" hidden>
     <div class="gate-card">
       <h1>Planner</h1>
-      <p>Supabase is nog niet ingevuld. Volg de stappen in <code>planner/README.md</code> en zet je gegevens in <code>planner/config.js</code>.</p>
-      <a class="btn dark" href="?demo">Bekijk met voorbeelddata</a>
+      <p>Supabase isn't filled in yet. Follow the steps in <code>planner/README.md</code> and put your details in <code>planner/config.js</code>.</p>
+      <a class="btn dark" href="?demo">View with sample data</a>
     </div>
   </main>
 
   <div id="app" class="page" hidden>
-    <p id="demo-bar" class="demo-bar" hidden>Voorbeelddata. Niets hiervan wordt opgeslagen.</p>
+    <p id="demo-bar" class="demo-bar" hidden>Sample data. None of this is saved.</p>
 
     <header class="head">
       <div class="head-text">
@@ -40,23 +40,23 @@
         <p id="subtitle" class="muted"></p>
       </div>
       <span id="sync" class="sync" role="status"></span>
-      <button id="new-btn" class="btn dark" type="button">+ Nieuw</button>
+      <button id="new-btn" class="btn dark" type="button">+ New</button>
     </header>
 
     <div class="top">
       <nav class="strip" aria-label="Week">
-        <button id="week-prev" class="arrow" type="button" aria-label="Vorige week">‹</button>
+        <button id="week-prev" class="arrow" type="button" aria-label="Previous week">‹</button>
         <div id="strip-days" class="strip-days"></div>
-        <button id="week-next" class="arrow" type="button" aria-label="Volgende week">›</button>
-        <button id="go-today" class="today-btn" type="button" hidden>Vandaag</button>
+        <button id="week-next" class="arrow" type="button" aria-label="Next week">›</button>
+        <button id="go-today" class="today-btn" type="button" hidden>Today</button>
       </nav>
-      <div id="habits-top" class="habits" aria-label="Gewoontes"></div>
+      <div id="habits-top" class="habits" aria-label="Habits"></div>
     </div>
 
     <section id="week-banner" class="week-banner" hidden></section>
 
     <div class="cols">
-      <section class="card tl" data-drop="timeline" aria-label="Tijdlijn">
+      <section class="card tl" data-drop="timeline" aria-label="Timeline">
         <div id="agenda-note" class="agenda-note" hidden></div>
         <div id="tl-allday" class="allday" hidden></div>
         <div id="tl-scroll" class="tl-scroll">
@@ -66,16 +66,16 @@
 
       <div class="col col-a">
         <section class="card" id="card-today" data-drop="today">
-          <div class="card-head"><h2 id="today-title">Vandaag</h2><span id="today-count" class="hint"></span></div>
+          <div class="card-head"><h2 id="today-title">Today</h2><span id="today-count" class="hint"></span></div>
           <ul id="today-list" class="tasks"></ul>
-          <p class="hint foot">sleep een taak naar de tijdlijn om hem in te plannen</p>
+          <p class="hint foot">drag a task to the timeline to schedule it</p>
         </section>
 
         <section class="card" id="card-inbox" data-drop="inbox">
-          <div class="card-head"><h2>Inbox</h2><span class="hint">nog geen dag</span></div>
+          <div class="card-head"><h2>Inbox</h2><span class="hint">no day yet</span></div>
           <ul id="inbox-list" class="tasks"></ul>
           <form id="inbox-form" class="quick">
-            <input id="inbox-input" type="text" maxlength="200" placeholder="Snel iets toevoegen…" aria-label="Snel iets toevoegen aan de inbox" autocomplete="off">
+            <input id="inbox-input" type="text" maxlength="200" placeholder="Quickly add something…" aria-label="Quickly add something to the inbox" autocomplete="off">
           </form>
         </section>
 
@@ -83,123 +83,123 @@
 
       <div class="col col-b">
         <section class="card" id="card-study">
-          <div class="card-head"><h2 id="study-title">Studie deze week</h2></div>
+          <div class="card-head"><h2 id="study-title">Study this week</h2></div>
           <ul id="study-list" class="study"></ul>
         </section>
 
         <section class="card" id="card-shop">
-          <div class="card-head"><h2>Boodschappen</h2><button id="shop-clear" class="link hint" type="button" hidden>Afgevinkt weghalen</button></div>
+          <div class="card-head"><h2>Groceries</h2><button id="shop-clear" class="link hint" type="button" hidden>Remove checked</button></div>
           <ul id="shop-list" class="items"></ul>
           <button id="shop-more" class="link hint" type="button" hidden></button>
           <form id="shop-form" class="quick">
-            <input id="shop-input" type="text" maxlength="120" placeholder="Iets toevoegen…" aria-label="Boodschap toevoegen" autocomplete="off">
+            <input id="shop-input" type="text" maxlength="120" placeholder="Add something…" aria-label="Add a grocery item" autocomplete="off">
           </form>
         </section>
         <section class="card" id="card-soon">
-          <div class="card-head"><h2>Binnenkort</h2><span class="hint">7 dagen</span></div>
+          <div class="card-head"><h2>Coming up</h2><span class="hint">7 days</span></div>
           <ul id="soon-list" class="soon"></ul>
         </section>
       </div>
 
       <section class="card" id="card-reply">
-        <div class="card-head"><h2>Nog reageren</h2><span class="hint">van je telefoon</span></div>
+        <div class="card-head"><h2>Still to reply</h2><span class="hint">from your phone</span></div>
         <div id="reply-cols" class="reply-cols" hidden></div>
         <div id="reply-tabs" class="reply-tabs" aria-label="Per app"></div>
         <ul id="reply-list" class="replies"></ul>
         <button id="reply-more" class="link hint" type="button" hidden></button>
-        <p class="hint foot">weg zodra je de chat opent, blijft bij alles wissen</p>
+        <p class="hint foot">gone once you open the chat, stays when you clear all</p>
       </section>
 
-      <!-- Alleen op de telefoon: daar blijft de tijdlijn bovenaan -->
+      <!-- Only on the phone: there the timeline stays at the top -->
       <section class="card" id="card-habits">
-        <div class="card-head"><h2>Gewoontes</h2></div>
+        <div class="card-head"><h2>Habits</h2></div>
         <div id="habits-card" class="habits"></div>
       </section>
     </div>
 
     <footer class="foot-bar">
       <button id="theme-btn" class="link" type="button"></button>
-      <button id="week-btn" class="link" type="button">Standaardweek</button>
-      <button id="subjects-btn" class="link" type="button">Vakken en kleuren</button>
-      <button id="logout-btn" class="link" type="button">Uitloggen</button>
-      <span>Planner versie 0.4.0</span>
+      <button id="week-btn" class="link" type="button">Standard week</button>
+      <button id="subjects-btn" class="link" type="button">Subjects and colors</button>
+      <button id="logout-btn" class="link" type="button">Log out</button>
+      <span>Planner version 0.5.0</span>
     </footer>
   </div>
 
-  <!-- Taak of tijdblok -->
+  <!-- Task or time block -->
   <dialog id="edit" class="dlg" aria-labelledby="edit-title">
     <form id="edit-form" method="dialog">
-      <h2 id="edit-title">Nieuw</h2>
-      <div class="seg" role="radiogroup" aria-label="Soort">
-        <label><input type="radio" name="kind" value="task" checked><span>Taak</span></label>
-        <label><input type="radio" name="kind" value="block"><span>Tijdblok</span></label>
+      <h2 id="edit-title">New</h2>
+      <div class="seg" role="radiogroup" aria-label="Kind">
+        <label><input type="radio" name="kind" value="task" checked><span>Task</span></label>
+        <label><input type="radio" name="kind" value="block"><span>Time block</span></label>
       </div>
-      <label>Titel <input id="f-title" type="text" maxlength="200" required autocomplete="off"></label>
+      <label>Title <input id="f-title" type="text" maxlength="200" required autocomplete="off"></label>
       <div class="field">
-        <span>Vak</span>
+        <span>Subject</span>
         <div id="f-subjects" class="chips"></div>
         <div id="f-new-subject" class="new-subject" hidden>
-          <input id="f-subject-name" type="text" maxlength="40" placeholder="Naam van het vak" aria-label="Naam van het nieuwe vak">
+          <input id="f-subject-name" type="text" maxlength="40" placeholder="Name of the subject" aria-label="Name of the new subject">
           <div id="f-swatches" class="swatches"></div>
-          <button id="f-subject-add" class="btn" type="button">Toevoegen</button>
+          <button id="f-subject-add" class="btn" type="button">Add</button>
         </div>
       </div>
       <div class="when">
-        <label>Dag <input id="f-day" type="date"></label>
-        <label>Tijd <input id="f-time" type="time" step="300"></label>
-        <label>Duur
+        <label>Day <input id="f-day" type="date"></label>
+        <label>Time <input id="f-time" type="time" step="300"></label>
+        <label>Duration
           <select id="f-dur">
             <option value="15">15 min</option><option value="30">30 min</option><option value="45">45 min</option>
-            <option value="60">1 uur</option><option value="90">1,5 uur</option><option value="120">2 uur</option>
-            <option value="180">3 uur</option><option value="240">4 uur</option><option value="300">5 uur</option>
+            <option value="60">1 hour</option><option value="90">1.5 hours</option><option value="120">2 hours</option>
+            <option value="180">3 hours</option><option value="240">4 hours</option><option value="300">5 hours</option>
           </select>
         </label>
       </div>
-      <p id="f-hint" class="hint">Geen dag = Inbox. Geen tijd = alleen in de lijst van die dag.</p>
+      <p id="f-hint" class="hint">No day = Inbox. No time = only in that day's list.</p>
       <p id="f-err" class="err" role="alert"></p>
       <div class="dlg-actions">
-        <button id="f-delete" class="btn danger" type="button" hidden>Verwijderen</button>
+        <button id="f-delete" class="btn danger" type="button" hidden>Delete</button>
         <span class="grow"></span>
-        <button id="f-cancel" class="btn" type="button">Annuleren</button>
-        <button class="btn dark" type="submit">Opslaan</button>
+        <button id="f-cancel" class="btn" type="button">Cancel</button>
+        <button class="btn dark" type="submit">Save</button>
       </div>
     </form>
   </dialog>
 
-  <!-- Vakken beheren -->
+  <!-- Manage subjects -->
   <dialog id="subjects" class="dlg" aria-labelledby="subjects-title">
-    <h2 id="subjects-title">Vakken en kleuren</h2>
-    <h3>Vakken</h3>
+    <h2 id="subjects-title">Subjects and colors</h2>
+    <h3>Subjects</h3>
     <ul id="subjects-list" class="subject-list"></ul>
     <form id="subjects-form" class="new-subject">
-      <input id="s-name" type="text" maxlength="40" placeholder="Nieuw vak" aria-label="Naam van het nieuwe vak" required>
+      <input id="s-name" type="text" maxlength="40" placeholder="New subject" aria-label="Name of the new subject" required>
       <div id="s-swatches" class="swatches"></div>
-      <button class="btn" type="submit">Toevoegen</button>
+      <button class="btn" type="submit">Add</button>
     </form>
-    <h3 style="margin-top: 18px">Overige kleuren</h3>
+    <h3 style="margin-top: 18px">Other colors</h3>
     <ul id="colors-list" class="subject-list"></ul>
-    <div class="dlg-actions"><span class="grow"></span><button id="subjects-close" class="btn dark" type="button">Klaar</button></div>
+    <div class="dlg-actions"><span class="grow"></span><button id="subjects-close" class="btn dark" type="button">Done</button></div>
   </dialog>
 
-  <!-- Gewoontes instellen -->
+  <!-- Set up habits -->
   <dialog id="habits-dlg" class="dlg" aria-labelledby="habits-title">
-    <h2 id="habits-title">Gewoontes</h2>
+    <h2 id="habits-title">Habits</h2>
     <ul id="habits-list" class="subject-list"></ul>
     <form id="habits-form" class="new-subject">
-      <input id="h-name" type="text" maxlength="40" placeholder="Nieuwe gewoonte" aria-label="Naam van de nieuwe gewoonte" required>
-      <button class="btn" type="submit">Toevoegen</button>
+      <input id="h-name" type="text" maxlength="40" placeholder="New habit" aria-label="Name of the new habit" required>
+      <button class="btn" type="submit">Add</button>
     </form>
-    <div class="dlg-actions"><span class="grow"></span><button id="habits-close" class="btn dark" type="button">Klaar</button></div>
+    <div class="dlg-actions"><span class="grow"></span><button id="habits-close" class="btn dark" type="button">Done</button></div>
   </dialog>
 
-  <!-- Standaardweek -->
+  <!-- Standard week -->
   <dialog id="week-dlg" class="dlg week-dlg" aria-labelledby="week-title">
     <div class="week-top">
       <div>
-        <h2 id="week-title">Standaardweek</h2>
-        <p class="hint">Modules plaatsen zichzelf om college en diensten heen. Gestippeld = automatisch, vol = vastgezet door jou.</p>
+        <h2 id="week-title">Standard week</h2>
+        <p class="hint">Modules place themselves around lectures and shifts. Dotted = automatic, solid = pinned by you.</p>
       </div>
-      <button id="week-close" class="btn dark" type="button">Klaar</button>
+      <button id="week-close" class="btn dark" type="button">Done</button>
     </div>
     <p id="week-missing" class="hint" hidden></p>
     <div id="week-body" class="week-body">
@@ -207,21 +207,21 @@
         <h3>Modules</h3>
         <ul id="mod-list" class="mod-list"></ul>
         <button id="mod-add" class="mod-add" type="button">+ module</button>
-        <h3>Vaste regels</h3>
+        <h3>Fixed rules</h3>
         <div class="week-settings">
-          <label>Reistijd naar de EUR (min) <input id="set-travel" type="number" min="0" max="240" step="5"></label>
-          <label>Vroegste begin <input id="set-start" type="time" step="900"></label>
-          <label>Na het eten, vanaf <input id="set-dinner" type="time" step="900"></label>
+          <label>Travel time to the EUR (min) <input id="set-travel" type="number" min="0" max="240" step="5"></label>
+          <label>Earliest start <input id="set-start" type="time" step="900"></label>
+          <label>After dinner, from <input id="set-dinner" type="time" step="900"></label>
         </div>
-        <p class="hint">Altijd: niet over afspraken heen, 25 min fietsen naar een dienst, niks binnen een half uur na een dienst, niks na 23:00.</p>
-        <h3>Vakken uit het rooster</h3>
+        <p class="hint">Always: not over events, 25 min cycling to a shift, nothing within half an hour after a shift, nothing after 23:00.</p>
+        <h3>Subjects from the timetable</h3>
         <ul id="course-list" class="course-list"></ul>
       </div>
       <div class="week-main">
         <div class="week-nav">
-          <button id="week-prev2" class="arrow" type="button" aria-label="Vorige week">‹</button>
+          <button id="week-prev2" class="arrow" type="button" aria-label="Previous week">‹</button>
           <span id="week-label"></span>
-          <button id="week-next2" class="arrow" type="button" aria-label="Volgende week">›</button>
+          <button id="week-next2" class="arrow" type="button" aria-label="Next week">›</button>
         </div>
         <div class="week-scroll"><div id="week-grid" class="week-grid"></div></div>
         <section id="week-banner-panel" class="week-banner" hidden></section>
@@ -229,43 +229,43 @@
     </div>
   </dialog>
 
-  <!-- Module aanpassen -->
+  <!-- Edit module -->
   <dialog id="mod-edit" class="dlg" aria-labelledby="mod-title">
     <form id="mod-form" method="dialog">
       <h2 id="mod-title">Module</h2>
-      <label>Naam <input id="m-name" type="text" maxlength="80" required autocomplete="off"></label>
+      <label>Name <input id="m-name" type="text" maxlength="80" required autocomplete="off"></label>
       <div class="when mod-when">
-        <label>Duur (min) <input id="m-dur" type="number" min="5" max="1440" step="5" required></label>
-        <label>Hoe vaak
-          <select id="m-freq"><option value="daily">Elke dag</option><option value="weekly">x per week</option><option value="biweekly">Om de week</option></select>
+        <label>Duration (min) <input id="m-dur" type="number" min="5" max="1440" step="5" required></label>
+        <label>How often
+          <select id="m-freq"><option value="daily">Every day</option><option value="weekly">x per week</option><option value="biweekly">Every other week</option></select>
         </label>
-        <label id="m-times-box">Keer per week <input id="m-times" type="number" min="1" max="7"></label>
+        <label id="m-times-box">Times per week <input id="m-times" type="number" min="1" max="7"></label>
       </div>
       <div class="when mod-when">
-        <label>Voorkeur
-          <select id="m-pref"><option value="any">Maakt niet uit</option><option value="morning">Ochtend</option><option value="afternoon">Middag</option><option value="evening">Avond</option></select>
+        <label>Preference
+          <select id="m-pref"><option value="any">Doesn't matter</option><option value="morning">Morning</option><option value="afternoon">Afternoon</option><option value="evening">Evening</option></select>
         </label>
-        <label>Vak <select id="m-subject"></select></label>
-        <label>Om de week erbij <input id="m-alt" type="text" maxlength="40" placeholder="bijv. bed" autocomplete="off"></label>
+        <label>Subject <select id="m-subject"></select></label>
+        <label>Every other week also <input id="m-alt" type="text" maxlength="40" placeholder="e.g. bed" autocomplete="off"></label>
       </div>
-      <div class="field"><span>Regels</span><div id="m-rules" class="mod-rules"></div></div>
-      <div class="field"><span>Kleur</span><div id="m-swatches" class="swatches"></div></div>
+      <div class="field"><span>Rules</span><div id="m-rules" class="mod-rules"></div></div>
+      <div class="field"><span>Color</span><div id="m-swatches" class="swatches"></div></div>
       <p id="m-err" class="err" role="alert"></p>
       <div class="dlg-actions">
-        <button id="m-delete" class="btn danger" type="button" hidden>Verwijderen</button>
+        <button id="m-delete" class="btn danger" type="button" hidden>Delete</button>
         <span class="grow"></span>
-        <button id="m-cancel" class="btn" type="button">Annuleren</button>
-        <button class="btn dark" type="submit">Opslaan</button>
+        <button id="m-cancel" class="btn" type="button">Cancel</button>
+        <button class="btn dark" type="submit">Save</button>
       </div>
     </form>
   </dialog>
 
   <div id="toast" class="toast" role="status" hidden></div>
 
-  <script src="config.js?v=0.4.0"></script>
-  <script src="store.js?v=0.4.0"></script>
-  <script src="agenda.js?v=0.4.0"></script>
-  <script src="week.js?v=0.4.0"></script>
-  <script src="app.js?v=0.4.0"></script>
+  <script src="config.js?v=0.5.0"></script>
+  <script src="store.js?v=0.5.0"></script>
+  <script src="agenda.js?v=0.5.0"></script>
+  <script src="week.js?v=0.5.0"></script>
+  <script src="app.js?v=0.5.0"></script>
 </body>
 </html>

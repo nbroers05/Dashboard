@@ -1,9 +1,9 @@
 'use strict';
 
-// Google Agenda voor de planner: alleen lezen, er staat hier geen enkele schrijfactie naar Google.
-// Regels voor Canvas, verjaardagen, AH en F1 komen uit calendar.js, dash.js en canvas.js van het dashboard
-// (die bestanden zitten vast aan de opmaak van het dashboard, dus hier een eigen kopie van de hulpjes).
-// Sleutel, in deze volgorde: token van het dashboard in deze browser, hulpprogramma op de pc, inlogbundel (vault.json).
+// Google Calendar for the planner: read-only, there is not a single write action to Google here.
+// Rules for Canvas, birthdays, AH and F1 come from the dashboard's calendar.js, dash.js and canvas.js
+// (those files are tied to the dashboard's layout, so here is an own copy of the helpers).
+// Key, in this order: the dashboard's token in this browser, the helper on the PC, the login bundle (vault.json).
 window.PlannerAgenda = (() => {
   const API = 'https://www.googleapis.com/calendar/v3';
   const SCOPE = 'https://www.googleapis.com/auth/calendar.readonly';
@@ -18,7 +18,7 @@ window.PlannerAgenda = (() => {
     del(k) { try { localStorage.removeItem(k); } catch {} },
   };
 
-  // Kleur van een losse afspraak in Google (colorId), met de tinten die Google Agenda zelf laat zien
+  // Color of a single event in Google (colorId), with the shades Google Calendar itself shows
   const EVENT_COLORS = {
     1: '#7986CB', 2: '#33B679', 3: '#8E24AA', 4: '#E67C73', 5: '#F6BF26', 6: '#F4511E',
     7: '#039BE5', 8: '#616161', 9: '#3F51B5', 10: '#0B8043', 11: '#D50000',
@@ -30,13 +30,13 @@ window.PlannerAgenda = (() => {
   let fetchedAt = 0;
   let state = 'loading';      // ok | locked | error
   let loaded = [0, 0];
-  let complete = false;       // false als een agenda deze ronde niet laadde: dan niets inplannen op een half beeld
+  let complete = false;       // false when a calendar didn't load this round: then don't schedule anything on half a picture
   let wanted = [0, 0];
   let timer = null;
   let badDashToken = null;
   let onChange = () => {};
 
-  // ---------- Hulpjes ----------
+  // ---------- Helpers ----------
   const parseDate = (s) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d).getTime(); };
   const startOfDay = (ms) => { const d = new Date(ms); d.setHours(0, 0, 0, 0); return d.getTime(); };
   const addDays = (ms, n) => { const d = new Date(ms); return new Date(d.getFullYear(), d.getMonth(), d.getDate() + n).getTime(); };
@@ -64,7 +64,7 @@ window.PlannerAgenda = (() => {
     const birthday = birthdayName(e, cal);
     return {
       id: `${cal.id}/${e.id}`,
-      title: e.summary || '(Geen titel)',
+      title: e.summary || '(No title)',
       allDay,
       start: allDay ? parseDate(e.start.date) : Date.parse(e.start.dateTime),
       end: allDay ? parseDate(e.end.date) : Date.parse(e.end.dateTime),
@@ -77,17 +77,17 @@ window.PlannerAgenda = (() => {
     };
   }
 
-  // ---------- Korte F1-titels (uit calendar.js) ----------
+  // ---------- Short F1 titles (from calendar.js) ----------
   const F1 = /formula\s*1|(^|\W)f1\b/i;
   const F1_PLACES = [
-    [/m[eé]xico/i, 'Mexico'], [/s[aã]o paulo|brazil|brasil/i, 'Brazilië'], [/las vegas/i, 'Las Vegas'],
+    [/m[eé]xico/i, 'Mexico'], [/s[aã]o paulo|brazil|brasil/i, 'Brazil'], [/las vegas/i, 'Las Vegas'],
     [/qatar/i, 'Qatar'], [/abu dhabi/i, 'Abu Dhabi'], [/miami/i, 'Miami'],
     [/united states|\busa?\b|austin|am[eé]ricas/i, 'Austin'], [/singapore/i, 'Singapore'],
-    [/azerbaijan|baku/i, 'Bakoe'], [/madrid/i, 'Madrid'], [/barcelona|catalunya/i, 'Barcelona'],
-    [/espa[ñn]a|spain/i, 'Spanje'], [/australia/i, 'Australië'], [/china|chinese/i, 'China'],
-    [/japan/i, 'Japan'], [/bahrain/i, 'Bahrein'], [/saudi/i, 'Saoedi-Arabië'], [/canad/i, 'Canada'],
-    [/monaco/i, 'Monaco'], [/austria|österreich/i, 'Oostenrijk'], [/british|britain|silverstone/i, 'Silverstone'],
-    [/belgi/i, 'België'], [/hungar|magyar/i, 'Hongarije'], [/dutch|netherlands|nederland|zandvoort/i, 'Zandvoort'],
+    [/azerbaijan|baku/i, 'Baku'], [/madrid/i, 'Madrid'], [/barcelona|catalunya/i, 'Barcelona'],
+    [/espa[ñn]a|spain/i, 'Spain'], [/australia/i, 'Australia'], [/china|chinese/i, 'China'],
+    [/japan/i, 'Japan'], [/bahrain/i, 'Bahrain'], [/saudi/i, 'Saudi Arabia'], [/canad/i, 'Canada'],
+    [/monaco/i, 'Monaco'], [/austria|österreich/i, 'Austria'], [/british|britain|silverstone/i, 'Silverstone'],
+    [/belgi/i, 'Belgium'], [/hungar|magyar/i, 'Hungary'], [/dutch|netherlands|nederland|zandvoort/i, 'Zandvoort'],
     [/emilia|imola/i, 'Imola'], [/ital|monza/i, 'Monza'],
   ];
   const F1_SESSIONS = [
@@ -113,7 +113,7 @@ window.PlannerAgenda = (() => {
   const dueOf = (ev) => (ev.allDay ? ev.end - 1 : ev.end);
   const cleanDeadline = (t) => t.replace(/\s*\[[^\]]*\]\s*$/, '').trim() || t;
 
-  // Afvinken op het dashboard ("ingeleverd") geldt hier ook; alleen lezen uit deze browser
+  // Checking off on the dashboard ("handed in") counts here too; only read from this browser
   function handedIn() {
     const m = store.get('canvas.doneMap') || {};
     return new Set(Object.keys(m).filter((id) => Array.isArray(m[id]) && m[id][0] === 1));
@@ -126,7 +126,7 @@ window.PlannerAgenda = (() => {
     const done = handedIn();
     return deadlinePool().filter((e) => !done.has(e.id)).map((e) => ({ id: e.id, due: dueOf(e), title: cleanDeadline(e.title), url: e.canvasUrl || e.link || null }));
   }
-  // Vakcodes uit de Canvas-agenda: "Essay week 6 [ESSB-MP6020]" geeft "ESSB-MP6020"
+  // Course codes from the Canvas calendar: "Essay week 6 [ESSB-MP6020]" gives "ESSB-MP6020"
   function courses() {
     const found = new Set();
     for (const e of events) {
@@ -137,11 +137,11 @@ window.PlannerAgenda = (() => {
     return [...found].filter(Boolean).sort();
   }
 
-  // ---------- Regen onderweg naar de dienst (zelfde bronnen en regenregel als DASH.radar op het dashboard) ----------
+  // ---------- Rain on the way to the shift (same sources and rain rule as DASH.radar on the dashboard) ----------
   const HOME = { lat: 51.9225, lon: 4.4792 };   // Rotterdam
   const FIVE = 5 * 60000;
-  const RAIN_MIN = 0.1;     // mm per uur: vanaf hier telt het als regen
-  const TRIP = 30 * 60000;  // hoe lang voor de dienst je onderweg bent
+  const RAIN_MIN = 0.1;     // mm per hour: from here it counts as rain
+  const TRIP = 30 * 60000;  // how long before the shift you're on the way
   let radar = { at: 0, slots: null };
 
   async function buienradar() {
@@ -166,7 +166,7 @@ window.PlannerAgenda = (() => {
       const v = Number(m[1]);
       slots.push({ start: t, end: t + FIVE, mmh: v ? 10 ** ((v - 109) / 32) : 0 });
     }
-    if (slots.length < 6) throw new Error('Buienradar gaf geen bruikbare data');
+    if (slots.length < 6) throw new Error('Buienradar gave no usable data');
     return slots;
   }
   async function openMeteo() {
@@ -180,32 +180,32 @@ window.PlannerAgenda = (() => {
     radar.at = Date.now();
     buienradar().catch(() => openMeteo())
       .then((slots) => { radar.slots = slots; onChange(); })
-      .catch((e) => { radar.slots = null; console.warn('[planner] regen', e); });
+      .catch((e) => { radar.slots = null; console.warn('[planner] rain', e); });
   }
-  // 'droog', 'regen' of null als het niet bekend is. Vraagt hooguit eens per 5 minuten nieuwe gegevens op.
+  // 'dry', 'rain' or null when unknown. Asks for new data at most once every 5 minutes.
   function commute(start) {
     if (Date.now() - radar.at > FIVE) refreshRadar();
     if (!radar.slots) return null;
     const from = Math.max(Date.now(), start - TRIP);
     const trip = radar.slots.filter((s) => s.end > from && s.start < start);
     if (!trip.length) return null;
-    return trip.some((s) => s.mmh >= RAIN_MIN) ? 'regen' : 'droog';
+    return trip.some((s) => s.mmh >= RAIN_MIN) ? 'rain' : 'dry';
   }
 
   const birthdays = () => events.filter((e) => e.birthday);
-  // Wat er in de tijdlijn als gewoon blok hoort: geen deadlines, geen verjaardagen, geen verborgen agenda's
+  // What belongs in the timeline as a normal block: no deadlines, no birthdays, no hidden calendars
   const normal = () => {
     const dead = new Set(deadlinePool().map((e) => e.id));
     return events.filter((e) => !e.hidden && !e.birthday && !dead.has(e.id));
   };
   const calendarOf = (id) => calendars.find((c) => c.id === id) || null;
-  // De agenda's die in de tijdlijn hun eigen kleur gebruiken. Diensten en F1 hebben een eigen regel in het kleurenmenu.
+  // The calendars that use their own color in the timeline. Shifts and F1 have their own row in the color menu.
   function usedCalendars() {
     const used = new Set(normal().filter((e) => !isAH(e) && !isF1(e) && !e.eventColor).map((e) => e.cal));
     return calendars.filter((c) => used.has(c.id));
   }
 
-  // ---------- Toegang ----------
+  // ---------- Access ----------
   function ownToken() {
     const t = store.get(KEY.token);
     return t && Date.now() < t.expires - 30000 ? t.access : null;
@@ -263,15 +263,15 @@ window.PlannerAgenda = (() => {
       res = await fetch(API + path, { headers: { Authorization: `Bearer ${again}` } });
       if (res.status === 401) throw new NoAccess();
     }
-    if (!res.ok) throw new Error(`Google-fout ${res.status}`);
+    if (!res.ok) throw new Error(`Google error ${res.status}`);
     return res.json();
   }
 
-  // Inlogbundel van het dashboard openen, met dezelfde versleuteling als vault.js.
-  // Alleen de Google-sleutel wordt bewaard, onder een eigen naam: de inlog van het dashboard blijft zoals hij was.
+  // Open the dashboard's login bundle, with the same encryption as vault.js.
+  // Only the Google key is kept, under its own name: the dashboard's login stays as it was.
   async function unlock(password) {
     const res = await fetch(`../vault.json?t=${Date.now()}`, { cache: 'no-store' });
-    if (!res.ok) throw new Error('Er staat geen inlogbundel online.');
+    if (!res.ok) throw new Error('There is no login bundle online.');
     const box = await res.json();
     const bytes = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
     const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
@@ -279,24 +279,24 @@ window.PlannerAgenda = (() => {
     let payload;
     try {
       payload = JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: bytes(box.iv) }, key, bytes(box.data))));
-    } catch { throw new Error('Verkeerde wachtzin.'); }
+    } catch { throw new Error('Wrong passphrase.'); }
     const g = payload.keys && payload.keys['google.refresh'];
-    if (!g) throw new Error('In de bundel staat geen Google-koppeling.');
+    if (!g) throw new Error('The bundle has no Google link.');
     localStorage.setItem(KEY.refresh, g);
     helperDownUntil = 0;
     await load();
-    if (state !== 'ok') throw new Error('Google weigert de koppeling. Koppel Google opnieuw via het hulpprogramma op je pc.');
+    if (state !== 'ok') throw new Error('Google refuses the link. Link Google again via the helper on your PC.');
   }
 
-  // ---------- Ophalen ----------
+  // ---------- Fetching ----------
   async function load() {
     clearTimeout(timer);
     if (DEMO) {
       events = demoEvents();
       calendars = [
-        { id: 'demo-rooster', name: 'Rooster', color: '#A58BC9' },
-        { id: 'demo-eigen', name: 'Hoofdagenda', color: '#4D96CF' },
-        { id: 'demo-geel', name: 'Gele agenda', color: '#FBE983' },
+        { id: 'demo-timetable', name: 'Timetable', color: '#A58BC9' },
+        { id: 'demo-own', name: 'Main calendar', color: '#4D96CF' },
+        { id: 'demo-yellow', name: 'Yellow calendar', color: '#FBE983' },
       ];
       fetchedAt = Date.now();
       state = 'ok';
@@ -328,7 +328,7 @@ window.PlannerAgenda = (() => {
           .catch((e) => { if (e instanceof NoAccess) throw e; allLoaded = false; return []; })));
       complete = allLoaded;
       events = lists.flat();
-      calendars = visible.map((c) => ({ id: c.id, name: c.primary ? 'Hoofdagenda' : c.summaryOverride || c.summary || 'Agenda', color: validColor(c.backgroundColor) }));
+      calendars = visible.map((c) => ({ id: c.id, name: c.primary ? 'Main calendar' : c.summaryOverride || c.summary || 'Calendar', color: validColor(c.backgroundColor) }));
       fetchedAt = Date.now();
       loaded = [from, to];
       state = 'ok';
@@ -341,7 +341,7 @@ window.PlannerAgenda = (() => {
     timer = setTimeout(load, REFETCH);
   }
 
-  // De planner zegt welke periode hij nodig heeft (bekeken week + komende 8 dagen)
+  // The planner says which period it needs (viewed week + next 8 days)
   function range(from, to) {
     wanted = [from, to];
     if (DEMO) return;
@@ -365,21 +365,21 @@ window.PlannerAgenda = (() => {
     const t = startOfDay(Date.now());
     const at = (day, hh, mm = 0) => addDays(t, day) + (hh * 60 + mm) * 60000;
     return [
-      { id: 'a', title: 'College Data Science', allDay: false, start: at(0, 9), end: at(0, 10, 50), cal: 'demo-rooster' },
-      { id: 'h', title: 'Kapper', allDay: false, start: at(0, 15, 30), end: at(0, 16, 30), cal: 'demo-eigen' },
-      { id: 'i', title: 'Gele afspraak', allDay: false, start: at(0, 11), end: at(0, 12), cal: 'demo-geel' },
-      { id: 'j', title: 'Salaris', allDay: true, start: t, end: addDays(t, 1), cal: 'demo-eigen', eventColor: '#F4511E' },
+      { id: 'a', title: 'Lecture Data Science', allDay: false, start: at(0, 9), end: at(0, 10, 50), cal: 'demo-timetable' },
+      { id: 'h', title: 'Hairdresser', allDay: false, start: at(0, 15, 30), end: at(0, 16, 30), cal: 'demo-own' },
+      { id: 'i', title: 'Yellow event', allDay: false, start: at(0, 11), end: at(0, 12), cal: 'demo-yellow' },
+      { id: 'j', title: 'Salary', allDay: true, start: t, end: addDays(t, 1), cal: 'demo-own', eventColor: '#F4511E' },
       { id: 'b', title: 'AH Berkel', allDay: false, start: at(0, 17), end: at(0, 22) },
-      { id: 'c', title: 'Paper inleveren [ESSB-DEMO]', allDay: false, start: at(2, 23, 59), end: at(2, 23, 59), canvas: true, assignment: true, hidden: true },
-      { id: 'c2', title: 'Quiz hoofdstuk 3 [ESSB-DEMO]', allDay: false, start: at(0, 23, 59), end: at(0, 23, 59), canvas: true, assignment: true, hidden: true },
-      { id: 'd', title: 'Verjaardag Persoon A', allDay: true, start: addDays(t, 3), end: addDays(t, 4), birthday: 'Persoon A', hidden: true },
+      { id: 'c', title: 'Hand in paper [ESSB-DEMO]', allDay: false, start: at(2, 23, 59), end: at(2, 23, 59), canvas: true, assignment: true, hidden: true },
+      { id: 'c2', title: 'Quiz chapter 3 [ESSB-DEMO]', allDay: false, start: at(0, 23, 59), end: at(0, 23, 59), canvas: true, assignment: true, hidden: true },
+      { id: 'd', title: 'Birthday Person A', allDay: true, start: addDays(t, 3), end: addDays(t, 4), birthday: 'Person A', hidden: true },
       { id: 'e', title: 'AH Berkel', allDay: false, start: at(5, 8), end: at(5, 14) },
       { id: 'f', title: '🏁 FORMULA 1 DEMO GRAND PRIX 2026 - Race', allDay: false, start: at(6, 14), end: at(6, 16) },
-      { id: 'g', title: 'Werkgroep Cognitie', allDay: false, start: at(1, 11), end: at(1, 13), cal: 'demo-rooster' },
-      { id: 'k', title: 'ESSB-DEMO1 - Statistiek', allDay: false, start: at(2, 13), end: at(2, 15), cal: 'demo-rooster' },
-      { id: 'l', title: 'ESSB-DEMO2 - Filosofie', allDay: false, start: at(3, 10), end: at(3, 12), cal: 'demo-rooster' },
+      { id: 'g', title: 'Seminar Cognition', allDay: false, start: at(1, 11), end: at(1, 13), cal: 'demo-timetable' },
+      { id: 'k', title: 'ESSB-DEMO1 - Statistics', allDay: false, start: at(2, 13), end: at(2, 15), cal: 'demo-timetable' },
+      { id: 'l', title: 'ESSB-DEMO2 - Philosophy', allDay: false, start: at(3, 10), end: at(3, 12), cal: 'demo-timetable' },
       { id: 'm', title: 'AH Berkel', allDay: false, start: at(3, 17), end: at(3, 21) },
-      { id: 'n', title: 'ESSB-DEMO1 - Statistiek', allDay: false, start: at(8, 13), end: at(8, 15), cal: 'demo-rooster' },
+      { id: 'n', title: 'ESSB-DEMO1 - Statistics', allDay: false, start: at(8, 13), end: at(8, 15), cal: 'demo-timetable' },
       { id: 'o', title: 'AH Berkel', allDay: false, start: at(9, 12), end: at(9, 18) },
     ];
   }

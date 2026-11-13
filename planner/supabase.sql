@@ -1,8 +1,8 @@
--- Planner: tabellen en beveiliging (ronde 1 en 2).
--- Plak dit hele bestand in Supabase > SQL Editor > New query en klik op Run.
--- Opnieuw draaien kan geen kwaad: bestaande tabellen en rijen blijven staan.
+-- Planner: tables and security (rounds 1 and 2).
+-- Paste this whole file into Supabase > SQL Editor > New query and click Run.
+-- Running it again does no harm: existing tables and rows stay.
 
--- ---------- Vak-labels ----------
+-- ---------- Subject labels ----------
 create table if not exists public.planner_subjects (
   id          uuid primary key default gen_random_uuid(),
   user_id     uuid not null default auth.uid() references auth.users (id) on delete cascade,
@@ -13,10 +13,10 @@ create table if not exists public.planner_subjects (
   unique (user_id, name)
 );
 
--- ---------- Taken en eigen tijdblokken ----------
--- Inbox:      day leeg
--- Op een dag: day ingevuld, start_min leeg
--- Tijdlijn:   day en start_min ingevuld (start_min = minuten na middernacht, lokale tijd)
+-- ---------- Tasks and own time blocks ----------
+-- Inbox:      day empty
+-- On a day:   day filled in, start_min empty
+-- Timeline:   day and start_min filled in (start_min = minutes after midnight, local time)
 create table if not exists public.planner_tasks (
   id            uuid primary key default gen_random_uuid(),
   user_id       uuid not null default auth.uid() references auth.users (id) on delete cascade,
@@ -35,7 +35,7 @@ create table if not exists public.planner_tasks (
 
 create index if not exists planner_tasks_user_day on public.planner_tasks (user_id, day);
 
--- ---------- updated_at bijhouden ----------
+-- ---------- Keeping updated_at ----------
 create or replace function public.planner_touch()
 returns trigger
 language plpgsql
@@ -55,7 +55,7 @@ drop trigger if exists planner_tasks_touch on public.planner_tasks;
 create trigger planner_tasks_touch before update on public.planner_tasks
   for each row execute function public.planner_touch();
 
--- ---------- Row Level Security: alleen de eigenaar van een rij ----------
+-- ---------- Row Level Security: only the owner of a row ----------
 alter table public.planner_subjects enable row level security;
 alter table public.planner_tasks    enable row level security;
 
@@ -92,7 +92,7 @@ create policy planner_tasks_update on public.planner_tasks
 create policy planner_tasks_delete on public.planner_tasks
   for delete to authenticated using ((select auth.uid()) = user_id);
 
--- ---------- Binnen seconden op je andere apparaten ----------
+-- ---------- On your other devices within seconds ----------
 do $$
 begin
   alter publication supabase_realtime add table public.planner_subjects;
@@ -105,7 +105,7 @@ begin
 exception when duplicate_object then null;
 end $$;
 
--- ---------- Ronde 2: gewoontes, boodschappen, Nog reageren ----------
+-- ---------- Round 2: habits, groceries, Still to reply ----------
 create table if not exists public.planner_habits (
   id          uuid primary key default gen_random_uuid(),
   user_id     uuid not null default auth.uid() references auth.users (id) on delete cascade,
@@ -136,7 +136,7 @@ create table if not exists public.planner_groceries (
   updated_at  timestamptz not null default now()
 );
 
--- Wie je nog moet antwoorden: naam, app en sinds wanneer. Kolom last_message staat verderop.
+-- Who you still have to answer: name, app and since when. Column last_message is further down.
 create table if not exists public.planner_replies (
   id          uuid primary key default gen_random_uuid(),
   user_id     uuid not null default auth.uid() references auth.users (id) on delete cascade,
@@ -148,7 +148,7 @@ create table if not exists public.planner_replies (
   unique (user_id, app, person)
 );
 
--- Zelfde regels als hierboven voor alle vier de tabellen: alleen de eigenaar van een rij, en live bijwerken.
+-- Same rules as above for all four tables: only the owner of a row, and live updates.
 do $$
 declare
   t text;
@@ -178,9 +178,9 @@ begin
   end loop;
 end $$;
 
--- ---------- Archief: aantallen en reactietijden per app per dag ----------
--- Alleen getallen: geen namen en geen berichten. Regel erbij = ontvangen. Regel weg = gereageerd, met de tijd die dat duurde.
--- Met het kruisje in de planner afgehandeld (dismissed) telt niet als reactie.
+-- ---------- Archive: counts and reply times per app per day ----------
+-- Only numbers: no names and no messages. Row added = received. Row removed = replied, with the time that took.
+-- Handled with the cross in the planner (dismissed) doesn't count as a reply.
 alter table public.planner_replies add column if not exists dismissed boolean not null default false;
 
 create table if not exists public.planner_reply_stats (
@@ -193,7 +193,7 @@ create table if not exists public.planner_reply_stats (
   primary key (user_id, day, app)
 );
 
--- Vingerafdruk van de sleutel waarmee het archief de cijfers mag ophalen. Zie dashboard-data/scripts/setup/planner_export.py.
+-- Fingerprint of the key the archive may fetch the numbers with. See dashboard-data/scripts/setup/planner_export.py.
 create table if not exists public.planner_export_tokens (
   token_hash  text primary key check (token_hash ~ '^[0-9a-f]{64}$')
 );
@@ -250,7 +250,7 @@ drop trigger if exists planner_replies_answered on public.planner_replies;
 create trigger planner_replies_answered after delete on public.planner_replies
   for each row execute function public.planner_reply_answered();
 
--- Het archief haalt hiermee afgeronde dagen op. Zonder de juiste sleutel: niets.
+-- The archive fetches finished days with this. Without the right key: nothing. (The error text 'geen toegang' means "no access"; left as it is.)
 create or replace function public.planner_reply_stats_export(p_token text, p_since date)
 returns table (day date, app text, received integer, answered integer, reply_seconds integer[])
 language plpgsql
@@ -276,13 +276,13 @@ $$;
 revoke all on function public.planner_reply_stats_export(text, date) from public, authenticated;
 grant execute on function public.planner_reply_stats_export(text, date) to anon;
 
--- ---------- Laatste bericht onder de naam ----------
--- Eén veld per regel: een nieuw bericht overschrijft het en het verdwijnt samen met de regel (gereageerd of het kruisje).
--- Zelfde Row Level Security als de rest van planner_replies. De triggers en de export hierboven lezen dit veld niet,
--- dus het komt nooit in planner_reply_stats of in het archief.
+-- ---------- Last message under the name ----------
+-- One field per row: a new message overwrites it and it disappears together with the row (replied or the cross).
+-- Same Row Level Security as the rest of planner_replies. The triggers and the export above don't read this field,
+-- so it never ends up in planner_reply_stats or in the archive.
 alter table public.planner_replies add column if not exists last_message text check (char_length(last_message) <= 500);
 
--- ---------- Standaardweek: modules die zichzelf inplannen ----------
+-- ---------- Standard week: modules that schedule themselves ----------
 create table if not exists public.planner_modules (
   id            uuid primary key default gen_random_uuid(),
   user_id       uuid not null default auth.uid() references auth.users (id) on delete cascade,
@@ -312,9 +312,9 @@ create table if not exists public.planner_settings (
   updated_at      timestamptz not null default now()
 );
 
--- Een blok uit de Standaardweek is een gewone taak met deze extra velden.
--- slot_key: welke plek van welke module in welke week. Uniek, zodat twee apparaten nooit hetzelfde blok dubbel maken.
--- module_state: auto = gestippeld, pinned = vastgezet, skipped = deze week niet.
+-- A block from the Standard week is a normal task with these extra fields.
+-- slot_key: which place of which module in which week. Unique, so two devices never create the same block twice.
+-- module_state: auto = dotted, pinned = pinned by you, skipped = not this week.
 alter table public.planner_tasks add column if not exists module_id uuid references public.planner_modules (id) on delete set null;
 alter table public.planner_tasks add column if not exists slot_key text;
 alter table public.planner_tasks add column if not exists module_week date;

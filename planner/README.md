@@ -1,48 +1,49 @@
 # Planner
 
-Eigen planner, los van het dashboard. Komt te staan op https://nbroers05.github.io/Dashboard/planner/
+Own planner, separate from the dashboard. Lives at https://nbroers05.github.io/Dashboard/planner/
 
-Zonder Supabase kun je hem al bekijken met nepdata: https://nbroers05.github.io/Dashboard/planner/?demo
+Without Supabase you can already look at it with fake data: https://nbroers05.github.io/Dashboard/planner/?demo
 
-## Wat jij zelf moet doen (eenmalig, ongeveer 10 minuten)
+## What you do yourself (once, about 10 minutes)
 
-De knoppen in Supabase kunnen net iets anders heten dan hier staat.
+The buttons in Supabase may be named slightly differently from what it says here.
 
-1. **Account en project.** Ga naar https://supabase.com, maak een account en een nieuw project. Regio: een in Europa (bijvoorbeeld Frankfurt). Bewaar het database-wachtwoord dat je kiest, de planner gebruikt het niet.
-2. **Tabellen maken.** Open in je project **SQL Editor**, klik **New query**, plak de hele inhoud van `planner/supabase.sql` en klik **Run**. Je ziet "Success. No rows returned". Daarna staan `planner_tasks` en `planner_subjects` onder **Table Editor**, met het slotje van RLS aan.
-3. **Sleutels invullen.** Ga naar **Project Settings** en dan **Data API** en **API Keys**. Je hebt de **Project URL** nodig en de **anon public** key (in nieuwere schermen heet die **publishable** key). Open https://github.com/nbroers05/Dashboard/edit/main/planner/config.js, vervang `SUPABASE_URL_HIER` en `SUPABASE_ANON_KEY_HIER` (de aanhalingstekens blijven staan) en klik **Commit changes**. Deze twee mogen openbaar. De **service_role** of **secret** key nooit gebruiken.
-4. **Je account maken.** Ga naar **Authentication**, dan **Users**, **Add user**, **Create new user**. Vul je mail en een eigen wachtwoord in en zet **Auto Confirm User** aan.
-5. **Niemand anders laten inschrijven.** Ga naar **Authentication**, dan **Sign In / Providers**, en zet **Allow new users to sign up** uit.
-6. **Inloggen.** Wacht een minuut of twee en open de planner op de pc en op je telefoon. Log op beide in met je mail en wachtwoord.
+1. **Account and project.** Go to https://supabase.com, create an account and a new project. Region: one in Europe (for example Frankfurt). Keep the database password you choose; the planner doesn't use it.
+2. **Create the tables.** In your project open **SQL Editor**, click **New query**, paste the whole content of `planner/supabase.sql` and click **Run**. You see "Success. No rows returned". After that `planner_tasks` and `planner_subjects` are under **Table Editor**, with the RLS padlock on.
+3. **Fill in the keys.** Go to **Project Settings**, then **Data API** and **API Keys**. You need the **Project URL** and the **anon public** key (in newer screens called the **publishable** key). Open https://github.com/nbroers05/Dashboard/edit/main/planner/config.js, replace `SUPABASE_URL_HERE` and `SUPABASE_ANON_KEY_HERE` (the quotes stay) and click **Commit changes**. These two may be public. Never use the **service_role** or **secret** key.
+4. **Create your account.** Go to **Authentication**, then **Users**, **Add user**, **Create new user**. Fill in your email and your own password and turn on **Auto Confirm User**.
+5. **Don't let anyone else sign up.** Go to **Authentication**, then **Sign In / Providers**, and turn off **Allow new users to sign up**.
+6. **Log in.** Wait a minute or two and open the planner on the PC and on your phone. Log in on both with your email and password.
 
-Komen er nieuwe onderdelen bij, dan moet je stap 2 nog een keer doen: plak het hele bestand opnieuw en klik **Run**. Je taken en vakken blijven gewoon staan.
+When new parts are added, do step 2 once more: paste the whole file again and click **Run**. Your tasks and subjects stay.
 
-Wachtwoord vergeten: in Supabase bij **Authentication**, **Users** kun je het per gebruiker opnieuw instellen.
+Forgot your password: in Supabase under **Authentication**, **Users** you can reset it per user.
 
-## Google Agenda
+## Google Calendar
 
-De planner leest je agenda alleen; er gaat niets terug naar Google. In een browser waar het dashboard al is ingelogd werkt het meteen. Staat er "Agenda niet gekoppeld", vul dan de wachtzin van het dashboard in. Lukt dat niet, koppel Google dan opnieuw via het hulpprogramma op je pc (127.0.0.1:8765/koppel) en maak de inlogbundel opnieuw.
+The planner only reads your calendar; nothing goes back to Google. In a browser where the dashboard is already logged in it works right away. If it says "Calendar not linked", fill in the dashboard's passphrase. If that doesn't work, link Google again via the helper on your PC (127.0.0.1:8765/link) and make the login bundle again.
 
-## Goed om te weten
+## Good to know
 
-- Licht of donker kies je per apparaat met de knop Thema onderaan. Op "automatisch" volgt de planner de instelling van je apparaat.
-- Vakken komen uit de Canvas-agenda, met de code die daar tussen haakjes staat. Geef ze bij **Vakken en kleuren** een eigen naam of verwijder ze; een hernoemd of verwijderd vak komt niet terug.
-- Kleuren staan in Supabase en gelden dus op al je apparaten. Ze staan bij de vakken in `planner_subjects`, als rijen waarvan de naam met @ begint.
-- De gratis versie van Supabase pauzeert een project als het ongeveer een week niet is gebruikt. Dan kun je het in het Supabase-scherm met één klik weer aanzetten.
-- Op het dashboard uitloggen wist alle opslag van de site in die browser, dus dan ben je daar ook uit de planner uitgelogd.
-- Je taken staan alleen in Supabase. In deze repo staat geen planner-data.
-- Standaardweek: de knop staat onderaan. Reistijd naar de EUR, het vroegste begin en het eten zijn voorlopige waarden die je daar zelf aanpast. Een gestippeld blok schuift vanzelf mee; sleep je het, dan staat het vast. Verwijder je een blok, dan komt het die week niet meer terug.
+- You pick light or dark per device with the Theme button at the bottom. On "automatic" the planner follows your device's setting.
+- Subjects come from the Canvas calendar, with the code that is between brackets there. Give them your own name in **Subjects and colors** or delete them; a renamed or deleted subject doesn't come back.
+- Colors are stored in Supabase and so apply on all your devices. They are with the subjects in `planner_subjects`, as rows whose name starts with @.
+- The free version of Supabase pauses a project when it hasn't been used for about a week. Then you can turn it back on with one click in the Supabase screen.
+- Logging out on the dashboard clears all of the site's storage in that browser, so then you're logged out of the planner there too.
+- Your tasks are only in Supabase. This repo has no planner data.
+- Standard week: the button is at the bottom. Travel time to the EUR, the earliest start and dinner are provisional values you adjust there yourself. A dotted block moves along by itself; if you drag it, it's pinned. If you delete a block, it doesn't come back that week.
+- The modules you already have keep their Dutch names from before 0.5.0; rename them in Standard week if you like.
 
-## Bestanden
+## Files
 
-| Bestand | Wat |
+| File | What |
 |---|---|
-| `index.html` | Indeling en dialogen |
-| `planner.css` | Eigen opmaak, los van het dashboard |
-| `app.js` | Scherm, slepen, dialogen |
-| `store.js` | Opslag: Supabase, live bijwerken, nepdata voor `?demo` |
-| `agenda.js` | Google Agenda lezen, herkennen van diensten, deadlines, verjaardagen en F1 |
-| `week.js` | Standaardweek: rekent uit waar de modules komen, alleen rekenen |
-| `config.js` | Supabase-adres en anon key |
-| `supabase.sql` | Tabellen en Row Level Security |
-| `CHANGELOG.md` | Versies van de planner |
+| `index.html` | Layout and dialogs |
+| `planner.css` | Own styles, separate from the dashboard |
+| `app.js` | Screen, dragging, dialogs |
+| `store.js` | Storage: Supabase, live updates, fake data for `?demo` |
+| `agenda.js` | Reading Google Calendar, recognising shifts, deadlines, birthdays and F1 |
+| `week.js` | Standard week: works out where the modules go, only calculation |
+| `config.js` | Supabase address and anon key |
+| `supabase.sql` | Tables and Row Level Security |
+| `CHANGELOG.md` | Versions of the planner |

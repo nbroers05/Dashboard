@@ -1,27 +1,27 @@
 'use strict';
 
-// Het scherm van de planner: dagweergave, weekstrip, lijsten, slepen en de dialogen.
+// The planner's screen: day view, week strip, lists, dragging and the dialogs.
 (() => {
   const P = window.PlannerStore;
   const A = window.PlannerAgenda;
   const W = window.PlannerWeek;
   const SNAP = 15;
   const COLORS = ['#7F77DD', '#1D9E75', '#378ADD', '#D4537E', '#D98A1F', '#E24B4A', '#6B6A66'];
-  // Kleuren voor wat geen vak is. Ze staan als rij in planner_subjects met een naam die met @ begint, zodat ze meesyncen
-  // en er geen nieuwe tabel nodig is. Die rijen tellen nergens als vak mee.
+  // Colors for what isn't a subject. They are rows in planner_subjects with a name starting with @, so they sync along
+  // and no new table is needed. Those rows never count as a subject.
   const CATS = [
-    { key: 'agenda', label: 'Google Agenda', color: '#378ADD' },
-    { key: 'ah', label: 'AH-dienst', color: '#00ADE6' },
-    { key: 'deadline', label: 'Canvas-deadline', color: '#E24B4A' },
-    { key: 'bday', label: 'Verjaardag', color: '#D4537E' },
+    { key: 'agenda', label: 'Google Calendar', color: '#378ADD' },
+    { key: 'ah', label: 'AH shift', color: '#00ADE6' },
+    { key: 'deadline', label: 'Canvas deadline', color: '#E24B4A' },
+    { key: 'bday', label: 'Birthday', color: '#D4537E' },
     { key: 'f1', label: 'F1', color: '#E10600' },
-    { key: 'block', label: 'Tijdblok zonder vak', color: '#7F77DD' },
-    { key: 'task', label: 'Taak zonder vak', color: '#7F77DD' },
-    { key: 'now', label: 'Lijn voor nu', color: '#378ADD' },
-    { key: 'habit', label: 'Gewoonte', color: '#639922' },
-    { key: 'reply', label: 'Nog reageren na 2 dagen', color: '#E24B4A' },
+    { key: 'block', label: 'Time block without a subject', color: '#7F77DD' },
+    { key: 'task', label: 'Task without a subject', color: '#7F77DD' },
+    { key: 'now', label: 'Line for now', color: '#378ADD' },
+    { key: 'habit', label: 'Habit', color: '#639922' },
+    { key: 'reply', label: 'Still to reply after 2 days', color: '#E24B4A' },
   ];
-  const SQL_NOTE = 'Nog één stap: draai supabase.sql opnieuw in Supabase (zie README).';
+  const SQL_NOTE = 'One more step: run supabase.sql again in Supabase (see README).';
 
   const $ = (id) => document.getElementById(id);
   function h(tag, attrs, ...kids) {
@@ -36,7 +36,7 @@
     return n;
   }
 
-  // ---------- Datums (dag = 'JJJJ-MM-DD', lokale tijd) ----------
+  // ---------- Dates (day = 'YYYY-MM-DD', local time) ----------
   const pad = (n) => String(n).padStart(2, '0');
   const keyOf = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
   const fromKey = (k) => { const [y, m, d] = k.split('-').map(Number); return new Date(y, m - 1, d); };
@@ -62,26 +62,26 @@
   const task = (id) => tasks().find((t) => t.id === id);
   const subject = (id) => P.data.subjects.find((s) => s.id === id);
   const moduleOf = (id) => P.data.modules.find((m) => m.id === id);
-  const vakken = () => P.data.subjects.filter((s) => !s.name.startsWith('@'));
+  const realSubjects = () => P.data.subjects.filter((s) => !s.name.startsWith('@'));
   const cleanName = (s) => s.trim().replace(/^@+\s*/, '');
   const phone = () => matchMedia('(max-width: 700px)').matches;
-  const wide = matchMedia('(min-width: 1100px)');   // pc: Nog reageren in kolommen, kleine vakken in twee kolommen
+  const wide = matchMedia('(min-width: 1100px)');   // PC: Still to reply in columns, small boxes in two columns
   const hourPx = () => parseFloat(document.documentElement.style.getPropertyValue('--hour')) || 48;
 
   function agendaRange() {
-    // Ruim: vakken uit Canvas moeten er ook staan als de eerstvolgende deadline nog ver weg is
+    // Wide: subjects from Canvas must also be there when the next deadline is still far away
     const t = today();
     return [Math.min(dayStart(week), dayStart(shift(t, -35))), Math.max(dayStart(shift(week, 7)), dayStart(shift(t, 90)))];
   }
 
-  // ---------- Kleuren ----------
+  // ---------- Colors ----------
   const catRow = (key) => P.data.subjects.find((s) => s.name === `@${key}`);
   const catColor = (c) => { const r = catRow(c.key); return r ? r.color : c.color; };
   function setCat(c, color) {
     const r = catRow(c.key);
     if (r) P.updateSubject(r.id, { color }); else P.addSubject(`@${c.key}`, color);
   }
-  // Eigen kleur per Google-agenda: rij @cal:<code>, want het adres van een agenda past niet in de naam
+  // Own color per Google calendar: row @cal:<code>, because a calendar's address doesn't fit in the name
   function calCode(id) {
     let n = 0;
     for (const ch of id) n = (n * 31 + ch.charCodeAt(0)) >>> 0;
@@ -94,7 +94,7 @@
     const r = calRow(c);
     if (r) P.updateSubject(r.id, { color }); else P.addSubject(`@cal:${calCode(c.id)}`, color);
   }
-  // Een afspraak met een eigen kleur in Google houdt die; anders de kleur van zijn agenda
+  // An event with its own color in Google keeps it; otherwise the color of its calendar
   function googleColor(ev) {
     if (ev.eventColor) return ev.eventColor;
     const c = ev.cal ? A.calendarOf(ev.cal) : null;
@@ -113,8 +113,8 @@
     root.setProperty('--c-ah-ink', inkOn(catColor(CATS[1])));
   }
 
-  // ---------- Vakken uit Canvas ----------
-  // Elke vakcode wordt één keer een vak. De rij @canvas:<code> onthoudt dat, zodat een hernoemd of verwijderd vak niet terugkomt.
+  // ---------- Subjects from Canvas ----------
+  // Each course code becomes a subject once. The row @canvas:<code> remembers that, so a renamed or deleted subject doesn't come back.
   let importing = false;
   function importCourses() {
     if (importing || !P.ready || A.state !== 'ok') return;
@@ -123,13 +123,13 @@
       const mark = `@canvas:${code}`.slice(0, 40);
       if (P.data.subjects.some((s) => s.name === mark)) continue;
       P.addSubject(mark, '#6B6A66');
-      P.addSubject(code.slice(0, 40), COLORS[vakken().length % COLORS.length]);
+      P.addSubject(code.slice(0, 40), COLORS[realSubjects().length % COLORS.length]);
     }
     importing = false;
   }
 
-  // ---------- Licht of donker (per apparaat) ----------
-  const THEMES = { auto: 'automatisch', dark: 'donker', light: 'licht' };
+  // ---------- Light or dark (per device) ----------
+  const THEMES = { auto: 'automatic', dark: 'dark', light: 'light' };
   const NEXT_THEME = { auto: 'dark', dark: 'light', light: 'auto' };
   const darkMedia = matchMedia('(prefers-color-scheme: dark)');
   function themeChoice() {
@@ -138,10 +138,10 @@
   function applyTheme() {
     const t = themeChoice();
     document.documentElement.dataset.theme = t === 'dark' || (t === 'auto' && darkMedia.matches) ? 'dark' : 'light';
-    $('theme-btn').textContent = `Thema: ${THEMES[t]}`;
+    $('theme-btn').textContent = `Theme: ${THEMES[t]}`;
   }
 
-  // ---------- Wat er op een dag staat ----------
+  // ---------- What's on a day ----------
   function timedFor(k) {
     const a = dayStart(k), b = dayStart(shift(k, 1));
     return A.normal().filter((e) => !e.allDay && e.start < b && e.end > a).map((ev) => {
@@ -161,11 +161,11 @@
   }
   const scheduledFor = (k) => tasks().filter((t) => t.day === k && t.start_min != null);
   const looseFor = (k) => tasks().filter((t) => t.day === k && t.start_min == null && t.kind === 'task');
-  // Een blok uit de Standaardweek dat voorbij is stapelt niet op: volgende week komt het vanzelf terug
+  // A past block from the Standard week doesn't pile up: it comes back by itself next week
   const overdue = () => tasks().filter((t) => t.kind === 'task' && !t.done && t.day && t.day < today() && !t.slot_key);
   const inbox = () => tasks().filter((t) => t.day == null && t.kind === 'task' && t.module_state !== 'skipped');
 
-  // ---------- Tekenen ----------
+  // ---------- Drawing ----------
   function render() {
     if (drag) { dirty = true; return; }
     importCourses();
@@ -189,8 +189,8 @@
     queuePlan();
   }
 
-  // De vijf kleine vakken over twee kolommen, zo dat die ongeveer even hoog eindigen. Vandaag staat altijd links.
-  // Alleen verplaatsen als het duidelijk beter wordt, en niet terwijl je in een van de vakken typt.
+  // The five small boxes over two columns, so they end at about the same height. Today is always on the left.
+  // Only move them when it clearly gets better, and not while you're typing in one of the boxes.
   const BOXES = ['card-today', 'card-inbox', 'card-study', 'card-shop', 'card-soon'];
   const BOX_GAP = 16;
   function measured(read) {
@@ -216,10 +216,10 @@
     BOXES.forEach((id, i) => (best & (1 << i) ? a : b).append($(id)));
   }
 
-  // ---------- Ronde 2 ----------
+  // ---------- Round 2 ----------
   const extrasMissing = () => P.ready && !P.data.extrasOk;
 
-  // Reeks: dagen op rij tot en met vandaag; vandaag nog niet afgevinkt breekt de reeks niet
+  // Streak: days in a row up to and including today; today not checked yet doesn't break the streak
   function streak(id) {
     const days = new Set(P.data.checks.filter((c) => c.habit_id === id).map((c) => c.day));
     let k = today();
@@ -235,10 +235,10 @@
     const chips = P.data.habits.map((x) => {
       const on = P.data.checks.some((c) => c.habit_id === x.id && c.day === sel);
       const n = streak(x.id);
-      const text = `${on ? '✓ ' : ''}${x.name}${n >= 2 ? ` · ${n >= 120 ? '120+' : n} dagen reeks` : ''}`;
+      const text = `${on ? '✓ ' : ''}${x.name}${n >= 2 ? ` · ${n >= 120 ? '120+' : n}-day streak` : ''}`;
       return h('button', { type: 'button', class: `habit${on ? ' on' : ''}`, 'data-habit': x.id, 'aria-pressed': String(on), disabled: future }, text);
     });
-    chips.push(h('button', { type: 'button', class: 'link hint', 'data-habits-edit': '' }, P.data.habits.length ? 'Instellen' : 'Gewoontes instellen'));
+    chips.push(h('button', { type: 'button', class: 'link hint', 'data-habits-edit': '' }, P.data.habits.length ? 'Set up' : 'Set up habits'));
     return chips;
   }
   function renderHabits() {
@@ -249,18 +249,18 @@
   function renderStudy() {
     const end = shift(week, 6);
     const thisWeek = week === mondayOf(today());
-    $('study-title').textContent = thisWeek ? 'Studie deze week' : `Studie week van ${fromKey(week).getDate()} ${fromKey(week).toLocaleDateString('en-GB', { month: 'short' }).replace('.', '')}`;
-    // Een leesblok hoort bij de week van zijn college, ook als het op de zondag ervoor staat of nog geen plek heeft
+    $('study-title').textContent = thisWeek ? 'Study this week' : `Study week of ${fromKey(week).getDate()} ${fromKey(week).toLocaleDateString('en-GB', { month: 'short' }).replace('.', '')}`;
+    // A reading block belongs to the week of its lecture, also when it's on the Sunday before or has no place yet
     const weekOf = (t) => t.module_week || t.day;
     const inWeek = tasks().filter((t) => t.kind === 'task' && t.subject_id && t.module_state !== 'skipped' && weekOf(t) && weekOf(t) >= week && weekOf(t) <= end);
-    const rows = vakken().map((s) => {
+    const rows = realSubjects().map((s) => {
       const mine = inWeek.filter((t) => t.subject_id === s.id);
       return { s, total: mine.length, done: mine.filter((t) => t.done).length };
     }).filter((r) => r.total);
     $('study-list').replaceChildren(...(rows.length ? rows.map((r) => h('li', { style: `--c:${r.s.color}` },
       h('div', { class: 'study-line' }, h('span', { class: 'x', title: r.s.name }, r.s.name), h('span', null, `${r.done}/${r.total}`)),
       h('div', { class: 'bar' }, h('i', { style: `width:${Math.round((r.done / r.total) * 100)}%` }))))
-      : [h('li', { class: 'empty' }, 'Nog geen taken met een vak in deze week.')]));
+      : [h('li', { class: 'empty' }, 'No tasks with a subject this week yet.')]));
   }
 
   let shopOpen = false;
@@ -278,40 +278,40 @@
     const shown = shopOpen || all.length <= LIMIT + 1 ? all : all.slice(0, LIMIT);
     $('shop-list').replaceChildren(...(shown.length ? shown.map((g) => h('li', { class: `item${g.done ? ' done' : ''}` },
       h('label', null, h('input', { type: 'checkbox', 'data-grocery': g.id, checked: g.done }), h('span', null, g.title))))
-      : [h('li', { class: 'empty' }, 'Lijstje is leeg.')]));
+      : [h('li', { class: 'empty' }, 'The list is empty.')]));
     clear.hidden = !all.some((g) => g.done);
     more.hidden = shown.length === all.length;
-    more.textContent = `+${all.length - shown.length} meer`;
+    more.textContent = `+${all.length - shown.length} more`;
   }
 
   function waiting(iso) {
     const min = Math.max(0, Math.floor((Date.now() - Date.parse(iso)) / 60000));
     if (min < 60) return `${min} min`;
-    if (min < 24 * 60) return `${Math.floor(min / 60)} uur`;
+    if (min < 24 * 60) return `${Math.floor(min / 60)} h`;
     const d = Math.floor(min / (24 * 60));
-    return `al ${d} ${d === 1 ? 'dag' : 'dagen'}`;
+    return `${d} ${d === 1 ? 'day' : 'days'}`;
   }
-  // De app-namen zijn de labels uit CHAT_APPS in de Android-app. Andere apps die daar aan staan komen onder Overig,
-  // een tabje dat er alleen is als er iets in staat.
+  // The app names are the labels from CHAT_APPS in the Android app. Other apps switched on there go under Other,
+  // a tab that only exists when something is in it.
   const REPLY_TABS = [
     { key: 'whatsapp', label: 'WhatsApp', apps: ['WhatsApp', 'WhatsApp Business'] },
     { key: 'snap', label: 'Snap', apps: ['Snapchat'] },
     { key: 'insta', label: 'Insta', apps: ['Instagram'] },
     { key: 'dating', label: 'Dating', apps: ['Hinge', 'Tinder', 'Bumble'] },
   ];
-  const REPLY_OTHER = { key: 'other', label: 'Overig' };
+  const REPLY_OTHER = { key: 'other', label: 'Other' };
   const REPLY_LIMIT = 4;
   const replyTabOf = (app) => (REPLY_TABS.find((t) => t.apps.includes(app)) || REPLY_OTHER).key;
   const replyLate = (r) => Date.now() - Date.parse(r.since) >= 2 * 24 * 3600000;
-  let replyTab = null;      // zelf gekozen tabje; zolang dat er niet is: het tabje met de oudste wachtende
-  let replyOpen = false;    // "+ meer" uitgeklapt
+  let replyTab = null;      // tab chosen by you; as long as there is none: the tab with the oldest waiting one
+  let replyOpen = false;    // "+ more" expanded
 
   function replyRow(r, withApp) {
     return h('li', { class: `reply${replyLate(r) ? ' late' : ''}` },
       h('div', { class: 'reply-text' }, h('b', { title: r.person }, r.person),
         r.last_message ? h('p', { class: 'reply-msg', title: r.last_message }, r.last_message) : null,
         h('span', null, withApp ? `${r.app} · ${waiting(r.since)}` : waiting(r.since))),
-      h('button', { type: 'button', class: 'reply-x', 'data-reply': r.id, 'aria-label': `${r.person} afhandelen`, title: 'Afhandelen' }, '×'));
+      h('button', { type: 'button', class: 'reply-x', 'data-reply': r.id, 'aria-label': `Handle ${r.person}`, title: 'Handle' }, '×'));
   }
 
   function renderReplies() {
@@ -327,7 +327,7 @@
     const other = rows.filter((r) => replyTabOf(r.app) === REPLY_OTHER.key);
     if (other.length) groups.push({ ...REPLY_OTHER, rows: other });
 
-    // Pc: alle apps naast elkaar. De kolommen worden steeds opnieuw getekend, dus de scrollstand gaat mee.
+    // PC: all apps side by side. The columns are redrawn every time, so the scroll position goes along.
     const board = wide.matches;
     cols.hidden = !board;
     tabs.hidden = list.hidden = board;
@@ -335,10 +335,10 @@
       more.hidden = true;
       const scroll = new Map([...cols.querySelectorAll('[data-reply-scroll]')].map((u) => [u.dataset.replyScroll, u.scrollTop]));
       cols.replaceChildren(...groups.map((g) => h('section', { class: 'reply-col', 'data-reply-col': g.key },
-        h('div', { class: 'reply-col-head' }, h('b', null, g.label), g.rows.some(replyLate) ? h('i', { class: 'reply-dot', title: 'Iemand wacht al 2 dagen of langer' }) : null, h('span', { class: 'reply-count' }, String(g.rows.length))),
+        h('div', { class: 'reply-col-head' }, h('b', null, g.label), g.rows.some(replyLate) ? h('i', { class: 'reply-dot', title: 'Someone has been waiting 2 days or longer' }) : null, h('span', { class: 'reply-count' }, String(g.rows.length))),
         h('ul', { class: 'replies', 'data-reply-scroll': g.key }, ...(g.rows.length
           ? g.rows.map((r) => replyRow(r, !g.apps || g.key === 'dating'))
-          : [h('li', { class: 'empty' }, 'Niemand wacht op je.')])))));
+          : [h('li', { class: 'empty' }, 'Nobody is waiting for you.')])))));
       cols.querySelectorAll('[data-reply-scroll]').forEach((u) => { u.scrollTop = scroll.get(u.dataset.replyScroll) || 0; });
       return;
     }
@@ -349,24 +349,24 @@
       const red = g.rows.some(replyLate);
       return h('button', {
         type: 'button', class: `reply-tab${g === open ? ' sel' : ''}`, 'data-reply-tab': g.key, 'aria-pressed': String(g === open),
-        'aria-label': `${g.label}, ${g.rows.length} wachtend${red ? ', iemand wacht al 2 dagen of langer' : ''}`,
+        'aria-label': `${g.label}, ${g.rows.length} waiting${red ? ', someone has been waiting 2 days or longer' : ''}`,
       }, g.label, h('span', { class: 'reply-count' }, String(g.rows.length)), red ? h('i', { class: 'reply-dot' }) : null);
     }));
     const shown = replyOpen ? open.rows : open.rows.slice(0, REPLY_LIMIT);
-    list.replaceChildren(...(shown.length ? shown.map((r) => replyRow(r, true)) : [h('li', { class: 'empty' }, 'Niemand wacht op je.')]));
+    list.replaceChildren(...(shown.length ? shown.map((r) => replyRow(r, true)) : [h('li', { class: 'empty' }, 'Nobody is waiting for you.')]));
     more.hidden = shown.length === open.rows.length;
-    more.textContent = `+ ${open.rows.length - shown.length} meer`;
+    more.textContent = `+ ${open.rows.length - shown.length} more`;
   }
 
   function renderHabitsDialog() {
     const list = $('habits-list');
-    if (!P.data.habits.length) { list.replaceChildren(h('li', { class: 'empty' }, 'Nog geen gewoontes.')); return; }
+    if (!P.data.habits.length) { list.replaceChildren(h('li', { class: 'empty' }, 'No habits yet.')); return; }
     list.replaceChildren(...P.data.habits.map((x) => {
-      const name = h('input', { type: 'text', value: x.name, maxlength: 40, 'aria-label': `Naam van ${x.name}` });
+      const name = h('input', { type: 'text', value: x.name, maxlength: 40, 'aria-label': `Name of ${x.name}` });
       name.addEventListener('change', () => { const v = name.value.trim(); if (v) P.renameHabit(x.id, v); else name.value = x.name; });
-      const del = h('button', { class: 'x', type: 'button', 'aria-label': `${x.name} verwijderen` }, '×');
+      const del = h('button', { class: 'x', type: 'button', 'aria-label': `Delete ${x.name}` }, '×');
       del.addEventListener('click', () => {
-        if (confirm(`Gewoonte "${x.name}" verwijderen? De reeks gaat ook weg.`)) { P.deleteHabit(x.id); renderHabitsDialog(); }
+        if (confirm(`Delete habit "${x.name}"? The streak goes too.`)) { P.deleteHabit(x.id); renderHabitsDialog(); }
       });
       return h('li', null, name, del);
     }));
@@ -377,11 +377,11 @@
     document.title = `${capital(longDay(sel))} · Planner`;
     let open = tasks().filter((t) => t.day === sel && t.kind === 'task' && !t.done).length;
     if (sel === today()) open += overdue().length;
-    const parts = [open === 0 ? 'geen open taken' : open === 1 ? '1 taak open' : `${open} taken open`];
+    const parts = [open === 0 ? 'no open tasks' : open === 1 ? '1 task open' : `${open} tasks open`];
     const shift0 = timedFor(sel).filter((x) => A.isAH(x.ev)).sort((a, b) => a.s - b.s)[0];
-    if (shift0) parts.push(`dienst om ${fmtMin(shift0.s)}`);
+    if (shift0) parts.push(`shift at ${fmtMin(shift0.s)}`);
     const wait = P.data.replies.length;
-    if (wait) parts.push(wait === 1 ? '1 persoon wacht op je' : `${wait} mensen wachten op je`);
+    if (wait) parts.push(wait === 1 ? '1 person is waiting for you' : `${wait} people are waiting for you`);
     $('subtitle').textContent = capital(parts.join(' · '));
   }
 
@@ -410,22 +410,22 @@
     if (state === noteState) return;
     noteState = state;
     if (state === 'locked') {
-      const input = h('input', { type: 'password', autocomplete: 'current-password', placeholder: 'Wachtzin van het dashboard', 'aria-label': 'Wachtzin van het dashboard', required: true });
+      const input = h('input', { type: 'password', autocomplete: 'current-password', placeholder: "The dashboard's passphrase", 'aria-label': "The dashboard's passphrase", required: true });
       const err = h('span', { class: 'err', role: 'alert' });
-      const form = h('form', null, input, h('button', { class: 'btn', type: 'submit' }, 'Koppelen'));
+      const form = h('form', null, input, h('button', { class: 'btn', type: 'submit' }, 'Link'));
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        err.textContent = 'Bezig…';
+        err.textContent = 'Working…';
         try {
           await A.unlock(input.value);
         } catch (x) {
-          err.textContent = x.message || 'Koppelen lukt niet';
+          err.textContent = x.message || 'Linking failed';
         }
       });
-      note.replaceChildren(h('span', null, 'Agenda niet gekoppeld in deze browser.'), form, err);
+      note.replaceChildren(h('span', null, 'Calendar not linked in this browser.'), form, err);
       note.hidden = false;
     } else if (state === 'error') {
-      note.replaceChildren(h('span', null, 'Agenda kon niet worden bijgewerkt. De planner probeert het zo opnieuw.'));
+      note.replaceChildren(h('span', null, 'The calendar could not be updated. The planner will try again shortly.'));
       note.hidden = false;
     } else {
       note.hidden = true;
@@ -438,11 +438,11 @@
     const items = alldayFor(sel);
     box.hidden = !items.length;
     box.replaceChildren(...items.map((e) => e.birthday
-      ? h('span', { class: 'chip-day bday' }, `Verjaardag ${e.birthday}`)
+      ? h('span', { class: 'chip-day bday' }, `Birthday ${e.birthday}`)
       : h(e.link ? 'a' : 'span', { class: 'chip-day', style: colorStyle(e), href: e.link, target: e.link && '_blank', rel: e.link && 'noopener' }, A.label(e))));
   }
 
-  // Overlappende blokken naast elkaar (zelfde aanpak als de weekweergave van het dashboard)
+  // Overlapping blocks side by side (same approach as the dashboard's week view)
   function lanes(items) {
     items.sort((a, b) => a.s - b.s || b.e - a.e);
     let cluster = [], ends = [], clusterEnd = 0;
@@ -477,7 +477,7 @@
     const tl = document.querySelector('.tl');
     if (!phone()) {
       const top = tl.getBoundingClientRect().top + scrollY;
-      // Pc: de kleine vakken bovenaan plus minstens 300 px voor Nog reageren moeten erin passen
+      // PC: the small boxes at the top plus at least 300 px for Still to reply must fit
       const boxes = wide.matches ? measured(() => Math.max(...[...document.querySelectorAll('.col')].map((c) => c.offsetHeight))) + BOX_GAP + 300 : 0;
       root.setProperty('--tl-h', `${Math.max(460, boxes, Math.floor(innerHeight - top - 66))}px`);
     }
@@ -505,7 +505,7 @@
     for (const it of lanes(items)) box.append(it.google ? googleEl(it, nowMs) : mineEl(it));
     nodes.push(box);
 
-    // Deadlines op dezelfde minuut samen op één lijn
+    // Deadlines at the same minute together on one line
     const lines = new Map();
     for (const d of deadlinesFor(sel)) {
       const dd = new Date(d.due);
@@ -539,16 +539,16 @@
     const ah = A.isAH(ev);
     const dur = it.e - it.s;
     let sub = `${fmtTime(ev.start)} – ${fmtTime(ev.end)}`;
-    if (!ah) sub += ' · Google Agenda (alleen lezen)';
+    if (!ah) sub += ' · Google Calendar (read-only)';
     else if (ev.start > nowMs && ev.start - nowMs <= 2 * 3600000) {
       const way = A.commute(ev.start);
-      if (way) sub += ` · ${way} onderweg`;
+      if (way) sub += ` · ${way} on the way`;
     }
     return h(ev.link ? 'a' : 'div', {
       class: `ev${ah ? ' ah' : ''}${A.isF1(ev) ? ' f1' : ''}${ev.end <= nowMs ? ' past' : ''}${isSmall(dur) ? ' small' : ''}`,
       style: `${place(it)}${ah || A.isF1(ev) ? '' : colorStyle(ev)}`, href: ev.link, target: ev.link && '_blank', rel: ev.link && 'noopener',
       title: `${ev.title} (${fmtTime(ev.start)} – ${fmtTime(ev.end)})`,
-    }, h('span', { class: 't' }, ah ? 'Appie dienst' : A.label(ev)), h('span', { class: 's' }, sub));
+    }, h('span', { class: 't' }, ah ? 'AH shift' : A.label(ev)), h('span', { class: 's' }, sub));
   }
 
   function mineEl(it) {
@@ -556,7 +556,7 @@
     const s = subject(t.subject_id);
     const dur = it.e - it.s;
     const m = moduleOf(t.module_id);
-    const what = t.module_state === 'auto' ? 'automatisch' : t.module_state === 'pinned' ? 'vastgezet' : t.kind === 'block' ? 'tijdblok' : 'taak ingepland';
+    const what = t.module_state === 'auto' ? 'automatic' : t.module_state === 'pinned' ? 'pinned' : t.kind === 'block' ? 'time block' : 'task scheduled';
     const sub = [`${fmtMin(it.s)} – ${fmtMin(it.e)}`, what, s && s.name].filter(Boolean).join(' · ');
     const color = s ? s.color : m ? m.color : null;
     return h('div', {
@@ -564,7 +564,7 @@
       style: `${place(it)}${color ? `--c:${color};` : ''}`, 'data-task': t.id, 'data-edit': t.id,
     },
     h('div', { class: 'ev-row' },
-      t.kind === 'task' ? h('input', { type: 'checkbox', 'data-check': t.id, checked: t.done, 'aria-label': `${t.title} afvinken` }) : null,
+      t.kind === 'task' ? h('input', { type: 'checkbox', 'data-check': t.id, checked: t.done, 'aria-label': `Check off ${t.title}` }) : null,
       h('div', { class: 'ev-text' }, h('span', { class: 't' }, t.title), h('span', { class: 's' }, sub))),
     h('span', { class: 'grip', 'aria-hidden': 'true' }, '⋮⋮'),
     h('div', { class: 'resize', 'aria-hidden': 'true' }));
@@ -574,7 +574,7 @@
     const s = subject(t.subject_id);
     return h('li', { class: `task${t.done ? ' done' : ''}`, 'data-task': t.id },
       h('span', { class: 'grip', 'aria-hidden': 'true' }, '⋮⋮'),
-      extra.check ? h('input', { type: 'checkbox', 'data-check': t.id, checked: t.done, 'aria-label': `${t.title} afvinken` }) : null,
+      extra.check ? h('input', { type: 'checkbox', 'data-check': t.id, checked: t.done, 'aria-label': `Check off ${t.title}` }) : null,
       h('button', { class: 'task-title', type: 'button', 'data-edit': t.id, title: t.title }, t.title),
       extra.note ? h('span', { class: extra.noteClass || 'time' }, extra.note) : null,
       s ? h('span', { class: 'tag', style: `--c:${s.color}` }, s.name) : null);
@@ -582,24 +582,24 @@
 
   function renderToday() {
     const isToday = sel === today();
-    $('today-title').textContent = isToday ? 'Vandaag' : capital(shortDay(sel));
+    $('today-title').textContent = isToday ? 'Today' : capital(shortDay(sel));
     const list = $('today-list');
     const rows = [];
     if (isToday) {
       for (const t of overdue().sort((a, b) => a.day.localeCompare(b.day))) {
-        rows.push(taskRow(t, { check: true, note: t.day === shift(sel, -1) ? 'gisteren' : `${weekday(t.day)} ${fromKey(t.day).getDate()}`, noteClass: 'late' }));
+        rows.push(taskRow(t, { check: true, note: t.day === shift(sel, -1) ? 'yesterday' : `${weekday(t.day)} ${fromKey(t.day).getDate()}`, noteClass: 'late' }));
       }
     }
     const loose = looseFor(sel).sort((a, b) => a.done - b.done);
     for (const t of loose) rows.push(taskRow(t, { check: true }));
-    list.replaceChildren(...(rows.length ? rows : [h('li', { class: 'empty' }, 'Nog niets voor deze dag.')]));
+    list.replaceChildren(...(rows.length ? rows : [h('li', { class: 'empty' }, 'Nothing for this day yet.')]));
     const open = loose.filter((t) => !t.done).length;
     $('today-count').textContent = loose.length ? `${open} open` : '';
   }
 
   function renderInbox() {
-    const rows = inbox().map((t) => taskRow(t, t.module_state === 'auto' ? { check: false, note: 'paste niet', noteClass: 'late' } : { check: false }));
-    $('inbox-list').replaceChildren(...(rows.length ? rows : [h('li', { class: 'empty' }, 'Inbox is leeg.')]));
+    const rows = inbox().map((t) => taskRow(t, t.module_state === 'auto' ? { check: false, note: "didn't fit", noteClass: 'late' } : { check: false }));
+    $('inbox-list').replaceChildren(...(rows.length ? rows : [h('li', { class: 'empty' }, 'Inbox is empty.')]));
   }
 
   function renderSoon() {
@@ -614,10 +614,10 @@
         rows.push({ at: d.due, kind: 'deadline-mark', text: `${d.title} (Canvas${t === '23:59' ? '' : ` ${t}`})`, url: d.url });
       }
     }
-    for (const e of A.birthdays()) if (within(e.start)) rows.push({ at: e.start, kind: 'bday', text: `verjaardag ${e.birthday}` });
+    for (const e of A.birthdays()) if (within(e.start)) rows.push({ at: e.start, kind: 'bday', text: `birthday ${e.birthday}` });
     for (const e of A.normal()) {
       if (e.allDay || e.start < now || e.start >= b) continue;
-      if (A.isAH(e)) rows.push({ at: e.start, kind: 'ah', text: `dienst ${fmtTime(e.start)} - ${fmtTime(e.end)}` });
+      if (A.isAH(e)) rows.push({ at: e.start, kind: 'ah', text: `shift ${fmtTime(e.start)} - ${fmtTime(e.end)}` });
       else if (A.isF1(e)) {
         const name = A.label(e);
         if (!/- FP\d/.test(name)) rows.push({ at: e.start, kind: 'f1', text: `${name} ${fmtTime(e.start)}` });
@@ -625,7 +625,7 @@
     }
     rows.sort((x, y) => x.at - y.at);
     if (!rows.length) {
-      list.replaceChildren(h('li', { class: 'empty' }, A.state === 'ok' ? 'Niks de komende 7 dagen.' : 'Nog geen agenda.'));
+      list.replaceChildren(h('li', { class: 'empty' }, A.state === 'ok' ? 'Nothing in the next 7 days.' : 'No calendar yet.'));
       return;
     }
     list.replaceChildren(...rows.map((r) => {
@@ -644,10 +644,10 @@
       lastToday = t;
       A.range(...agendaRange());
     }
-    render();   // lijn voor nu, afgelopen blokken, Binnenkort en "droog onderweg" blijven zo kloppen
+    render();   // line for now, past blocks, Coming up and "dry on the way" stay right this way
   }
 
-  // ---------- Dag kiezen ----------
+  // ---------- Choosing a day ----------
   function goTo(k) {
     sel = k;
     week = mondayOf(k);
@@ -657,7 +657,7 @@
     render();
   }
 
-  // ---------- Slepen (eigen pointer-code: HTML-slepen werkt niet in Firefox op Android) ----------
+  // ---------- Dragging (own pointer code: HTML drag and drop doesn't work in Firefox on Android) ----------
   let press = null;
   let drag = null;
   let suppressClick = false;
@@ -777,7 +777,7 @@
     else if (value === 'today') patch = { day: sel, start_min: null };
     else if (value === 'inbox') patch = { day: null, start_min: null, done: false };
     else if (value && value.startsWith('day:')) patch = { day: value.slice(4) };
-    // Slepen zet een gestippeld blok vast
+    // Dragging pins a dotted block
     if (patch && t.module_state === 'auto') patch.module_state = 'pinned';
     if (patch) P.updateTask(t.id, patch);
     else if (dirty) render();
@@ -799,7 +799,7 @@
     if (suppressClick) { e.preventDefault(); e.stopPropagation(); }
   }, true);
 
-  // ---------- Dialoog: taak of tijdblok ----------
+  // ---------- Dialog: task or time block ----------
   let editing = null;
   let formSubject = null;
   let formColor = COLORS[0];
@@ -807,25 +807,25 @@
   function kindValue() { return document.querySelector('input[name="kind"]:checked').value; }
 
   function renderFormSubjects() {
-    const chips = [h('button', { type: 'button', class: `chip${formSubject == null ? ' sel' : ''}`, 'data-subject': '' }, 'Geen')];
-    for (const s of vakken()) {
+    const chips = [h('button', { type: 'button', class: `chip${formSubject == null ? ' sel' : ''}`, 'data-subject': '' }, 'None')];
+    for (const s of realSubjects()) {
       chips.push(h('button', { type: 'button', class: `chip${formSubject === s.id ? ' sel' : ''}`, 'data-subject': s.id, style: `--c:${s.color}` }, h('span', { class: 'dot' }), s.name));
     }
-    chips.push(h('button', { type: 'button', class: 'chip', 'data-subject-new': '' }, '+ Nieuw vak'));
+    chips.push(h('button', { type: 'button', class: 'chip', 'data-subject-new': '' }, '+ New subject'));
     $('f-subjects').replaceChildren(...chips);
   }
 
-  // Vaste kleuren plus een eigen kleur naar keuze. standard = de oorspronkelijke kleur, als die niet in het rijtje staat.
+  // Fixed colors plus an own color of choice. standard = the original color, when it isn't in the row.
   function swatches(box, current, onPick, standard) {
     const same = (a, b) => a.toLowerCase() === b.toLowerCase();
     const list = standard && !COLORS.some((c) => same(c, standard)) ? [standard, ...COLORS] : COLORS;
     const buttons = list.map((c) => {
       const on = same(c, current);
-      const b = h('button', { type: 'button', class: `swatch${on ? ' sel' : ''}`, style: `--c:${c}`, 'aria-label': `Kleur ${c}`, 'aria-pressed': String(on) });
+      const b = h('button', { type: 'button', class: `swatch${on ? ' sel' : ''}`, style: `--c:${c}`, 'aria-label': `Color ${c}`, 'aria-pressed': String(on) });
       b.addEventListener('click', () => onPick(c));
       return b;
     });
-    const picker = h('input', { type: 'color', class: 'picker', value: current.toLowerCase(), title: 'Eigen kleur kiezen', 'aria-label': 'Eigen kleur kiezen' });
+    const picker = h('input', { type: 'color', class: 'picker', value: current.toLowerCase(), title: 'Pick your own color', 'aria-label': 'Pick your own color' });
     picker.addEventListener('change', () => onPick(picker.value));
     box.replaceChildren(...buttons, picker);
   }
@@ -836,7 +836,7 @@
   function openEdit(t, defaults) {
     editing = t ? t.id : null;
     const v = t || { kind: 'task', title: '', day: sel, start_min: null, duration_min: 60, subject_id: null, ...defaults };
-    $('edit-title').textContent = t ? (t.kind === 'block' ? 'Tijdblok' : 'Taak') : 'Nieuw';
+    $('edit-title').textContent = t ? (t.kind === 'block' ? 'Time block' : 'Task') : 'New';
     document.querySelector(`input[name="kind"][value="${v.kind}"]`).checked = true;
     $('f-title').value = v.title;
     $('f-day').value = v.day || '';
@@ -845,7 +845,7 @@
     if (![...dur.options].some((o) => Number(o.value) === v.duration_min)) dur.append(h('option', { value: v.duration_min }, `${v.duration_min} min`));
     dur.value = String(v.duration_min);
     formSubject = v.subject_id;
-    formColor = COLORS[vakken().length % COLORS.length];
+    formColor = COLORS[realSubjects().length % COLORS.length];
     $('f-new-subject').hidden = true;
     $('f-subject-name').value = '';
     renderFormSubjects();
@@ -853,7 +853,7 @@
     $('f-err').textContent = '';
     const del = $('f-delete');
     del.hidden = !t;
-    del.textContent = 'Verwijderen';
+    del.textContent = 'Delete';
     delete del.dataset.sure;
     $('edit').showModal();
     if (!t) $('f-title').focus();
@@ -876,9 +876,9 @@
     const day = $('f-day').value || null;
     const time = $('f-time').value;
     const err = $('f-err');
-    if (!title) { err.textContent = 'Geef het een titel.'; return; }
-    if (kind === 'block' && (!day || !time)) { err.textContent = 'Een tijdblok heeft een dag en een tijd nodig.'; return; }
-    if (time && !day) { err.textContent = 'Kies ook een dag bij de tijd.'; return; }
+    if (!title) { err.textContent = 'Give it a title.'; return; }
+    if (kind === 'block' && (!day || !time)) { err.textContent = 'A time block needs a day and a time.'; return; }
+    if (time && !day) { err.textContent = 'Also pick a day for the time.'; return; }
     const [hh, mm] = time ? time.split(':').map(Number) : [0, 0];
     const fields = {
       kind, title, day,
@@ -893,7 +893,7 @@
     $('edit').close();
   }
 
-  // ---------- Dialoog: vakken ----------
+  // ---------- Dialog: subjects ----------
   function renderSubjects() {
     const cals = A.usedCalendars();
     const colorRow = (label, current, pick, standard) => {
@@ -903,19 +903,19 @@
     };
     $('colors-list').replaceChildren(
       ...cals.map((c) => colorRow(c.name, calColor(c), (color) => setCal(c, color), calDefault(c))),
-      // Eén regel "Google Agenda" alleen zolang de agenda's zelf nog niet bekend zijn
+      // One row "Google Calendar" only as long as the calendars themselves are not known yet
       ...CATS.filter((c) => c.key !== 'agenda' || !cals.length).map((c) => colorRow(c.label, catColor(c), (color) => setCat(c, color), c.color)),
     );
     const list = $('subjects-list');
-    if (!vakken().length) { list.replaceChildren(h('li', { class: 'empty' }, 'Nog geen vakken. Ze komen vanzelf uit Canvas zodra je agenda gekoppeld is.')); return; }
-    list.replaceChildren(...vakken().map((s) => {
-      const name = h('input', { type: 'text', value: s.name, maxlength: 40, 'aria-label': `Naam van ${s.name}` });
+    if (!realSubjects().length) { list.replaceChildren(h('li', { class: 'empty' }, 'No subjects yet. They come from Canvas by themselves once your calendar is linked.')); return; }
+    list.replaceChildren(...realSubjects().map((s) => {
+      const name = h('input', { type: 'text', value: s.name, maxlength: 40, 'aria-label': `Name of ${s.name}` });
       name.addEventListener('change', () => { const v = cleanName(name.value); if (v) P.updateSubject(s.id, { name: v }); else name.value = s.name; });
       const box = h('div', { class: 'swatches' });
       swatches(box, s.color, (c) => { P.updateSubject(s.id, { color: c }); renderSubjects(); });
-      const del = h('button', { class: 'x', type: 'button', 'aria-label': `${s.name} verwijderen` }, '×');
+      const del = h('button', { class: 'x', type: 'button', 'aria-label': `Delete ${s.name}` }, '×');
       del.addEventListener('click', () => {
-        if (confirm(`Vak "${s.name}" verwijderen? De taken blijven staan, alleen zonder vak.`)) { P.deleteSubject(s.id); renderSubjects(); }
+        if (confirm(`Delete subject "${s.name}"? The tasks stay, just without a subject.`)) { P.deleteSubject(s.id); renderSubjects(); }
       });
       return h('li', null, name, box, del);
     }));
@@ -925,14 +925,14 @@
     swatches($('s-swatches'), subjectColor, (c) => { subjectColor = c; renderSubjectSwatches(); });
   }
 
-  // ---------- Standaardweek ----------
+  // ---------- Standard week ----------
   let planTimer = null;
   let lastPlan = { key: '', at: 0 };
   let conflicts = [];
   let moves = [];
-  const freshModules = new Set();     // net aangepast: deze modules mogen opnieuw een plek zoeken, ook als de oude nog past
+  const freshModules = new Set();     // just changed: these modules may look for a new place, even when the old one still fits
   const slotText = (day, start) => `${weekday(day)} ${fmtMin(start)}`;
-  const roosterEvents = () => A.normal().filter((e) => !e.allDay).map((e) => W.classify(e, (A.calendarOf(e.cal) || {}).name, A.isAH(e)));
+  const timetableEvents = () => A.normal().filter((e) => !e.allDay).map((e) => W.classify(e, (A.calendarOf(e.cal) || {}).name, A.isAH(e)));
   const planWeeks = () => {
     const me = mondayOf(today());
     const list = [me, shift(me, 7)];
@@ -948,10 +948,10 @@
   function runPlan() {
     if (!P.ready || !P.data.modulesOk) return;
     if (!P.data.settings) { P.seedModules(W.BEGIN, W.DEFAULTS); return; }
-    // Alleen op een volledig en vers beeld van de agenda, anders zou een blok op een college kunnen belanden
+    // Only on a complete and fresh picture of the calendar, otherwise a block could end up on a lecture
     if (drag || !P.idle || A.state !== 'ok' || !A.complete) return;
     const weeks = planWeeks().filter((w) => A.covers(dayStart(shift(w, -2)), dayStart(shift(w, 7))));
-    const res = W.plan({ modules: P.data.modules, settings: P.data.settings, subjects: P.data.subjects, tasks: tasks(), events: roosterEvents(), weeks, now: Date.now(), fresh: freshModules });
+    const res = W.plan({ modules: P.data.modules, settings: P.data.settings, subjects: P.data.subjects, tasks: tasks(), events: timetableEvents(), weeks, now: Date.now(), fresh: freshModules });
     freshModules.clear();
     const before = JSON.stringify(conflicts.map((c) => [c.row.id, c.suggestion]));
     conflicts = res.conflicts;
@@ -961,7 +961,7 @@
       if (before !== JSON.stringify(conflicts.map((c) => [c.row.id, c.suggestion]))) renderWeekBanner();
       return;
     }
-    // Weigert de database iets, dan niet blijven herhalen
+    // If the database refuses something, don't keep repeating it
     const key = JSON.stringify([res.inserts.map((x) => x.slot_key), res.updates, res.deletes]);
     if (key === lastPlan.key && Date.now() - lastPlan.at < 60000) return;
     lastPlan = { key, at: Date.now() };
@@ -970,22 +970,22 @@
 
   function bannerNodes() {
     const items = conflicts.map((c) => {
-      const name = c.event.shift ? 'Dienst' : A.label(c.event);
+      const name = c.event.shift ? 'Shift' : A.label(c.event);
       const when = `${weekday(keyOf(new Date(c.event.start)))} ${fmtTime(c.event.start)} - ${fmtTime(c.event.end)}`;
       const place = c.suggestion ? slotText(c.suggestion.day, c.suggestion.start) : null;
       const id = c.row.id;
       return h('div', { class: 'wb-item' },
-        h('p', null, `${name} ${when}. ${c.row.title} (vastgezet) botst${place ? `: verplaatsen naar ${place}?` : '.'}`),
+        h('p', null, `${name} ${when}. ${c.row.title} (pinned) clashes${place ? `: move to ${place}?` : '.'}`),
         h('div', { class: 'wb-actions' },
-          place ? h('button', { type: 'button', class: 'btn wb-yes', 'data-conflict': 'move', 'data-id': id }, `Ja, ${place}`) : null,
-          h('button', { type: 'button', class: 'btn', 'data-conflict': 'self', 'data-id': id }, 'Zelf verplaatsen'),
-          h('button', { type: 'button', class: 'btn', 'data-conflict': 'skip', 'data-id': id }, 'Deze week niet')));
+          place ? h('button', { type: 'button', class: 'btn wb-yes', 'data-conflict': 'move', 'data-id': id }, `Yes, ${place}`) : null,
+          h('button', { type: 'button', class: 'btn', 'data-conflict': 'self', 'data-id': id }, 'Move it myself'),
+          h('button', { type: 'button', class: 'btn', 'data-conflict': 'skip', 'data-id': id }, 'Not this week')));
     });
-    const moved = moves.map((m) => h('p', { class: 'wb-moved' }, m.day ? `${m.title} schoof vanzelf naar ${slotText(m.day, m.start)}.` : `${m.title} past niet meer en staat in de Inbox.`));
+    const moved = moves.map((m) => h('p', { class: 'wb-moved' }, m.day ? `${m.title} moved by itself to ${slotText(m.day, m.start)}.` : `${m.title} doesn't fit anymore and is in the Inbox.`));
     if (!items.length && !moved.length) return [];
     return [
-      h('h2', { class: 'wb-title' }, 'Rooster veranderd'), ...items, ...moved,
-      moved.length ? h('button', { type: 'button', class: 'link hint', 'data-moves-ok': '' }, 'Gezien') : null,
+      h('h2', { class: 'wb-title' }, 'Timetable changed'), ...items, ...moved,
+      moved.length ? h('button', { type: 'button', class: 'link hint', 'data-moves-ok': '' }, 'Seen') : null,
     ].filter(Boolean);
   }
   function renderWeekBanner() {
@@ -1011,7 +1011,7 @@
 
   function renderWeekGrid() {
     const first = fromKey(week);
-    $('week-label').textContent = `Week van ${first.getDate()} ${first.toLocaleDateString('en-GB', { month: 'short' }).replace('.', '')}`;
+    $('week-label').textContent = `Week of ${first.getDate()} ${first.toLocaleDateString('en-GB', { month: 'short' }).replace('.', '')}`;
     const startH = 7;
     const span = (24 - startH) * 60;
     const pos = (s, e) => `top:${(((Math.max(s, startH * 60) - startH * 60) / span) * 100).toFixed(2)}%;height:${(((e - Math.max(s, startH * 60)) / span) * 100).toFixed(2)}%;`;
@@ -1023,7 +1023,7 @@
       const items = [];
       for (const { ev, s, e } of timedFor(k)) {
         const ah = A.isAH(ev);
-        items.push(h('div', { class: `wg-item${ah ? ' ah' : ''}`, style: `${pos(s, e)}${ah ? '' : colorStyle(ev)}`, title: A.label(ev) }, ah ? 'Dienst' : A.label(ev)));
+        items.push(h('div', { class: `wg-item${ah ? ' ah' : ''}`, style: `${pos(s, e)}${ah ? '' : colorStyle(ev)}`, title: A.label(ev) }, ah ? 'Shift' : A.label(ev)));
       }
       for (const t of scheduledFor(k)) {
         const sub = subject(t.subject_id), m = moduleOf(t.module_id);
@@ -1038,7 +1038,7 @@
   function renderModules() {
     const list = $('mod-list');
     list.replaceChildren(...P.data.modules.map((m) => {
-      const on = h('input', { type: 'checkbox', checked: m.enabled, 'aria-label': `${m.name} aan of uit` });
+      const on = h('input', { type: 'checkbox', checked: m.enabled, 'aria-label': `${m.name} on or off` });
       on.addEventListener('change', () => P.updateModule(m.id, { enabled: on.checked }));
       const open = h('button', { type: 'button', class: 'mod-open' }, h('b', null, m.name), h('span', null, W.describe(m)));
       open.addEventListener('click', () => openModule(m));
@@ -1048,16 +1048,16 @@
 
   function renderCourses() {
     const seen = new Map();
-    const events = roosterEvents();
+    const events = timetableEvents();
     for (const w of planWeeks()) for (const c of W.weekCourses(events, w)) if (!seen.has(c.code)) seen.set(c.code, c);
     const map = P.data.settings.course_map || {};
     const box = $('course-list');
-    if (!seen.size) { box.replaceChildren(h('li', { class: 'empty' }, 'Nog geen colleges gevonden in deze weken.')); return; }
+    if (!seen.size) { box.replaceChildren(h('li', { class: 'empty' }, 'No lectures found in these weeks yet.')); return; }
     box.replaceChildren(...[...seen.values()].map((c) => {
-      const select = h('select', { 'aria-label': `Vak voor ${c.name}` },
-        h('option', { value: '' }, 'Automatisch'),
-        h('option', { value: 'skip' }, 'Niet lezen'),
-        ...vakken().map((s) => h('option', { value: s.id }, s.name)));
+      const select = h('select', { 'aria-label': `Subject for ${c.name}` },
+        h('option', { value: '' }, 'Automatic'),
+        h('option', { value: 'skip' }, "Don't read"),
+        ...realSubjects().map((s) => h('option', { value: s.id }, s.name)));
       select.value = map[c.code] || '';
       select.addEventListener('change', () => {
         const next = { ...map };
@@ -1081,7 +1081,7 @@
   function openWeek() {
     const ready = P.data.modulesOk && !!P.data.settings;
     $('week-missing').hidden = ready;
-    $('week-missing').textContent = P.data.modulesOk ? 'Even geduld, de beginmodules worden klaargezet.' : SQL_NOTE;
+    $('week-missing').textContent = P.data.modulesOk ? 'One moment, the starting modules are being set up.' : SQL_NOTE;
     $('week-body').hidden = !ready;
     if (ready) { renderModules(); renderCourses(); fillSettings(); renderWeekGrid(); }
     $('week-dlg').showModal();
@@ -1096,14 +1096,14 @@
   function openModule(m) {
     editingModule = m ? m.id : null;
     const v = m || { name: '', duration_min: 60, freq: 'weekly', times: 1, pref: 'any', rules: [], subject_id: null, alternate: '', color: '#4fa8ff' };
-    $('mod-title').textContent = m ? 'Module aanpassen' : 'Nieuwe module';
+    $('mod-title').textContent = m ? 'Edit module' : 'New module';
     $('m-name').value = v.name;
     $('m-dur').value = v.duration_min;
     $('m-freq').value = v.freq;
     $('m-times').value = v.times;
     $('m-pref').value = v.pref;
     $('m-alt').value = v.alternate || '';
-    $('m-subject').replaceChildren(h('option', { value: '' }, 'Geen'), ...vakken().map((s) => h('option', { value: s.id }, s.name)));
+    $('m-subject').replaceChildren(h('option', { value: '' }, 'None'), ...realSubjects().map((s) => h('option', { value: s.id }, s.name)));
     $('m-subject').value = v.subject_id || '';
     $('m-rules').replaceChildren(...W.RULES.map((r) => h('label', null, h('input', { type: 'checkbox', value: r.key, checked: (v.rules || []).includes(r.key) }), h('span', null, r.label))));
     moduleColor = v.color;
@@ -1112,7 +1112,7 @@
     $('m-err').textContent = '';
     const del = $('m-delete');
     del.hidden = !m;
-    del.textContent = 'Verwijderen';
+    del.textContent = 'Delete';
     delete del.dataset.sure;
     $('mod-edit').showModal();
     if (!m) $('m-name').focus();
@@ -1121,8 +1121,8 @@
     e.preventDefault();
     const name = $('m-name').value.trim();
     const duration = Number($('m-dur').value);
-    if (!name) { $('m-err').textContent = 'Geef de module een naam.'; return; }
-    if (!(duration >= 5 && duration <= 1440)) { $('m-err').textContent = 'De duur moet tussen 5 en 1440 minuten liggen.'; return; }
+    if (!name) { $('m-err').textContent = 'Give the module a name.'; return; }
+    if (!(duration >= 5 && duration <= 1440)) { $('m-err').textContent = 'The duration must be between 5 and 1440 minutes.'; return; }
     const fields = {
       name, duration_min: duration, freq: $('m-freq').value,
       times: Math.min(7, Math.max(1, Number($('m-times').value) || 1)),
@@ -1138,7 +1138,7 @@
     renderModules();
   }
 
-  // ---------- Meldingen en status ----------
+  // ---------- Messages and status ----------
   let toastTimer = null;
   function toast(msg) {
     const t = $('toast');
@@ -1150,10 +1150,10 @@
   function showStatus(s) {
     const n = $('sync');
     n.classList.toggle('offline', s === 'offline');
-    n.textContent = s === 'saving' ? 'Opslaan…' : s === 'offline' ? 'Geen verbinding, probeert opnieuw' : P.DEMO ? '' : 'Opgeslagen';
+    n.textContent = s === 'saving' ? 'Saving…' : s === 'offline' ? 'No connection, trying again' : P.DEMO ? '' : 'Saved';
   }
 
-  // ---------- Knoppen ----------
+  // ---------- Buttons ----------
   function wire() {
     $('strip-days').addEventListener('click', (e) => {
       const b = e.target.closest('[data-day]');
@@ -1246,15 +1246,15 @@
     });
     $('f-delete').onclick = (e) => {
       const b = e.currentTarget;
-      if (!b.dataset.sure) { b.dataset.sure = '1'; b.textContent = 'Zeker weten?'; return; }
-      // Een blok uit de Standaardweek zou anders vanzelf terugkomen: dat wordt "deze week niet"
+      if (!b.dataset.sure) { b.dataset.sure = '1'; b.textContent = 'Are you sure?'; return; }
+      // A block from the Standard week would otherwise come back by itself: it becomes "not this week"
       if (task(editing).slot_key) P.updateTask(editing, { module_state: 'skipped', day: null, start_min: null });
       else P.deleteTask(editing);
       $('edit').close();
     };
 
     $('subjects-btn').onclick = () => {
-      subjectColor = COLORS[vakken().length % COLORS.length];
+      subjectColor = COLORS[realSubjects().length % COLORS.length];
       renderSubjects();
       renderSubjectSwatches();
       $('subjects').showModal();
@@ -1271,7 +1271,7 @@
     $('m-cancel').onclick = () => $('mod-edit').close();
     $('m-delete').onclick = (e) => {
       const b = e.currentTarget;
-      if (!b.dataset.sure) { b.dataset.sure = '1'; b.textContent = 'Zeker weten?'; return; }
+      if (!b.dataset.sure) { b.dataset.sure = '1'; b.textContent = 'Are you sure?'; return; }
       P.deleteModule(editingModule);
       $('mod-edit').close();
       renderModules();
@@ -1290,7 +1290,7 @@
       if (!name) return;
       P.addSubject(name, subjectColor);
       input.value = '';
-      subjectColor = COLORS[vakken().length % COLORS.length];
+      subjectColor = COLORS[realSubjects().length % COLORS.length];
       renderSubjects();
       renderSubjectSwatches();
     });
