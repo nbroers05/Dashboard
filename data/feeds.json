@@ -99,13 +99,31 @@
    "name": "NOS Sport",
    "items": [
     {
-     "title": "Van Gerwen met de schrik vrij op Grand Slam of Darts",
+     "title": "Amateur Kosters plaatst zich voor WK darts: 'Echt bizar, een hele grote verrassing'",
+     "link": "https://nos.nl/l/2639525",
+     "time": "2026-11-14T23:46:18+01:00",
+     "img": "https://images.cdn.nos.nl/3/9/F/t/d/b/QzqxsjTbrQLzn52EAsSMJGTsoZAdkoXL4P16mm1/89x482x832x468-832x468.webp"
+    },
+    {
+     "title": "Debutante Andrejeva treft in eindstrijd WTA Finals routinier Svitolina",
+     "link": "https://nos.nl/l/2639521",
+     "time": "2026-11-14T22:51:26+01:00",
+     "img": "https://images.cdn.nos.nl/6/C/9/v/b/H/JCU3WjUybcYPffGQajdSJnqYjpWjjbp4joveqge/861x256x2640x1485-1024x576.webp"
+    },
+    {
+     "title": "Koploper Heracles wint, VVV morst punten en NAC verslaat Emmen in spektakelstuk",
+     "link": "https://nos.nl/l/2639520",
+     "time": "2026-11-14T22:30:29+01:00",
+     "img": "https://images.cdn.nos.nl/5/4/X/3/f/o/EqM4WmiDDTr4rRPZ1ZBSBYdvqrpNYA4brqk8Ue1/516x358x1744x981-1024x576.webp"
+    },
+    {
+     "title": "Van Gerwen met schrik vrij op Grand Slam of Darts, Van Veen wint met hoog gemiddelde",
      "link": "https://nos.nl/l/2639518",
      "time": "2026-11-14T22:14:01+01:00",
      "img": "https://images.cdn.nos.nl/8/2/a/P/H/B/ETPb71nT8At3BTYH8mLfYpTBfmu7BPw9wowzvdM/4x73x3632x2043-1024x576.webp"
     },
     {
-     "title": "Portugal neemt met eerbetoon afscheid van Ronaldo, die schittert door afwezigheid",
+     "title": "Portugal lijdt ruime nederlaag na eerbetoon aan afwezige Ronaldo",
      "link": "https://nos.nl/l/2639513",
      "time": "2026-11-14T20:56:07+01:00",
      "img": "https://images.cdn.nos.nl/7/A/c/i/e/h/4ANgpC45ZMo3HJDwxavCBMyvuMoykdqQa71gHMd/77x327x3696x2079-1024x576.webp"
@@ -169,24 +187,6 @@
      "link": "https://nos.nl/l/2639464",
      "time": "2026-11-14T13:01:35+01:00",
      "img": "https://images.cdn.nos.nl/8/G/b/6/E/j/nPo4nGnaW4ytCi9dGQEAkD2SyDancXiJTEkuZeQ/0x395x4000x2250-1024x576.webp"
-    },
-    {
-     "title": "Kok na 1014 dagen weer eens verslagen op 500 meter: 'Ben geen robot'",
-     "link": "https://nos.nl/l/2639454",
-     "time": "2026-11-14T11:51:27+01:00",
-     "img": "https://images.cdn.nos.nl/8/A/6/h/e/2/NfYjhJg8B6eYTs4LonvhmhL9pFwHzEF5trpKBzf/1059x166x2720x1530-1024x576.webp"
-    },
-    {
-     "title": "Westenbroek snelt bij wereldbeker Peking knap naar tweede plaats op 500 meter",
-     "link": "https://nos.nl/l/2639448",
-     "time": "2026-11-14T11:07:13+01:00",
-     "img": "https://images.cdn.nos.nl/8/9/2/Q/5/Q/9JrLoE21mtaAhRjzMxad6WTsyzHamjGMsp3bPbF/0x0x3808x2142-1024x576.webp"
-    },
-    {
-     "title": "Belgaroui van de kinderboerderij naar UFC-gevecht in Madison Square Garden",
-     "link": "https://nos.nl/l/2639443",
-     "time": "2026-11-14T10:47:19+01:00",
-     "img": "https://images.cdn.nos.nl/8/E/R/Z/w/k/6sLusPjtFXGwK4UEX3dFTf7edvmJgnjAfofRwfL/314x157x2720x1530-1024x576.webp"
     }
    ]
   },
@@ -194,16 +194,34 @@
    "name": "NU.nl",
    "items": [
     {
+     "title": "Ruimtevaartuig van SpaceX voor het eerst weer opgevangen door lanceertoren",
+     "link": "https://www.nu.nl/tech/6416609/ruimtevaartuig-van-spacex-voor-het-eerst-weer-opgevangen-door-lanceertoren.html",
+     "time": "2026-11-14T23:19:05+01:00",
+     "img": "https://images.nu.nl/m/90lxhlwampv1_sqr256/682/2/2271/2271/ruimtevaartuig-van-spacex-voor-het-eerst-weer-opgevangen-door-lanceertoren.jpg"
+    },
+    {
+     "title": "Berggids stuit in Italië op 'schatkamer' vol botten van holenberen uit ijstijd",
+     "link": "https://www.nu.nl/opmerkelijk/6416604/berggids-stuit-in-italie-op-schatkamer-vol-botten-van-holenberen-uit-ijstijd.html",
+     "time": "2026-11-14T22:39:41+01:00",
+     "img": "https://images.nu.nl/m/qz0xbupa80q7_sqr256/0/0/710/710/berggids-stuit-in-italie-op-schatkamer-vol-botten-van-holenberen-uit-ijstijd.jpg"
+    },
+    {
+     "title": "Video | Elektrische boot komt los van water en landt op andere boot tijdens race",
+     "link": "https://www.nu.nl/332284/video/elektrische-boot-komt-los-van-water-en-landt-op-andere-boot-tijdens-race.html",
+     "time": "2026-11-14T22:06:30+01:00",
+     "img": "https://images.nu.nl/m/wawxxt4aptso_sqr256/553/0/764/764/elektrische-boot-komt-los-van-water-en-landt-op-andere-boot-tijdens-race.jpg"
+    },
+    {
      "title": "Alaska kiest voor het eerst sinds 1998 een Democratische gouverneur",
      "link": "https://www.nu.nl/buitenland/6416595/alaska-kiest-voor-het-eerst-sinds-1998-een-democratische-gouverneur.html",
      "time": "2026-11-14T21:44:11+01:00",
      "img": "https://images.nu.nl/m/jd1xnonae45d_sqr256/18/0/3444/3444/alaska-kiest-voor-het-eerst-sinds-1998-een-democratische-gouverneur.jpg"
     },
     {
-     "title": "Cristiano Ronaldo afwezig bij eigen afscheid, nummer 7 krijgt nieuw ontwerp",
-     "link": "https://www.nu.nl/voetbal/6416606/cristiano-ronaldo-afwezig-bij-eigen-afscheid-nummer-7-krijgt-nieuw-ontwerp.html",
+     "title": "Portugal te kijk gezet door Denemarken bij groot eerbetoon aan afwezige Ronaldo",
+     "link": "https://www.nu.nl/voetbal/6416606/portugal-te-kijk-gezet-door-denemarken-bij-groot-eerbetoon-aan-afwezige-ronaldo.html",
      "time": "2026-11-14T21:02:24+01:00",
-     "img": "https://images.nu.nl/m/a5mx36zanbdi_sqr256/117/0/3754/3754/cristiano-ronaldo-afwezig-bij-eigen-afscheid-nummer-7-krijgt-nieuw-ontwerp.jpg"
+     "img": "https://images.nu.nl/m/vc1xx7ga7be9_sqr256/108/0/709/709/portugal-te-kijk-gezet-door-denemarken-bij-groot-eerbetoon-aan-afwezige-ronaldo.jpg"
     },
     {
      "title": "Niet AI of cyberaanval, maar afgelegen router oorzaak luchtverkeerstoring VS",
@@ -236,12 +254,6 @@
      "img": "https://images.nu.nl/m/w1hxgq8ae1x0_sqr256/825/0/3996/3996/top-coalitie-praat-zondag-verder-op-landgoed-over-kabinetscrisis.jpg"
     },
     {
-     "title": "Video | Beveiligingscamera legt explosie van heftruck vast in Russische fabriek",
-     "link": "https://www.nu.nl/332282/video/beveiligingscamera-legt-explosie-van-heftruck-vast-in-russische-fabriek.html",
-     "time": "2026-11-14T18:13:59+01:00",
-     "img": "https://images.nu.nl/m/vfbx45wasi9t_sqr256/319/3/1077/1077/beveiligingscamera-legt-explosie-van-heftruck-vast-in-russische-fabriek.jpg"
-    },
-    {
      "title": "Zelensky voert kritiek op SpaceX op en noemt beperking Starshield 'politiek'",
      "link": "https://www.nu.nl/spanningen-oekraine/6416594/zelensky-voert-kritiek-op-spacex-op-en-noemt-beperking-starshield-politiek.html",
      "time": "2026-11-14T17:58:24+01:00",
@@ -270,18 +282,6 @@
      "link": "https://www.nu.nl/achterklap/6416589/dochters-lily-allen-schamen-zich-voor-haar-trots-maar-vooral-beschaamd.html",
      "time": "2026-11-14T16:15:28+01:00",
      "img": "https://images.nu.nl/m/qavx2uea17bp_sqr256/1222/0/2788/2788/dochters-lily-allen-schamen-zich-voor-haar-trots-maar-vooral-beschaamd.jpg"
-    },
-    {
-     "title": "Vrees voor zware valpartijen bij nieuwe massastart: 'Wachten tot het misgaat'",
-     "link": "https://www.nu.nl/schaatsen/6416389/vrees-voor-zware-valpartijen-bij-nieuwe-massastart-wachten-tot-het-misgaat.html",
-     "time": "2026-11-14T15:50:44+01:00",
-     "img": "https://images.nu.nl/m/6koxm2pazbpa_sqr256/1687/0/3910/3910/vrees-voor-zware-valpartijen-bij-nieuwe-massastart-wachten-tot-het-misgaat.jpg"
-    },
-    {
-     "title": "Voyager 1 heeft sinds lancering in 1977 recordafstand van een lichtdag afgelegd",
-     "link": "https://www.nu.nl/wetenschap/6416586/voyager-1-heeft-sinds-lancering-in-1977-recordafstand-van-een-lichtdag-afgelegd.html",
-     "time": "2026-11-14T15:16:19+01:00",
-     "img": "https://images.nu.nl/m/k80xzoja8gbw_sqr256/16/0/2182/2182/voyager-1-heeft-sinds-lancering-in-1977-recordafstand-van-een-lichtdag-afgelegd.jpg"
     }
    ]
   }
