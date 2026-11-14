@@ -79,7 +79,7 @@
   const nav = h('div', 'tall-nav');
   nav.append(prevBtn, dots, nextBtn);
   rot.append(nav);
-  const ROT = ['w-letterboxd', 'w-memory', 'w-friends', 'w-stars', 'w-sptop', 'w-episodes'];   // w-memory = Memory Lane (0.60.0, tall only); health is fixed in the Canvas/Notifications row since 0.59.0
+  const ROT = ['w-letterboxd', 'w-memory', 'w-friends', 'w-stars', 'w-sptop', 'w-episodes', 'w-grimsby'];   // w-memory = Memory Lane (0.60.0, tall only); health is fixed in the Canvas/Notifications row since 0.59.0
   const ROT_MS = 12000;
   let rotIndex = 0, rotTimer = null, pausedUntil = 0, hover = false;
   const calm = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -186,9 +186,10 @@
         put(row3, [weather, 'w-f1', 'w-ah']);
         put(row2, ['w-canvas', 'w-alerts', 'w-health']);
         thin(store.get(THIN_KEY) === true);
-        const memory = $('w-memory');   // grab before moving: rot isn't in the page yet, so $() wouldn't find it
+        const memory = $('w-memory'), grimsby = $('w-grimsby');   // grab before moving: rot isn't in the page yet, so $() wouldn't find them
         rot.prepend(...ROT.map($).filter(Boolean));
         if (memory) memory.hidden = false;
+        if (grimsby) grimsby.hidden = false;
         put(hidden, ['w-mail']);
         // To-do off tall (0.59.0, 1.0 plan); the to-do tile still loads (desk/phone)
         put(hidden, ['w-todo']);
@@ -206,6 +207,7 @@
       leave() {
         thin(false, true);
         if ($('w-memory')) $('w-memory').hidden = true;   // rot is still in the page here
+        if ($('w-grimsby')) $('w-grimsby').hidden = true;
         clearInterval(rotTimer);
         slides().forEach((el) => { el.classList.remove('on'); el.removeAttribute('aria-hidden'); });
         [row3, row2, rot, hidden].forEach((el) => el.remove());

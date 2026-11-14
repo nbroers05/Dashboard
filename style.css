@@ -2806,3 +2806,27 @@ a.mm-stat:hover, a.mm-stat:focus-visible { background: rgba(255, 255, 255, .11);
 .mm-year:hover, .mm-year:focus-visible { background: rgba(255, 255, 255, .07); }
 .mm-year b { flex: none; color: color-mix(in srgb, var(--c) 70%, white); }
 .mm-year span { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--muted); font-size: .92rem; }
+
+/* ---------- Grimsby the AI crow (since 1.9.0, only tall in the rotating tile; widgets/grimsby.js) ---------- */
+#w-grimsby { --c: #1b2a8c; }
+.gb-wrap { display: grid; grid-template-columns: 380px minmax(0, 1fr); gap: 24px; align-items: start; }
+.gb-pic { position: relative; display: block; width: 380px; height: 260px; border: 1px solid var(--line, rgba(255,255,255,.2)); background: #bfe6fa; overflow: hidden; }
+.gb-pic img { display: block; width: 100%; height: 100%; }
+.gb-pic-wait { position: absolute; inset: 0; display: grid; place-items: center; font-size: 4rem; color: rgba(22, 19, 15, .25); }
+.gb-zzz { position: absolute; right: 26%; top: 14%; font-size: 2.2rem; font-weight: 800; color: #16130f; }
+html[data-mood="titlecard"] .gb-zzz { color: #f2efe8; }
+.gb-text { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.gb-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.gb-name { font-size: 2rem; font-weight: 800; line-height: 1.05; }
+.gb-state { font-size: .75rem; font-weight: 700; padding: 1px 10px; border-radius: 999px; border: 1px solid currentColor; }
+.gb-state.awake { background: var(--c); border-color: var(--c); color: #fff; }
+.gb-doing { margin: 0; font-size: 1.05rem; font-weight: 700; line-height: 1.35; overflow-wrap: anywhere; }
+.gb-where { margin: 0; font-size: .9rem; color: var(--muted); }
+.gb-diary { margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--line-soft, rgba(255,255,255,.12)); display: flex; flex-direction: column; gap: 4px; }
+.gb-label { font-size: .8rem; color: var(--muted); }
+.gb-quote { margin: 0; font-size: 1rem; line-height: 1.45; max-width: 62ch; overflow-wrap: anywhere; }
+.gb-foot { margin-top: auto; padding-top: 8px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.gb-meta { font-size: .8rem; color: var(--muted); }
+.gb-link { font-size: .85rem; font-weight: 700; min-height: 44px; display: inline-flex; align-items: center; }
+@media (prefers-reduced-motion: no-preference) { .gb-pic img { animation: gb-in .6s ease both; } }
+@keyframes gb-in { from { opacity: 0; } to { opacity: 1; } }

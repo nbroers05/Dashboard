@@ -695,3 +695,14 @@ html.nh[data-mood="digital"] .tall.player-thin #lyrics .ly-line { font-size: 1.0
 @media (prefers-reduced-motion: reduce) {
   html.nh body::before { transition: none; }
 }
+
+/* ---------- Grimsby (since 1.9.0): a picture in a paper frame, name in the serif, labels in pixels ---------- */
+html.nh #w-grimsby .gb-pic { border: 1px solid var(--line); box-shadow: var(--shadow-control); }
+html.nh #w-grimsby .gb-name { font-family: var(--font-display); font-weight: 800; color: var(--ink); }
+html.nh #w-grimsby .gb-state { font-family: var(--font-body); color: var(--ink); }
+html.nh #w-grimsby .gb-state.awake { background: var(--titlebar); border-color: var(--line); color: var(--on-eva); }
+html.nh #w-grimsby :is(.gb-label, .gb-meta) { font-family: var(--font-pixel); letter-spacing: .02em; color: var(--nh-muted); }
+html.nh #w-grimsby .gb-where { color: var(--nh-muted); }
+html.nh #w-grimsby .gb-diary { border-top-color: var(--line-soft); }
+html.nh #w-grimsby .gb-zzz { font-family: var(--font-display); }
+html.nh[data-mood="titlecard"] #w-grimsby .gb-pic { border-color: var(--line); box-shadow: none; }

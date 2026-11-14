@@ -30,6 +30,7 @@ window.DASH_HOUSESTYLE = (() => {
     'w-friends': ['friends.exe', '友達'],
     'w-sptop': ['month.exe', '音楽'],
     'w-memory': ['memories.exe', '思い出'],
+    'w-grimsby': ['grimsby.exe', '鳥'],
     'w-checkin': ['checkin.exe', '気分'],
     'w-todo': ['todo.exe', '用事'],
     'w-wishes': ['wishes.exe', '願い'],
