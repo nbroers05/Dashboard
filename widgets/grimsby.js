@@ -4,12 +4,12 @@
 // Light on purpose: not his whole 3D world, only the small cut-out around the place he is now (world/spots/<id>.json,
 // 5-70 KB), drawn once into a picture with three.js. The WebGL context is thrown away right after, so nothing keeps
 // running. The look (colours, moods, the crow) and the choice of place come from his site (look.js, place.js), so the
-// picture always matches the site.
+// picture always matches the site. Data: his public API file data/now.json (where he is, what he does and thinks).
 DASH.widget('w-grimsby', (card, body, guard) => {
   const { h } = DASH;
   const SITE = 'https://nbroers05.github.io/grimsby/';
   const THREE_URL = 'https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js';
-  const SLEEP_AFTER = 2 * 60 * 60 * 1000;           // last run longer ago = the PC is off = he sleeps (same as his site)
+  const STALE_AFTER = 25 * 60 * 1000;               // now.json older than this = the PC is off = he sleeps (same as his site)
   const PIC_W = 380, PIC_H = 260;
   let libs = null, pois = null, data = null, picKey = '', picUrl = '';
 
@@ -18,14 +18,8 @@ DASH.widget('w-grimsby', (card, body, guard) => {
   const clean = (s) => String(s == null ? '' : s).trim();
   const hm = (iso) => new Date(iso).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Amsterdam' });
 
-  function doing(e) {
-    const d = (e && e.detail) || {};
-    if (!e) return 'Just woke up.';
-    if (e.action === 'search') return `Looked up: ${clean(d.query || d.title).toLowerCase()}`;
-    if (e.action === 'diary') return `Wrote about ${clean(d.topic || 'something').toLowerCase()}`;
-    if (e.action === 'draw') return `Drew ${clean(d.title || 'something')}`;
-    return clean(e.line);
-  }
+  const cap = (s) => { s = clean(s); return s.charAt(0).toUpperCase() + s.slice(1); };
+  const moodWord = (m) => (m < -0.5 ? 'miserable' : m < -0.2 ? 'low' : m < 0.05 ? 'flat' : m < 0.25 ? 'fine' : m < 0.5 ? 'pleased' : 'cheerful');
 
   // One still picture of him at his place
   async function picture(place, asleep, action, m) {
@@ -77,11 +71,9 @@ DASH.widget('w-grimsby', (card, body, guard) => {
     }
   }
 
-  function render(asleep, place, P) {
-    const st = data.state || {};
-    const name = clean((st.persona || {}).name) || 'Grimsby';
-    const entry = data.log[data.log.length - 1];
-    const diary = (st.recent_diary || []).slice(-1)[0];
+  function render(asleep, off, place, P) {
+    const now = data.now || {};
+    const name = clean(now.name) || 'Grimsby';
 
     const pic = h('a', 'gb-pic');
     pic.href = SITE; pic.target = '_blank'; pic.rel = 'noopener';
@@ -98,16 +90,20 @@ DASH.widget('w-grimsby', (card, body, guard) => {
     const head = h('div', 'gb-head');
     head.append(h('span', 'gb-name', name), h('span', `gb-state${asleep ? '' : ' awake'}`, asleep ? 'asleep' : 'awake'));
     text.append(head);
-    text.append(h('p', 'gb-doing', asleep ? 'Asleep. The computer was off.' : doing(entry)));
+    text.append(h('p', 'gb-doing', off ? 'Asleep. The computer is off.' : `${cap(now.doing || (asleep ? 'asleep' : 'looking around'))}.`));
     if (place) text.append(h('p', 'gb-where', P.whereText(place, asleep)));
-    if (diary && diary.text) {
+    const quote = !asleep && now.thought ? ['thinking', now.thought] : (now.feeling && now.feeling.words ? ['feeling', now.feeling.words] : null);
+    if (quote && !off) {
       const q = h('div', 'gb-diary');
-      q.append(h('span', 'gb-label', 'from the diary'), h('p', 'gb-quote', clean(diary.text)));
+      q.append(h('span', 'gb-label', quote[0]), h('p', 'gb-quote', clean(quote[1])));
       text.append(q);
     }
     const foot = h('div', 'gb-foot');
-    const mood = clean((st.mood || {}).word);
-    foot.append(h('span', 'gb-meta', [st.last_run ? `last awake ${hm(st.last_run)}` : '', mood && !asleep ? `mood: ${mood}` : ''].filter(Boolean).join(' · ')));
+    const w = now.world || {};
+    foot.append(h('span', 'gb-meta', [
+      off && now.at ? `last awake ${hm(now.at)}` : (w.day ? `his day ${w.day}, ${clean(w.time)}` : ''),
+      !off && now.feeling ? `mood: ${moodWord(now.feeling.mood || 0)}` : '',
+    ].filter(Boolean).join(' · ')));
     const a = h('a', 'gb-link', 'To his site');
     a.href = SITE; a.target = '_blank'; a.rel = 'noopener';
     foot.append(a);
@@ -120,36 +116,33 @@ DASH.widget('w-grimsby', (card, body, guard) => {
 
   async function draw() {
     if (!data) return;
-    const st = data.state || {};
-    const lastRun = st.last_run ? new Date(st.last_run).getTime() : 0;
-    const asleep = !lastRun || Date.now() - lastRun > SLEEP_AFTER;
-    const entry = data.log[data.log.length - 1];
+    const now = data.now || {};
+    const at = now.at ? new Date(now.at).getTime() : 0;
+    const off = !at || Date.now() - at > STALE_AFTER;
+    const asleep = off || !!now.asleep;
     let place = null, P = null;
     try {
       const mods = await load3d();
       P = mods[2];
       if (!pois) pois = (await DASH.getJSON(`${SITE}world/poi.json`)).pois;
-      place = P.placeFor(entry, asleep, pois);
-      const key = `${place.poi && place.poi.id}|${asleep}|${entry && entry.action}|${mood()}`;
+      place = P.placeForNow(now, asleep, pois);
+      const pose = asleep ? null : P.pose(now.action);
+      const key = `${place.poi && place.poi.id}|${asleep}|${pose}|${mood()}`;
       if (key !== picKey && place.poi) {
-        picUrl = await picture(place, asleep, entry && entry.action, mood());
+        picUrl = await picture(place, asleep, pose, mood());
         picKey = key;
       }
     } catch (e) {
       console.warn('[grimsby] no picture, text only', e);   // no WebGL or his site is down: the text still shows
       if (!P) place = null;
     }
-    render(asleep, place, P || { whereText: () => '' });
+    render(asleep, off, place, P || { whereText: () => '' });
   }
 
   const load = guard(async () => {
     try {
       const t = Math.floor(Date.now() / 300000);
-      const [state, log] = await Promise.all([
-        DASH.getJSON(`${SITE}state.json?t=${t}`),
-        DASH.getJSON(`${SITE}log.json?t=${t}`),
-      ]);
-      data = { state, log: (Array.isArray(log) ? log : []).filter((e) => e && e.ok && !e.withheld) };
+      data = { now: await DASH.getJSON(`${SITE}data/now.json?t=${t}`) };
       await draw();
     } catch (e) {
       console.warn('[grimsby]', e);
