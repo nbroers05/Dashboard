@@ -15,6 +15,20 @@
  ],
  "logs": [
   {
+   "title": "Anora",
+   "year": 2024,
+   "rating": 4.5,
+   "watched": "2026-11-14",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/marrie01/film/anora/",
+   "slug": "anora",
+   "tmdbId": "1064213",
+   "poster": "https://image.tmdb.org/t/p/w342/cUS0RCPtK05cZTb3HwgVD3QXsK7.jpg",
+   "user": "Marrie01",
+   "name": "Margriet"
+  },
+  {
    "title": "Trainspotting",
    "year": 1996,
    "rating": 3.5,
@@ -307,20 +321,6 @@
    "poster": "https://a.ltrbxd.com/resized/film-poster/2/6/1/8/9/1/261891-10-cloverfield-lane-0-600-0-900-crop.jpg?v=141f0c7c30",
    "user": "marijn2005",
    "name": "Marijn"
-  },
-  {
-   "title": "The Last House",
-   "year": 2026,
-   "rating": 2.5,
-   "watched": "2026-08-18",
-   "rewatch": false,
-   "liked": false,
-   "link": "https://letterboxd.com/marrie01/film/the-last-house-2026/",
-   "slug": "the-last-house-2026",
-   "tmdbId": "1284041",
-   "poster": "https://a.ltrbxd.com/resized/film-poster/1/1/6/7/6/7/4/1167674-the-last-house-2026-0-600-0-900-crop.jpg?v=cb3208a300",
-   "user": "Marrie01",
-   "name": "Margriet"
   },
   {
    "title": "Hamnet",
