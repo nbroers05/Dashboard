@@ -22,7 +22,7 @@ DASH.widget('w-ah', (card, body, guard) => {
 
   // ---------- Wage ----------
   // Since 0.44.18 the hourly wage and percentages aren't in the public repo anymore but in config.json → ahWage of the
-  // private data archive, read with the archive token (datarepo.js). The last version read is in ah.loon (this browser
+  // private data archive, read with the archive token (datarepo.js). The last version read is in ah.wage (this browser
   // only), so the tile is right straight away. Without a token: hours yes, amounts no. Demo: made-up round numbers.
   // Format (English since 1.7.0; the old Dutch format "ahLoon" is converted by normalize()):
   //   { hourlyWage, allowances: [{ name, days: ['mon'..'sun' | 'holiday'], from: 'HH:MM', to: 'HH:MM', percent }],
@@ -56,8 +56,10 @@ DASH.widget('w-ah', (card, body, guard) => {
     };
   }
   let wageState = DASH.DEMO ? 'demo' : 'loading';   // demo | loading | ok | no-token | error
-  let CFG = parseWage(DASH.DEMO ? DEMO_WAGE : normalize(DASH.store.get('ah.loon')));
-  if (!DASH.DEMO && DASH.store.get('ah.loon')) wageState = 'ok';
+  // Browser key renamed ah.loon → ah.wage in 1.8.1: read the new one, else the old one (kept untouched for one version)
+  const savedWage = DASH.store.get('ah.wage') || DASH.store.get('ah.loon');
+  let CFG = parseWage(DASH.DEMO ? DEMO_WAGE : normalize(savedWage));
+  if (!DASH.DEMO && savedWage) wageState = 'ok';
   function parseWage(l) {
     return {
       wage: Number(l.hourlyWage) || 0,
@@ -81,21 +83,21 @@ DASH.widget('w-ah', (card, body, guard) => {
     if (DASH.DEMO) return;
     // datarepo.js loads after this tile: wait a bit instead of reporting "no token"
     if (!D) { if ((loadWage.tries = (loadWage.tries || 0) + 1) < 40) setTimeout(guard(loadWage), 250); return; }
-    if (!D.token()) { DASH.store.set('ah.loon', null); CFG = parseWage({}); wageState = 'no-token'; return render(); }
+    if (!D.token()) { DASH.store.set('ah.wage', null); DASH.store.set('ah.loon', null); CFG = parseWage({}); wageState = 'no-token'; return render(); }
     try {
       const f = await D.read('config.json');
       const cfg = f ? JSON.parse(f.text) : {};
       const l = normalize(cfg.ahWage || cfg.ahLoon);
       if (!l || l.hourlyWage == null) throw new Error('no ahWage in config.json');
-      DASH.store.set('ah.loon', l);
+      DASH.store.set('ah.wage', l);
       CFG = parseWage(l);
       wageState = 'ok';
       // Phone app (since 1.5.0, Noah's choice): the wage settings also in the dashboard's Supabase (only his account),
       // so the app can calculate the net pay itself. Only on a change. (The old `_telefoon.loon` isn't written since 1.7.1.)
       const json = JSON.stringify(l);
-      if (window.DASH_SB && DASH_SB.linked() && DASH.store.get('ah.loon.pushed') !== json) {
+      if (window.DASH_SB && DASH_SB.linked() && (DASH.store.get('ah.wage.pushed') || DASH.store.get('ah.loon.pushed')) !== json) {
         DASH_SB.flag('_phone.wage', l)
-          .then(() => DASH.store.set('ah.loon.pushed', json)).catch((e) => DASH_SB.fail(e));
+          .then(() => DASH.store.set('ah.wage.pushed', json)).catch((e) => DASH_SB.fail(e));
       }
     } catch (e) {
       console.warn('[ah] wage', e);
