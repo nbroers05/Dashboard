@@ -91,7 +91,7 @@ DASH.widget('w-grimsby', (card, body, guard) => {
     head.append(h('span', 'gb-name', name), h('span', `gb-state${asleep ? '' : ' awake'}`, asleep ? 'asleep' : 'awake'));
     text.append(head);
     text.append(h('p', 'gb-doing', off ? 'Asleep. The computer is off.' : `${cap(now.doing || (asleep ? 'asleep' : 'looking around'))}.`));
-    if (place) text.append(h('p', 'gb-where', P.whereText(place, asleep)));
+    if (place) text.append(h('p', 'gb-where', P.whereNow ? P.whereNow(now, place, asleep) : P.whereText(place, asleep)));
     const quote = !asleep && now.thought ? ['thinking', now.thought] : (now.feeling && now.feeling.words ? ['feeling', now.feeling.words] : null);
     if (quote && !off) {
       const q = h('div', 'gb-diary');
