@@ -1,15 +1,17 @@
 /* ---------- Noah's house style (since 1.2.0) ----------
    Design: the design system "Noah Huisstijl" (claude.ai/artifact/1uHEFBcpmD23vuaQRoQED9). Everything is a window from 2001
    with a file name and a Japanese word in the title bar, blue with red on paper.
-   On via html.nh (Settings › Theme › Style, the default). The mood is on html[data-mood]: digital (morning),
-   poster (afternoon), titlecard (evening); housestyle.js picks it. Window titles come from data-nh-exe / data-nh-kanji (housestyle.js).
+   On via html.nh (Settings › Theme, the default). Two moods on html[data-mood]: digital (Digital Future, by day) and
+   titlecard (Title card, at night); housestyle.js picks it. Since 1.8.0 Digital Future is Digital Future + Poster in one:
+   the sky, cream paper windows with black ink and a hard black shadow, glossy navy title bars, bright blue accents,
+   and every tile its own face (bottom of this file). Window titles come from data-nh-exe / data-nh-kanji (housestyle.js).
    Styles only: layout, order and functions stay the same. Everything starts with html.nh. */
 
 /* ---------- Tokens (from the design system's tokens.json) ---------- */
 html.nh {
   --paper: #efe9dc; --paper-raised: #f8f4ea; --ink: #16130f; --nh-muted: #5e574c;
   --line: #16130f; --line-soft: #d3c9b6;
-  --eva: #1b2a8c; --sky: #8cc0e8; --red: #d7261e; --titlebar: var(--eva);
+  --eva: #1556cf; --sky: #bfe6fa; --red: #de2f1f; --titlebar: #1b2a8c;
   --on-eva: #fff; --ah-c: #00ade6; --on-ah: #04263a; --focus: #d7261e;
   --holiday: var(--holiday-p, var(--red));   /* the theme's holiday color (themes.js sets --holiday-p / --holiday-t), otherwise red */
   --shadow-window: 4px 4px 0 #16130f; --shadow-control: 2px 2px 0 #16130f;
@@ -29,12 +31,6 @@ html.nh {
   --surface-hover: var(--sky);
   --accent: var(--eva);
   color-scheme: light;
-}
-html.nh[data-mood="digital"] {
-  --paper: #eef5fb; --paper-raised: #fff; --ink: #0e2240; --nh-muted: #46576f;
-  --line: #1d4f9e; --line-soft: #c9dbef;
-  --eva: #1556cf; --sky: #bfe6fa; --red: #de2f1f; --focus: #de2f1f;
-  --shadow-window: 0 1px 0 #1d4f9e, 0 10px 24px rgba(21, 86, 207, .18); --shadow-control: 0 1px 0 #1d4f9e;
 }
 html.nh[data-mood="titlecard"] {
   --paper: #0b0b0d; --paper-raised: #141417; --ink: #f2efe8; --nh-muted: #a7a29a;
@@ -59,18 +55,17 @@ html.nh[data-mood="digital"].phone-mode body { background-image: url("housestyle
 /* Title card: black with one thin line */
 html.nh[data-mood="titlecard"] body { background: var(--paper) linear-gradient(var(--line-soft), var(--line-soft)) 0 62% / 100% 1px no-repeat fixed; }
 
-/* Cover color (--tint, from dash.js): Poster a screen-printed patch top right, Digital a glow, Title card a glow at the horizon.
+/* Cover color (--tint, from dash.js): Digital Future a soft glow top right, Title card a glow at the horizon.
    Only touches the desktop, never the windows. */
 html.nh body::before {
-  background: linear-gradient(var(--tint), var(--tint)) right top / 46% 38% no-repeat;
-  mix-blend-mode: multiply;
-  opacity: .55;
+  background: radial-gradient(70% 45% at 85% 0%, var(--tint), transparent 70%);
+  mix-blend-mode: soft-light;
+  opacity: .5;
   transition: background-color 1.2s ease;
 }
-html.nh[data-mood="digital"] body::before { background: radial-gradient(70% 45% at 85% 0%, var(--tint), transparent 70%); opacity: .45; mix-blend-mode: soft-light; }
 html.nh[data-mood="titlecard"] body::before { background: radial-gradient(90% 30% at 50% 100%, var(--tint), transparent 70%); opacity: .5; mix-blend-mode: normal; }
 
-/* Grain over the whole page: strong in Poster and Title card, almost nothing in Digital Future */
+/* Grain over the whole page: almost nothing in Digital Future (4.5%), strong in Title card */
 html.nh body::after {
   content: "";
   position: fixed;
@@ -78,10 +73,9 @@ html.nh body::after {
   z-index: 200;
   pointer-events: none;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-  opacity: .11;
+  opacity: .045;
   mix-blend-mode: multiply;
 }
-html.nh[data-mood="digital"] body::after { opacity: .045; }
 html.nh[data-mood="titlecard"] body::after { opacity: .16; mix-blend-mode: screen; filter: invert(1); }
 
 /* Theme backgrounds and top bar colors don't belong to the house style (a theme may not color the desktop) */
@@ -254,7 +248,7 @@ html.nh .pill-btn { background: var(--red); color: var(--on-eva); border-color: 
 html.nh .w-btn.lb { background: var(--paper-raised); color: var(--ink); }
 html.nh .text-btn { color: var(--nh-muted); text-decoration: underline; text-underline-offset: 3px; }
 html.nh .text-btn:hover { color: var(--ink); }
-html.nh[data-mood="digital"] :is(.w-btn, .pill-btn, .cal-nav-btn) { border-radius: 3px; background: linear-gradient(180deg, #fff 0%, #e4f1fb 100%); }
+html.nh[data-mood="digital"] :is(.w-btn, .pill-btn, .cal-nav-btn) { border-radius: 3px; background: linear-gradient(180deg, #fff 0%, #f8f4ea 50%, #ebe3d0 100%); }
 html.nh[data-mood="digital"] .pill-btn { background: linear-gradient(180deg, rgba(255, 255, 255, .35) 0%, rgba(255, 255, 255, 0) 50%), var(--eva); color: var(--on-eva); }
 html.nh[data-mood="titlecard"] :is(.w-btn, .pill-btn, .cal-nav-btn) { background: transparent; font-family: var(--font-display); font-weight: 800; letter-spacing: .12em; text-transform: uppercase; font-size: .75rem; }
 html.nh[data-mood="titlecard"] .pill-btn { background: var(--red); border-color: var(--red); }
@@ -268,7 +262,7 @@ html.nh .btn.small:hover { background: var(--sky); border-color: var(--line); }
 html.nh .btn.pill { background: var(--eva); color: var(--on-eva); border-color: var(--line); }
 html.nh .btn[aria-pressed="true"], html.nh #repeat:not([data-mode="off"]) { color: var(--red); }
 html.nh .btn.off { opacity: .35; }
-html.nh[data-mood="digital"] .btn { border-radius: 3px; background: linear-gradient(180deg, #fff 0%, #e4f1fb 100%); }
+html.nh[data-mood="digital"] .btn { border-radius: 3px; background: linear-gradient(180deg, #fff 0%, #f8f4ea 50%, #ebe3d0 100%); }
 html.nh[data-mood="digital"] .btn.small { background: transparent; }
 html.nh[data-mood="digital"] .btn.pill { background: linear-gradient(180deg, rgba(255, 255, 255, .35) 0%, rgba(255, 255, 255, 0) 50%), var(--eva); }
 html.nh[data-mood="titlecard"] .btn { background: transparent; }
@@ -607,6 +601,95 @@ html.nh #offline-note { border-radius: 0; background: var(--ink); color: var(--p
 
 /* Empty tiles and errors: a dry sentence in capitals */
 html.nh .w-empty { font-family: var(--font-body); }
+
+/* ---------- Digital Future: every tile its own face (since 1.8.0, the best of the old Y2K style in house-style colors) ----------
+   Only by day (html[data-mood="digital"]); Title card stays plain black windows. Only colors and backgrounds: layout stays. */
+/* Canvas: a notebook page with blue lines and a red margin */
+html.nh[data-mood="digital"] #w-canvas {
+  background:
+    linear-gradient(90deg, transparent 33px, #de2f1f 33px 34px, transparent 34px) 0 0 / 100% 100% no-repeat,
+    repeating-linear-gradient(180deg, transparent 0 27px, #d6e2f2 27px 28px) 0 var(--nh-bar) / 100% 100% no-repeat,
+    #fff;
+  padding-left: 46px !important;
+}
+html.nh[data-mood="digital"] #w-canvas > .eyebrow { margin-left: -46px; }
+html.nh[data-mood="digital"] #w-canvas :is(.cv-item, .ws-item) { border-bottom-color: #d6e2f2; }
+
+/* AH: a spreadsheet in AH blue, the title bar AH blue with dark text (AH is always #00ADE6) */
+html.nh[data-mood="digital"] #w-ah {
+  --paper-raised: #e6f7fd; --ink: #04263a; --nh-muted: #2c5a72; --line-soft: #bfe6fa;
+  background:
+    linear-gradient(90deg, #bfe6fa 1px, transparent 1px) 0 0 / 25% 100%,
+    linear-gradient(#bfe6fa 1px, transparent 1px) 0 calc(var(--nh-bar) - 1px) / 100% 30px,
+    #e6f7fd;
+  color: #04263a;
+}
+html.nh[data-mood="digital"] #w-ah > .eyebrow {
+  --titlebar: #00ade6;
+  color: #04263a;
+  background: var(--nh-ctl) right 8px center / 38px 10px no-repeat, linear-gradient(180deg, rgba(255, 255, 255, .42) 0%, rgba(255, 255, 255, .08) 48%, rgba(0, 0, 0, 0) 52%), #00ade6;
+}
+html.nh[data-mood="digital"] #w-ah .ah-bar .stack { background: #fff; }
+html.nh[data-mood="digital"] #w-ah .ah-bar .p { background: repeating-linear-gradient(45deg, var(--ah-c) 0 3px, #d4f2fb 3px 6px); }
+
+/* Episodes: a dark purple media library */
+html.nh[data-mood="digital"] #w-episodes {
+  --paper-raised: #2a1840; --ink: #f6f0ff; --nh-muted: #d8c8f0; --line-soft: #4a3566;
+  background: #2a1840;
+  color: #f6f0ff;
+}
+html.nh[data-mood="digital"] #w-episodes .ep-cover .img-box { outline: 1px solid #000; box-shadow: 3px 3px 0 #000 !important; }
+
+/* Film tonight: the poster in a dark cinema strip with sprocket holes */
+html.nh[data-mood="digital"] #w-stars .film-poster {
+  border: 10px solid #141417;
+  border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30'%3E%3Crect width='30' height='30' fill='%23141417'/%3E%3Crect x='3' y='12' width='4' height='6' rx='1' fill='%23efe9dc'/%3E%3Crect x='23' y='12' width='4' height='6' rx='1' fill='%23efe9dc'/%3E%3C/svg%3E") 10 round;
+  background-color: #141417;
+}
+
+/* F1: results as a podium, number 1 in gold and highest (not on the laptop/desk, where they are rows) */
+html.nh[data-mood="digital"] .f1-pod { background: #e4dcbc; border: 1px solid var(--line); box-shadow: var(--shadow-control); }
+html.nh[data-mood="digital"] .f1-pod.p1 { background: #e3b938; border-color: var(--line); }
+html.nh[data-mood="digital"] .dashboard:not(.desk) .f1-podium { align-items: end; }
+html.nh[data-mood="digital"] .dashboard:not(.desk) .f1-pod.p1 { order: 2; padding-top: 22px; }
+html.nh[data-mood="digital"] .dashboard:not(.desk) .f1-pod.p2 { order: 1; padding-top: 14px; }
+html.nh[data-mood="digital"] .dashboard:not(.desk) .f1-pod.p3 { order: 3; }
+
+/* Rain alarm: graph paper with square blocks */
+html.nh[data-mood="digital"] :is(.rn-chart, .rn-flat) {
+  border: 1px solid #c9dbef;
+  background-color: #fff;
+  background-image: linear-gradient(#e1ebf6 1px, transparent 1px), linear-gradient(90deg, #e1ebf6 1px, transparent 1px);
+  background-size: 8px 8px;
+  background-position: -1px -1px;
+}
+html.nh[data-mood="digital"] .rn-bar.dry i { background: #c9dbef; }
+
+/* Player: the progress bar in bright blue segments */
+/* (.fill is stretched with scaleX, so the gaps are cut by a mask on the bar itself, which isn't stretched) */
+html.nh[data-mood="digital"] .player .bar::before { height: 2px; margin-top: -1px; }
+html.nh[data-mood="digital"] .player .fill { height: 8px; margin-top: -4px; background: var(--eva); }
+html.nh[data-mood="digital"] .player .bar {
+  -webkit-mask-image: linear-gradient(#000 calc(50% - 4px), transparent calc(50% - 4px), transparent calc(50% + 4px), #000 calc(50% + 4px)), repeating-linear-gradient(90deg, #000 0 14px, transparent 14px 18px);
+  mask-image: linear-gradient(#000 calc(50% - 4px), transparent calc(50% - 4px), transparent calc(50% + 4px), #000 calc(50% + 4px)), repeating-linear-gradient(90deg, #000 0 14px, transparent 14px 18px);
+}
+
+/* Lyrics: a yellow notepad; the lines scroll along with the text and every lyric line sits on a line */
+html.nh[data-mood="digital"] #lyrics { --ly-h: 40px; background: #fff7c2; }
+html.nh[data-mood="digital"] .tall.player-thin #lyrics { --ly-h: 30px; }
+html.nh[data-mood="digital"] #lyrics .ly-scroll {
+  background: repeating-linear-gradient(180deg, transparent 0 calc(var(--ly-h) - 1px), #eadb8f calc(var(--ly-h) - 1px) var(--ly-h)) local;
+  padding-block: round(down, 35%, var(--ly-h));
+  padding-inline: 14px 10px;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+html.nh[data-mood="digital"] #lyrics .ly-scroll.plain { padding-block: 0; }
+html.nh[data-mood="digital"] #lyrics .ly-line { margin: 0; line-height: var(--ly-h); transform: none; color: #9a8f5a; }
+html.nh[data-mood="digital"] #lyrics .ly-line.past { color: #6b6347; }
+html.nh[data-mood="digital"] #lyrics .ly-line.now { color: var(--ink); }
+html.nh[data-mood="digital"] #lyrics .ly-scroll.plain .ly-line { color: #2b2820; }
+html.nh[data-mood="digital"] .tall.player-thin #lyrics .ly-line { font-size: 1.05rem; }
 
 /* ---------- Reduce motion ---------- */
 @media (prefers-reduced-motion: reduce) {

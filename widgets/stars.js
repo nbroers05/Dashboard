@@ -202,7 +202,7 @@ DASH.widget('w-stars', async (card, body, guard) => {
       h('div', 'w-mid', f.film),
       h('div', 'w-sub', [f.jaar, f.regisseur].filter(Boolean).join(' · ')),
       h('div', 'film-stars', stars(f.p)),
-      h('div', 'w-sub', `verwacht ${dec(f.p, 2)} · crowd ${dec(f.crowd, 2)}`),
+      h('div', 'w-sub', `predicted ${dec(f.p, 2)} · crowd ${dec(f.crowd, 2)}`),
     );
     const actions = h('div', 'film-actions');
     const lb = h('a', 'w-btn lb', 'Letterboxd ↗');

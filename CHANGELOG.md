@@ -4,6 +4,12 @@ Every dashboard version, newest first, one table per day. Version is `1.MINOR.PA
 Everything before 1.0.0 (versions 1 to 0.60.2): `docs/archive/CHANGELOG-pre-1.0.md`.
 
 
+## 14 November 2026
+
+| Version | What |
+|---|---|
+| 1.8.0 | **Digital Future** (big idea). Digital Future and Poster are now one daytime mood called Digital Future: sky background, cream paper windows with black ink and a hard black shadow, glossy navy title bars, bright blue accents, almost no grain. Every tile gets its own face (Canvas a notebook, AH a spreadsheet in AH blue, Episodes a dark purple library, Film a cinema strip, F1 a podium, rain on graph paper, a segmented player bar, lyrics on a yellow notepad). Y2K and Poster are removed (`y2k.css` is gone). Settings › Theme › Look has three buttons: Digital Future, Title card and Legacy (the old Modern); on the portrait screen "Follow the sun" (on by default) switches between Digital Future by day and Title card at night. Old saved settings are converted: Poster → Digital Future, Y2K → Digital Future, Modern → Legacy. The laptop and desk default is now Digital Future. Test links: `?mood=digital\|titlecard`, `?style=legacy\|housestyle`. Last Dutch leftovers in My data and the film tile are English. |
+
 ## 13 November 2026
 
 | Version | What |

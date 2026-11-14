@@ -1,16 +1,16 @@
 'use strict';
 // Noah's house style (since 1.2.0, big idea "House style"; design: the design system "Noah Huisstijl" on claude.ai).
 // Styles live in housestyle.css under html.nh; this file does two things:
-// 1. Pick the mood (html[data-mood]): on the portrait screen automatically with the sun (sunrise to 12:00 Digital Future,
-//    12:00 to sunset Poster, after that Title card), elsewhere Poster (phone in dark mode: Title card).
-//    Settings › Theme › Mood fixes it; so does ?mood=digital|poster|titlecard (for that tab, to test).
+// 1. Pick the mood (html[data-mood]): Digital Future or Title card. On the portrait screen "Follow the sun" (on by default)
+//    switches them: sunrise to sunset Digital Future, after that Title card. Elsewhere Digital Future.
+//    Settings › Theme fixes one; so does ?mood=digital|titlecard (for that tab, to test).
 // 2. Give every tile a window title: file name + Japanese word as data attributes, CSS draws the title bar.
 // Sunrise/sunset: from the weather tile (DASH_WEATHER, Open-Meteo), otherwise calculated for Rotterdam.
 window.DASH_HOUSESTYLE = (() => {
   const root = document.documentElement;
   const params = new URLSearchParams(location.search);
-  const urlMood = /^(digital|poster|titlecard)$/.test(params.get('mood') || '') ? params.get('mood') : null;
-  const NAMES = { digital: 'Digital Future', poster: 'Poster', titlecard: 'Title card' };
+  const urlMood = /^(digital|titlecard)$/.test(params.get('mood') || '') ? params.get('mood') : null;
+  const NAMES = { digital: 'Digital Future', titlecard: 'Title card' };
 
   // Tile → [file name, Japanese word]. Words from the list in the design system (README › Japanese decoration)
   const WINDOWS = {
@@ -37,7 +37,7 @@ window.DASH_HOUSESTYLE = (() => {
   };
 
   // ---------- Holidays and seasons (design system › Holidays, since 1.4.0) ----------
-  // Per theme: mark (Japanese word for the day), holiday color for Poster/Digital Future and for Title card, corner, garland.
+  // Per theme: mark (Japanese word for the day), holiday color for Digital Future and for Title card, corner, garland.
   // themes.js uses this in the house style instead of its own colors, emoji and colored decoration.
   const HOLIDAY = {
     christmas: { mark: '聖夜', color: '#1f6b45', titleColor: '#3fae74', corner: 'snow', garland: true },
@@ -94,7 +94,7 @@ window.DASH_HOUSESTYLE = (() => {
     try { s = JSON.parse(localStorage.getItem('theme.settings') || '{}') || {}; } catch {}
     return s;
   };
-  const savedMood = () => { const s = settings(), m = s.mood || s.stand; return m === 'titel' ? 'titlecard' : m; };
+  const savedMood = () => settings().mood;   // old values were converted at the top of index.html
   // The chosen style is html.nh-want (themes.js and the script in the head). html.nh = really on: not on the phone
   // (≤ 700px); the phone has its own house-style app.
   const active = () => root.classList.contains('nh');
@@ -129,23 +129,19 @@ window.DASH_HOUSESTYLE = (() => {
   const phone = () => matchMedia('(max-width: 700px)').matches;
   function byTime(now = new Date()) {
     const { rise, set } = sunToday(now), t = now.getTime();
-    const noon = new Date(now); noon.setHours(12, 0, 0, 0);
-    if (t >= rise && t < noon.getTime()) return 'digital';
-    if (t >= noon.getTime() && t < set) return 'poster';
-    return 'titlecard';
+    return t >= rise && t < set ? 'digital' : 'titlecard';
   }
   function choose() {
     if (urlMood) return urlMood;
     const pick = savedMood();
     if (pick && pick !== 'auto' && NAMES[pick]) return pick;
     if (tall()) return byTime();
-    if (phone() && matchMedia('(prefers-color-scheme: dark)').matches) return 'titlecard';
-    return 'poster';
+    return 'digital';
   }
   function describe() {
     const now = new Date(), s = sunToday(now), f = (ms) => new Date(ms).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
     const pick = savedMood();
-    const why = urlMood ? 'via the link' : (pick && pick !== 'auto') ? 'fixed' : tall() ? `sunrise ${f(s.rise)}, sunset ${f(s.set)}` : 'laptop and phone';
+    const why = urlMood ? 'via the link' : (pick && pick !== 'auto') ? 'fixed' : tall() ? `sunrise ${f(s.rise)}, sunset ${f(s.set)}` : 'laptop and desk';
     return `${NAMES[choose()]} (${why})`;
   }
 
@@ -183,7 +179,7 @@ window.DASH_HOUSESTYLE = (() => {
       root.dataset.mood = mood;
       last = mood;
       const meta = document.querySelector('meta[name="theme-color"]');
-      if (meta) meta.content = { digital: '#eef5fb', poster: '#efe9dc', titlecard: '#0b0b0d' }[mood];
+      if (meta) meta.content = { digital: '#b9def3', titlecard: '#0b0b0d' }[mood];
       window.dispatchEvent(new CustomEvent('dash:mood', { detail: { mood } }));
     }
     label();
@@ -196,5 +192,5 @@ window.DASH_HOUSESTYLE = (() => {
   // Media cards arrive later (widgets/media.js): keep watching
   new MutationObserver(() => { if (active()) label(); }).observe(document.getElementById('media-stack') || document.body, { childList: true });
 
-  return { refresh, choose, describe, byTime, sunToday, NAMES, HOLIDAY, cornerSvg, garlandSvg, plain, active };
+  return { refresh, choose, describe, byTime, sunToday, NAMES, HOLIDAY, cornerSvg, garlandSvg, plain, active, tall };
 })();

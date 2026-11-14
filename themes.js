@@ -108,7 +108,8 @@ window.DASH_THEMES = (() => {
   const kind = (name, def) => { kinds[name] = def; };
 
   // ---------- Settings ----------
-  // style: 'housestyle' (default since 1.2.0, housestyle.css + housestyle.js), 'modern' or 'y2k'; mood: 'auto' | 'digital' | 'poster' | 'titlecard'
+  // style: 'housestyle' (default, housestyle.css + housestyle.js) or 'legacy' (the old plain look, style.css only);
+  // mood: 'auto' (= "Follow the sun" on the portrait screen, Digital Future elsewhere) | 'digital' | 'titlecard'
   const DEFAULTS = { choice: 'auto', all: true, particles: true, deco: true, topbar: true, bg: true, weather: true, fx: true, amount: 'normal', serif: true, style: 'housestyle', mood: 'auto' };
   const AMOUNT = { calm: { parts: 10, deco: 0.5 }, normal: { parts: 30, deco: 1 }, party: { parts: 60, deco: 1.6 } };
   // Settings saved before 1.2.0 always have style: 'modern' (the old default) without styleV: those go to the house style.
@@ -118,6 +119,7 @@ window.DASH_THEMES = (() => {
     const saved = store.get('theme.settings') || {}, s = { ...DEFAULTS, ...saved };
     if (saved.stand && !saved.mood) s.mood = saved.stand;
     for (const k of ['style', 'mood', 'amount']) if (OLD[s[k]]) s[k] = OLD[s[k]];
+    if (s.style !== 'legacy') s.style = 'housestyle';   // Y2K and Modern were converted at the top of index.html (1.8.0)
     if (window.DASH_OLD_THEME_IDS && DASH_OLD_THEME_IDS[s.choice]) s.choice = DASH_OLD_THEME_IDS[s.choice];
     delete s.stand;
     if (saved.styleV !== 2) s.style = 'housestyle';
@@ -135,12 +137,11 @@ window.DASH_THEMES = (() => {
   // Serif digits (big numbers in a serif face, html.serif-nums): separate from "All effects", applied right at load
   const serif = () => root.classList.toggle('serif-nums', settings().serif !== false);
   serif();
-  // Style (html.y2k, styles in y2k.css): separate from the theme, so seasons and holidays keep working. ?style=y2k|modern to test
-  const urlStyle = /^(y2k|modern|housestyle)$/.test(params.get('style') || '') ? params.get('style') : null;
+  // Look (house style or Legacy): separate from the theme, so seasons and holidays keep working. ?style=legacy|housestyle to test
+  const urlStyle = /^(legacy|housestyle)$/.test(params.get('style') || '') ? params.get('style') : null;
   const style = () => {
     const st = urlStyle || settings().style;
-    root.classList.toggle('y2k', st === 'y2k');
-    root.classList.toggle('nh-want', st === 'housestyle');   // housestyle.js sets html.nh (not on the phone)
+    root.classList.toggle('nh-want', st !== 'legacy');   // housestyle.js sets html.nh (not on the phone)
     window.DASH_HOUSESTYLE?.refresh();
     window.dispatchEvent(new Event('resize'));   // window borders and title bars change sizes: let the layouts measure again
   };
@@ -828,31 +829,47 @@ window.DASH_THEMES = (() => {
     const head = (text) => el.append(h('p', 'th-set-h', text));
     const f = forced();
 
-    head('Style');
-    const styleRow = h('div', 'th-sw th-amount');
-    const styleSeg = h('div', 'seg');
-    for (const [k, label] of [['housestyle', 'House style'], ['modern', 'Modern'], ['y2k', 'Y2K (2003)']]) {
-      const b = h('button', null, label);
+    // Look: three buttons with a small preview (1.8.0). Picking one fixes it; "Follow the sun" (portrait screen only)
+    // switches between Digital Future (sunrise to sunset) and Title card by itself.
+    head('Look');
+    const look = s.style === 'legacy' ? 'legacy' : s.mood === 'titlecard' ? 'titlecard' : 'digital';
+    const sunOn = s.style !== 'legacy' && (s.mood || 'auto') === 'auto';
+    const looks = h('div', 'th-looks');
+    for (const [k, label] of [['digital', 'Digital Future'], ['titlecard', 'Title card'], ['legacy', 'Legacy']]) {
+      const b = h('button', `th-look th-look-${k}`);
       b.type = 'button';
-      b.setAttribute('aria-pressed', String(s.style === k));
-      b.onclick = () => change('style', k);
-      styleSeg.append(b);
+      b.setAttribute('aria-pressed', String(look === k && !(sunOn && window.DASH_HOUSESTYLE?.tall())));
+      const pv = h('span', 'th-look-pv');
+      pv.setAttribute('aria-hidden', 'true');
+      pv.append(h('i'), h('i'));
+      b.append(pv, h('span', 'th-look-name', label));
+      b.onclick = () => {
+        const v = settings();
+        v.style = k === 'legacy' ? 'legacy' : 'housestyle';
+        if (k !== 'legacy') v.mood = k;
+        v.styleV = 2;
+        store.set('theme.settings', v);
+        style(); refresh(); redraw();
+      };
+      looks.append(b);
     }
-    styleRow.append(h('span', 'th-sw-txt', 'Look of the tiles'), styleSeg);
-    el.append(styleRow);
-    if (s.style === 'housestyle') {
-      const moodRow = h('div', 'th-sw th-amount'), moodSeg = h('div', 'seg');
-      for (const [k, label] of [['auto', 'Automatic'], ['digital', 'Digital Future'], ['poster', 'Poster'], ['titlecard', 'Title card']]) {
-        const b = h('button', null, label);
-        b.type = 'button';
-        b.setAttribute('aria-pressed', String((s.mood || 'auto') === k));
-        b.onclick = () => change('mood', k);
-        moodSeg.append(b);
-      }
-      const moodTxt = h('span', 'th-sw-txt', 'Mood');
-      if (window.DASH_HOUSESTYLE) moodTxt.append(h('small', null, `now: ${window.DASH_HOUSESTYLE.describe()}`));
-      moodRow.append(moodTxt, moodSeg);
-      el.append(moodRow);
+    el.append(looks);
+    if (window.DASH_HOUSESTYLE?.tall()) {
+      const row = h('label', 'th-sw th-sun');
+      const box = h('input');
+      box.type = 'checkbox';
+      box.checked = sunOn;
+      box.onchange = () => {
+        const v = settings();
+        if (box.checked) { v.style = 'housestyle'; v.mood = 'auto'; } else v.mood = look === 'titlecard' ? 'titlecard' : 'digital';
+        v.styleV = 2;
+        store.set('theme.settings', v);
+        style(); refresh(); redraw();
+      };
+      const txt = h('span', 'th-sw-txt', 'Follow the sun');
+      txt.append(h('small', null, sunOn && window.DASH_HOUSESTYLE ? `Digital Future by day, Title card at night · now: ${window.DASH_HOUSESTYLE.describe()}` : 'Digital Future by day, Title card at night'));
+      row.append(box, txt);
+      el.append(row);
     }
     if (urlStyle) el.append(h('p', 'th-set-note', `Fixed by the link right now (?style=${urlStyle}).`));
 

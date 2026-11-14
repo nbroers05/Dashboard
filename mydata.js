@@ -957,7 +957,7 @@
     const n = Object.values(src).filter((s) => s.rows > 0).length;
     const up = data.index.updated ? new Date(data.index.updated) : null;
     const upText = up ? (up.toDateString() === new Date().toDateString() ? DASH.fmtTime(up) : `${up.getDate()} ${MONTHS[up.getMonth()]} ${DASH.fmtTime(up)}`) : '?';
-    meta0.textContent = `${fmtDate(r.from)} – ${fmtDate(r.to)} · bijgewerkt ${upText} · ${n} bronnen${DASH.DEMO ? ' · DEMO: verzonnen cijfers' : ''}`;
+    meta0.textContent = `${fmtDate(r.from)} – ${fmtDate(r.to)} · updated ${upText} · ${n} sources${DASH.DEMO ? ' · DEMO: made-up numbers' : ''}`;
     page.classList.toggle('md-demo', DASH.DEMO);
     charts = [];
     for (const [f, t] of [[renderCoverage, T.cov], [renderKpis, null], [renderWatch, T.watch], [renderPlaces, T.places], [renderCheck, T.check],

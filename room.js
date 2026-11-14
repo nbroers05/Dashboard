@@ -5,7 +5,7 @@
 //   landscape = the corner of the room; zoom in until the CRT fills the height, the dashboard's sides slide off screen
 //   portrait  = sitting at the desk; zoom in until the CRT fills the width, then the picture tilts a quarter turn
 //   phone     = by the bed (≤ 700px wide, portrait); the flip phone flips open and its little screen grows to the whole screen
-// During the transition the screen shows a fixed drawing of the dashboard in Y2K style (drawDash); after that the real one.
+// During the transition the screen shows a fixed drawing of the dashboard in a retro look (drawDash); after that the real one.
 (() => {
   const root = document.documentElement;
   const params = new URLSearchParams(location.search);
@@ -158,7 +158,7 @@
     if (said === key) type(text);
   }
 
-  // ---------- Fixed drawing of the dashboard (Y2K) ----------
+  // ---------- Fixed drawing of the dashboard (retro look) ----------
   // The same rough layout as the real dashboard in that mode: windows with a blue title bar on a blue desktop.
   function drawDash(W, H, m) {
     const c = document.createElement('canvas');

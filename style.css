@@ -1715,6 +1715,28 @@ html.th-still .th-bulb, html.th-still .th-deco, html.th-still .th-deco * { anima
 /* Theme tab (themes.js) */
 .th-set-h { margin: 14px 0 8px; font-size: .85rem; font-weight: 700; color: rgba(255, 255, 255, .85); }
 .th-set-h:first-child { margin-top: 4px; }
+/* Look (Settings › Theme, 1.8.0): three buttons with a small drawn preview; the chosen one gets a bright blue border */
+.th-looks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin: 4px 0 10px; }
+.th-look { display: flex; flex-direction: column; gap: 8px; min-width: 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: center; cursor: pointer; }
+.th-look-pv { position: relative; display: block; aspect-ratio: 16 / 10; overflow: hidden; border: 3px solid transparent; outline: 1px solid #16130f; box-shadow: 3px 3px 0 #16130f; }
+.th-look:hover .th-look-pv { border-color: color-mix(in srgb, #1556cf 45%, transparent); }
+.th-look[aria-pressed="true"] .th-look-pv { border-color: #1556cf; }
+.th-look-name { font-size: .9rem; }
+.th-look[aria-pressed="true"] .th-look-name { color: #1556cf; font-weight: 700; }
+.th-look-pv i { position: absolute; display: block; }
+.th-look-digital .th-look-pv { background: linear-gradient(#7fb6e6, #b9def3 55%, #e9f3f8); }
+.th-look-digital .th-look-pv i:first-child { left: 13%; top: 17%; width: 74%; height: 52%; background: #f8f4ea; border: 1px solid #16130f; border-top: 9px solid #1b2a8c; box-shadow: 3px 3px 0 #16130f; }
+.th-look-titlecard .th-look-pv { background: #0b0b0d; }
+.th-look-titlecard .th-look-pv i:first-child { left: 0; right: 0; top: 62%; height: 1px; background: #2a2a30; }
+.th-look-titlecard .th-look-pv i:last-child { left: 0; right: 0; top: 34%; color: #f2efe8; font: 800 .72rem/1 "Shippori Mincho B1", Georgia, serif; letter-spacing: .16em; font-style: normal; }
+.th-look-titlecard .th-look-pv i:last-child::before { content: "TITLE CARD"; }
+.th-look-legacy .th-look-pv { background: #3a2422; }
+.th-look-legacy .th-look-pv i { top: 18%; width: 37%; height: 62%; border-radius: 10px; }
+.th-look-legacy .th-look-pv i:first-child { left: 10%; background: #2c4a66; }
+.th-look-legacy .th-look-pv i:last-child { left: 53%; background: #5a2a2a; }
+.th-sun { display: flex; align-items: center; justify-content: flex-start; gap: 10px; cursor: pointer; text-align: left; }
+.th-sun input { width: 18px; height: 18px; accent-color: #1556cf; flex: none; }
+.th-sun small { display: block; color: var(--muted); font-size: .8rem; }
 .th-auto { display: flex; flex-direction: column; gap: 2px; width: 100%; padding: 10px 14px; border: 2px solid transparent; border-radius: 12px; background: rgba(255, 255, 255, .06); text-align: left; cursor: pointer; }
 .th-auto span { color: var(--muted); font-size: .8rem; line-height: 1.35; }
 .th-auto[aria-pressed="true"] { border-color: var(--st); background: color-mix(in srgb, var(--st) 16%, #1c1a22); }
