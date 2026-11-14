@@ -1,11 +1,11 @@
 {
- "day": "2026-11-13",
+ "day": "2026-11-14",
  "sources": [
   "LantarenVenster"
  ],
  "skipped": {
-  "KINO Rotterdam": "robots.txt van kinorotterdam.nl verbiedt het ophalen van /filmladder",
-  "Pathé": "pathe.nl weigert verzoeken van een GitHub Action (403)"
+  "KINO Rotterdam": "robots.txt of kinorotterdam.nl forbids fetching /filmladder",
+  "Pathé": "pathe.nl refuses requests from a GitHub Action (403)"
  },
  "films": [
   {
@@ -856,20 +856,6 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/filmconcert-metropolis/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
-   "title": "Filmcursus: Rewind: hoe filmmakers spelen met tijd en perspectief",
-   "key": "filmcursusrewindhoefilmmakersspelenmettijdenperspectief",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/filmcursus-rewind-hoe-filmmakers-spelen-met-tijd-en-perspectief/",
      "day": null,
      "next": null,
      "until": null
@@ -1857,20 +1843,6 @@
    ]
   },
   {
-   "title": "Salsa aan de haven",
-   "key": "salsaaandehaven",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/salsa-aan-de-haven-4/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
    "title": "Salvation",
    "key": "salvation",
    "poster": null,
@@ -2118,7 +2090,7 @@
      "url": "https://www.lantarenvenster.nl/programma/the-devils-1971/",
      "day": null,
      "next": null,
-     "until": null
+     "until": "2026-11-18"
     }
    ]
   },
