@@ -1,6 +1,7 @@
 'use strict';
 
-// A simple to-do list (shared between devices via Supabase since 1.1.0, otherwise only in this browser).
+// A simple to-do list (shared between devices via Supabase since 1.1.0, live within a second or two since 1.10.0;
+// otherwise only in this browser). On the portrait screen since 1.10.0, between Notifications and Steps.
 // Type and press Enter to add; circle = check off; double-click the text = edit; × = remove.
 DASH.widget('w-todo', (card, body, guard) => {
   const { h, store } = DASH;
@@ -67,7 +68,7 @@ DASH.widget('w-todo', (card, body, guard) => {
       text.title = 'Double-click to edit';
       text.ondblclick = () => edit(text, t);
       const del = h('button', 'td-del', '×');
-      del.setAttribute('aria-label', `Verwijder "${t.text}"`);
+      del.setAttribute('aria-label', `Remove "${t.text}"`);
       del.onclick = () => { save(load().filter((x) => x.id !== t.id)); render(); };
       li.append(check, text, del);
       return li;
@@ -84,8 +85,17 @@ DASH.widget('w-todo', (card, body, guard) => {
     }
   }
 
+  // A change from elsewhere: redraw, but not in the middle of editing a task here (then right after)
+  let waiting = false;
+  function fromElsewhere() {
+    if (list.querySelector('[contenteditable="true"]')) {
+      if (!waiting) { waiting = true; list.addEventListener('focusout', () => { waiting = false; setTimeout(render, 0); }, { once: true }); }
+      return;
+    }
+    render();
+  }
   // Another tab with the dashboard? Then update here too
-  window.addEventListener('storage', guard((e) => { if (e.key === KEY) render(); }));
-  window.addEventListener('dash:synced', guard((e) => { if (e.detail.key === KEY) render(); }));   // from another device (sync.js)
+  window.addEventListener('storage', guard((e) => { if (e.key === KEY) fromElsewhere(); }));
+  window.addEventListener('dash:synced', guard((e) => { if (e.detail.key === KEY) fromElsewhere(); }));   // from another device, live (sync.js)
   render();
 });

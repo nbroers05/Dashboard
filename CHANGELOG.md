@@ -4,6 +4,12 @@ Every dashboard version, newest first, one table per day. Version is `1.MINOR.PA
 Everything before 1.0.0 (versions 1 to 0.60.2): `docs/archive/CHANGELOG-pre-1.0.md`.
 
 
+## 16 November 2026
+
+| Version | What |
+|---|---|
+| 1.10.0 | **Live to-do.** The to-do list is the same everywhere within a second or two: a change (on the website or in the phone app 0.9.0) sends a small ping over Supabase Realtime, and every open dashboard fetches the new list right away instead of waiting up to 5 minutes. The ping holds no data, only "todo changed". If the live connection drops it comes back by itself, and the 5-minute round stays as a safety net. A live update never interrupts a task you are editing. **To-do on the portrait screen** again: between Notifications and Steps. |
+
 ## 14 November 2026
 
 | Version | What |

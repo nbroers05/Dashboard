@@ -157,7 +157,7 @@ window.DASH_SB = (() => {
       if (!applying && SHARED.includes(k) && this === window.localStorage) { stamp(k); schedulePush(); }
     };
   }
-  function schedulePush() { clearTimeout(pushTimer); pushTimer = setTimeout(() => syncSettings().catch(fail), 1500); }
+  function schedulePush() { clearTimeout(pushTimer); pushTimer = setTimeout(() => syncSettings().catch(fail), 300); }
 
   async function syncSettings() {
     const remote = await rest(`dashboard_settings?select=key,value,updated_at&key=in.(${SHARED.map((k) => `"${k}"`).join(',')})`);
@@ -187,7 +187,10 @@ window.DASH_SB = (() => {
       }
     }
     put(STAMPS, st);
-    if (up.length) await upsert('dashboard_settings', up, 'user_id,key');
+    if (up.length) {
+      await upsert('dashboard_settings', up, 'user_id,key');
+      ping(up.map((r) => r.key));   // tell the other devices right away (live.connect below)
+    }
     for (const key of changed) window.dispatchEvent(new CustomEvent('dash:synced', { detail: { key } }));
   }
 
@@ -210,6 +213,62 @@ window.DASH_SB = (() => {
     return true;
   }
 
+  // ---------- Live (since 1.10.0) ----------
+  // Supabase Realtime "broadcast": a small ping on a channel of our own, no table setup needed. The ping holds no data,
+  // only which keys changed; whoever hears it fetches the real values with its own login (syncSettings).
+  // The phone app sends the same ping after it writes the to-do (Dash.kt). If the connection drops it comes back by itself;
+  // the 5-minute tick below stays as a safety net.
+  const ME = Math.random().toString(36).slice(2, 10);   // this tab, so it ignores its own ping
+  const topic = () => `dash-sync-${userId()}`;
+  async function ping(keys) {
+    try {
+      const s = await token();
+      await fetch(`${URL_}/realtime/v1/api/broadcast`, {
+        method: 'POST',
+        headers: { apikey: cfg.anonKey, Authorization: `Bearer ${s.access}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: [{ topic: topic(), event: 'changed', payload: { keys, from: ME } }] }),
+      });
+    } catch {}
+  }
+  const live = (() => {
+    let ws = null, ref = 0, beat = null, retry = 0, retryTimer = null, joinedAs = null;
+    const send = (m) => { try { ws.send(JSON.stringify({ ...m, ref: String(++ref) })); } catch {} };
+    async function connect() {
+      if (!linked() || (ws && ws.readyState <= 1)) return;
+      clearTimeout(retryTimer);
+      let s;
+      try { s = await token(); } catch { return later(); }
+      ws = new WebSocket(`${URL_.replace(/^http/, 'ws')}/realtime/v1/websocket?apikey=${encodeURIComponent(cfg.anonKey)}&vsn=1.0.0`);
+      ws.onopen = () => {
+        joinedAs = `realtime:${topic()}`;
+        send({ topic: joinedAs, event: 'phx_join', join_ref: '1',
+          payload: { config: { broadcast: { self: false, ack: false }, presence: { key: '' }, postgres_changes: [], private: false }, access_token: s.access } });
+        clearInterval(beat);
+        beat = setInterval(async () => {
+          send({ topic: 'phoenix', event: 'heartbeat', payload: {} });
+          // Keep the login on the channel fresh (the access token lasts an hour)
+          try { const t = await token(); send({ topic: joinedAs, event: 'access_token', payload: { access_token: t.access } }); } catch {}
+        }, 25000);
+      };
+      ws.onmessage = (e) => {
+        let m; try { m = JSON.parse(e.data); } catch { return; }
+        if (m.event === 'phx_reply' && m.topic === joinedAs && m.payload && m.payload.status === 'ok') { retry = 0; tick(); }   // (re)joined: catch up
+        if (m.event === 'broadcast' && m.payload && m.payload.event === 'changed') {
+          const p = m.payload.payload || {};
+          if (p.from !== ME) tick();
+        }
+      };
+      ws.onclose = () => { clearInterval(beat); ws = null; later(); };
+      ws.onerror = () => { try { ws.close(); } catch {} };
+    }
+    function later() {
+      clearTimeout(retryTimer);
+      retry = Math.min(retry + 1, 6);
+      retryTimer = setTimeout(connect, [2, 5, 10, 30, 60, 120][retry - 1] * 1000);
+    }
+    return { connect };
+  })();
+
   // ---------- Ritme ----------
   function fail(e) {
     const offline = !navigator.onLine || e instanceof TypeError;
@@ -220,9 +279,12 @@ window.DASH_SB = (() => {
   if (configured) {
     document.addEventListener('DOMContentLoaded', () => {
       setTimeout(tick, 800);
+      setTimeout(live.connect, 1500);
       DASH.every(5 * 60 * 1000, tick);
-      addEventListener('online', tick);
-      document.addEventListener('visibilitychange', () => { if (!document.hidden) tick(); });
+      addEventListener('online', () => { tick(); live.connect(); });
+      addEventListener('dash:wake', () => { tick(); live.connect(); });
+      addEventListener('dash:sb-linked', live.connect);
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) { tick(); live.connect(); } });
     });
   }
 

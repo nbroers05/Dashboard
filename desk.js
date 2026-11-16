@@ -184,15 +184,13 @@
         remember(ids);
         put(weather, ['w-weather', 'w-rain']);
         put(row3, [weather, 'w-f1', 'w-ah']);
-        put(row2, ['w-canvas', 'w-alerts', 'w-health']);
+        put(row2, ['w-canvas', 'w-alerts', 'w-todo', 'w-health']);
         thin(store.get(THIN_KEY) === true);
         const memory = $('w-memory'), grimsby = $('w-grimsby');   // grab before moving: rot isn't in the page yet, so $() wouldn't find them
         rot.prepend(...ROT.map($).filter(Boolean));
         if (memory) memory.hidden = false;
         if (grimsby) grimsby.hidden = false;
         put(hidden, ['w-mail']);
-        // To-do off tall (0.59.0, 1.0 plan); the to-do tile still loads (desk/phone)
-        put(hidden, ['w-todo']);
         put(drawer, ['w-checkin', 'w-wishes']);
         moreList.textContent = 'Check-in · Wishes';
         if ($('version')) moreBar.append($('version'));   // version on the right in the More bar, like in desk
