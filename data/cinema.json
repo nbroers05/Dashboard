@@ -1,5 +1,5 @@
 {
- "day": "2026-11-15",
+ "day": "2026-11-16",
  "sources": [
   "LantarenVenster"
  ],
@@ -317,20 +317,6 @@
    ]
   },
   {
-   "title": "Boekpresentatie: Healing is a vibe door Mike Bindraban",
-   "key": "boekpresentatiehealingisavibedoormikebindraban",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/boekpresentatie-healing-is-a-vibe-door-mike-bindraban/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
    "title": "Camembert (Family Quiz)",
    "key": "camembertfamilyquiz",
    "poster": null,
@@ -425,20 +411,6 @@
      "day": null,
      "next": null,
      "until": null
-    }
-   ]
-  },
-  {
-   "title": "Cinemini: Vreemde Vissen",
-   "key": "cineminivreemdevissen",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/cinemini-vreemde-vissen/",
-     "day": null,
-     "next": null,
-     "until": "2026-11-15"
     }
    ]
   },
@@ -1024,20 +996,6 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/jasper-hoibys-3elements/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
-   "title": "Jazz Yoga",
-   "key": "jazzyoga",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/jazz-yoga-winter26/",
      "day": null,
      "next": null,
      "until": null
@@ -1843,20 +1801,6 @@
    ]
   },
   {
-   "title": "Shaun het Schaap: Het Beest van de Boerderij (6+)",
-   "key": "shaunhetschaaphetbeestvandeboerderij6",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/shaun-het-schaap-het-beest-van-de-boerderij/",
-     "day": null,
-     "next": null,
-     "until": "2026-11-15"
-    }
-   ]
-  },
-  {
    "title": "Shutter Island (2010)",
    "key": "shutterisland2010",
    "poster": null,
@@ -1878,20 +1822,6 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/sietepe/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
-   "title": "SML",
-   "key": "sml",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/sml/",
      "day": null,
      "next": null,
      "until": null
@@ -2329,20 +2259,6 @@
      "day": null,
      "next": null,
      "until": "2026-11-18"
-    }
-   ]
-  },
-  {
-   "title": "Wild Horse Nine - Film&Ontbijt",
-   "key": "wildhorseninefilmandontbijt",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/wild-horse-nine-filmontbijt/",
-     "day": null,
-     "next": null,
-     "until": "2026-11-15"
     }
    ]
   },
