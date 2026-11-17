@@ -4,6 +4,12 @@
    "name": "NOS",
    "items": [
     {
+     "title": "Costa Ricaanse journalist op klaarlichte dag doodgeschoten",
+     "link": "https://nos.nl/l/2639816",
+     "time": "2026-11-17T05:19:53+01:00",
+     "img": "https://images.cdn.nos.nl/6/F/u/W/g/z/mT1QjoppufqLFDdbY6Ejs4Udvcgucw15Ao7HgDY/8x240x3984x2241-1024x576.webp"
+    },
+    {
      "title": "Elf Grammy-nominaties voor Britse zangeres Raye, ook mijlpaal voor Beyoncé",
      "link": "https://nos.nl/l/2639815",
      "time": "2026-11-17T03:30:32+01:00",
@@ -86,12 +92,6 @@
      "link": "https://nos.nl/l/2639760",
      "time": "2026-11-16T19:06:47+01:00",
      "img": "https://images.cdn.nos.nl/5/E/D/1/D/n/E6H7nC5fZU3izhp3gZt1U6nHGEfoaKMxRutLpa1/0x0x1920x1080-1024x576.webp"
-    },
-    {
-     "title": "Belasting op vermogen splijt kabinet: dit veranderde er nog meer aan het belastingplan",
-     "link": "https://nos.nl/l/2639750",
-     "time": "2026-11-16T18:03:16+01:00",
-     "img": "https://images.cdn.nos.nl/4/E/i/a/g/5/EMd8XK2n8T28Tt3jM1gfBkGgrFsw7svUwhui6xt/0x17x4000x2250-1024x576.webp"
     }
    ]
   },
@@ -194,6 +194,18 @@
    "name": "NU.nl",
    "items": [
     {
+     "title": "Woede en verbijstering na afgang Oranje: 'Ik snap wel dat Xavi in shock is'",
+     "link": "https://www.nu.nl/voetbal/6416817/woede-en-verbijstering-na-afgang-oranje-ik-snap-wel-dat-xavi-in-shock-is.html",
+     "time": "2026-11-17T05:05:58+01:00",
+     "img": "https://images.nu.nl/m/bffxdp2a9ckx_sqr256/0/0/4206/4206/woede-en-verbijstering-na-afgang-oranje-ik-snap-wel-dat-xavi-in-shock-is.jpg"
+    },
+    {
+     "title": "Bedrijven hebben door krapte nu al moeite om AI-specialisten aan te trekken",
+     "link": "https://www.nu.nl/economie/6416740/bedrijven-hebben-door-krapte-nu-al-moeite-om-ai-specialisten-aan-te-trekken.html",
+     "time": "2026-11-17T05:01:45+01:00",
+     "img": "https://images.nu.nl/m/my6xgalaaffa_sqr256/643/0/3333/3333/bedrijven-hebben-door-krapte-nu-al-moeite-om-ai-specialisten-aan-te-trekken.jpg"
+    },
+    {
      "title": "Grote Amerikaanse datacentra stoten evenveel CO2 uit als heel Denemarken",
      "link": "https://www.nu.nl/economie/6416790/grote-amerikaanse-datacentra-stoten-evenveel-co2-uit-als-heel-denemarken.html",
      "time": "2026-11-16T23:01:19+01:00",
@@ -270,18 +282,6 @@
      "link": "https://www.nu.nl/buitenland/6416795/israelische-politie-start-intern-onderzoek-na-berichten-verkiezingsmanipulatie.html",
      "time": "2026-11-16T19:16:25+01:00",
      "img": "https://images.nu.nl/m/83rx7bjaqixp_sqr256/775/0/4000/4000/israelische-politie-start-intern-onderzoek-na-berichten-verkiezingsmanipulatie.jpg"
-    },
-    {
-     "title": "Dinsdag drukke ochtendspits verwacht: 'Alle ingrediënten zijn aanwezig'",
-     "link": "https://www.nu.nl/binnenland/6416780/dinsdag-drukke-ochtendspits-verwacht-alle-ingredienten-zijn-aanwezig.html",
-     "time": "2026-11-16T19:04:42+01:00",
-     "img": "https://images.nu.nl/m/h8jx1f1ax11s_sqr256/0/0/4000/4000/dinsdag-drukke-ochtendspits-verwacht-alle-ingredienten-zijn-aanwezig.jpg"
-    },
-    {
-     "title": "Live | Voetbal | Oranje krijgt een pijnlijke 5-0-nederlaag om de oren in Duitsland",
-     "link": "https://www.nu.nl/voetbal/6416774/voetbal-oranje-krijgt-een-pijnlijke-5-0-nederlaag-om-de-oren-in-duitsland.html",
-     "time": "2026-11-16T19:02:58+01:00",
-     "img": "https://images.nu.nl/m/svzxvmta3aq2_sqr256/485/2/2853/2853/voetbal-oranje-krijgt-een-pijnlijke-5-0-nederlaag-om-de-oren-in-duitsland.jpg"
     }
    ]
   }
