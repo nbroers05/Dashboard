@@ -1,5 +1,5 @@
 {
- "day": "2026-11-16",
+ "day": "2026-11-17",
  "sources": [
   "LantarenVenster"
  ],
@@ -88,7 +88,7 @@
      "url": "https://www.lantarenvenster.nl/programma/all-of-a-sudden/",
      "day": null,
      "next": null,
-     "until": "2026-11-18"
+     "until": "2026-11-22"
     }
    ]
   },
@@ -102,7 +102,7 @@
      "url": "https://www.lantarenvenster.nl/programma/amarga-navidad/",
      "day": null,
      "next": null,
-     "until": "2026-11-18"
+     "until": "2026-11-25"
     }
    ]
   },
@@ -452,7 +452,7 @@
      "url": "https://www.lantarenvenster.nl/programma/club-kid/",
      "day": null,
      "next": null,
-     "until": "2026-11-18"
+     "until": "2026-11-25"
     }
    ]
   },
@@ -466,7 +466,7 @@
      "url": "https://www.lantarenvenster.nl/programma/coward/",
      "day": null,
      "next": null,
-     "until": "2026-11-17"
+     "until": "2026-11-21"
     }
    ]
   },
@@ -746,7 +746,7 @@
      "url": "https://www.lantarenvenster.nl/programma/fatherland/",
      "day": null,
      "next": null,
-     "until": "2026-11-20"
+     "until": "2026-11-25"
     }
    ]
   },
@@ -900,7 +900,7 @@
      "url": "https://www.lantarenvenster.nl/programma/het-geheim-van-hotel-new-york/",
      "day": null,
      "next": null,
-     "until": "2026-11-17"
+     "until": "2026-12-02"
     }
    ]
   },
@@ -1017,6 +1017,20 @@
    ]
   },
   {
+   "title": "Jeff Buckley performed by Slow Pilot",
+   "key": "jeffbuckleyperformedbyslowpilot",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/the-songs-of-jeff-buckley-performed-by-slow-pilot/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "Jelle x Tarang x TIIGRI",
    "key": "jellextarangxtiigri",
    "poster": null,
@@ -1038,6 +1052,34 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/jeremy-ledbetter-trio/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Jimmy Rosenberg - de vader, de zoon & het talent",
+   "key": "jimmyrosenbergdevaderdezoonandhettalent",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/jimmy-rosenberg-de-vader-de-zoon-het-talent/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Jimmy Rosenberg Trio + David Bamps",
+   "key": "jimmyrosenbergtriodavidbamps",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/jimmy-rosenberg-trio-david-bamps/",
      "day": null,
      "next": null,
      "until": null
@@ -1213,13 +1255,27 @@
    ]
   },
   {
-   "title": "La Bola Negra",
-   "key": "labolanegra",
+   "title": "La Bola Negra - Film&Kerstontbijt",
+   "key": "labolanegrafilmandkerstontbijt",
    "poster": null,
    "shows": [
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/la-bola-negra/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "La La Land (2016) - 10th Anniversary",
+   "key": "lalaland201610thanniversary",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/la-la-land-2016-10th-anniversary/",
      "day": null,
      "next": null,
      "until": null
@@ -1236,7 +1292,7 @@
      "url": "https://www.lantarenvenster.nl/programma/laatbloeier/",
      "day": null,
      "next": null,
-     "until": "2026-11-18"
+     "until": "2026-11-25"
     }
    ]
   },
@@ -1390,7 +1446,7 @@
      "url": "https://www.lantarenvenster.nl/programma/maspalomas/",
      "day": null,
      "next": null,
-     "until": "2026-11-18"
+     "until": "2026-11-24"
     }
    ]
   },
@@ -1530,7 +1586,7 @@
      "url": "https://www.lantarenvenster.nl/programma/naza/",
      "day": null,
      "next": null,
-     "until": "2026-11-18"
+     "until": "2026-11-24"
     }
    ]
   },
@@ -1656,7 +1712,7 @@
      "url": "https://www.lantarenvenster.nl/programma/queen-at-sea/",
      "day": null,
      "next": null,
-     "until": "2026-11-18"
+     "until": "2026-11-25"
     }
    ]
   },
@@ -1668,6 +1724,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/queen-at-sea-aanschuiftafel/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Queer Cinema x Queer Rotterdam – 8 femmes (2002)",
+   "key": "queercinemaxqueerrotterdam8femmes2002",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/queer-cinema-x-queer-rotterdam-8-femmes-2002/",
      "day": null,
      "next": null,
      "until": null
@@ -1731,20 +1801,6 @@
    ]
   },
   {
-   "title": "Rond de Zwarte Zee",
-   "key": "ronddezwartezee",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/rond-de-zwarte-zee/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
    "title": "Roosbeef",
    "key": "roosbeef",
    "poster": null,
@@ -1782,7 +1838,7 @@
      "url": "https://www.lantarenvenster.nl/programma/salvation/",
      "day": null,
      "next": null,
-     "until": "2026-11-18"
+     "until": "2026-11-25"
     }
    ]
   },
@@ -1829,6 +1885,20 @@
    ]
   },
   {
+   "title": "Singin' in the Rain (1952)",
+   "key": "singinintherain1952",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/singin-in-the-rain-1952/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "Sneakpreview",
    "key": "sneakpreview",
    "poster": null,
@@ -1838,7 +1908,7 @@
      "url": "https://www.lantarenvenster.nl/programma/sneakpreview/",
      "day": null,
      "next": null,
-     "until": "2026-11-16"
+     "until": "2026-11-23"
     }
    ]
   },
@@ -1950,7 +2020,7 @@
      "url": "https://www.lantarenvenster.nl/programma/the-cycle-of-love/",
      "day": null,
      "next": null,
-     "until": "2026-11-18"
+     "until": "2026-11-25"
     }
    ]
   },
@@ -1992,7 +2062,7 @@
      "url": "https://www.lantarenvenster.nl/programma/the-devils-1971/",
      "day": null,
      "next": null,
-     "until": "2026-11-18"
+     "until": "2026-11-23"
     }
    ]
   },
@@ -2137,6 +2207,20 @@
    ]
   },
   {
+   "title": "Time and Water - Film&Ontbijt",
+   "key": "timeandwaterfilmandontbijt",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/time-and-water-filmontbijt/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "Tomeka Reid Quartet",
    "key": "tomekareidquartet",
    "poster": null,
@@ -2172,6 +2256,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/vanwyck/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Vincen García",
+   "key": "vincengarcia",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/vincen-garcia-rotterdam/",
      "day": null,
      "next": null,
      "until": null
@@ -2244,7 +2342,7 @@
      "url": "https://www.lantarenvenster.nl/programma/wicker/",
      "day": null,
      "next": null,
-     "until": "2026-11-18"
+     "until": "2026-11-21"
     }
    ]
   },
@@ -2258,7 +2356,7 @@
      "url": "https://www.lantarenvenster.nl/programma/wild-horse-nine/",
      "day": null,
      "next": null,
-     "until": "2026-11-18"
+     "until": "2026-11-25"
     }
    ]
   },
@@ -2300,7 +2398,21 @@
      "url": "https://www.lantarenvenster.nl/programma/youri/",
      "day": null,
      "next": null,
-     "until": "2026-11-18"
+     "until": "2026-11-24"
+    }
+   ]
+  },
+  {
+   "title": "Youri - Film&Ontbijt",
+   "key": "yourifilmandontbijt",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/youri-filmontbijt/",
+     "day": null,
+     "next": null,
+     "until": null
     }
    ]
   },
