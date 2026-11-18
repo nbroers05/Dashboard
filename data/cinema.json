@@ -1,5 +1,5 @@
 {
- "day": "2026-11-17",
+ "day": "2026-11-18",
  "sources": [
   "LantarenVenster"
  ],
@@ -117,20 +117,6 @@
      "day": null,
      "next": null,
      "until": null
-    }
-   ]
-  },
-  {
-   "title": "Andiamo a bere l'ultima",
-   "key": "andiamoaberelultima",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/andiamo-a-bere-lultima/",
-     "day": null,
-     "next": null,
-     "until": "2026-11-17"
     }
    ]
   },
@@ -467,6 +453,20 @@
      "day": null,
      "next": null,
      "until": "2026-11-21"
+    }
+   ]
+  },
+  {
+   "title": "Daan Kluwer Quintet",
+   "key": "daankluwerquintet",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/daan-kluwer-quintet/",
+     "day": null,
+     "next": null,
+     "until": null
     }
    ]
   },
@@ -821,6 +821,48 @@
    ]
   },
   {
+   "title": "Filmcursus: Europese Cinema",
+   "key": "filmcursuseuropesecinema",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/filmcursus-europese-cinema-2/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Filmcursus: Filmanalyse",
+   "key": "filmcursusfilmanalyse",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/filmcursus-filmanalyse/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Filmcursus: Rewind: hoe filmmakers spelen met tijd en perspectief",
+   "key": "filmcursusrewindhoefilmmakersspelenmettijdenperspectief",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/filmcursus-rewind-hoe-filmmakers-spelen-met-tijd-en-perspectief/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "Fjord - Film&Ontbijt",
    "key": "fjordfilmandontbijt",
    "poster": null,
@@ -856,20 +898,6 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/foret-ivre/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
-   "title": "FROM TIKTOK TO CINEMA AWARDS",
-   "key": "fromtiktoktocinemaawards",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/from-tiktok-to-cinema-awards/",
      "day": null,
      "next": null,
      "until": null
@@ -1223,20 +1251,6 @@
      "day": null,
      "next": null,
      "until": null
-    }
-   ]
-  },
-  {
-   "title": "Klara and the Sun",
-   "key": "klaraandthesun",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/klara-and-the-sun/",
-     "day": null,
-     "next": null,
-     "until": "2026-11-17"
     }
    ]
   },
@@ -2130,6 +2144,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/the-siege-of-paradise-expat-cinema-rotterdam/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "The Very Merry Music & Film Pubquiz",
+   "key": "theverymerrymusicandfilmpubquiz",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/the-very-merry-music-film-pubquiz/",
      "day": null,
      "next": null,
      "until": null
