@@ -15,6 +15,20 @@
  ],
  "logs": [
   {
+   "title": "Requiem for a Dream",
+   "year": 2000,
+   "rating": 4.0,
+   "watched": "2026-11-19",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/marrie01/film/requiem-for-a-dream/",
+   "slug": "requiem-for-a-dream",
+   "tmdbId": "641",
+   "poster": "https://image.tmdb.org/t/p/w342/9BTwsLaMVHOGFlmsSlx5QYCaXb.jpg",
+   "user": "Marrie01",
+   "name": "Margriet"
+  },
+  {
    "title": "Anora",
    "year": 2024,
    "rating": 4.5,
@@ -221,20 +235,6 @@
    "slug": "the-curious-case-of-benjamin-button",
    "tmdbId": "4922",
    "poster": "https://a.ltrbxd.com/resized/sm/upload/yh/ob/ip/lw/gjMR102u5hPdIAWX7O2rim8ZWgA-0-600-0-900-crop.jpg?v=3beffc5097",
-   "user": "Marrie01",
-   "name": "Margriet"
-  },
-  {
-   "title": "The Odyssey",
-   "year": 2026,
-   "rating": 4.5,
-   "watched": "2026-09-27",
-   "rewatch": false,
-   "liked": false,
-   "link": "https://letterboxd.com/marrie01/film/the-odyssey-2026/",
-   "slug": "the-odyssey-2026",
-   "tmdbId": "1368337",
-   "poster": "https://a.ltrbxd.com/resized/film-poster/1/2/5/5/3/9/4/1255394-the-odyssey-2026-0-600-0-900-crop.jpg?v=1eed046d0c",
    "user": "Marrie01",
    "name": "Margriet"
   },
