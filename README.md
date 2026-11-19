@@ -100,7 +100,6 @@ Daily copy of the Canvas checks to the archive: in a terminal in `dashboard-data
 ## 12. Apps
 
 - **Phone**: the Android app "Dashboard" (in `dashboard-app/android`), see its README.
-- **Windows**: download `…_x64-setup.exe` from https://github.com/nbroers05/dashboard-app/releases. Windows says "Windows protected your PC": **More info** → **Run anyway**. Log in once with your passphrase.
 
 ## 13. Testing locally
 

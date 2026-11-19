@@ -3,6 +3,12 @@
 Every dashboard version, newest first, one table per day. Version is `1.MINOR.PATCH` (big request = MINOR, small fix = PATCH).
 Everything before 1.0.0 (versions 1 to 0.60.2): `docs/archive/CHANGELOG-pre-1.0.md`.
 
+## 19 November 2026
+
+| Version | What |
+|---|---|
+| 1.10.1 | **Cleanup.** The Windows app is retired (the phone app is the only app): its title bar (`appbar.js`) and the `?app=pc` handling are gone. **Grimsby is paused**: he is out of the rotating tile and the loading list (his file `widgets/grimsby.js` stays so he can come back). |
+
 
 ## 16 November 2026
 

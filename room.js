@@ -1,5 +1,5 @@
 // Room as a start screen (big idea "Room as start screen", step 1: block room with the three transitions; parked).
-// Always starts in the app (html.app), in the browser only with ?room. Not with ?mini, ?code (the Spotify login returns),
+// Only starts with ?room (parked; the Windows app that started it was retired 19-11-2026). Not with ?mini, ?code (the Spotify login returns),
 // #dashboard or another deep address, minimal mode, or without WebGL. The dashboard simply loads underneath.
 // One room, three cameras, picked by the shape of the screen:
 //   landscape = the corner of the room; zoom in until the CRT fills the height, the dashboard's sides slide off screen
@@ -11,7 +11,7 @@
   const params = new URLSearchParams(location.search);
   const SKIP_HASH = /^#(dashboard|feeds|mydata|games|canvas|agenda|checkin)/;
   const minimal = (() => { try { return JSON.parse(localStorage.getItem('dash.minimal')) === true; } catch { return false; } })();
-  const want = (root.classList.contains('app') || params.has('room'))
+  const want = params.has('room')
     && !params.has('mini') && !params.has('code') && !SKIP_HASH.test(location.hash) && !minimal;
   if (!want) return;
   const gl = (() => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch { return false; } })();
