@@ -32,7 +32,9 @@ window.DASH_HOUSESTYLE = (() => {
     'w-memory': ['memories.exe', '思い出'],
     'w-grimsby': ['grimsby.exe', '鳥'],
     'w-checkin': ['checkin.exe', '気分'],
-    'w-todo': ['todo.exe', '用事'],
+    'w-todo': ['tasks.exe', '用事'],
+    'w-day': ['day.exe', '日々'],
+    'w-rhythm': ['rhythm.exe', '律動'],
     'w-wishes': ['wishes.exe', '願い'],
     'calendar': ['agenda.exe', '予定'],
   };

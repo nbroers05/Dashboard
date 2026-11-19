@@ -741,11 +741,12 @@ window.DASH_PHONE = (() => {
   function enter({ remember, put, dash }) {
     active = true;
     const ids = ['media-stack', 'lyrics', 'calendar', 'version', 'w-weather', 'w-rain', 'w-ah', 'w-canvas', 'w-alerts', 'w-mail', 'w-todo', 'w-checkin', 'w-wishes',
-      'w-stars', 'w-letterboxd', 'w-friends', 'w-episodes', 'w-f1', 'w-sptop', 'w-health'];
+      'w-stars', 'w-letterboxd', 'w-friends', 'w-episodes', 'w-f1', 'w-sptop', 'w-health', 'w-day', 'w-rhythm'];
     remember(ids);
     panes.today.replaceChildren(chips, today);
-    panes.agenda.replaceChildren(header('Planner', agSeg), agNav, strip, agList);
-    put(panes.agenda, ['calendar']);
+    panes.agenda.replaceChildren(header('Planner'));
+    put(panes.agenda, ['w-day', 'w-rhythm']);
+    put(hidden, ['calendar']);
     panes.media.replaceChildren(header('Media'), mediaChips);
     put(panes.media, ['media-stack', 'lyrics']);
     panes.media.append(filmTabs);

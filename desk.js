@@ -144,13 +144,13 @@
   const MODES = {
     desk: {
       enter() {
-        const ids = ['media-stack', 'calendar', 'version', 'w-weather', 'w-rain', 'w-alerts', 'w-ah', 'w-canvas', 'w-f1', 'w-episodes', 'w-stars', 'w-letterboxd', 'w-friends', 'w-mail', 'w-todo', 'w-wishes', 'w-health', 'w-sptop', 'w-checkin'];
+        const ids = ['media-stack', 'calendar', 'version', 'w-weather', 'w-rain', 'w-alerts', 'w-ah', 'w-canvas', 'w-f1', 'w-episodes', 'w-stars', 'w-letterboxd', 'w-friends', 'w-mail', 'w-todo', 'w-wishes', 'w-health', 'w-sptop', 'w-checkin', 'w-day', 'w-rhythm'];
         remember(ids);
         put(weather, ['w-weather', 'w-rain']);
         put(tabs, TABS.map(([id]) => id));
-        put(hidden, ['w-checkin', 'w-wishes']);
+        put(hidden, ['w-checkin', 'w-wishes', 'w-rhythm', 'calendar']);   // the agenda keeps loading (parked); day.exe takes its place
         put(left, [weather, 'w-alerts', 'w-ah']);
-        put(mid, ['media-stack', 'calendar']);
+        put(mid, ['media-stack', 'w-day']);
         put(right, ['w-canvas', 'w-f1', 'w-episodes', tabs]);
         dash.append(left, mid, right, hidden);
         setTab(store.get(TAB_KEY) || 'w-stars');
@@ -166,7 +166,7 @@
     },
     tall: {
       enter() {
-        const ids = ['w-weather', 'w-rain', 'w-f1', 'w-ah', 'w-canvas', 'w-alerts', 'w-health', ...ROT, 'w-mail', 'w-todo', 'w-wishes', 'w-checkin', 'version'];
+        const ids = ['w-weather', 'w-rain', 'w-f1', 'w-ah', 'w-canvas', 'w-alerts', 'w-health', ...ROT, 'w-mail', 'w-todo', 'w-wishes', 'w-checkin', 'version', 'calendar', 'w-day', 'w-rhythm'];
         remember(ids);
         put(weather, ['w-weather', 'w-rain']);
         put(row3, [weather, 'w-f1', 'w-ah']);
@@ -175,9 +175,9 @@
         const memory = $('w-memory');   // grab before moving: rot isn't in the page yet, so $() wouldn't find them
         rot.prepend(...ROT.map($).filter(Boolean));
         if (memory) memory.hidden = false;
-        put(hidden, ['w-mail', 'w-checkin', 'w-wishes']);
         const before = $('calendar');
-        [row3, row2, rot].forEach((el) => dash.insertBefore(el, before));
+        [row3, row2, rot, $('w-day')].filter(Boolean).forEach((el) => dash.insertBefore(el, before));
+        put(hidden, ['w-mail', 'w-checkin', 'w-wishes', 'w-rhythm', 'calendar']);
         dash.append(hidden);
         if (window.DASH_RAIL) DASH_RAIL.enter(dash, 'tall');   // dock at the bottom (rail.js)
         buildDots();

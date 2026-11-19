@@ -2620,7 +2620,7 @@ html.desk-mode body:not(.minimal) .topbar :is(.tb-feeds, .tb-mydata, .tb-setting
 .ag-layer { position: fixed; top: 120px; left: 68px; right: 12px; bottom: 12px; z-index: 4; display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 12px; min-height: 0; animation: fd-in .35s ease; }
 .ag-layer[hidden] { display: none; }
 .ag-layer #calendar { min-height: 0; }
-.ag-layer #w-todo { min-height: 0; overflow: auto; }
+.ag-layer #w-todo { min-height: 0; }
 body.agenda-open .dashboard > :not(.topbar, .ag-layer) { opacity: 0 !important; pointer-events: none; }
 body.agenda-open .tall-rot > .tile { visibility: hidden !important; }
 
@@ -2818,3 +2818,92 @@ body.minimal .rail > .version { display: none; }
 .ph-tab-icon { width: 40px; }
 .ph-tab-label { font-size: .64rem; }
 html.phone-mode body:not(.minimal) :is(.feeds-page, .md-page, .gm-page) { bottom: calc(60px + env(safe-area-inset-bottom)); }
+
+/* ---------- Planner v2 (1.12.0): day.exe, tasks.exe, rhythm.exe ---------- */
+#w-day { --c: #5b8def; }
+#w-rhythm { --c: #7d5bd0; }
+#w-day > .w-body { display: flex; flex-direction: column; gap: 6px; min-height: 0; flex: 1; }
+.dx-head { display: flex; align-items: center; gap: 8px; }
+.dx-title { flex: 1; min-width: 0; font-weight: 700; font-size: .98rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dx-nav { width: 28px; height: 28px; border: 1px solid var(--line, rgba(255, 255, 255, .18)); background: none; color: inherit; font: inherit; font-size: 1.1rem; line-height: 1; cursor: pointer; border-radius: 8px; }
+.dx-nav[hidden] { display: none; }
+.dx-seg { display: flex; border: 1px solid var(--line, rgba(255, 255, 255, .18)); border-radius: 8px; overflow: hidden; }
+.dx-seg button { border: 0; background: none; color: inherit; font: inherit; font-size: .8rem; padding: 5px 12px; cursor: pointer; opacity: .7; }
+.dx-seg button[aria-pressed="true"] { background: var(--c); color: #fff; opacity: 1; }
+.dx-meta { margin: 0; font-size: .78rem; color: var(--muted, #999); }
+.dx-scroll { flex: 1; min-height: 0; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin; position: relative; }
+#w-day:not(.dx-fit) .dx-scroll { max-height: 640px; }
+.dx-allday { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 0 6px 46px; }
+.dx-chip { font-size: .76rem; padding: 2px 8px; border-radius: 99px; background: color-mix(in srgb, var(--c) 22%, transparent); }
+.dx-grid { display: flex; position: relative; }
+.dx-gutter { position: relative; flex: none; width: 42px; }
+.dx-gutter span { position: absolute; left: 0; transform: translateY(-.5em); font-size: .68rem; color: var(--muted, #999); font-variant-numeric: tabular-nums; }
+.dx-col { position: relative; flex: 1; min-width: 0; border-left: 1px solid var(--line, rgba(255, 255, 255, .14)); background-image: linear-gradient(to bottom, rgba(128, 128, 128, .18) 1px, transparent 1px); background-size: 100% var(--hr, 42px); }
+.dx-ev { position: absolute; box-sizing: border-box; padding: 3px 7px; overflow: hidden; border-left: 4px solid var(--ec, var(--c)); background: color-mix(in srgb, var(--ec, var(--c)) 20%, var(--paper-raised, #222)); font-size: .8rem; line-height: 1.2; display: flex; flex-direction: column; gap: 1px; border-radius: 4px; }
+.dx-ev b { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dx-ev span { font-size: .72rem; opacity: .8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dx-col.compact .dx-ev { font-size: .68rem; padding: 1px 4px; border-left-width: 3px; }
+.dx-ah { background: var(--ah-c, #00ADE6) !important; border-left-color: var(--ah-c, #00ADE6); color: #fff; }
+.dx-gym { border-left-color: #3fae74; }
+.dx-sug { border: 2px dashed #3fae74; border-left-width: 2px; background: color-mix(in srgb, #3fae74 12%, transparent); }
+.dx-act { display: flex; gap: 6px; margin-top: auto; }
+.dx-act button { border: 1px solid currentColor; background: none; color: inherit; font: inherit; font-size: .72rem; padding: 1px 8px; border-radius: 6px; cursor: pointer; }
+.dx-go { background: #3fae74 !important; border-color: #3fae74 !important; color: #fff !important; }
+.dx-col.compact .dx-sug .dx-act { gap: 3px; }
+.dx-col.compact .dx-sug span { display: none; }
+.dx-line { position: absolute; left: 0; right: 0; height: 0; border-top: 1px dashed var(--red, #e5484d); pointer-events: none; z-index: 1; }
+.dx-line span { position: absolute; right: 4px; top: -.95em; font-size: .66rem; color: var(--red, #e5484d); background: var(--paper-raised, rgba(20, 20, 24, .85)); padding: 0 4px; }
+.dx-now { position: absolute; left: 0; right: 0; border-top: 2px solid #e5484d; z-index: 2; pointer-events: none; }
+.dx-weekgrid .dx-daycol { flex: 1; min-width: 0; }
+.dx-dayhead { height: 22px; font-size: .72rem; text-align: center; font-weight: 700; }
+.dx-daycol.today .dx-dayhead { color: var(--c); }
+.dx-weekgrid .dx-col { border-left: 1px solid var(--line, rgba(255, 255, 255, .14)); }
+/* tasks */
+.td-adddate { flex: none; width: 36px; padding: 0; border: 1px solid var(--line, rgba(255, 255, 255, .18)); border-radius: 8px; background: none; color: inherit; font: inherit; font-size: .72rem; }
+.td-quick .td-adddate { width: auto; padding: 6px; }
+.td-quick form { display: grid; gap: 10px; min-width: min(420px, 80vw); padding: 16px; }
+.td-quick input:not([type="date"]) { font: inherit; padding: 9px 10px; border-radius: 8px; border: 1px solid var(--line, rgba(255, 255, 255, .2)); background: none; color: inherit; }
+.td-group { margin: 8px 0 2px; font-size: .68rem; font-weight: 750; letter-spacing: .08em; text-transform: uppercase; color: var(--muted, #999); }
+.td-due { flex: none; border: 0; background: none; color: var(--muted, #999); font: inherit; font-size: .72rem; cursor: pointer; padding: 2px 4px; }
+.td-due.empty { opacity: 0; }
+.td-item:hover .td-due.empty, .td-due:focus-visible { opacity: .8; }
+.td-due.canvas { cursor: pointer; }
+.td-pick { position: absolute; width: 0; height: 0; opacity: 0; pointer-events: none; }
+.td-item { position: relative; }
+.td-canvas { cursor: pointer; }
+.td-cdot { flex: none; width: 22px; text-align: center; font-size: .85rem; }
+/* rhythm */
+.rh-head { margin: 0 0 4px; font-size: .78rem; color: var(--muted, #999); }
+.rh-nights { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.rh-night { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.rh-bar { width: 100%; height: 54px; display: flex; align-items: flex-end; }
+.rh-bar i { display: block; width: 100%; border-radius: 3px 3px 0 0; }
+.rh-bar i.ok { background: #3fae74; height: 6px; }
+.rh-bar i.late { background: #e5484d; }
+.rh-val { font-size: .68rem; font-variant-numeric: tabular-nums; min-height: 1em; }
+.rh-day { font-size: .66rem; color: var(--muted, #999); }
+.rh-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; font-size: .86rem; flex-wrap: wrap; }
+.rh-label { color: var(--muted, #999); font-size: .78rem; min-width: 5.5em; }
+.rh-pips { display: flex; gap: 4px; }
+.rh-pips i { width: 14px; height: 14px; border-radius: 3px; border: 1.5px solid #3fae74; }
+.rh-pips i.on { background: #3fae74; }
+.rh-pips i.plan { background: repeating-linear-gradient(45deg, #3fae74 0 3px, transparent 3px 6px); }
+.rh-foot { margin-top: 8px; }
+/* layout: Today tab (desk/tall), Planner tab */
+.desk #w-day { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; }
+.desk #w-day .dx-scroll { max-height: none; }
+.tall #w-day { grid-column: 1 / -1; }
+.tall #w-day .dx-scroll { max-height: 560px; }
+.ag-layer #w-day { min-height: 0; display: flex; flex-direction: column; }
+.ag-layer #w-day .dx-scroll { max-height: none !important; }
+.ag-side { display: flex; flex-direction: column; gap: 12px; min-height: 0; overflow: auto; }
+.ag-side > .tile { flex: none; }
+.ag-side #w-todo .td-list { max-height: none; }
+html.tall-mode body:not(.minimal) .ag-layer { grid-template-rows: minmax(0, 1.4fr) minmax(0, 1fr); }
+html.tall-mode body:not(.minimal) .ag-layer #w-todo { max-height: none; }
+.phone .ph-pane[data-tab="agenda"] #w-day, .phone .ph-pane[data-tab="agenda"] #w-rhythm { margin-bottom: 12px; }
+.phone .ph-pane[data-tab="agenda"] #w-day .dx-scroll { max-height: 60dvh; }
+.td-add .td-adddate { display: none; }
+.ag-side .td-add .td-adddate { display: block; }
+.phone .dx-scroll { overflow-x: auto; }
+.phone .dx-weekgrid { min-width: 720px; }

@@ -96,27 +96,30 @@ window.DASH_RAIL = (() => {
   const layer = h('section', 'ag-layer');
   layer.setAttribute('aria-label', 'Planner');
   layer.hidden = true;
-  let calHome = null, todoHome = null, todoWasHidden = false, pushed = false;
+  let calHome = null, moved = [], pushed = false;
   const placeLayer = () => {
     const bar = $('#topbar');
     if (bar) layer.style.top = `${Math.round(bar.getBoundingClientRect().bottom + 10)}px`;
   };
   function setAgenda(open, fromHash) {
     if (!active) return;
-    const cal = document.getElementById('calendar');
+    const cal = document.getElementById('w-day');
     if (open === !layer.hidden || !cal) return;
     if (open) {
       window.dispatchEvent(new CustomEvent('dash:page', { detail: 'agenda' }));
-      calHome = { parent: cal.parentElement, next: cal.nextSibling };
       layer.hidden = false;
-      layer.append(cal);
-      const todo = document.getElementById('w-todo');
-      if (todo) {
-        todoHome = { el: todo, parent: todo.parentElement, next: todo.nextSibling };
-        todoWasHidden = todo.hidden;
-        todo.hidden = false;
-        layer.append(todo);
+      moved = [];
+      const day = document.getElementById('w-day');
+      const side = h('div', 'ag-side');
+      layer.append(side);
+      for (const [id, target] of [['w-day', layer], ['w-todo', side], ['w-rhythm', side]]) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        moved.push({ el, parent: el.parentElement, next: el.nextSibling, wasHidden: el.hidden });
+        el.hidden = false;
+        target.append(el);
       }
+      layer.prepend(...[day].filter(Boolean));
       document.body.classList.add('agenda-open');
       placeLayer();
       if (!fromHash && location.hash !== '#agenda') {
@@ -124,12 +127,12 @@ window.DASH_RAIL = (() => {
         else { history.pushState(null, '', '#agenda'); pushed = true; }
       }
     } else {
-      if (calHome && calHome.parent) calHome.parent.insertBefore(cal, calHome.next && calHome.next.parentElement === calHome.parent ? calHome.next : null);
-      if (todoHome && todoHome.parent) {
-        todoHome.parent.insertBefore(todoHome.el, todoHome.next && todoHome.next.parentElement === todoHome.parent ? todoHome.next : null);
-        todoHome.el.hidden = todoWasHidden;
-        todoHome = null;
+      for (const m of moved.reverse()) {
+        if (m.parent) m.parent.insertBefore(m.el, m.next && m.next.parentElement === m.parent ? m.next : null);
+        m.el.hidden = m.wasHidden;
       }
+      moved = [];
+      layer.querySelector('.ag-side')?.remove();
       layer.hidden = true;
       document.body.classList.remove('agenda-open');
       if (!fromHash && location.hash === '#agenda') {
