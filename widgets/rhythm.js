@@ -4,7 +4,7 @@
 // - Last phone use per night against 23:00, and phone screen time: from the phone app, which will fill the row `_phone.rhythm`
 //   in the dashboard's Supabase (dashboard_settings) in its own round: { at, lastUse: { 'YYYY-MM-DD': 'HH:MM' } (the night that
 //   starts that evening; after midnight is just '00:40'), screenPhone: { 'YYYY-MM-DD': minutes } }. Until it is there those
-//   parts say "comes with the app".
+//   parts only show once that row exists (no placeholder text).
 // - Gym x of 4: from day.exe (DASH_GYM).
 // - Pc screen time: computer.pc_active_min in the private archive (via DASH_DATA, same as the Data page).
 DASH.widget('w-rhythm', (card, body, guard) => {
@@ -42,10 +42,10 @@ DASH.widget('w-rhythm', (card, body, guard) => {
     const now = Date.now(), ws = startOfWeek(now), today = iso(now);
     const parts = [];
 
-    // Last phone use
-    parts.push(h('p', 'rh-head', 'Last phone use (goal 23:00)'));
+    // Last phone use: only when the phone app has sent data
     const nights = app && app.lastUse;
     if (nights && Object.keys(nights).length) {
+      parts.push(h('p', 'rh-head', 'Last phone use (goal 23:00)'));
       const row = h('div', 'rh-nights');
       for (let i = 0; i < 7; i++) {
         const day = addDays(ws, i), key = iso(day), t = nights[key];
@@ -61,28 +61,27 @@ DASH.widget('w-rhythm', (card, body, guard) => {
         row.append(col);
       }
       parts.push(row);
-    } else parts.push(h('p', 'w-note', 'Comes with the app'));
+    }
 
     // Gym
     const g = window.DASH_GYM ? DASH_GYM.week() : { done: 0, planned: 0 }, goal = window.DASH_GYM ? DASH_GYM.goal : 4;
     const gym = h('div', 'rh-row');
-    gym.append(h('span', 'rh-label', 'Gym'), h('b', null, `${g.done} of ${goal}`));
+    gym.append(h('span', 'rh-label', 'Gym'));
     const pips = h('span', 'rh-pips');
     for (let i = 0; i < goal; i++) pips.append(h('i', i < g.done ? 'on' : i < g.done + g.planned ? 'plan' : ''));
-    gym.append(pips);
+    gym.append(pips, h('b', 'rh-val2', `${g.done} of ${goal}`));
     parts.push(gym);
 
-    // Screen time today
+    // Screen time: only what has data
     const phoneMin = app && app.screenPhone && app.screenPhone[today];
+    if (phoneMin != null) { const r = h('div', 'rh-row'); r.append(h('span', 'rh-label', 'Phone today'), h('b', 'rh-val2', hm(phoneMin))); parts.push(r); }
     const pcKeys = pc ? Object.keys(pc).sort() : [];
     const pcDay = pcKeys.length ? pcKeys[pcKeys.length - 1] : null;
-    const pcMin = pcDay ? Number(pc[pcDay]) : null;
-    const scr = h('div', 'rh-row rh-screen');
-    scr.append(h('span', 'rh-label', 'Screen time today'));
-    scr.append(h('span', null, `phone ${phoneMin != null ? hm(phoneMin) : 'comes with the app'} · pc ${pcMin != null ? `${hm(pcMin)}${pcDay !== today ? ` (${new Date(`${pcDay}T12:00`).toLocaleDateString('en-GB', { weekday: 'short' })})` : ''}` : 'no data yet'}`));
-    parts.push(scr);
-
-    parts.push(h('p', 'w-sub rh-foot', 'All measured by the app and the archive. Nothing to fill in.'));
+    if (pcDay) {
+      const r = h('div', 'rh-row');
+      r.append(h('span', 'rh-label', pcDay === today ? 'Pc today' : `Pc ${new Date(`${pcDay}T12:00`).toLocaleDateString('en-GB', { weekday: 'short' })}`), h('b', 'rh-val2', hm(Number(pc[pcDay]))));
+      parts.push(r);
+    }
     body.replaceChildren(...parts);
   }
 

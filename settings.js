@@ -47,6 +47,9 @@ window.DASH_SETTINGS = (() => {
     body.replaceChildren();
     const section = sections.find((s) => s.id === active);
     if (section) section.render(body);
+    // The version only lives here (since 1.13.0): bottom of the page
+    const ver = document.getElementById('version');
+    if (ver && ver.textContent) body.append(h('p', 'st-version', ver.textContent));
   }
 
   function open(id) {

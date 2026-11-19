@@ -549,7 +549,16 @@ html.nh .th-parts { opacity: .9; }
 /* ---------- Desk: sidebar and tabs ---------- */
 html.nh .rail { background: var(--paper-raised); border-right: 1px solid var(--line); box-shadow: none; }
 html.nh .rail-btn, html.nh .rail :is(a, button) { color: var(--ink); border-radius: 0; }
-html.nh .rail-btn:hover, html.nh :is(.rail-btn[aria-current="page"], .rail-btn[aria-pressed="true"]) { background: var(--eva); color: var(--on-eva); }
+html.nh .rail:not(.dock) .rail-btn:hover, html.nh .rail:not(.dock) :is(.rail-btn[aria-current="page"], .rail-btn[aria-pressed="true"]) { background: var(--eva); color: var(--on-eva); }
+/* The dock (tall): no filled box for the active item, an accent bar instead: Title card red on top, Digital Future blue under it */
+html.nh .rail.dock { background: var(--paper-raised); border-top: 1px solid var(--line); }
+html.nh .rail.dock .rail-btn { color: var(--nh-muted); }
+html.nh .rail.dock .rail-btn:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); color: var(--ink); }
+html.nh .rail.dock :is(.rail-btn[aria-current="page"], .rail-btn[aria-pressed="true"]) { background: none; color: var(--ink); }
+html.nh .rail.dock .rail-lbl { font-family: var(--font-pixel); font-weight: 400; font-size: .9rem; letter-spacing: .02em; }
+html.nh[data-mood="titlecard"] .rail.dock .rail-btn::before { top: 0; height: 3px; left: 8%; right: 8%; background: var(--red); }
+html.nh[data-mood="digital"] .rail.dock { border-top: 3px solid var(--titlebar); }
+html.nh[data-mood="digital"] .rail.dock .rail-btn::before { top: auto; bottom: 5px; height: 4px; left: 22%; right: 22%; border-radius: 2px; background: var(--eva); }
 html.nh .rail-dot { border-radius: 0; background: var(--red); }
 html.nh .desk-tabs { border-radius: 0; border: 1px solid var(--line); background: var(--paper-raised); box-shadow: var(--shadow-window); }
 html.nh .desk-tabs > .tile { border: 0 !important; box-shadow: none; padding-top: 12px !important; }
@@ -706,3 +715,9 @@ html.nh #w-grimsby .gb-where { color: var(--nh-muted); }
 html.nh #w-grimsby .gb-diary { border-top-color: var(--line-soft); }
 html.nh #w-grimsby .gb-zzz { font-family: var(--font-display); }
 html.nh[data-mood="titlecard"] #w-grimsby .gb-pic { border-color: var(--line); box-shadow: none; }
+
+/* Planner v2 (1.13.0): line colours that read on the paper of Digital Future */
+html.nh[data-mood="digital"] #w-day { --dx-up: #8a6508; --dx-bed: #4a3fb0; --dx-grid: rgba(22, 19, 15, .10); --dx-vline: rgba(22, 19, 15, .22); }
+html.nh .dx-ev, html.nh .dx-tk, html.nh .dx-chip, html.nh .tk-pop { border-radius: 0; }
+html.nh .dx-pill, html.nh .tk-chip { border-radius: 99px; }
+html.nh .st-version { color: var(--nh-muted); font-family: var(--font-pixel); border-top-color: var(--line-soft); }

@@ -26,6 +26,22 @@
   // here, hidden, and rail.js moves them to their new place when you open that tab.
   const hidden = h('div', 'tall-hidden');
 
+  // "More": a thin bar at the bottom of the landscape layout, folds up over the bottom half (back since 1.13.0; only the portrait
+  // screen lost it in 1.11.0, where the dock replaces it). Holds Mail, To-do, Steps and Spotify month.
+  const more = h('div', 'desk-more');
+  const moreBar = h('button', 'desk-more-bar');
+  moreBar.type = 'button';
+  moreBar.setAttribute('aria-expanded', 'false');
+  const moreList = h('span', 'desk-more-list');
+  moreBar.append(h('span', 'desk-more-label', 'More'), moreList, h('span', 'desk-more-chev', '▲'));
+  const drawer = h('div', 'desk-drawer');
+  more.append(drawer, moreBar);
+  function setMore(open) {
+    more.classList.toggle('open', open);
+    moreBar.setAttribute('aria-expanded', open);
+  }
+  moreBar.onclick = () => setMore(!more.classList.contains('open'));
+
   // ---------- desk: drie kolommen ----------
   const left = h('div', 'desk-col desk-left');
   const mid = h('div', 'desk-col desk-mid');
@@ -36,7 +52,7 @@
   const tabs = h('div', 'desk-tabs');
   const tabBar = h('div', 'desk-tabbar');
   tabBar.setAttribute('role', 'tablist');
-  const TABS = [['w-stars', 'Film tonight'], ['w-letterboxd', 'Last watched'], ['w-friends', 'Friends'], ['w-todo', 'To-do'], ['w-mail', 'Mail'], ['w-health', 'Steps'], ['w-sptop', 'Spotify month']];
+  const TABS = [['w-stars', 'Film tonight'], ['w-letterboxd', 'Last watched'], ['w-friends', 'Friends']];
   const tabBtns = TABS.map(([id, label]) => {
     const b = h('button', null, label);
     b.type = 'button';
@@ -149,10 +165,12 @@
         put(weather, ['w-weather', 'w-rain']);
         put(tabs, TABS.map(([id]) => id));
         put(hidden, ['w-checkin', 'w-wishes', 'w-rhythm', 'calendar']);   // the agenda keeps loading (parked); day.exe takes its place
+        put(drawer, ['w-mail', 'w-todo', 'w-health', 'w-sptop']);
+        moreList.textContent = 'Mail · To-do · Steps · Spotify';
         put(left, [weather, 'w-alerts', 'w-ah']);
         put(mid, ['media-stack', 'w-day']);
         put(right, ['w-canvas', 'w-f1', 'w-episodes', tabs]);
-        dash.append(left, mid, right, hidden);
+        dash.append(left, mid, right, hidden, more);
         setTab(store.get(TAB_KEY) || 'w-stars');
         // Lyrics are a pop-up here: don't open them right at load
         if ($('lyrics') && !$('lyrics').hidden) $('lyrics-close').click();
@@ -161,7 +179,7 @@
       leave() {
         if (window.DASH_RAIL) DASH_RAIL.leave();      // first: put the agenda back if it was open full screen
         TABS.forEach(([id]) => { if ($(id)) $(id).hidden = false; });
-        [left, mid, right, hidden].forEach((el) => el.remove());
+        [left, mid, right, hidden, more].forEach((el) => el.remove());
       },
     },
     tall: {
@@ -205,6 +223,7 @@
     if (mode === current) return;
     if (current) {
       MODES[current].leave();
+      setMore(false);
       // Back in the old place, per parent in the original order
       const byParent = new Map();
       for (const [el, spot] of home) {
@@ -215,7 +234,7 @@
         list.sort((a, b) => a[1] - b[1]).forEach(([el, index]) => parent.insertBefore(el, parent.children[index] || null));
       }
       home.clear();
-      [weather, hidden].forEach((el) => el.remove());
+      [weather, hidden, more].forEach((el) => el.remove());
       dash.classList.remove(current);
       document.documentElement.classList.remove(`${current}-mode`);
     }
@@ -242,7 +261,7 @@
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape' || !current) return;
     if (current === 'desk' && $('lyrics') && !$('lyrics').hidden) $('lyrics-close').click();
-
+    else if (more.classList.contains('open')) setMore(false);
   });
   document.addEventListener('click', (e) => {
     if (current !== 'desk') return;

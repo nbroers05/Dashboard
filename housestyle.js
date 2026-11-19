@@ -151,7 +151,7 @@ window.DASH_HOUSESTYLE = (() => {
   function label() {
     for (const [id, [exe, kanji]] of Object.entries(WINDOWS)) {
       const el = document.getElementById(id);
-      if (!el) continue;
+      if (!el || el.dataset.nhDyn) continue;   // day.exe sets its own (WEEK / DAY)
       el.dataset.nhExe = exe;
       el.dataset.nhName = exe.replace(/\.exe$/, '');
       el.dataset.nhKanji = kanji;

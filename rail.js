@@ -225,8 +225,6 @@ window.DASH_RAIL = (() => {
     mode = m || 'desk';
     rail.classList.toggle('dock', mode === 'tall');
     logo.hidden = mode === 'tall';
-    const ver = document.getElementById('version');
-    if (ver) rail.append(ver);
     document.body.append(rail);
     if (mode === 'tall') {
       for (const ev of ['mousemove', 'mousedown', 'keydown', 'touchstart', 'wheel']) window.addEventListener(ev, bump, { passive: true });
