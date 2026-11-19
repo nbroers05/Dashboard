@@ -721,3 +721,15 @@ html.nh[data-mood="digital"] #w-day { --dx-up: #8a6508; --dx-bed: #4a3fb0; --dx-
 html.nh .dx-ev, html.nh .dx-tk, html.nh .dx-chip, html.nh .tk-pop { border-radius: 0; }
 html.nh .dx-pill, html.nh .tk-chip { border-radius: 99px; }
 html.nh .st-version { color: var(--nh-muted); font-family: var(--font-pixel); border-top-color: var(--line-soft); }
+
+/* Daily puzzles (1.15.0): square corners, the house red badge */
+html.nh .dl-row, html.nh .dl-dcard, html.nh .dl-pop, html.nh .dl-play { border-radius: 0; }
+html.nh .dl-row:not(.done) { background: var(--paper); border-color: var(--ink); }
+html.nh .dl-tick { border-color: var(--ink); background: var(--paper-raised); }
+html.nh .dl-row.done .dl-tick { border-color: var(--ink); }
+html.nh .dl-play { border-color: var(--ink); }
+html.nh .dl-seg i { border-color: var(--ink); opacity: 1; background: var(--paper); }
+html.nh .dl-seg i.on { background: var(--eva); }
+html.nh .dl-dcard { background: var(--paper); }
+html.nh .dock-badge { border-radius: 0; background: var(--red); }
+html.nh .dl-big, html.nh .dl-of { font-family: var(--font-display); }

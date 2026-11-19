@@ -271,6 +271,9 @@
       if (days <= 0) todayBday = `🎂 It's ${e.birthday}'s birthday today!`;
       else add('bday', `🎂 ${e.birthday}'s birthday ${days === 1 ? 'tomorrow' : `in ${days} days`}`);
     }
+    // Daily puzzles still to play today (daily.js): gone at 0 and after 23:00
+    const puzzles = window.DASH_DAILY ? DASH_DAILY.left() : 0;
+    if (puzzles) add('puzzles', `${puzzles} puzzle${puzzles === 1 ? '' : 's'} left`);
     window.DASH_DAYLINE = { items: todayBday ? [{ k: 'bday', t: todayBday, today: true }, ...items] : items, rain };
     window.dispatchEvent(new CustomEvent('dash:dayline'));
     // House style: no emoji in the top bar (the phone gets DASH_DAYLINE above unchanged)
@@ -288,6 +291,7 @@
   }
   const loadRain = () => DASH.radar().then((r) => { rain = r; dayLine(); }).catch(() => {});
   window.addEventListener('dash:calendar', dayLine);
+  window.addEventListener('dash:daily', dayLine);
   window.addEventListener('dash:mood', dayLine);
   DASH.every(60 * 1000, dayLine);
   DASH.every(5 * 60 * 1000, loadRain);

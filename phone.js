@@ -72,6 +72,13 @@ window.DASH_PHONE = (() => {
     barBtns[id] = b;
     bar.append(b);
   }
+  // Games: red badge with the daily puzzles still to play today (daily.js)
+  const gBadge = h('span', 'dock-badge');
+  gBadge.hidden = true;
+  barBtns.games.append(gBadge);
+  const puzzles = () => { const n = window.DASH_DAILY ? DASH_DAILY.left() : 0; gBadge.hidden = !n; gBadge.textContent = String(n); };
+  window.addEventListener('dash:daily', puzzles);
+  puzzles();
   // Which bar tab is current: a page that is open (Feeds, Games) wins over the pane
   function markBar() {
     const openPage = Object.keys(OPEN_CLS).find((id) => id !== 'mydata' && document.body.classList.contains(OPEN_CLS[id]));

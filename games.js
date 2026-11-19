@@ -1,6 +1,7 @@
 'use strict';
 
 // Games: a page of its own (like Feeds) via the games icon in the top bar or address #games; Esc or the same icon = back.
+//   Daily          the daily puzzles to tick off, with streaks (daily.js, since 1.15.0; first tab)
 //   Higher/lower   two posters from your Letterboxd: click the film you rated higher (equal = both right)
 //   Guess the poster  a poster of a film you logged, blurry and zoomed in at first, getting clearer
 //   2048           for in between (arrow keys/WASD or swipe)
@@ -31,8 +32,8 @@
   for (const ev of ['resize', 'dash:layout', 'load']) window.addEventListener(ev, () => { if (!page.hidden) place(); });
   new ResizeObserver(() => { if (!page.hidden) place(); }).observe(bar);
 
-  const GAMES = [['hl', 'Higher/lower'], ['poster', 'Guess the poster'], ['2048', '2048']];
-  let game = store.get('games.tab') || 'hl';
+  const GAMES = [['daily', 'Daily'], ['hl', 'Higher/lower'], ['poster', 'Guess the poster'], ['2048', '2048']];
+  let game = store.get('games.tab') || 'daily';
   const best = (k) => +(store.get(`games.best.${k}`) || 0);
   const setBest = (k, v) => { if (v > best(k)) store.set(`games.best.${k}`, v); };
   const stars = (r) => '★'.repeat(Math.floor(r)) + (r % 1 ? '½' : '');
@@ -387,6 +388,7 @@
     store.set('games.tab', id);
     for (const b of tabs.children) b.setAttribute('aria-pressed', b.dataset.game === id);
     stage.dataset.game = id;
+    if (id === 'daily') return window.DASH_DAILY ? DASH_DAILY.render(stage) : stage.replaceChildren(h('p', 'w-note', 'Daily puzzles are loading…'));
     if (id === 'hl') return hl ? renderHL() : startHL();
     if (id === 'poster') return pz && !pz.done ? renderPoster() : startPoster();
     return render2048();

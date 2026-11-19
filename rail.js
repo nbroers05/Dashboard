@@ -53,6 +53,13 @@ window.DASH_RAIL = (() => {
   const dot = h('i', 'rail-dot');
   dot.hidden = true;
   btns.feeds.append(dot);
+  // Games: red badge with the daily puzzles still to play today (daily.js); gone at 0 and after 23:00
+  const badge = h('span', 'dock-badge');
+  badge.hidden = true;
+  btns.games.append(badge);
+  const puzzles = () => { const n = window.DASH_DAILY ? DASH_DAILY.left() : 0; badge.hidden = !n; badge.textContent = String(n); btns.games.title = n ? `Games · ${n} puzzle${n === 1 ? '' : 's'} left` : 'Games'; };
+  window.addEventListener('dash:daily', puzzles);
+  puzzles();
   rail.append(top, item('settings', 'Settings', () => { const s = $('.tb-settings'); if (s) s.click(); }));
 
   // ---------- Which page is open ----------
