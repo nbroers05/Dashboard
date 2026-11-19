@@ -65,7 +65,7 @@ html.nh body::before {
 }
 html.nh[data-mood="titlecard"] body::before { background: radial-gradient(90% 30% at 50% 100%, var(--tint), transparent 70%); opacity: .5; mix-blend-mode: normal; }
 
-/* Grain over the whole page: almost nothing in Digital Future (4.5%), strong in Title card */
+/* Grain over the whole page: almost nothing in Digital Future (4.5%). Title card deliberately has no grain (too restless on black) */
 html.nh body::after {
   content: "";
   position: fixed;
@@ -76,7 +76,7 @@ html.nh body::after {
   opacity: .045;
   mix-blend-mode: multiply;
 }
-html.nh[data-mood="titlecard"] body::after { opacity: .16; mix-blend-mode: screen; filter: invert(1); }
+html.nh[data-mood="titlecard"] body::after { display: none; }
 
 /* Theme backgrounds and top bar colors don't belong to the house style (a theme may not color the desktop) */
 html.nh .th-bg { display: none !important; }
