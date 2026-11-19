@@ -930,7 +930,7 @@
     const at = (day, hh, mm = 0) => addDays(t, day) + (hh * 60 + mm) * 60000;
     const now = Date.now();
     return [
-      { id: '21', title: 'Practical Programming Experiments', location: 'Mandeville T4-95A', allDay: false, start: at(0, 9), end: at(0, 11, 45), color: '#039be5', calName: 'Timetable EUR' },
+      { id: '21', title: 'ESSB-MP1020 - Practical Programming Experiments', location: 'Mandeville T4-95A', allDay: false, start: at(0, 9), end: at(0, 11, 45), color: '#039be5', calName: 'Timetable EUR' },
       { id: '22', title: 'AH BERKEL EN RODENRIJS', location: 'Westerwater', allDay: false, start: at(0, 17), end: at(0, 21, 30), color: '#3f51b5' },
       { id: '1', title: 'Breakfast with Sam', location: 'Café de Hoek', allDay: false, start: at(0, 8, 30), end: at(0, 9, 30), color: '#f6bf26' },
       { id: '2', title: 'Work block', location: '', allDay: false, start: now - 20 * 60000, end: now + 40 * 60000, color: '#7986cb' },
@@ -945,6 +945,7 @@
       { id: '9', title: 'AH BERKEL EN RODENRIJS', location: 'Westerwater', allDay: false, start: at(-1, 17), end: at(-1, 21, 30), color: '#3f51b5' },
       { id: '10', title: 'AH BERKEL EN RODENRIJS', location: 'Westerwater', allDay: false, start: at(-8, 9), end: at(-8, 15), color: '#3f51b5' },
       { id: '11', title: '🏁 FORMULA 1 GRAN PREMIO DE LA CIUDAD DE MÉXICO 2026 - Race', location: '', allDay: false, start: at(5, 21), end: at(5, 23), color: '#f09300' },
+      { id: '23', title: '🏎️ FORMULA 1 GRAN PREMIO DE LA CIUDAD DE MÉXICO 2026 - Practice 1', location: '', allDay: false, start: at(4, 1, 30), end: at(4, 2, 30), color: '#f09300' },
       { id: '12', title: '⏱️ FORMULA 1 GRAN PREMIO DE LA CIUDAD DE MÉXICO 2026 - Qualifying', location: '', allDay: false, start: at(4, 22), end: at(4, 23), color: '#f09300' },
       { id: '13', title: 'Essay week 6 [ESSB-MP6020]', location: '', allDay: false, start: at(1, 23, 59), end: at(1, 23, 59), color: '#9e69af', canvas: true, assignment: true, hidden: true },
       { id: '14', title: 'Quiz chapter 4 [ESSB-MP6020]', location: '', allDay: false, start: at(3, 12), end: at(3, 12), color: '#9e69af', canvas: true, assignment: true, hidden: true },

@@ -17,13 +17,14 @@ DASH.widget('w-todo', (card, body, guard) => {
   const load = () => store.get(KEY) || [];
   const save = (items) => { store.set(KEY, items); window.dispatchEvent(new CustomEvent('dash:tasks')); };
   const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-  const addTask = (text, due, time) => save([...load(), { id: newId(), text, done: false, ...(due ? { due } : {}), ...(due && time ? { time } : {}) }]);
+  const addTask = (text, due, time, dur) => save([...load(), { id: newId(), text, done: false, ...(due ? { due } : {}), ...(due && time ? { time } : {}), ...(due && time && dur ? { dur } : {}) }]);
   const update = (id, change) => {
     save(load().map((t) => {
       if (t.id !== id) return t;
       const n = { ...t, ...change };
       Object.keys(n).forEach((k) => { if (n[k] === undefined) delete n[k]; });
       if (!n.due) delete n.time;
+      if (!n.time) delete n.dur;
       return n;
     }));
   };
@@ -122,7 +123,8 @@ DASH.widget('w-todo', (card, body, guard) => {
   window.DASH_TASKS = { list: load, add: addTask, update, remove, iso, fromIso, pickDay, dayLabel };
 
   // ---------- Drawing ----------
-  const head = h('div', 'w-big');
+  const head = h('div', 'td-count');
+  let showDone = false;
   const form = h('form', 'td-add');
   const input = h('input');
   input.placeholder = 'New task, then Enter';
@@ -171,8 +173,7 @@ DASH.widget('w-todo', (card, body, guard) => {
     const items = load();
     const open = items.filter((t) => !t.done);
     const done = items.filter((t) => t.done);
-    head.textContent = String(open.length);
-    head.append(h('small', null, open.length === 1 ? 'task open' : 'tasks open'));
+    head.textContent = `${open.length} open`;
 
     const todayIso = iso(Date.now());
     const weekEnd = iso(addDays(DASH.startOfWeek(Date.now()), 7) - 1);   // Sunday of this week
@@ -212,11 +213,19 @@ DASH.widget('w-todo', (card, body, guard) => {
       li.onclick = () => window.DASH_CANVAS && DASH_CANVAS.openPage();
       return li;
     };
+    const doneToggle = (n) => {
+      const li = h('li', 'td-group td-donetoggle');
+      const b = h('button', 'text-btn', `${showDone ? '▾' : '▸'} ${n} done`);
+      b.type = 'button';
+      b.onclick = () => { showDone = !showDone; render(); };
+      li.append(b);
+      return li;
+    };
     const group = (label, rows) => (rows.length ? [h('li', 'td-group', label), ...rows] : []);
     const thisWeek = (t) => t.due && t.due <= weekEnd;
     const weekRows = [...open.filter(thisWeek).sort(byDue).map(row), ...canvas.filter((c) => iso(c.due) <= weekEnd).map(canvasRow)];
     const laterRows = [...open.filter((t) => !thisWeek(t)).sort(byDue).map(row), ...canvas.filter((c) => iso(c.due) > weekEnd).map(canvasRow)];
-    list.replaceChildren(...group('This week', weekRows), ...group('Later', laterRows), ...group('Done', done.map(row)));
+    list.replaceChildren(...group('This week', weekRows), ...group('Later', laterRows), ...(done.length ? [doneToggle(done.length), ...(showDone ? done.map(row) : [])] : []));
     if (!list.children.length) list.append(h('li', 'w-note', 'Nothing yet. Type a task above and press Enter (Ctrl+K adds one from anywhere).'));
 
     foot.replaceChildren();

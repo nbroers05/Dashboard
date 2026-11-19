@@ -32,7 +32,7 @@ window.DASH_SB = (() => {
   const ITER = 600000;
 
   // The same on every device. Only things the user sets; caches and device choices are deliberately not in it.
-  const SHARED = ['dash.links', 'health.goal', 'todo.items', 'gym.log', 'gym.skips', 'gym.pins', 'day.names'];
+  const SHARED = ['dash.links', 'health.goal', 'todo.items', 'gym.log', 'gym.skips', 'gym.pins'];
 
   // ---------- Storage (raw, without the hook below) ----------
   const proto = window.Storage && Storage.prototype;
