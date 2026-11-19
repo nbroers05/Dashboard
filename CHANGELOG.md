@@ -7,6 +7,7 @@ Everything before 1.0.0 (versions 1 to 0.60.2): `docs/archive/CHANGELOG-pre-1.0.
 
 | Version | What |
 |---|---|
+| 1.11.0 | **One website** (big idea). The same tabs on every screen, in the same order: Today, Planner, Data, Feeds, Games, Settings. Desk/laptop: the bar on the left. Portrait: a dock at the bottom where the More bar was; after 5 minutes without mouse or keyboard it goes back to Today by itself. Phone: the tab bar has the same six (Media is now under Today). Check-in moved into Data, Wishes into Settings, Focus is a button in the top bar (not a tab). On desk the old More bar items (To-do, Mail, Steps, Spotify month) are tabs in the right column. Planner tab = agenda + to-do list full screen. "Follow the sun" is now on by default on every screen (laptop, desk, phone layout setting included). The old separate `planner/` page and its config are removed; the planner proper comes with the Planner v2 idea. |
 | 1.10.1 | **Cleanup.** The Windows app is retired (the phone app is the only app): its title bar (`appbar.js`) and the `?app=pc` handling are gone. **Grimsby is paused**: he is out of the rotating tile and the loading list (his file `widgets/grimsby.js` stays so he can come back). |
 
 

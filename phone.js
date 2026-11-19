@@ -24,8 +24,16 @@ window.DASH_PHONE = (() => {
     agenda: '<svg viewBox="0 0 24 24"><path d="M7 2h2v2h6V2h2v2h2a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2V2zM5 9v10h14V9H5zm2 2h4v4H7v-4z"/></svg>',
     media: '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7L8 5z"/></svg>',
     data: '<svg viewBox="0 0 24 24"><path d="M5 13h3v7H5v-7zm5.5-5h3v12h-3V8zM16 3h3v17h-3V3z"/></svg>',
+    feeds: '<svg viewBox="0 0 24 24"><path d="M4 4h13v14a2 2 0 0 0 2 2H6a2 2 0 0 1-2-2V4zm15 4h2v10a2 2 0 0 1-2 2V8zM7 7v3h7V7H7zm0 5v2h7v-2H7zm0 4v2h7v-2H7z"/></svg>',
+    games: '<svg viewBox="0 0 24 24"><path d="M6 8h12a4 4 0 0 1 4 4v3a3 3 0 0 1-5.4 1.8L15 15H9l-1.6 1.8A3 3 0 0 1 2 15v-3a4 4 0 0 1 4-4zm1 2v1.5H5.5v1.5H7v1.5h1.5V13H10v-1.5H8.5V10H7zm9.5 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm2 2a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg>',
+    settings: '<svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58a.49.49 0 0 0 .12-.61l-1.92-3.32a.49.49 0 0 0-.59-.22l-2.39.96a7 7 0 0 0-1.62-.94l-.36-2.54a.48.48 0 0 0-.48-.41h-3.84a.47.47 0 0 0-.47.41l-.36 2.54a7.4 7.4 0 0 0-1.62.94l-2.39-.96a.48.48 0 0 0-.59.22L2.74 8.87a.47.47 0 0 0 .12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58a.49.49 0 0 0-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54a7 7 0 0 0 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32a.48.48 0 0 0-.12-.61l-2.01-1.58zM12 15.6a3.6 3.6 0 1 1 0-7.2 3.6 3.6 0 0 1 0 7.2z"/></svg>',
   };
-  const TABS = [['today', 'Today'], ['agenda', 'Agenda'], ['media', 'Media'], ['data', 'Data']];
+  // Panes: Media is part of the Today tab since 1.11.0 ("One website"). The bar has the same tabs as every screen:
+  // Today, Planner (the old Agenda pane, address #agenda), Data, Feeds, Games, Settings (those three open their page / dialog).
+  const TABS = [['today', 'Today'], ['agenda', 'Planner'], ['media', 'Media'], ['data', 'Data']];
+  const BAR = [['today', 'Today'], ['agenda', 'Planner'], ['data', 'Data'], ['feeds', 'Feeds'], ['games', 'Games'], ['settings', 'Settings']];
+  const OPEN_BTN = { feeds: '.tb-feeds', games: '.tb-games', settings: '.tb-settings', mydata: '.tb-mydata' };
+  const OPEN_CLS = { feeds: 'feeds-open', games: 'games-open', mydata: 'mydata-open' };
   const isTab = (t) => TABS.some(([id]) => id === t);
   const OLD_TAB = { vandaag: 'today' };   // addresses and saved tabs from before 1.7.0
 
@@ -39,15 +47,42 @@ window.DASH_PHONE = (() => {
   const bar = h('nav', 'ph-bar');
   bar.setAttribute('aria-label', 'Tabs');
   const barBtns = {};
-  for (const [id, label] of TABS) {
+  // Close a page (Feeds, Data, Games) that is open over the tabs, with its own button so the address stays right
+  function closePages() {
+    for (const [id, cls] of Object.entries(OPEN_CLS)) {
+      if (document.body.classList.contains(cls)) { const b = document.querySelector(OPEN_BTN[id]); if (b) b.click(); }
+    }
+  }
+  for (const [id, label] of BAR) {
     const b = h('button', 'ph-tab');
     b.type = 'button';
     b.innerHTML = `<span class="ph-tab-icon">${ICON[id]}</span>`;
     b.append(h('span', 'ph-tab-label', label));
-    b.onclick = () => setTab(id, true);
+    b.onclick = () => {
+      if (OPEN_BTN[id] && id !== 'mydata') {
+        const btn = document.querySelector(OPEN_BTN[id]);
+        if (id === 'settings') { if (btn) btn.click(); return; }
+        if (document.body.classList.contains(OPEN_CLS[id])) return;
+        if (btn) btn.click();
+        return;
+      }
+      closePages();
+      setTab(id, true);
+    };
     barBtns[id] = b;
     bar.append(b);
   }
+  // Which bar tab is current: a page that is open (Feeds, Games) wins over the pane
+  function markBar() {
+    const openPage = Object.keys(OPEN_CLS).find((id) => id !== 'mydata' && document.body.classList.contains(OPEN_CLS[id]));
+    for (const [id] of BAR) {
+      const on = openPage ? id === openPage : id === (tab === 'media' ? 'today' : tab);
+      barBtns[id].setAttribute('aria-current', on ? 'page' : 'false');
+    }
+    const st = document.querySelector('.tb-settings');
+    barBtns.settings.setAttribute('aria-pressed', st ? st.getAttribute('aria-pressed') || 'false' : 'false');
+  }
+  new MutationObserver(markBar).observe(document.body, { attributes: true, attributeFilter: ['class'] });
 
   // Header of the tabs without a top bar
   function header(title, extra) {
@@ -66,15 +101,14 @@ window.DASH_PHONE = (() => {
   // ---------- Switching tabs ----------
   function setTab(id, push) {
     if (OLD_TAB[id]) id = OLD_TAB[id];
+    if (id === 'media') id = 'today';   // Media is part of Today (1.11.0)
     if (!isTab(id)) id = 'today';
     const changed = id !== tab;
     tab = id;
     store.set('phone.tab', id);
     document.body.dataset.phTab = id;
-    for (const [t] of TABS) {
-      panes[t].hidden = t !== id;
-      barBtns[t].setAttribute('aria-current', t === id ? 'page' : 'false');
-    }
+    for (const [t] of TABS) panes[t].hidden = !(t === id || (id === 'today' && t === 'media'));   // Media sits under Today
+    markBar();
     if (push && location.hash !== `#${id}`) history.pushState(null, '', `#${id}`);
     if (changed) window.scrollTo(0, 0);
     render();
@@ -105,7 +139,7 @@ window.DASH_PHONE = (() => {
     const s = ((store.get('f1.schedule.v2') || {}).sessions || []).filter((x) => x.end > Date.now()).sort((a, b) => a.start - b.start)[0];
     if (!s || s.start - Date.now() > 2 * DAY) return null;
     const live = s.start <= Date.now();
-    return chip('f1', `F1 ${s.name.toLowerCase()} ${live ? 'now' : `${DASH.fmtWeekday ? DASH.fmtWeekday(s.start) : ''} ${fmtTime(s.start)}`.trim()}`, () => setTab('media', true));
+    return chip('f1', `F1 ${s.name.toLowerCase()} ${live ? 'now' : `${DASH.fmtWeekday ? DASH.fmtWeekday(s.start) : ''} ${fmtTime(s.start)}`.trim()}`, () => setTab('today', true));
   }
   function renderChips() {
     const items = (window.DASH_DAYLINE && window.DASH_DAYLINE.items) || [];
@@ -647,7 +681,7 @@ window.DASH_PHONE = (() => {
   miniCover.alt = '';
   const miniText = h('button', 'ph-mini-text');
   miniText.type = 'button';
-  miniText.onclick = () => setTab('media', true);
+  miniText.onclick = () => setTab('today', true);
   const miniTitle = h('b'), miniArtist = h('span');
   miniText.append(miniTitle, miniArtist);
   const miniPlay = h('button', 'ph-mini-play');
@@ -659,7 +693,7 @@ window.DASH_PHONE = (() => {
   const PAUSE = '<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>';
   function mini() {
     const sp = $('spotify');
-    const on = active && tab !== 'media' && sp && sp.dataset.state === 'player' && !!($('title') || {}).textContent;
+    const on = active && tab !== 'today' && sp && sp.dataset.state === 'player' && !!($('title') || {}).textContent;
     miniEl.hidden = !on;
     document.body.classList.toggle('ph-has-mini', !!on);
     if (!on) return;
@@ -692,7 +726,7 @@ window.DASH_PHONE = (() => {
   function render() {
     if (!active) return;
     try {
-      if (tab === 'today') renderToday();
+      if (tab === 'today') { renderToday(); renderMedia(); }
       else if (tab === 'agenda') renderAgenda();
       else if (tab === 'media') renderMedia();
       else if (tab === 'data') { renderCheckin(); renderKpis(); loadAgg(); }
@@ -710,7 +744,7 @@ window.DASH_PHONE = (() => {
       'w-stars', 'w-letterboxd', 'w-friends', 'w-episodes', 'w-f1', 'w-sptop', 'w-health'];
     remember(ids);
     panes.today.replaceChildren(chips, today);
-    panes.agenda.replaceChildren(header('Agenda', agSeg), agNav, strip, agList);
+    panes.agenda.replaceChildren(header('Planner', agSeg), agNav, strip, agList);
     put(panes.agenda, ['calendar']);
     panes.media.replaceChildren(header('Media'), mediaChips);
     put(panes.media, ['media-stack', 'lyrics']);

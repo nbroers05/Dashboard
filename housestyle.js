@@ -1,8 +1,8 @@
 'use strict';
 // Noah's house style (since 1.2.0, big idea "House style"; design: the design system "Noah Huisstijl" on claude.ai).
 // Styles live in housestyle.css under html.nh; this file does two things:
-// 1. Pick the mood (html[data-mood]): Digital Future or Title card. On the portrait screen "Follow the sun" (on by default)
-//    switches them: sunrise to sunset Digital Future, after that Title card. Elsewhere Digital Future.
+// 1. Pick the mood (html[data-mood]): Digital Future or Title card. "Follow the sun" (on by default, on every screen since 1.11.0)
+//    switches them: sunrise to sunset Digital Future, after that Title card.
 //    Settings › Theme fixes one; so does ?mood=digital|titlecard (for that tab, to test).
 // 2. Give every tile a window title: file name + Japanese word as data attributes, CSS draws the title bar.
 // Sunrise/sunset: from the weather tile (DASH_WEATHER, Open-Meteo), otherwise calculated for Rotterdam.
@@ -136,13 +136,12 @@ window.DASH_HOUSESTYLE = (() => {
     if (urlMood) return urlMood;
     const pick = savedMood();
     if (pick && pick !== 'auto' && NAMES[pick]) return pick;
-    if (tall()) return byTime();
-    return 'digital';
+    return byTime();   // since 1.11.0 every screen follows the sun, not only tall
   }
   function describe() {
     const now = new Date(), s = sunToday(now), f = (ms) => new Date(ms).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
     const pick = savedMood();
-    const why = urlMood ? 'via the link' : (pick && pick !== 'auto') ? 'fixed' : tall() ? `sunrise ${f(s.rise)}, sunset ${f(s.set)}` : 'laptop and desk';
+    const why = urlMood ? 'via the link' : (pick && pick !== 'auto') ? 'fixed' : `sunrise ${f(s.rise)}, sunset ${f(s.set)}`;
     return `${NAMES[choose()]} (${why})`;
   }
 

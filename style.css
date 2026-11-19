@@ -2615,11 +2615,12 @@ body.minimal .rail { display: none; }
 /* Room for the bar: dashboard and pages move along; the buttons that are now in the bar, out of the top bar */
 html.desk-mode body:not(.minimal) .dashboard.desk { padding-left: 68px; }
 html.desk-mode body:not(.minimal) :is(.feeds-page, .md-page, .gm-page) { left: 56px; }
-html.desk-mode body:not(.minimal) .topbar :is(.tb-feeds, .tb-mydata, .tb-settings, .tb-games, .tb-focus, .tb-min) { display: none; }
+html.desk-mode body:not(.minimal) .topbar :is(.tb-feeds, .tb-mydata, .tb-settings, .tb-games, .tb-min) { display: none; }
 /* Agenda as its own layer, like Feeds and My data */
-.ag-layer { position: fixed; top: 120px; left: 68px; right: 12px; bottom: 12px; z-index: 4; display: flex; flex-direction: column; min-height: 0; animation: fd-in .35s ease; }
+.ag-layer { position: fixed; top: 120px; left: 68px; right: 12px; bottom: 12px; z-index: 4; display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 12px; min-height: 0; animation: fd-in .35s ease; }
 .ag-layer[hidden] { display: none; }
-.ag-layer #calendar { flex: 1 1 0; }
+.ag-layer #calendar { min-height: 0; }
+.ag-layer #w-todo { min-height: 0; overflow: auto; }
 body.agenda-open .dashboard > :not(.topbar, .ag-layer) { opacity: 0 !important; pointer-events: none; }
 body.agenda-open .tall-rot > .tile { visibility: hidden !important; }
 
@@ -2788,3 +2789,32 @@ html[data-mood="titlecard"] .gb-zzz { color: #f2efe8; }
 .gb-link { font-size: .85rem; font-weight: 700; min-height: 44px; display: inline-flex; align-items: center; }
 @media (prefers-reduced-motion: no-preference) { .gb-pic img { animation: gb-in .6s ease both; } }
 @keyframes gb-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* ---------- One website (1.11.0): the same tabs on every screen ---------- */
+.rail-lbl { display: none; }
+.rail > .version { grid-column: auto; padding: 0; margin: 8px 0 0; font-size: .6rem; line-height: 1; writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; color: var(--muted); }
+.rail { justify-content: flex-start; gap: 6px; }
+.rail > .rail-top { flex: none; }
+.rail > .rail-btn:last-of-type { margin-top: auto; }
+/* Portrait: the same tabs as a dock at the bottom (where the More bar was) */
+.rail.dock { top: auto; left: 0; right: 0; bottom: 0; width: auto; height: 68px; flex-direction: row; align-items: center; justify-content: center; gap: 4px; padding: 6px 12px max(6px, env(safe-area-inset-bottom));
+  border-right: 0; border-top: 1px solid rgba(255, 255, 255, .1); }
+.rail.dock .rail-top { flex-direction: row; gap: 4px; }
+.rail.dock .rail-btn { width: auto; min-width: 92px; height: 54px; padding: 0 10px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 3px; }
+.rail.dock .rail-btn:last-of-type { margin-top: 0; }
+.rail.dock .rail-lbl { display: block; font-size: .72rem; font-weight: 650; line-height: 1; }
+.rail.dock > .version { writing-mode: horizontal-tb; transform: none; margin: 0 0 0 14px; font-size: .68rem; }
+html.tall-mode body:not(.minimal) .topbar :is(.tb-feeds, .tb-mydata, .tb-games, .tb-settings) { display: none; }
+html.tall-mode body:not(.minimal) .dashboard.tall { padding-bottom: 84px; }
+html.tall-mode body:not(.minimal) :is(.feeds-page, .md-page, .gm-page) { bottom: 68px; }
+html.tall-mode body:not(.minimal) .ag-layer { left: 12px; bottom: 80px; grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; }
+html.tall-mode body:not(.minimal) .ag-layer #w-todo { max-height: 30dvh; }
+body.minimal .rail > .version { display: none; }
+/* Check-in at the top of Data; Wishes inside Settings */
+.md-checkin { max-width: 1800px; margin: 0 auto 16px; }
+.st-body #w-wishes { display: block; }
+/* Phone: six tabs in the bar, pages stop above it */
+.ph-bar { grid-template-columns: repeat(6, 1fr); }
+.ph-tab-icon { width: 40px; }
+.ph-tab-label { font-size: .64rem; }
+html.phone-mode body:not(.minimal) :is(.feeds-page, .md-page, .gm-page) { bottom: calc(60px + env(safe-area-inset-bottom)); }

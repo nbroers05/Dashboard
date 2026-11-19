@@ -22,20 +22,9 @@
   // Weather and rain alarm in one tile
   const weather = h('div', 'desk-weather');
 
-  // "More": a thin bar at the bottom, folds up
-  const more = h('div', 'desk-more');
-  const moreBar = h('button', 'desk-more-bar');
-  moreBar.type = 'button';
-  moreBar.setAttribute('aria-expanded', 'false');
-  const moreList = h('span', 'desk-more-list');
-  moreBar.append(h('span', 'desk-more-label', 'More'), moreList, h('span', 'desk-more-chev', '▲'));
-  const drawer = h('div', 'desk-drawer');
-  more.append(drawer, moreBar);
-  function setMore(open) {
-    more.classList.toggle('open', open);
-    moreBar.setAttribute('aria-expanded', open);
-  }
-  moreBar.onclick = () => setMore(!more.classList.contains('open'));
+  // Parked tiles: Check-in lives on the Data tab and Wishes in Settings (since 1.11.0, "One website"). They keep loading
+  // here, hidden, and rail.js moves them to their new place when you open that tab.
+  const hidden = h('div', 'tall-hidden');
 
   // ---------- desk: drie kolommen ----------
   const left = h('div', 'desk-col desk-left');
@@ -47,7 +36,7 @@
   const tabs = h('div', 'desk-tabs');
   const tabBar = h('div', 'desk-tabbar');
   tabBar.setAttribute('role', 'tablist');
-  const TABS = [['w-stars', 'Film tonight'], ['w-letterboxd', 'Last watched'], ['w-friends', 'Friends']];
+  const TABS = [['w-stars', 'Film tonight'], ['w-letterboxd', 'Last watched'], ['w-friends', 'Friends'], ['w-todo', 'To-do'], ['w-mail', 'Mail'], ['w-health', 'Steps'], ['w-sptop', 'Spotify month']];
   const tabBtns = TABS.map(([id, label]) => {
     const b = h('button', null, label);
     b.type = 'button';
@@ -70,7 +59,6 @@
   const row3 = h('div', 'tall-row tall-3');
   // Canvas · Notifications · Health (since 0.59.0): equally wide columns; Canvas without open deadlines drops out (tall-auto)
   const row2 = h('div', 'tall-row tall-auto');
-  const hidden = h('div', 'tall-hidden');   // the mail tile keeps loading (for the number on the Gmail icon), but without a tile
   const rot = h('div', 'tall-rot');
   const dots = h('div', 'tall-dots');
   // Arrows left and right: click through the parts yourself (after that 30 s no automatic advance)
@@ -117,7 +105,7 @@
   function rotTick() {
     // Pause: mouse on it, a pop-up open, just picked yourself, or "reduce motion"
     if ((hover && Date.now() - movedAt < 30000) || calm() || Date.now() < pausedUntil) return;
-    if (document.querySelector('dialog[open]') || more.classList.contains('open')) return;
+    if (document.querySelector('dialog[open]') || document.body.classList.contains('agenda-open')) return;
     next();
   }
   // Mouse on it = a short pause, but only while you move it (0.60.0): if the mouse happens to lie still on it, the tile
@@ -159,23 +147,21 @@
         const ids = ['media-stack', 'calendar', 'version', 'w-weather', 'w-rain', 'w-alerts', 'w-ah', 'w-canvas', 'w-f1', 'w-episodes', 'w-stars', 'w-letterboxd', 'w-friends', 'w-mail', 'w-todo', 'w-wishes', 'w-health', 'w-sptop', 'w-checkin'];
         remember(ids);
         put(weather, ['w-weather', 'w-rain']);
-        put(tabs, ['w-stars', 'w-letterboxd', 'w-friends']);
-        put(left, [weather, 'w-alerts', 'w-checkin', 'w-ah']);
+        put(tabs, TABS.map(([id]) => id));
+        put(hidden, ['w-checkin', 'w-wishes']);
+        put(left, [weather, 'w-alerts', 'w-ah']);
         put(mid, ['media-stack', 'calendar']);
         put(right, ['w-canvas', 'w-f1', 'w-episodes', tabs]);
-        put(drawer, ['w-mail', 'w-todo', 'w-wishes', 'w-health', 'w-sptop']);
-        moreList.textContent = 'Mail · To-do · Wishes · Steps · Spotify';
-        if ($('version')) moreBar.append($('version'));
-        dash.append(left, mid, right, more);
+        dash.append(left, mid, right, hidden);
         setTab(store.get(TAB_KEY) || 'w-stars');
         // Lyrics are a pop-up here: don't open them right at load
         if ($('lyrics') && !$('lyrics').hidden) $('lyrics-close').click();
-        if (window.DASH_RAIL) DASH_RAIL.enter(dash);   // sidebar on the left (rail.js)
+        if (window.DASH_RAIL) DASH_RAIL.enter(dash, 'desk');   // sidebar on the left (rail.js)
       },
       leave() {
         if (window.DASH_RAIL) DASH_RAIL.leave();      // first: put the agenda back if it was open full screen
         TABS.forEach(([id]) => { if ($(id)) $(id).hidden = false; });
-        [left, mid, right].forEach((el) => el.remove());
+        [left, mid, right, hidden].forEach((el) => el.remove());
       },
     },
     tall: {
@@ -189,19 +175,18 @@
         const memory = $('w-memory');   // grab before moving: rot isn't in the page yet, so $() wouldn't find them
         rot.prepend(...ROT.map($).filter(Boolean));
         if (memory) memory.hidden = false;
-        put(hidden, ['w-mail']);
-        put(drawer, ['w-checkin', 'w-wishes']);
-        moreList.textContent = 'Check-in · Wishes';
-        if ($('version')) moreBar.append($('version'));   // version on the right in the More bar, like in desk
+        put(hidden, ['w-mail', 'w-checkin', 'w-wishes']);
         const before = $('calendar');
         [row3, row2, rot].forEach((el) => dash.insertBefore(el, before));
-        dash.append(hidden, more);
+        dash.append(hidden);
+        if (window.DASH_RAIL) DASH_RAIL.enter(dash, 'tall');   // dock at the bottom (rail.js)
         buildDots();
         show(0);
         if (!hasData(slides()[0])) next();
         rotTimer = setInterval(rotTick, ROT_MS);
       },
       leave() {
+        if (window.DASH_RAIL) DASH_RAIL.leave();
         thin(false, true);
         if ($('w-memory')) $('w-memory').hidden = true;   // rot is still in the page here
         clearInterval(rotTimer);
@@ -220,7 +205,6 @@
     if (mode === current) return;
     if (current) {
       MODES[current].leave();
-      setMore(false);
       // Back in the old place, per parent in the original order
       const byParent = new Map();
       for (const [el, spot] of home) {
@@ -231,7 +215,7 @@
         list.sort((a, b) => a[1] - b[1]).forEach(([el, index]) => parent.insertBefore(el, parent.children[index] || null));
       }
       home.clear();
-      [weather, more].forEach((el) => el.remove());
+      [weather, hidden].forEach((el) => el.remove());
       dash.classList.remove(current);
       document.documentElement.classList.remove(`${current}-mode`);
     }
@@ -258,7 +242,7 @@
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape' || !current) return;
     if (current === 'desk' && $('lyrics') && !$('lyrics').hidden) $('lyrics-close').click();
-    else if (more.classList.contains('open')) setMore(false);
+
   });
   document.addEventListener('click', (e) => {
     if (current !== 'desk') return;

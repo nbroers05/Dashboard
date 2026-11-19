@@ -109,7 +109,7 @@ window.DASH_THEMES = (() => {
 
   // ---------- Settings ----------
   // style: 'housestyle' (default, housestyle.css + housestyle.js) or 'legacy' (the old plain look, style.css only);
-  // mood: 'auto' (= "Follow the sun" on the portrait screen, Digital Future elsewhere) | 'digital' | 'titlecard'
+  // mood: 'auto' (= "Follow the sun" on every screen) | 'digital' | 'titlecard'
   const DEFAULTS = { choice: 'auto', all: true, particles: true, deco: true, topbar: true, bg: true, weather: true, fx: true, amount: 'normal', serif: true, style: 'housestyle', mood: 'auto' };
   const AMOUNT = { calm: { parts: 10, deco: 0.5 }, normal: { parts: 30, deco: 1 }, party: { parts: 60, deco: 1.6 } };
   // Settings saved before 1.2.0 always have style: 'modern' (the old default) without styleV: those go to the house style.
@@ -829,7 +829,7 @@ window.DASH_THEMES = (() => {
     const head = (text) => el.append(h('p', 'th-set-h', text));
     const f = forced();
 
-    // Look: three buttons with a small preview (1.8.0). Picking one fixes it; "Follow the sun" (portrait screen only)
+    // Look: three buttons with a small preview (1.8.0). Picking one fixes it; "Follow the sun" (every screen)
     // switches between Digital Future (sunrise to sunset) and Title card by itself.
     head('Look');
     const look = s.style === 'legacy' ? 'legacy' : s.mood === 'titlecard' ? 'titlecard' : 'digital';
@@ -838,7 +838,7 @@ window.DASH_THEMES = (() => {
     for (const [k, label] of [['digital', 'Digital Future'], ['titlecard', 'Title card'], ['legacy', 'Legacy']]) {
       const b = h('button', `th-look th-look-${k}`);
       b.type = 'button';
-      b.setAttribute('aria-pressed', String(look === k && !(sunOn && window.DASH_HOUSESTYLE?.tall())));
+      b.setAttribute('aria-pressed', String(look === k && !sunOn));
       const pv = h('span', 'th-look-pv');
       pv.setAttribute('aria-hidden', 'true');
       pv.append(h('i'), h('i'));
@@ -854,7 +854,7 @@ window.DASH_THEMES = (() => {
       looks.append(b);
     }
     el.append(looks);
-    if (window.DASH_HOUSESTYLE?.tall()) {
+    {
       const row = h('label', 'th-sw th-sun');
       const box = h('input');
       box.type = 'checkbox';
