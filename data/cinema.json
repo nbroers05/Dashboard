@@ -1,5 +1,5 @@
 {
- "day": "2026-11-18",
+ "day": "2026-11-19",
  "sources": [
   "LantarenVenster"
  ],
@@ -16,6 +16,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/30-mei-1969-gritu-di-un-pueblo/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "A Little Gray Wolf Will Come",
+   "key": "alittlegraywolfwillcome",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/a-little-gray-wolf-will-come/",
      "day": null,
      "next": null,
      "until": null
@@ -541,20 +555,6 @@
    ]
   },
   {
-   "title": "De Manager",
-   "key": "demanager",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/de-manager/",
-     "day": null,
-     "next": null,
-     "until": "2026-11-18"
-    }
-   ]
-  },
-  {
    "title": "Dekker",
    "key": "dekker",
    "poster": null,
@@ -747,20 +747,6 @@
      "day": null,
      "next": null,
      "until": "2026-11-25"
-    }
-   ]
-  },
-  {
-   "title": "Fatherland - Expat Cinema Rotterdam",
-   "key": "fatherlandexpatcinemarotterdam",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/fatherland-expat-cinema-rotterdam/",
-     "day": null,
-     "next": null,
-     "until": null
     }
    ]
   },
@@ -1185,20 +1171,6 @@
    ]
   },
   {
-   "title": "Joyce Moreno",
-   "key": "joycemoreno",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/joyce-moreno-2026/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
    "title": "Just Look Up",
    "key": "justlookup",
    "poster": null,
@@ -1563,6 +1535,20 @@
    ]
   },
   {
+   "title": "Mouse",
+   "key": "mouse",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/mouse/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "Mulholland Drive (2001)",
    "key": "mulhollanddrive2001",
    "poster": null,
@@ -1699,20 +1685,6 @@
      "day": null,
      "next": null,
      "until": null
-    }
-   ]
-  },
-  {
-   "title": "Primetime",
-   "key": "primetime",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/primetime/",
-     "day": null,
-     "next": null,
-     "until": "2026-11-18"
     }
    ]
   },
@@ -1983,20 +1955,6 @@
    ]
   },
   {
-   "title": "The Beloved",
-   "key": "thebeloved",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/the-beloved/",
-     "day": null,
-     "next": null,
-     "until": "2026-11-18"
-    }
-   ]
-  },
-  {
    "title": "The Blood of the Covenant",
    "key": "thebloodofthecovenant",
    "poster": null,
@@ -2230,7 +2188,7 @@
      "url": "https://www.lantarenvenster.nl/programma/time-and-water/",
      "day": null,
      "next": null,
-     "until": null
+     "until": "2026-11-25"
     }
    ]
   },
