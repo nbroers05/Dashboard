@@ -1,5 +1,5 @@
 {
- "day": "2026-11-19",
+ "day": "2026-11-20",
  "sources": [
   "LantarenVenster"
  ],
@@ -58,20 +58,6 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/a-talent-for-murder-filmkerstontbijt/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
-   "title": "Ablaye Cissoko & Cyrille Brotto",
-   "key": "ablayecissokoandcyrillebrotto",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/cissoko-brotto/",
      "day": null,
      "next": null,
      "until": null
@@ -634,7 +620,7 @@
      "url": "https://www.lantarenvenster.nl/programma/donnie-darko-25th-anniversary/",
      "day": null,
      "next": null,
-     "until": null
+     "until": "2026-11-25"
     }
    ]
   },
@@ -646,6 +632,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/dorona-alberti/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Dubbele schaar",
+   "key": "dubbeleschaar",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/dubbele-schaar/",
      "day": null,
      "next": null,
      "until": null
@@ -765,20 +765,6 @@
    ]
   },
   {
-   "title": "Filmcollege: Mindfuck Films + Donnie Darko (2001)",
-   "key": "filmcollegemindfuckfilmsdonniedarko2001",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/filmcollege-mindfuck-film-donnie-darko-2001/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
    "title": "Filmcollege: Psychosexual Drama + Possession (1981)",
    "key": "filmcollegepsychosexualdramapossession1981",
    "poster": null,
@@ -886,7 +872,7 @@
      "url": "https://www.lantarenvenster.nl/programma/foret-ivre/",
      "day": null,
      "next": null,
-     "until": null
+     "until": "2026-11-25"
     }
    ]
   },
@@ -1703,20 +1689,6 @@
    ]
   },
   {
-   "title": "Queen at Sea - Aanschuiftafel",
-   "key": "queenatseaaanschuiftafel",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/queen-at-sea-aanschuiftafel/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
    "title": "Queer Cinema x Queer Rotterdam – 8 femmes (2002)",
    "key": "queercinemaxqueerrotterdam8femmes2002",
    "poster": null,
@@ -1922,7 +1894,7 @@
      "url": "https://www.lantarenvenster.nl/programma/spinoza/",
      "day": null,
      "next": null,
-     "until": null
+     "until": "2026-11-25"
     }
    ]
   },
@@ -2137,8 +2109,8 @@
    ]
   },
   {
-   "title": "The Wizard of Oz",
-   "key": "thewizardofoz",
+   "title": "The Wizard of Oz - 35mm",
+   "key": "thewizardofoz35mm",
    "poster": null,
    "shows": [
     {
@@ -2343,6 +2315,20 @@
      "day": null,
      "next": null,
      "until": "2026-11-25"
+    }
+   ]
+  },
+  {
+   "title": "Workshop haken",
+   "key": "workshophaken",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/workshop-haken-2/",
+     "day": null,
+     "next": null,
+     "until": null
     }
    ]
   },
