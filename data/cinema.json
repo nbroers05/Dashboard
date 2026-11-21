@@ -1,5 +1,5 @@
 {
- "day": "2026-11-20",
+ "day": "2026-11-21",
  "sources": [
   "LantarenVenster"
  ],
@@ -688,20 +688,6 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/eivind-aarset-4tet/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
-   "title": "Eliana Glass",
-   "key": "elianaglass",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/eliana-glass/",
      "day": null,
      "next": null,
      "until": null
@@ -2132,7 +2118,7 @@
      "url": "https://www.lantarenvenster.nl/programma/the-year-of-the-ghost/",
      "day": null,
      "next": null,
-     "until": null
+     "until": "2026-11-24"
     }
    ]
   },
@@ -2242,20 +2228,6 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/violette/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
-   "title": "We Had a Plan",
-   "key": "wehadaplan",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/we-had-a-plan/",
      "day": null,
      "next": null,
      "until": null
