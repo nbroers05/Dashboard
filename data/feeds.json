@@ -4,6 +4,18 @@
    "name": "NOS",
    "items": [
     {
+     "title": "Universiteit Leiden stopt samenwerking met Chinese universiteit na zorgen over lekken data",
+     "link": "https://nos.nl/l/2640396",
+     "time": "2026-11-21T10:20:23+01:00",
+     "img": "https://images.cdn.nos.nl/6/7/q/W/K/w/YNx8U3VC9qFKWuCfccL95rKmEjfMQD7QiVsrbZ1/8x212x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Grote politieactie bij motorclub in Rijswijk, leden verdacht van wapenhandel",
+     "link": "https://nos.nl/l/2640394",
+     "time": "2026-11-21T10:07:46+01:00",
+     "img": "https://images.cdn.nos.nl/2/4/L/X/i/L/k1xrJc7URv7NH2nPYFGT8qoZ82CG3NkXuUDD7os/0x125x2400x1350-1024x576.webp"
+    },
+    {
      "title": "Wekdienst 21/11: Klimaattop Turkije loopt uit • Groot Dictee op NPO Radio 1",
      "link": "https://nos.nl/l/2640381",
      "time": "2026-11-21T07:53:11+01:00",
@@ -80,24 +92,18 @@
      "link": "https://nos.nl/l/2640342",
      "time": "2026-11-20T21:07:56+01:00",
      "img": "https://images.cdn.nos.nl/7/5/E/s/s/B/AFHBtJ2VMJ9Ln5nL5B7f5wQxoWMfP8HLqwaQKH4/7x328x2528x1422-1024x576.webp"
-    },
-    {
-     "title": "45 kinderpornobezitters krijgen waarschuwing van de politie",
-     "link": "https://nos.nl/l/2640339",
-     "time": "2026-11-20T20:38:35+01:00",
-     "img": "https://images.cdn.nos.nl/5/7/n/2/n/w/2ug1woeoor714u81TavnQ7DManpuokz2UCFATU3/0x0x800x450-800x450.webp"
-    },
-    {
-     "title": "Genocide-uitspraak over Rohingya schept precedent: 'Slecht nieuws voor Israël'",
-     "link": "https://nos.nl/l/2640335",
-     "time": "2026-11-20T20:19:18+01:00",
-     "img": "https://images.cdn.nos.nl/2/5/S/U/d/J/JBn85UzT9HJWHuZnUdwn7LfTYJBwGF5ZYU7RuPQ/6x81x1488x837-1024x576.webp"
     }
    ]
   },
   {
    "name": "NOS Sport",
    "items": [
+    {
+     "title": "Promovendus De Graafschap verrast zichzelf: 'Zitten op een roze wolk'",
+     "link": "https://nos.nl/l/2640398",
+     "time": "2026-11-21T10:21:27+01:00",
+     "img": "https://images.cdn.nos.nl/2/5/R/w/8/k/mRBsXn46FwHh1hKFDecekh4JjtokHq5kq2gUZfq/0x216x4000x2250-1024x576.webp"
+    },
     {
      "title": "Zonder Velzeboer lukt weinig bij shorttracksters, zelfs geen finale aflossing",
      "link": "https://nos.nl/l/2640390",
@@ -181,18 +187,24 @@
      "link": "https://nos.nl/l/2640297",
      "time": "2026-11-20T15:39:31+01:00",
      "img": "https://images.cdn.nos.nl/4/8/D/K/B/o/6GeGJsdWkkqSvzG9vgpsL4pG1kghBCaqpnxu4iT/341x91x1856x1044-1024x576.webp"
-    },
-    {
-     "title": "Verregende trainingen, onbeduidende kwalificatie: F1 heeft Las Vegas weinig te bieden",
-     "link": "https://nos.nl/l/2640291",
-     "time": "2026-11-20T14:58:27+01:00",
-     "img": "https://images.cdn.nos.nl/2/4/t/t/P/s/cJ6SetUvaAZ2S4Qxt3sMZ7GfPdMu1oqvo58inLG/8x371x3984x2241-1024x576.webp"
     }
    ]
   },
   {
    "name": "NU.nl",
    "items": [
+    {
+     "title": "Collegegeld Britse universiteiten houdt afspraken met EU voorlopig tegen",
+     "link": "https://www.nu.nl/economie/6415493/collegegeld-britse-universiteiten-houdt-afspraken-met-eu-voorlopig-tegen.html",
+     "time": "2026-11-21T10:32:00+01:00",
+     "img": "https://images.nu.nl/m/acbxf8sa3bml_sqr256/945/0/4320/4320/collegegeld-britse-universiteiten-houdt-afspraken-met-eu-voorlopig-tegen.jpg"
+    },
+    {
+     "title": "Onbedoelde kledingruil in Japan: Talsma schaatst 500 meter in pak van Diniz",
+     "link": "https://www.nu.nl/schaatsen/6417313/onbedoelde-kledingruil-in-japan-talsma-schaatst-500-meter-in-pak-van-diniz.html",
+     "time": "2026-11-21T10:03:58+01:00",
+     "img": "https://images.nu.nl/m/vqbx26zaclww_sqr256/461/3/3274/3274/onbedoelde-kledingruil-in-japan-talsma-schaatst-500-meter-in-pak-van-diniz.jpg"
+    },
     {
      "title": "Schermtijd | Plegen jullie maar bankovervallen in GTA VI, ik ga vogelspotten",
      "link": "https://www.nu.nl/tech/6417120/plegen-jullie-maar-bankovervallen-in-gta-vi-ik-ga-vogelspotten.html",
@@ -270,18 +282,6 @@
      "link": "https://www.nu.nl/formule-1/6417294/f1-reacties-na-tweede-tijd-verstappen-in-kwalificatie-gp-las-vegas.html",
      "time": "2026-11-21T04:57:25+01:00",
      "img": "https://images.nu.nl/m/dpqxga5aco80_sqr256/1517/7/5134/5134/f1-reacties-na-tweede-tijd-verstappen-in-kwalificatie-gp-las-vegas.jpg"
-    },
-    {
-     "title": "Verstappen bijna in bandenstapel na incident met Russell in derde training Vegas",
-     "link": "https://www.nu.nl/formule-1/6417293/verstappen-bijna-in-bandenstapel-na-incident-met-russell-in-derde-training-vegas.html",
-     "time": "2026-11-21T02:48:36+01:00",
-     "img": "https://images.nu.nl/m/s1lxs6nalkub_sqr256/708/0/3812/3812/verstappen-bijna-in-bandenstapel-na-incident-met-russell-in-derde-training-vegas.jpg"
-    },
-    {
-     "title": "Denemarken wijst naar Rusland na verijdelde moordpoging op Oekraïense rapper",
-     "link": "https://www.nu.nl/spanningen-oekraine/6417288/denemarken-wijst-naar-rusland-na-verijdelde-moordpoging-op-oekraiense-rapper.html",
-     "time": "2026-11-20T23:42:07+01:00",
-     "img": "https://images.nu.nl/m/j0hxy0ca7iz9_sqr256/857/396/2337/2337/denemarken-wijst-naar-rusland-na-verijdelde-moordpoging-op-oekraiense-rapper.jpg"
     }
    ]
   }
@@ -397,6 +397,14 @@
   ],
   "videos": [
    {
+    "title": "100,000 recruits at the bridge",
+    "channel": "Ken",
+    "link": "https://www.youtube.com/watch?v=L_VaduXuvR8",
+    "thumb": "https://i.ytimg.com/vi/L_VaduXuvR8/mqdefault.jpg",
+    "time": "2026-11-21T09:00:19+00:00",
+    "short": false
+   },
+   {
     "title": "さようなら",
     "channel": "Ken",
     "link": "https://www.youtube.com/watch?v=8vyIpEfZ_ro",
@@ -459,14 +467,6 @@
     "thumb": "https://i.ytimg.com/vi/gNyvxxR74L0/mqdefault.jpg",
     "time": "2026-11-16T18:14:45+00:00",
     "short": true
-   },
-   {
-    "title": "double the suck",
-    "channel": "Ken",
-    "link": "https://www.youtube.com/watch?v=hrY4tXbdTHQ",
-    "thumb": "https://i.ytimg.com/vi/hrY4tXbdTHQ/mqdefault.jpg",
-    "time": "2026-11-16T09:00:11+00:00",
-    "short": false
    },
    {
     "title": "Torturing Scam Callers | The Yard",
