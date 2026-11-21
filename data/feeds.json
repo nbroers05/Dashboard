@@ -99,6 +99,12 @@
    "name": "NOS Sport",
    "items": [
     {
+     "title": "Real met moeizame zege op zak richting duel met PSV, Mbappé mist penalty",
+     "link": "https://nos.nl/l/2640508",
+     "time": "2026-11-21T23:59:40+01:00",
+     "img": "https://images.cdn.nos.nl/1/2/7/C/g/A/9VMDrYqQXRiGHQnC8dBJ9Tp5rrhsyWz56riEoWH/433x124x1248x702-1024x576.webp"
+    },
+    {
      "title": "Pastoor debuteert bij PEC met zege op Telstar dankzij uitblinker Mbayo",
      "link": "https://nos.nl/l/2640501",
      "time": "2026-11-21T23:19:38+01:00",
@@ -129,7 +135,7 @@
      "img": "https://images.cdn.nos.nl/5/F/r/i/x/Z/ruWJPCvg3nvqzqxknm7H43BzVtBYFbxWiMBB653/118x159x3120x1755-1024x576.webp"
     },
     {
-     "title": "Van Gerwen plaatst zich na negendartershow voor halve finales Grand Slam of Darts",
+     "title": "Van Gerwen na negendartershow naar halve finales Grand Slam of Darts en treft Van Veen",
      "link": "https://nos.nl/l/2640479",
      "time": "2026-11-21T20:45:32+01:00",
      "img": "https://images.cdn.nos.nl/6/G/R/s/h/t/UmYQaQGrtt4xuFtL1ZBz64g15mbHW4R1yYdYpHv/1557x51x1760x990-1024x576.webp"
@@ -181,18 +187,18 @@
      "link": "https://nos.nl/l/2640432",
      "time": "2026-11-21T16:01:05+01:00",
      "img": "https://images.cdn.nos.nl/1/F/2/t/o/n/BThUT3j1TKssFvRh7L7nvrBucCeFQKsMEL9Tf2C/0x201x4000x2250-1024x576.webp"
-    },
-    {
-     "title": "Emegha en Kluivert scoren in Premier League, vormcrisis Manchester City houdt aan",
-     "link": "https://nos.nl/l/2640428",
-     "time": "2026-11-21T15:37:45+01:00",
-     "img": "https://images.cdn.nos.nl/4/8/k/w/d/4/zgWSRtgUfbJFoJ77ut88vzXKBeCti1mUdGzgfhu/276x45x1696x954-1024x576.webp"
     }
    ]
   },
   {
    "name": "NU.nl",
    "items": [
+    {
+     "title": "Zeker 24 doden nadat boot in Nigeria onderweg naar begrafenis kapseist",
+     "link": "https://www.nu.nl/buitenland/6417380/zeker-24-doden-nadat-boot-in-nigeria-onderweg-naar-begrafenis-kapseist.html",
+     "time": "2026-11-21T23:30:45+01:00",
+     "img": "https://images.nu.nl/m/bomxdsma1tz8_sqr256/651/0/2400/2400/zeker-24-doden-nadat-boot-in-nigeria-onderweg-naar-begrafenis-kapseist.jpg"
+    },
     {
      "title": "Man beschoten bij poging tot terugkopen gestolen fiets, jongen (16) aangehouden",
      "link": "https://www.nu.nl/binnenland/6417379/man-beschoten-bij-poging-tot-terugkopen-gestolen-fiets-jongen-16-aangehouden.html",
@@ -276,12 +282,6 @@
      "link": "https://www.nu.nl/voetbal/6417351/malen-schittert-met-vier-goals-voor-as-roma-en-treedt-in-voetsporen-van-basten.html",
      "time": "2026-11-21T17:10:10+01:00",
      "img": "https://images.nu.nl/m/6h6xa3vagt84_sqr256/1329/0/3415/3415/malen-schittert-met-vier-goals-voor-as-roma-en-treedt-in-voetsporen-van-basten.jpg"
-    },
-    {
-     "title": "Wapenfabrikant Hengelo werd wereldnieuws en verzet zich al langer tegen Poetin",
-     "link": "https://www.nu.nl/binnenland/6417211/wapenfabrikant-hengelo-werd-wereldnieuws-en-verzet-zich-al-langer-tegen-poetin.html",
-     "time": "2026-11-21T16:55:30+01:00",
-     "img": "https://images.nu.nl/m/vojxbqfaw65l_sqr256/347/0/1080/1080/wapenfabrikant-hengelo-werd-wereldnieuws-en-verzet-zich-al-langer-tegen-poetin.jpg"
     }
    ]
   }
