@@ -3,6 +3,12 @@
 Every dashboard version, newest first, one table per day. Version is `1.MINOR.PATCH` (big request = MINOR, small fix = PATCH).
 Everything before 1.0.0 (versions 1 to 0.60.2): `docs/archive/CHANGELOG-pre-1.0.md`.
 
+## 22 November 2026
+
+| Version | What |
+|---|---|
+| 1.16.0 | **Planner v3** (big idea, six features from other planners). **Dates in words**: tasks.exe and Ctrl+K understand "laundry every sunday 10:00 30 min low", "dentist fri 15:00", "tomorrow", "4 dec", "in 3 days", "3pm", "1.5 h" and show "Understood: …" while you type. **Repeating tasks**: every day / weekdays / every week (on chosen days) / every month, set by words or in the task window's new Repeat row; ticking one off moves it to the next time, and its later times show faintly (↻) in the week. **Exams**: "+ Exam" in day.exe (or "exam AQM 4 dec 9:00" in tasks) asks for the day, the hours of study needed and the session length; a violet bar above the week shows "x done · y of z h planned", and dashed violet "Study?" sessions are spread over the days before (Go = studied, Skip = another day), in free time with the most energy, never during AH, classes or weekdays 17:00-20:00. Canvas items that look like an exam get "Plan revision?". **Energy**: Low / Medium / High per task (task window, or "low/high" in words), a dot in the lists, and a strip at the left of the timeline showing your energy over the day. **Focus timer**: ▶ on a task (or "Focus now" in the task window) starts 4 × 25 min with 5 min breaks for that task: focus.exe with a big timer, Pause, "Done - tick off" and Stop; the task row turns red with the time left; minutes are kept per task. **Habits** in rhythm.exe: your own habits (+ Add habit, name + days) with seven day squares, a streak and a tick for today; gym and "Phone away by 23:00" (phone app) as habit rows too; "Focus this week". **plan.exe / wrap-up.exe** at the top of the Planner tab: in the morning and day "Your 3 for today" (pick from your open tasks) and a line with what the day holds; from 20:00 (Sunday 19:00) a wrap-up with how the day/week went, the tasks still open (Tomorrow / Later / Drop) and "Your 3 for tomorrow/Monday", closed with Done. **Fixes**: the Ctrl+K window is small again (it was a 720 px box), and gym suggestions now show in every week you look at, not only this one; from Sunday 19:00 the week view opens on next week. New shared keys: `habits.list`, `habits.log`, `exams.list`, `exams.log`, `exams.skips`, `plan.top`, `plan.closed`, `focus.log`. |
+
 ## 19 November 2026
 
 | Version | What |

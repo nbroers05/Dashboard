@@ -160,11 +160,11 @@
   const MODES = {
     desk: {
       enter() {
-        const ids = ['media-stack', 'calendar', 'version', 'w-weather', 'w-rain', 'w-alerts', 'w-ah', 'w-canvas', 'w-f1', 'w-episodes', 'w-stars', 'w-letterboxd', 'w-friends', 'w-mail', 'w-todo', 'w-wishes', 'w-health', 'w-sptop', 'w-checkin', 'w-day', 'w-rhythm'];
+        const ids = ['media-stack', 'calendar', 'version', 'w-weather', 'w-rain', 'w-alerts', 'w-ah', 'w-canvas', 'w-f1', 'w-episodes', 'w-stars', 'w-letterboxd', 'w-friends', 'w-mail', 'w-todo', 'w-wishes', 'w-health', 'w-sptop', 'w-checkin', 'w-day', 'w-rhythm', 'w-wrap'];
         remember(ids);
         put(weather, ['w-weather', 'w-rain']);
         put(tabs, TABS.map(([id]) => id));
-        put(hidden, ['w-checkin', 'w-wishes', 'w-rhythm', 'calendar']);   // the agenda keeps loading (parked); day.exe takes its place
+        put(hidden, ['w-checkin', 'w-wishes', 'w-rhythm', 'w-wrap', 'calendar']);   // the agenda keeps loading (parked); day.exe takes its place
         put(drawer, ['w-mail', 'w-todo', 'w-health', 'w-sptop']);
         moreList.textContent = 'Mail · To-do · Steps · Spotify';
         put(left, [weather, 'w-alerts', 'w-ah']);
@@ -184,7 +184,7 @@
     },
     tall: {
       enter() {
-        const ids = ['w-weather', 'w-rain', 'w-f1', 'w-ah', 'w-canvas', 'w-alerts', 'w-health', ...ROT, 'w-mail', 'w-todo', 'w-wishes', 'w-checkin', 'version', 'calendar', 'w-day', 'w-rhythm'];
+        const ids = ['w-weather', 'w-rain', 'w-f1', 'w-ah', 'w-canvas', 'w-alerts', 'w-health', ...ROT, 'w-mail', 'w-todo', 'w-wishes', 'w-checkin', 'version', 'calendar', 'w-day', 'w-rhythm', 'w-wrap'];
         remember(ids);
         put(weather, ['w-weather', 'w-rain']);
         put(row3, [weather, 'w-f1', 'w-ah']);
@@ -195,7 +195,7 @@
         if (memory) memory.hidden = false;
         const before = $('calendar');
         [row3, row2, rot, $('w-day')].filter(Boolean).forEach((el) => dash.insertBefore(el, before));
-        put(hidden, ['w-mail', 'w-checkin', 'w-wishes', 'w-rhythm', 'calendar']);
+        put(hidden, ['w-mail', 'w-checkin', 'w-wishes', 'w-rhythm', 'w-wrap', 'calendar']);
         dash.append(hidden);
         if (window.DASH_RAIL) DASH_RAIL.enter(dash, 'tall');   // dock at the bottom (rail.js)
         buildDots();

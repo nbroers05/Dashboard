@@ -5,6 +5,9 @@
 // notifications tile muted (widgets/alerts.js looks at DASH.focus) and optionally your study playlist on via Spotify.
 // Done: a short message on the dashboard and a browser notification (no ntfy: Noah uses the Phone Link notifications).
 // Kept in localStorage, so reloading or a new tab doesn't stop the timer.
+// Since 1.16.0 (Planner v3) also on one task: the ▶ in tasks.exe or "Focus now" in the task window starts 4 rounds of 25 min with
+// 5 min breaks for that task (focus.exe: big timer, Pause, "Done - tick off", Stop). Focus minutes go to the shared focus.log
+// (per day and task, DASH_PLAN.focus) for "Focus this week" in rhythm.exe. DASH_FOCUS: startTask(t), task(), left(), open().
 (() => {
   const { h, store } = DASH;
   const bar = document.getElementById('topbar');
@@ -18,6 +21,8 @@
   const settings = () => ({ work: CFG.workMinutes || 50, pause: CFG.breakMinutes || 10, rounds: 1, music: !!PLAYLIST, ...(store.get(SETTINGS) || {}) });
   const state = () => store.get(STATE);
   const running = () => { const s = state(); return !!(s && s.sessionEnd > Date.now()); };
+  const P = () => window.DASH_PLAN;
+  const logMin = (s, min) => { if (P()) P().focus.add(s.task && s.task.id, min); };
 
   // Above the date: "Focus 42:10" or "Break 8:12" (on the portrait screen it replaces the date, so the bar doesn't get wider)
   const pill = h('button', 'tb-focus-pill');
@@ -60,6 +65,8 @@
     apply();
   }
   function stop(done) {
+    const s = state();
+    if (s && !done && s.phase === 'work') logMin(s, ((s.pausedAt || Date.now()) - (s.end - s.work * 60000)) / 60000);
     store.set(STATE, null);
     if (done) notify('Focus done', 'Well done! Your study block is over.');
     apply();
@@ -76,9 +83,10 @@
   // Phase over? On to a break, the next round or done
   function step() {
     const s = state();
-    if (!s) return;
+    if (!s || s.pausedAt) return;
     const now = Date.now();
     if (now < s.end) return;
+    if (s.phase === 'work') logMin(s, s.work);
     if (s.phase === 'work' && s.round < s.rounds) {
       store.set(STATE, { ...s, phase: 'pause', end: s.end + s.pause * 60000 });
       notify('Break', `${s.pause} minutes break. Then round ${s.round + 1} of ${s.rounds}.`);
@@ -86,7 +94,7 @@
       store.set(STATE, { ...s, phase: 'work', round: s.round + 1, end: s.end + s.work * 60000 });
       notify('Back to work', `Round ${s.round + 1} of ${s.rounds}: ${s.work} minutes of focus.`);
     } else {
-      return stop(true);
+      return stop(true, s);
     }
     step();   // if the tab was away for long, catch up on several phases at once
   }
@@ -109,7 +117,7 @@
         step();
         const cur = state();
         if (!cur) return apply();
-        pill.textContent = `${cur.phase === 'work' ? 'Focus' : 'Break'} ${mmss(cur.end - Date.now())}`;
+        pill.textContent = cur.pausedAt ? `Paused ${mmss(cur.end - cur.pausedAt)}` : `${cur.phase === 'work' ? 'Focus' : 'Break'} ${mmss(cur.end - Date.now())}`;
         pill.title = `${cur.phase === 'work' ? 'Focus' : 'Break'} · round ${cur.round} of ${cur.rounds} · done at ${DASH.fmtTime(cur.sessionEnd)}`;
         if (panel && panel.dialog.open) panelStatus();
       };
@@ -120,7 +128,7 @@
   }
 
   // ---------- Paneel: instellen, starten, stoppen ----------
-  let panel = null, statusEl = null;
+  let panel = null, statusEl = null, bigEl = null, subEl = null;
   function openPanel() {
     if (!panel) {
       panel = DASH.panel('Focus mode', 'var(--c-study)');
@@ -132,6 +140,11 @@
   function panelStatus() {
     const s = state();
     if (!s || !statusEl) return;
+    if (bigEl) {
+      bigEl.textContent = mmss(s.end - (s.pausedAt || Date.now()));
+      subEl.textContent = `${s.pausedAt ? 'paused' : s.phase === 'work' ? 'focus' : 'break'} · round ${s.round} of ${s.rounds}`;
+      return;
+    }
     statusEl.textContent = `${s.phase === 'work' ? 'Focus' : 'Break'} · ${mmss(s.end - Date.now())} left · round ${s.round} of ${s.rounds} · done at ${DASH.fmtTime(s.sessionEnd)}`;
   }
   function field(label, input, note) {
@@ -148,6 +161,37 @@
   }
   function fillPanel() {
     const s = state();
+    bigEl = subEl = null;
+    if (s && s.task) {
+      // focus.exe: one task, big timer
+      statusEl = h('span');
+      bigEl = h('p', 'fc-big');
+      subEl = h('p', 'fc-sub');
+      const dots = h('div', 'fc-dots');
+      for (let i = 1; i <= s.rounds; i++) dots.append(h('i', i < s.round ? 'on' : i === s.round ? 'now' : ''));
+      const mins = P() ? P().focus.today(s.task.id) : 0;
+      const info = h('p', 'w-sub fc-info', `${s.work} min focus · ${s.pause} min break${s.music ? ' · study playlist' : ''}${mins ? ` · on this task today: ${mins >= 60 ? `${Math.floor(mins / 60)} h ${mins % 60}` : mins} min` : ''}`);
+      const pause = h('button', 'w-btn ghost', s.pausedAt ? 'Resume' : 'Pause');
+      pause.type = 'button';
+      pause.onclick = () => {
+        const cur = state();
+        if (!cur) return;
+        if (cur.pausedAt) { const d = Date.now() - cur.pausedAt; store.set(STATE, { ...cur, pausedAt: null, end: cur.end + d, sessionEnd: cur.sessionEnd + d }); }
+        else store.set(STATE, { ...cur, pausedAt: Date.now() });
+        apply();
+      };
+      const doneB = h('button', 'w-btn', 'Done - tick off');
+      doneB.type = 'button';
+      doneB.onclick = () => { const id = s.task.id; stop(false); if (window.DASH_TASKS) DASH_TASKS.update(id, { done: true }); panel.close(); };
+      const stopB = h('button', 'w-btn ghost', 'Stop');
+      stopB.type = 'button';
+      stopB.onclick = () => { stop(false); panel.close(); };
+      const actions = h('div', 'fc-actions fc-task-actions');
+      actions.append(pause, doneB, stopB);
+      panel.body.replaceChildren(h('p', 'fc-task', s.task.text), bigEl, subEl, dots, info, actions, h('p', 'w-sub fc-info', 'Notifications on the dashboard are muted while it runs.'));
+      panelStatus();
+      return;
+    }
     if (s) {
       statusEl = h('p', 'fc-status');
       const stopBtn = h('button', 'w-btn', 'Stop');
@@ -190,6 +234,21 @@
   }
 
   btn.onclick = () => openPanel();
+
+  // ---------- One task (Planner v3) ----------
+  function startTask(t) {
+    const cur = settings();
+    if (state()) stop(false);
+    start({ work: 25, pause: 5, rounds: 4, music: !!cur.music && !!PLAYLIST, task: { id: t.id, text: t.text } });
+    store.set(SETTINGS, cur);   // the task preset doesn't change your own settings
+    openPanel();
+  }
+  window.DASH_FOCUS = {
+    startTask,
+    open: openPanel,
+    task: () => { const s = state(); return s && s.task ? s.task : null; },
+    left: () => { const s = state(); return s ? mmss(s.end - (s.pausedAt || Date.now())) : ''; },
+  };
   // Another tab starts or stops the timer: update here right away
   window.addEventListener('storage', (e) => { if (e.key === STATE) apply(); });
   apply();

@@ -119,14 +119,14 @@ window.DASH_RAIL = (() => {
       const day = document.getElementById('w-day');
       const side = h('div', 'ag-side');
       layer.append(side);
-      for (const [id, target] of [['w-day', layer], ['w-todo', side], ['w-rhythm', side]]) {
+      for (const [id, target] of [['w-wrap', layer], ['w-day', layer], ['w-todo', side], ['w-rhythm', side]]) {
         const el = document.getElementById(id);
         if (!el) continue;
         moved.push({ el, parent: el.parentElement, next: el.nextSibling, wasHidden: el.hidden });
         el.hidden = false;
         target.append(el);
       }
-      layer.prepend(...[day].filter(Boolean));
+      layer.prepend(...[document.getElementById('w-wrap'), day].filter(Boolean));
       document.body.classList.add('agenda-open');
       placeLayer();
       if (!fromHash && location.hash !== '#agenda') {

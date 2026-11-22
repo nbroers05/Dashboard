@@ -32,7 +32,8 @@ window.DASH_SB = (() => {
   const ITER = 600000;
 
   // The same on every device. Only things the user sets; caches and device choices are deliberately not in it.
-  const SHARED = ['dash.links', 'health.goal', 'todo.items', 'gym.log', 'gym.skips', 'gym.pins', 'daily.log', 'daily.extra'];
+  const SHARED = ['dash.links', 'health.goal', 'todo.items', 'gym.log', 'gym.skips', 'gym.pins', 'daily.log', 'daily.extra',
+    'habits.list', 'habits.log', 'exams.list', 'exams.log', 'exams.skips', 'plan.top', 'plan.closed', 'focus.log'];   // Planner v3 (1.16.0)
 
   // ---------- Storage (raw, without the hook below) ----------
   const proto = window.Storage && Storage.prototype;

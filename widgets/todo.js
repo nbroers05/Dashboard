@@ -8,6 +8,9 @@
 // first) and No date. Ctrl+K adds a task from anywhere. A row can be dragged onto a day or a time in day.exe (DASH_DRAG).
 // The same list on every device via Supabase (live within a second or two since 1.10.0), otherwise only in this browser.
 // Circle = check off; double-click the text = edit; × = remove. Exposes DASH_TASKS for day.exe.
+// Planner v3 (1.16.0): the input and Ctrl+K understand words (DASH_PLAN.parse; "Understood: …" while typing; "exam …" opens the exam
+// window), tasks can repeat (rep; ticking one off moves it to the next date, the day goes into hist), have an energy level (en: a dot)
+// and a ▶ that starts focus on that task (DASH_FOCUS; the row turns red with the time left).
 DASH.widget('w-todo', (card, body, guard) => {
   const { h, store, startOfDay, addDays } = DASH;
   const KEY = 'todo.items';
@@ -17,17 +20,48 @@ DASH.widget('w-todo', (card, body, guard) => {
   const load = () => store.get(KEY) || [];
   const save = (items) => { store.set(KEY, items); window.dispatchEvent(new CustomEvent('dash:tasks')); };
   const newId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-  const addTask = (text, due, time, dur) => save([...load(), { id: newId(), text, done: false, ...(due ? { due } : {}), ...(due && time ? { time } : {}), ...(due && time && dur ? { dur } : {}) }]);
+  const P = window.DASH_PLAN;
+  // add(text, due, time, dur) or add({ text, due, time, dur, rep, en })
+  const addTask = (text, due, time, dur) => {
+    const o = typeof text === 'object' ? text : { text, due, time, dur };
+    const t = { id: newId(), text: o.text, done: false };
+    if (o.due) t.due = o.due;
+    if (o.due && o.time) t.time = o.time;
+    if (o.due && o.time && o.dur) t.dur = o.dur;
+    if (o.rep && o.due) t.rep = o.rep;
+    if (o.en) t.en = o.en;
+    save([...load(), t]);
+    return t;
+  };
+  // A repeating task that is checked off moves on to the next time (and remembers the day it was done for)
+  function advance(n) {
+    if (!n.rep || !n.due || !P) return n;
+    const today = startOfDay(Date.now()), cur = fromIso(n.due);
+    const next = P.nextOn(n.rep, Math.max(cur, today), false, cur);
+    const hist = [...(n.hist || []), n.due].slice(-60);
+    return { ...n, done: false, due: next ? iso(next) : n.due, hist, doneAt: Date.now() };
+  }
+  const tidy = (n) => {
+    Object.keys(n).forEach((k) => { if (n[k] === undefined) delete n[k]; });
+    if (!n.due) { delete n.time; delete n.rep; }
+    if (!n.time) delete n.dur;
+    return n;
+  };
   const update = (id, change) => {
     save(load().map((t) => {
       if (t.id !== id) return t;
-      const n = { ...t, ...change };
-      Object.keys(n).forEach((k) => { if (n[k] === undefined) delete n[k]; });
-      if (!n.due) delete n.time;
-      if (!n.time) delete n.dur;
-      return n;
+      let n = { ...t, ...change };
+      if (change.done === true && !t.done) n.doneAt = Date.now();
+      if (change.done === false) n.doneAt = undefined;
+      if (n.done && n.rep) n = advance(n);
+      return tidy(n);
     }));
   };
+  // Checked off somewhere that doesn't know about repeats (the phone app): move them on here
+  function normalize() {
+    const items = load();
+    if (items.some((t) => t.done && t.rep)) save(items.map((t) => (t.done && t.rep ? tidy(advance(t)) : t)));
+  }
   const remove = (id) => save(load().filter((x) => x.id !== id));
   const weekdayShort = (d) => new Date(`${d}T12:00`).toLocaleDateString('en-GB', { weekday: 'short' });
   const dayLabel = (d, time) => {
@@ -122,6 +156,28 @@ DASH.widget('w-todo', (card, body, guard) => {
 
   window.DASH_TASKS = { list: load, add: addTask, update, remove, iso, fromIso, pickDay, dayLabel };
 
+  // The line under an input: what the words were understood as ("Understood: ↻ Every Sunday · 10:00 · 30 min · low energy")
+  function understoodLine() {
+    const el = h('div', 'tk-parsed');
+    el.hidden = true;
+    return {
+      el,
+      show(text) {
+        const p = P && text.trim() ? P.parse(text) : null;
+        if (!p || !p.found.length) { el.hidden = true; el.replaceChildren(); return; }
+        el.hidden = false;
+        el.replaceChildren(h('span', 'tk-parsed-l', 'Understood:'), ...p.found.map((f) => h('span', `tk-chip tk-pchip${/energy$/.test(f) ? ` en-${f.split(' ')[0]}` : ''}`, f)), h('span', 'tk-parsed-r', 'Enter = add'));
+      },
+    };
+  }
+  // Add from a typed line: the words win over the chips; "exam …" opens the exam window
+  function addTyped(text, chipDay) {
+    const p = P ? P.parse(text) : { text, found: [] };
+    if (p.exam) { if (window.DASH_STUDY) DASH_STUDY.open({ course: p.text, due: p.due, time: p.time }); return null; }
+    return addTask({ ...p, text: p.text || text, due: p.due || chipDay });
+  }
+  const EN = { low: 'low', med: 'med', high: 'high' };
+
   // ---------- Drawing ----------
   const head = h('div', 'td-count');
   let showDone = false;
@@ -131,17 +187,21 @@ DASH.widget('w-todo', (card, body, guard) => {
   input.setAttribute('aria-label', 'New task');
   input.maxLength = 200;
   form.append(input);
+  input.title = 'Words work too: "laundry every sunday 10:00 30 min low", "dentist fri 15:00", "exam AQM 4 dec 9:00"';
   const chips = chipsBar();
+  const parsed = understoodLine();
   const list = h('ul', 'td-list');
   const foot = h('div', 'td-foot');
-  body.replaceChildren(head, form, chips.el, list, foot);
+  body.replaceChildren(head, form, parsed.el, chips.el, list, foot);
+  input.addEventListener('input', () => parsed.show(input.value));
 
   form.addEventListener('submit', guard((e) => {
     e.preventDefault();
     const text = input.value.trim();
     if (!text) return;
-    addTask(text, chips.get());
+    addTyped(text, chips.get());
     input.value = '';
+    parsed.show('');
     chips.reset();
     render();
   }));
@@ -170,6 +230,7 @@ DASH.widget('w-todo', (card, body, guard) => {
   };
 
   function render() {
+    normalize();
     const items = load();
     const open = items.filter((t) => !t.done);
     const done = items.filter((t) => t.done);
@@ -179,22 +240,37 @@ DASH.widget('w-todo', (card, body, guard) => {
     const weekEnd = iso(addDays(DASH.startOfWeek(Date.now()), 7) - 1);   // Sunday of this week
     const byDue = (x, y) => `${x.due || '9999'} ${x.time || ''}`.localeCompare(`${y.due || '9999'} ${y.time || ''}`);
     const canvas = ((window.DASH_CANVAS && DASH_CANVAS.items()) || []).filter((c) => !c.done && c.due < Date.now() + 21 * 864e5 && c.due > Date.now() - 2 * 864e5);
+    const focusing = window.DASH_FOCUS && DASH_FOCUS.task();
     const row = (t) => {
-      const li = h('li', `td-item${t.done ? ' done' : ''}`);
+      const on = focusing && focusing.id === t.id && !t.done;
+      const li = h('li', `td-item${t.done ? ' done' : ''}${on ? ' td-focus' : ''}`);
       const check = h('button', 'td-check', t.done ? '✓' : '');
-      check.setAttribute('aria-label', t.done ? 'Open again' : 'Check off');
+      check.setAttribute('aria-label', t.done ? 'Open again' : t.rep ? 'Done for this time' : 'Check off');
       check.onclick = () => update(t.id, { done: !t.done });
-      const text = h('span', 'td-text', t.text);
+      const text = h('span', 'td-text', `${t.rep ? '↻ ' : ''}${t.text}`);
       text.title = 'Double-click to edit · drag onto a day in the planner';
       text.ondblclick = () => edit(text, t);
-      const chip = h('button', `td-due${t.due ? '' : ' empty'}`, t.due ? dayLabel(t.due, t.time) : '+ date');
+      const when = t.due ? dayLabel(t.due, t.time) : '+ date';
+      const chip = h('button', `td-due${t.due ? '' : ' empty'}`, when);
       chip.type = 'button';
-      chip.title = 'Set a date';
+      chip.title = t.rep ? `${P.repText(t.rep)[0].toUpperCase()}${P.repText(t.rep).slice(1)} · click to set the next date` : 'Set a date';
       chip.onclick = () => pickDay(chip, t.due, (d) => update(t.id, { due: d }), true);
       const del = h('button', 'td-del', '×');
       del.setAttribute('aria-label', `Remove "${t.text}"`);
       del.onclick = () => remove(t.id);
-      li.append(check, text, chip, del);
+      li.append(check, text);
+      if (t.en && !t.done) { const en = h('span', `td-en en-${t.en}`); en.title = `${P.EN_LABEL[t.en]} energy`; li.append(en); }
+      li.append(chip);
+      if (!t.done && window.DASH_FOCUS) {
+        const play = h('button', 'td-play', on ? '' : '▶');
+        play.type = 'button';
+        play.title = on ? 'Focusing on this task (click for the timer)' : 'Focus on this task (25 min rounds)';
+        play.setAttribute('aria-label', play.title);
+        if (on) play.dataset.focusClock = '1';
+        play.onclick = () => (on ? DASH_FOCUS.open() : DASH_FOCUS.startTask(t));
+        li.append(play);
+      }
+      li.append(del);
       if (!t.done) {
         li.addEventListener('pointerdown', (e) => {
           if (e.target.closest('button') || text.isContentEditable || !window.DASH_DRAG) return;
@@ -250,6 +326,12 @@ DASH.widget('w-todo', (card, body, guard) => {
   window.addEventListener('storage', guard((e) => { if (e.key === KEY) fromElsewhere(); }));   // another tab
   window.addEventListener('dash:calendar', guard(() => { if (!list.querySelector('[contenteditable="true"]')) render(); }));
   window.addEventListener('dash:synced', guard((e) => { if (e.detail.key === KEY) fromElsewhere(); }));   // from another device, live (sync.js)
+  window.addEventListener('dash:focus', guard(fromElsewhere));   // focus started or stopped: the red row
+  // The running task's time left, every second
+  setInterval(() => {
+    const el = list.querySelector('[data-focus-clock]');
+    if (el && window.DASH_FOCUS) el.textContent = DASH_FOCUS.left();
+  }, 1000);
 
   // ---------- Ctrl+K: quick add from anywhere ----------
   const dlg = h('dialog', 'panel-dialog td-quick');
@@ -259,8 +341,10 @@ DASH.widget('w-todo', (card, body, guard) => {
   qIn.placeholder = 'New task, then Enter';
   qIn.maxLength = 200;
   const qChips = chipsBar();
-  qForm.append(h('b', null, 'New task'), qIn, qChips.el);
-  qForm.onsubmit = (e) => { e.preventDefault(); const t = qIn.value.trim(); if (t) addTask(t, qChips.get()); qIn.value = ''; qChips.reset(); dlg.close(); };
+  const qParsed = understoodLine();
+  qIn.addEventListener('input', () => qParsed.show(qIn.value));
+  qForm.append(h('b', null, 'New task'), qIn, qParsed.el, qChips.el, h('p', 'tk-hint', 'Words work too: "dentist fri 15:00", "laundry every sunday 10:00 30 min low", "exam AQM 4 dec 9:00".'));
+  qForm.onsubmit = (e) => { e.preventDefault(); const t = qIn.value.trim(); dlg.close(); if (t) addTyped(t, qChips.get()); qIn.value = ''; qParsed.show(''); qChips.reset(); };
   dlg.append(qForm);
   dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
   dlg.addEventListener('close', closePop);

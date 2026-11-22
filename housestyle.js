@@ -35,6 +35,7 @@ window.DASH_HOUSESTYLE = (() => {
     'w-todo': ['tasks.exe', '用事'],
     'w-day': ['day.exe', '日々'],
     'w-rhythm': ['rhythm.exe', '律動'],
+    'w-wrap': ['plan.exe', '計画'],
     'w-wishes': ['wishes.exe', '願い'],
     'calendar': ['agenda.exe', '予定'],
   };

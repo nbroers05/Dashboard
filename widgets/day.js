@@ -15,7 +15,13 @@
 // - Interactions: click an empty slot = the task window there (Task / Time block, title, day, time, duration); click a task = the same
 //   window; drag a task from tasks.exe (or a task or gym block here) onto a day or a time (DASH_DRAG, mouse or long press on touch).
 //   Calendar items can't be moved.
+// - Planner v3 (1.16.0): gym suggestions for every week you look at (not only this one); from Sunday 19:00 the week view opens on
+//   next week. Exams (DASH_PLAN.exams, the "+ Exam" button or "exam AQM 4 dec" in tasks.exe) get a violet bar above the week and
+//   dashed violet "Study?" sessions spread over the days before (Go = studied, Skip = another day), placed in free time with the
+//   most energy (DASH_PLAN.ENERGY; the strip at the left of the timeline). Repeating tasks show on their later days too (faint, ↻).
+//   The task window has Repeat, Energy and "Focus now". Exposes DASH_STUDY (open, plan).
 DASH.widget('w-day', (card, body, guard) => {
+  const P = window.DASH_PLAN;
   const { h, store, startOfDay, addDays, startOfWeek, fmtTime, isAH } = DASH;
   const MIN = 60000, HOUR = 3600000;
   const VIEW = 'planner.view', LOG = 'gym.log', SKIP = 'gym.skips', PINS = 'gym.pins', TASKS = 'todo.items';
@@ -80,9 +86,9 @@ DASH.widget('w-day', (card, body, guard) => {
     return m < UP ? Math.max(0, Math.round(m / 5) * 5) : UP;
   }
 
-  // Gym this week: { done: days already trained, planned: days with a gym event still to come }
-  function week(now) {
-    const ws = startOfWeek(now), we = addDays(ws, 7);
+  // Gym in a week (this one, or the week starting at ws0): { done: days already trained, planned: days with a gym event still to come }
+  function week(now, ws0) {
+    const ws = ws0 || startOfWeek(now), we = addDays(ws, 7);
     const done = new Set(log().map((l) => l.day).filter((d) => d >= iso(ws) && d < iso(we)));
     const planned = new Set();
     for (const e of timed().filter((x) => isGym(x) && x.start >= ws && x.start < we)) {
@@ -92,10 +98,9 @@ DASH.widget('w-day', (card, body, guard) => {
     return { ws, we, done, planned };
   }
 
-  // Free slot of GYM_MIN minutes on that day: mornings first, then afternoon, then late evening. null = nothing quiet
-  function findSlot(day, now) {
-    const dow = (new Date(day).getDay() + 6) % 7;   // Monday = 0
-    const weekend = dow >= 5;
+  // What is taken on a day: calendar items (AH with cycling time around it), weekdays 17:00-20:00, and the exams themselves
+  function busyOn(day) {
+    const weekend = (new Date(day).getDay() + 6) % 7 >= 5;
     const busy = [];
     for (const e of timed()) {
       if (e.end <= day || e.start >= day + 24 * HOUR) continue;
@@ -103,6 +108,13 @@ DASH.widget('w-day', (card, body, guard) => {
       busy.push([e.start - (ah ? 25 : 0) * MIN, e.end + (ah ? 30 : 0) * MIN]);
     }
     if (!weekend) busy.push([day + 17 * HOUR, day + 20 * HOUR]);   // busy hours on weekdays
+    if (P) for (const x of P.exams.list()) if (x.at >= day && x.at < day + 24 * HOUR) busy.push([x.at - HOUR, x.at + 3 * HOUR]);
+    return { busy, weekend };
+  }
+
+  // Free slot of GYM_MIN minutes on that day: mornings first, then afternoon, then late evening. null = nothing quiet
+  function findSlot(day, now) {
+    const { busy, weekend } = busyOn(day);
     const lo = Math.max(upMin(day) + 60, weekend ? 10 * 60 : 9 * 60), hi = 22 * 60;
     let best = null;
     for (let m = lo; m + GYM_MIN <= hi; m += 15) {
@@ -118,15 +130,15 @@ DASH.widget('w-day', (card, body, guard) => {
 
   // Suggestions for the rest of this week: needed = goal - done - planned; spread over days, never next to a gym day if avoidable.
   // A suggestion you dragged elsewhere (gym.pins, by the day it started on) keeps that moment.
-  function suggest(now) {
-    const w = week(now);
+  function suggest(now, ws0) {
+    const w = week(now, ws0);
     const need = GOAL - w.done.size - w.planned.size;
     const out = [];
     if (need <= 0) return { w, list: out };
     const sk = skips(), pn = pins();
     const taken = new Set([...w.done, ...w.planned]);
     const days = [];
-    for (let d = startOfDay(now); d < w.we; d = addDays(d, 1)) days.push(d);
+    for (let d = Math.max(startOfDay(now), w.ws); d < w.we; d = addDays(d, 1)) days.push(d);
     const near = (d) => [-1, 1].some((k) => taken.has(iso(addDays(d, k))));
     for (const strict of [true, false]) {
       for (const d of days) {
@@ -152,6 +164,7 @@ DASH.widget('w-day', (card, body, guard) => {
   const movePin = (s, start) => { store.set(PINS, { ...pins(), [s.origin || s.day]: start }); changed(); };
   // Old skips, pins and log entries (older than this week) are dropped when drawing
   function cleanup() {
+    if (P) P.exams.cleanup();
     const ws = iso(startOfWeek(Date.now()));
     const sk = skips(), keep = Object.fromEntries(Object.entries(sk).filter(([d]) => d >= ws));
     if (Object.keys(keep).length !== Object.keys(sk).length) store.set(SKIP, keep);
@@ -161,6 +174,59 @@ DASH.widget('w-day', (card, body, guard) => {
     if (lg.length !== log().length) store.set(LOG, lg);
   }
   function changed() { window.dispatchEvent(new CustomEvent('dash:gym')); render(); }
+  // ---------- Exams: study sessions spread over the days before, in the free time with the most energy ----------
+  function studySlot(day, now, len, extra) {
+    const { busy, weekend } = busyOn(day);
+    busy.push(...extra);
+    const lo = Math.max(upMin(day) + 30, weekend ? 10 * 60 : 9 * 60), hi = 22 * 60;
+    let best = null;
+    for (let m = lo; m + len <= hi; m += 15) {
+      const s = day + m * MIN, e = s + len * MIN;
+      if (s < now + 20 * MIN) continue;
+      if (busy.some(([a, b]) => s < b + 15 * MIN && e > a - 15 * MIN)) continue;
+      let en = 0;
+      for (let k = m; k < m + len; k += 15) en += P.energyAt(k / 60);
+      const score = en / Math.ceil(len / 15);
+      if (!best || score > best.score + 0.001) best = { score, start: s, end: e };
+    }
+    return best;
+  }
+  let planCache = null;
+  function studyPlan(now) {
+    if (!P) return [];
+    const key = `${Math.floor(now / MIN)}|${localStorage.getItem('exams.list')}|${localStorage.getItem('exams.log')}|${localStorage.getItem('exams.skips')}|${localStorage.getItem(PINS)}|${localStorage.getItem(SKIP)}|${localStorage.getItem(LOG)}|${cal().events.length}`;
+    if (planCache && planCache.key === key) return planCache.list;
+    const out = [];
+    const gymWeeks = new Map();
+    const gymOn = (d) => { const ws = startOfWeek(d); if (!gymWeeks.has(ws)) gymWeeks.set(ws, suggest(now, ws).list); return gymWeeks.get(ws).filter((g) => g.day === iso(d)); };
+    const sk = P.exams.skips(), lg = P.exams.log();
+    for (const ex of P.exams.list().filter((x) => x.at > now).sort((a, b) => a.at - b.at)) {
+      const left = ex.need - P.exams.studied(ex.id);
+      if (left <= 0) continue;
+      const n = Math.ceil(left / ex.len);
+      const cands = [];
+      for (let d = startOfDay(now); d < startOfDay(ex.at); d = addDays(d, 1)) {
+        const k = iso(d);
+        if (sk[`${ex.id}|${k}`] || lg.some((l) => l.id === ex.id && l.day === k)) continue;
+        const extra = [...gymOn(d).map((g) => [g.start, g.end]), ...out.filter((o) => o.day === k).map((o) => [o.start, o.end])];
+        const slot = studySlot(d, now, ex.len, extra);
+        if (slot) cands.push({ ...slot, day: k });
+      }
+      let pick = cands;
+      if (cands.length > n) {   // spread evenly, the last one on the last free day before the exam
+        const idx = new Set();
+        for (let i = 0; i < n; i++) idx.add(n === 1 ? cands.length - 1 : Math.round((i * (cands.length - 1)) / (n - 1)));
+        pick = [...idx].map((i) => cands[i]);
+      }
+      for (const p of pick) out.push({ exam: ex, start: p.start, end: p.end, day: p.day });
+    }
+    planCache = { key, list: out };
+    return out;
+  }
+  // Hours studied + still planned for an exam
+  const examHours = (ex, plan) => ({ done: P.exams.studied(ex.id) / 60, planned: plan.filter((s) => s.exam.id === ex.id).reduce((a, s) => a + (s.end - s.start) / HOUR, 0) });
+  const shortCourse = (name) => { const words = (name || '').split(/\s+/).filter((w) => /^[A-Z]/.test(w)); return words.length >= 2 && name.length > 18 ? words.map((w) => w[0]).join('') : name; };
+
   window.DASH_GYM = { goal: GOAL, suggest: () => suggest(Date.now()), slot: (d) => findSlot(d, Date.now()), week: () => { const w = week(Date.now()); return { done: w.done.size, planned: w.planned.size }; } };
 
   // ---------- Dragging (also used by tasks.exe): mouse = move a few pixels, touch = long press ----------
@@ -334,6 +400,37 @@ DASH.widget('w-day', (card, body, guard) => {
     dur.value = String(t && t.dur ? t.dur : 60);
     const hint = h('p', 'dx-hint');
     const err = h('p', 'dx-err');
+    // Repeat: Never / Daily / Weekdays / Weekly (+ which days) / Monthly
+    let rp = t && t.rep ? { ...t.rep, d: [...(t.rep.d || [])] } : null;
+    const repRow = h('div', 'tk-chips dx-reprow');
+    const repBtns = [['', 'Never'], ['day', 'Daily'], ['wd', 'Weekdays'], ['week', 'Weekly'], ['month', 'Monthly']].map(([f, lab]) => {
+      const b = h('button', 'tk-chip', lab);
+      b.type = 'button';
+      b.onclick = () => { rp = f ? { f, ...(f === 'week' ? { d: rp && rp.d && rp.d.length ? rp.d : [P.dow(day ? P.fromIso(day) : Date.now())] } : {}) } : null; draw(); };
+      b.dataset.f = f;
+      return b;
+    });
+    repRow.append(...repBtns);
+    const dowRow = h('div', 'dx-dows');
+    const dowBtns = P.SHORT.map((n, i) => {
+      const b = h('button', 'dx-dow', n[0]);
+      b.type = 'button';
+      b.title = n;
+      b.onclick = () => { const set = new Set(rp.d || []); if (set.has(i)) set.delete(i); else set.add(i); if (set.size) rp.d = [...set].sort(); draw(); };
+      return b;
+    });
+    dowRow.append(h('span', null, 'on'), ...dowBtns);
+    // Energy: – / Low / Medium / High
+    let en = t && t.en ? t.en : '';
+    const enRow = h('div', 'tk-chips');
+    const enBtns = [['', '–'], ['low', 'Low'], ['med', 'Medium'], ['high', 'High']].map(([v, lab]) => {
+      const b = h('button', `tk-chip${v ? ` en-${v}` : ''}`, lab);
+      b.type = 'button';
+      b.onclick = () => { en = v; draw(); };
+      b.dataset.v = v;
+      return b;
+    });
+    enRow.append(...enBtns);
     const label = (txt, el, cls) => { const l = h('label', cls); l.append(h('span', null, txt), el); return l; };
     function draw() {
       sTask.setAttribute('aria-pressed', String(mode === 'task'));
@@ -341,6 +438,10 @@ DASH.widget('w-day', (card, body, guard) => {
       dateIn.value = day ? dmy(day) : '';
       chipBtns.forEach((b) => b.setAttribute('aria-pressed', String((b.dataset.val || undefined) === day)));
       dur.disabled = mode !== 'block';
+      repBtns.forEach((b) => b.setAttribute('aria-pressed', String((b.dataset.f || null) === (rp ? rp.f : null))));
+      dowRow.hidden = !(rp && rp.f === 'week');
+      dowBtns.forEach((b, i) => b.setAttribute('aria-pressed', String(!!(rp && rp.d && rp.d.includes(i)))));
+      enBtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === en)));
       hint.textContent = mode === 'block' ? 'A time block needs a day and a time; it shows in the timeline as long as the duration.' : 'No day = Later. No time = only in that day\'s chip row.';
     }
     const dayBox = h('span', 'dx-dayin');
@@ -349,11 +450,14 @@ DASH.widget('w-day', (card, body, guard) => {
     when.append(label('Day', dayBox), label('Time', timeIn), label('Duration', dur));
     const foot = h('div', 'dx-d-foot dx-tfoot');
     if (t) { const del = h('button', 'dx-btn dx-del', 'Delete'); del.type = 'button'; del.onclick = () => { DASH_TASKS.remove(t.id); tdlg.close(); }; foot.append(del); }
+    if (t && !t.done && window.DASH_FOCUS) { const fb = h('button', 'dx-btn', '▶ Focus now'); fb.type = 'button'; fb.onclick = () => { tdlg.close(); DASH_FOCUS.startTask(t); }; foot.append(fb); }
     const cancel = h('button', 'dx-btn', 'Cancel'), save = h('button', 'dx-btn dx-primary', 'Save');
     cancel.type = 'button';
     cancel.onclick = () => tdlg.close();
     foot.append(h('span', 'dx-grow'), cancel, save);
-    f.append(h('b', 'dx-d-title', t ? 'Edit task' : 'New task'), seg, label('Title', title), chips, when, hint, err, foot);
+    const repBox = h('div', 'dx-repbox');
+    repBox.append(repRow, dowRow);
+    f.append(h('b', 'dx-d-title', t ? 'Edit task' : 'New task'), seg, label('Title', title), chips, when, label('Repeat', repBox), label('Energy', enRow), hint, err, foot);
     f.onsubmit = (ev) => {
       ev.preventDefault();
       const text = title.value.trim();
@@ -375,8 +479,13 @@ DASH.widget('w-day', (card, body, guard) => {
       if (mode === 'block' && (!due || !time)) { err.textContent = 'A time block needs a day and a time.'; return; }
       if (time && !due) { err.textContent = 'A time needs a day.'; return; }
       const durMin = mode === 'block' ? Number(dur.value) : undefined;
-      if (t) DASH_TASKS.update(t.id, { text, due, time, dur: durMin });
-      else DASH_TASKS.add(text, due, time, durMin);
+      if (rp) {   // a repeat needs a day: the first time it falls on, from the chosen day (or today)
+        const first = P.nextOn(rp, due ? P.fromIso(due) : startOfDay(Date.now()), true, due ? P.fromIso(due) : undefined);
+        if (first) due = iso(first);
+      }
+      const extra = { rep: rp || undefined, en: en || undefined };
+      if (t) DASH_TASKS.update(t.id, { text, due, time, dur: durMin, ...extra });
+      else DASH_TASKS.add({ text, due, time, dur: durMin, ...extra });
       tdlg.close();
     };
     tdlg.replaceChildren(f);
@@ -384,6 +493,78 @@ DASH.widget('w-day', (card, body, guard) => {
     tdlg.showModal();
     title.focus();
   }
+
+  // The exam window: course (school courses offered), day, time, hours of study needed, session length
+  const edlg = h('dialog', 'panel-dialog dx-pop dx-examwin');
+  edlg.addEventListener('click', (e) => { if (e.target === edlg) edlg.close(); });
+  card.append(edlg);
+  function openExam(ex, pre) {
+    if (!P) return;
+    pre = pre || {};
+    let day = ex ? iso(ex.at) : pre.due || null;
+    const f = h('form', 'dx-tf');
+    const courseIn = h('input');
+    courseIn.maxLength = 120;
+    courseIn.placeholder = 'Course';
+    courseIn.value = ex ? ex.course : pre.course || '';
+    const dl = h('datalist');
+    dl.id = 'dx-courses';
+    const names = [...new Set(timed().filter((e) => kindOf(e) === 'school').map((e) => course(e).name.replace(/\s*\b(lecture|tutorial|workshop|seminar|skills?)\b.*$/i, '').trim()).filter(Boolean))].sort();
+    for (const n of names) { const o = h('option'); o.value = n; dl.append(o); }
+    courseIn.setAttribute('list', dl.id);
+    const dateIn = h('input', 'dx-date');
+    dateIn.placeholder = 'dd-mm-yyyy';
+    dateIn.inputMode = 'numeric';
+    dateIn.maxLength = 10;
+    dateIn.value = day ? dmy(day) : '';
+    const pick = h('button', 'dx-btn dx-pickb', '▾');
+    pick.type = 'button';
+    pick.onclick = () => window.DASH_TASKS && DASH_TASKS.pickDay(pick, day, (d) => { day = d; dateIn.value = d ? dmy(d) : ''; });
+    const dayBox = h('span', 'dx-dayin');
+    dayBox.append(dateIn, pick);
+    const timeIn = h('input', 'dx-time');
+    timeIn.maxLength = 5;
+    timeIn.inputMode = 'numeric';
+    timeIn.value = ex ? fmtTime(ex.at) : pre.time || '09:00';
+    const need = h('select');
+    for (const hrs of [2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 30]) { const o = h('option', null, `${hrs} h`); o.value = String(hrs * 60); need.append(o); }
+    need.value = String(ex ? ex.need : 600);
+    const len = h('select');
+    for (const m of [45, 60, 90, 120, 180]) { const o = h('option', null, durText(m)); o.value = String(m); len.append(o); }
+    len.value = String(ex ? ex.len : 90);
+    const err = h('p', 'dx-err');
+    const label = (txt, el) => { const l = h('label'); l.append(h('span', null, txt), el); return l; };
+    const row1 = h('div', 'dx-trow dx-trow2');
+    row1.append(label('Exam day', dayBox), label('Time', timeIn));
+    const row2 = h('div', 'dx-trow dx-trow2');
+    row2.append(label('Study needed', need), label('Session length', len));
+    const foot = h('div', 'dx-d-foot dx-tfoot');
+    if (ex) { const del = h('button', 'dx-btn dx-del', 'Delete'); del.type = 'button'; del.onclick = () => { P.exams.remove(ex.id); edlg.close(); }; foot.append(del); }
+    const cancel = h('button', 'dx-btn', 'Cancel'), save = h('button', 'dx-btn dx-primary', ex ? 'Save' : 'Plan it');
+    cancel.type = 'button';
+    cancel.onclick = () => edlg.close();
+    foot.append(h('span', 'dx-grow'), cancel, save);
+    const studied = ex ? P.exams.studied(ex.id) : 0;
+    f.append(h('b', 'dx-d-title', ex ? 'Exam' : 'Add exam'), label('Course', courseIn), dl, row1, row2,
+      h('p', 'dx-hint', `Study sessions go in your free time with the most energy, never during AH, classes or weekdays 17:00-20:00; the last one the day before.${studied ? ` Studied so far: ${durText(studied)}.` : ''}`), err, foot);
+    f.onsubmit = (ev) => {
+      ev.preventDefault();
+      const name = courseIn.value.trim();
+      if (!name) { err.textContent = 'Which course?'; return; }
+      const m = dateIn.value.trim().match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})$/);
+      const d = m && new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1]));
+      if (!d || d.getMonth() !== Number(m[2]) - 1) { err.textContent = 'Exam day as dd-mm-yyyy, for example 04-12-2026.'; return; }
+      const tm = timeIn.value.trim().match(/^(\d{1,2})[:.](\d{2})$/);
+      if (!tm || Number(tm[1]) > 23 || Number(tm[2]) > 59) { err.textContent = 'Time as 24 h, for example 09:00.'; return; }
+      d.setHours(Number(tm[1]), Number(tm[2]), 0, 0);
+      P.exams.upsert({ ...(ex || {}), course: name, at: d.getTime(), need: Number(need.value), len: Number(len.value), ...(pre.canvas ? { canvas: pre.canvas } : {}) });
+      edlg.close();
+    };
+    edlg.replaceChildren(f);
+    edlg.showModal();
+    if (!courseIn.value) courseIn.focus();
+  }
+  window.DASH_STUDY = { open: (pre) => openExam(null, pre), edit: (ex) => openExam(ex), plan: () => studyPlan(Date.now()) };
 
   // ---------- Drawing ----------
   const head = h('div', 'dx-head');
@@ -399,9 +580,52 @@ DASH.widget('w-day', (card, body, guard) => {
   const prev = h('button', 'dx-nav', '‹'), next = h('button', 'dx-nav', '›');
   [prev, next].forEach((b, i) => { b.type = 'button'; b.setAttribute('aria-label', i ? 'Next' : 'Previous'); b.onclick = () => { offset += i ? 1 : -1; if (view === 'week') offset = Math.max(offset, -4); render(); }; });
   const meta = h('span', 'dx-meta');
-  head.append(prev, next, meta, title, seg);
+  const addEx = h('button', 'dx-btn dx-addex', '+ Exam');
+  addEx.type = 'button';
+  addEx.title = 'Add an exam: the planner spreads study sessions over the days before';
+  addEx.onclick = () => openExam(null);
+  head.append(prev, next, meta, title, addEx, seg);
+  const exBar = h('div', 'dx-exams');
   const scroll = h('div', 'dx-scroll');
-  body.replaceChildren(head, scroll);
+  body.replaceChildren(head, exBar, scroll);
+
+  // The violet bars above the week: each exam in the next five weeks, with study hours done / planned; Canvas exams offered
+  function drawExams(now, plan) {
+    const rows = [];
+    if (P) {
+      for (const ex of P.exams.list().filter((x) => x.at > now - 2 * HOUR && x.at < now + 35 * 864e5).sort((a, b) => a.at - b.at)) {
+        const { done, planned } = examHours(ex, plan);
+        const days = Math.round((startOfDay(ex.at) - startOfDay(now)) / 864e5);
+        const r = h('button', 'dx-exam');
+        r.type = 'button';
+        r.title = 'Click to change or delete';
+        r.onclick = () => openExam(ex);
+        const bar = h('span', 'dx-exam-bar');
+        const a = h('i', 'done'), b = h('i', 'plan');
+        a.style.width = `${Math.min(100, (done / (ex.need / 60)) * 100)}%`;
+        b.style.width = `${Math.max(0, Math.min(100 - (done / (ex.need / 60)) * 100, (planned / (ex.need / 60)) * 100))}%`;
+        bar.append(a, b);
+        const tot = done + planned, short = tot + 0.01 < ex.need / 60;
+        const hrs = (x) => (Math.round(x * 10) / 10).toString().replace(/\.0$/, '');
+        r.append(h('b', null, 'EXAM'), h('span', 'dx-exam-name', `${ex.course} · ${new Date(ex.at).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })} ${fmtTime(ex.at)} · ${days <= 0 ? 'today' : days === 1 ? 'tomorrow' : `${days} days`}`), bar,
+          h('span', `dx-exam-h${short ? ' short' : ''}`, `${hrs(done)} done · ${hrs(tot)} of ${hrs(ex.need / 60)} h planned${short ? ' (no more room)' : ''}`));
+        rows.push(r);
+      }
+      // Canvas items that look like an exam and aren't planned yet
+      const cv = ((window.DASH_CANVAS && DASH_CANVAS.items()) || []).filter((c) => !c.done && /\b(exam|tentamen|toets|midterm|final|resit|hertentamen)\b/i.test(c.name) && c.due > now && c.due < now + 60 * 864e5);
+      for (const c of cv) {
+        if (P.exams.list().some((x) => x.canvas === c.name || Math.abs(startOfDay(x.at) - startOfDay(c.due)) < 864e5)) continue;
+        const r = h('div', 'dx-exam dx-exam-offer');
+        const b = h('button', 'dx-btn', 'Plan revision?');
+        b.type = 'button';
+        b.onclick = () => openExam(null, { course: c.name.replace(/\s*[-–:]?\s*\b(exam|tentamen|toets)\b.*$/i, '').trim() || c.name, due: iso(c.due), time: fmtTime(c.due), canvas: c.name });
+        r.append(h('b', null, 'CANVAS'), h('span', 'dx-exam-name', `${c.name} · ${new Date(c.due).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })}`), b);
+        rows.push(r);
+      }
+    }
+    exBar.replaceChildren(...rows);
+    exBar.hidden = !rows.length;
+  }
   const eyebrow = card.querySelector(':scope > .eyebrow');
   card.dataset.nhDyn = '1';   // housestyle.js leaves the window title to us (WEEK / DAY)
   function setWindowTitle() {
@@ -427,25 +651,28 @@ DASH.widget('w-day', (card, body, guard) => {
     return sorted;
   }
 
-  const taskBox = (t, extra) => {
-    const l = h('div', `dx-tk${t.done ? ' done' : ''}${extra || ''}`);
+  // A task as a chip (or inside a block). ghost = a later time of a repeating task: faint, no checkbox, click = edit
+  const taskBox = (t, extra, ghost) => {
+    const l = h('div', `dx-tk${t.done ? ' done' : ''}${extra || ''}${ghost ? ' ghost' : ''}${t.en ? ` en-${t.en}` : ''}`);
     const c = h('input');
     c.type = 'checkbox';
     c.checked = !!t.done;
     c.setAttribute('aria-label', `Check off "${t.text}"`);
     c.onchange = () => window.DASH_TASKS && DASH_TASKS.update(t.id, { done: c.checked });
-    l.append(c, h('span', null, t.text));
-    l.title = `${t.text}${t.time ? ` · ${t.time}` : ''} (click to edit, drag to move)`;
+    if (!ghost) l.append(c);
+    l.append(h('span', null, `${t.rep ? '↻ ' : ''}${t.text}`));
+    if (t.en) l.append(h('i', `dx-endot en-${t.en}`));
+    l.title = `${t.text}${t.time ? ` · ${t.time}` : ''}${t.rep && P ? ` · ${P.repText(t.rep)}` : ''}${t.en && P ? ` · ${P.EN_LABEL[t.en].toLowerCase()} energy` : ''} (click to edit${ghost ? '' : ', drag to move'})`;
     l.addEventListener('click', (e) => { if (e.target !== c) openTask(t); });
     l.addEventListener('pointerdown', (e) => {
-      if (e.target === c) return;
+      if (e.target === c || ghost) return;
       DRAG.start(e, { label: t.text, onDrop: (loc) => window.DASH_TASKS && DASH_TASKS.update(t.id, { due: iso(loc.day), time: loc.min != null ? hhmm(loc.min) : undefined }) });
     });
     return l;
   };
 
   // Everything with a time on one day: { kind, s, e, ev|g|t }
-  function dayItems(day, sugg) {
+  function dayItems(day, sugg, study) {
     const items = [];
     const gymCal = new Set();
     for (const ev of timed()) {
@@ -461,7 +688,23 @@ DASH.widget('w-day', (card, body, guard) => {
       const [hh, mm] = t.time.split(':').map(Number), s = day + (hh * 60 + mm) * MIN;
       items.push({ kind: 'task', t, s, e: s + (t.dur || 30) * MIN });
     }
+    for (const t of ghostsOn(day)) {
+      if (!t.time) continue;
+      const [hh, mm] = t.time.split(':').map(Number), s = day + (hh * 60 + mm) * MIN;
+      items.push({ kind: 'task', t, ghost: true, s, e: s + (t.dur || 30) * MIN });
+    }
+    if (P) {
+      for (const x of P.exams.list()) if (x.at >= day && x.at < day + 24 * HOUR) items.push({ kind: 'exam', x, s: x.at, e: x.at + 2 * HOUR });
+      for (const l of P.exams.log()) if (l.day === iso(day)) { const x = P.exams.list().find((e) => e.id === l.id); if (x) items.push({ kind: 'studied', x, s: l.start, e: l.end }); }
+      for (const st of (study || []).filter((z) => z.day === iso(day))) items.push({ kind: 'study', st, s: st.start, e: st.end });
+    }
     return items;
+  }
+  // Later times of repeating tasks on this day (faint, ↻): after the task's own next date, up to eight weeks ahead
+  function ghostsOn(day) {
+    if (!P || day > Date.now() + 56 * 864e5) return [];
+    const key = iso(day);
+    return tasks().filter((t) => t.rep && t.due && !t.done && t.due < key && P.occursOn(t.rep, day, P.fromIso(t.due)));
   }
 
   function column(day, ctx, items) {
@@ -479,9 +722,9 @@ DASH.widget('w-day', (card, body, guard) => {
     for (const it of lanes(items)) {
       const night = nh && (it.s - day) / MIN < lo2 && (it.e - day) / MIN <= lo2 + 60;   // lives in the squeezed band
       const top = Math.max(0, y(it.s));
-      const minH = it.kind === 'sug' ? 46 : night ? 15 : 22;
+      const minH = it.kind === 'sug' || it.kind === 'study' ? 46 : night ? 15 : 22;
       const height = Math.max(minH, y(it.e) - y(it.s) - 2);
-      const b = h('div', `dx-ev dx-${it.kind}${night ? ' dx-nightev' : ''}${it.kind === 'task' && it.t.dur ? ' dx-tblock' : ''}`);
+      const b = h('div', `dx-ev dx-${it.kind}${night ? ' dx-nightev' : ''}${it.kind === 'task' && it.t.dur ? ' dx-tblock' : ''}${it.ghost ? ' dx-ghostev' : ''}`);
       b.style.top = `${top}px`;
       b.style.height = `${height}px`;
       b.style.left = `calc(${(it.col / it.n) * 100}% + 1px)`;
@@ -500,8 +743,28 @@ DASH.widget('w-day', (card, body, guard) => {
         b.append(act);
         b.title = `Gym? ${fmtTime(g.start)}–${fmtTime(g.end)} · ${ORD(g.nth)} this week · drag to move`;
         b.addEventListener('pointerdown', (e) => { if (e.target.closest('button')) return; DRAG.start(e, { label: 'Gym', onDrop: (loc) => { const m = loc.min != null ? loc.min : (g.start - startOfDay(g.start)) / MIN; if (loc.day + m * MIN > Date.now()) movePin(g, loc.day + m * MIN); } }); });
+      } else if (it.kind === 'study') {
+        const st = it.st, name = shortCourse(st.exam.course);
+        b.append(h('b', null, `Study? ${name}`), h('span', null, `${fmtTime(st.start)} · ${durText(Math.round((st.end - st.start) / MIN))}`));
+        const act = h('span', 'dx-act');
+        const goB = h('button', 'dx-go', 'Go'), skB = h('button', 'dx-skip', 'Skip');
+        goB.type = skB.type = 'button';
+        goB.title = 'I studied (counts towards the hours)';
+        skB.title = 'Not this day: the session moves to another day';
+        goB.onclick = guard(() => P.exams.go(st));
+        skB.onclick = guard(() => P.exams.skip(st));
+        act.append(goB, skB);
+        b.append(act);
+        b.title = `Study for ${st.exam.course} · ${fmtTime(st.start)}–${fmtTime(st.end)} · exam ${new Date(st.exam.at).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })}`;
+      } else if (it.kind === 'studied') {
+        b.append(h('b', null, `Studied ${shortCourse(it.x.course)}`), h('span', null, `${fmtTime(it.s)} · done`));
+        b.title = `Studied for ${it.x.course}`;
+      } else if (it.kind === 'exam') {
+        b.append(h('b', null, `Exam ${shortCourse(it.x.course)}`), h('span', null, fmtTime(it.s)));
+        b.title = `Exam ${it.x.course} · click to change`;
+        b.onclick = () => openExam(it.x);
       } else if (it.kind === 'task') {
-        b.append(taskBox(it.t));
+        b.append(taskBox(it.t, '', it.ghost));
       } else if (it.kind === 'gym' && it.done) {
         b.append(h('b', null, 'Gym'), h('span', null, `${fmtTime(it.s)} · done`));
       } else {
@@ -544,11 +807,11 @@ DASH.widget('w-day', (card, body, guard) => {
 
   // The timeline window for these days: lo = earliest start (a night F1 session), lo2 = where the real day starts (Up, or an earlier
   // real item); the hours lo..lo2 are squeezed into the night band when that is 2 hours or more. hi = Bed or the latest end.
-  function range(days, sugg) {
+  function range(days, sugg, study) {
     let lo = UP, lo2 = UP, hi = BED;
     for (const d of days) {
       lo2 = Math.min(lo2, upMin(d));
-      for (const it of dayItems(d, sugg)) {
+      for (const it of dayItems(d, sugg, study)) {
         const s = (it.s - d) / MIN;
         lo = Math.min(lo, s);
         if (it.kind !== 'f1') lo2 = Math.min(lo2, s);
@@ -577,11 +840,15 @@ DASH.widget('w-day', (card, body, guard) => {
       return;
     }
     prev.hidden = next.hidden = false;
-    const s = suggest(now), w = s.w;
+    // From Sunday 19:00 the week view opens on next week
+    const home = view === 'week' && new Date(now).getDay() === 0 && new Date(now).getHours() >= 19 ? 1 : 0;
+    const days = view === 'day' ? [addDays(today, offset)] : Array.from({ length: 7 }, (_, i) => addDays(addDays(startOfWeek(now), (offset + home) * 7), i));
+    const s = suggest(now, startOfWeek(days[0])), w = s.w;
     meta.textContent = `Gym ${w.done.size} of ${GOAL}${w.planned.size ? ` · ${w.planned.size} planned` : ''}`;
-    const days = view === 'day' ? [addDays(today, offset)] : Array.from({ length: 7 }, (_, i) => addDays(addDays(startOfWeek(now), offset * 7), i));
-    const sugg = offset === 0 || view === 'day' ? s.list : [];
-    const { lo, lo2, hi } = range(days, sugg);
+    const sugg = s.list;
+    const study = studyPlan(now);
+    drawExams(now, study);
+    const { lo, lo2, hi } = range(days, sugg, study);
     const nh = lo2 > lo ? NIGHT_H : 0;
     const compact = view === 'week';
     // Chips per day: all-day events (also the days in between) and tasks without a time
@@ -589,9 +856,10 @@ DASH.widget('w-day', (card, body, guard) => {
       const key = iso(d), isToday = d === today;
       const ad = allDay().filter((e) => e.start < d + 24 * HOUR && e.end > d);
       const tk = tasksOn(key, isToday).filter((t) => !t.time);
-      return { ad, tk };
+      const gh = ghostsOn(d).filter((t) => !t.time);
+      return { ad, tk, gh };
     });
-    const rows = Math.max(0, ...chips.map((x) => (view === 'week' ? x.ad.length + x.tk.length : Math.ceil((x.ad.length + x.tk.length) / 4))));
+    const rows = Math.max(0, ...chips.map((x) => (view === 'week' ? x.ad.length + x.tk.length + x.gh.length : Math.ceil((x.ad.length + x.tk.length + x.gh.length) / 4))));
     const overhead = (compact ? 28 : 0) + (rows ? rows * 24 + 6 : 0) + 24 + nh;
     const base = compact ? 30 : 42;
     const hours = (hi - lo2) / 60;
@@ -608,6 +876,17 @@ DASH.widget('w-day', (card, body, guard) => {
     if (nh) { const t = h('span', 'dx-gl night', 'night'); t.style.top = `${nh / 2}px`; gutter.append(t); }
     label(UP, `Up ${String(UP / 60).padStart(2, '0')}`, 'dx-gl up');
     label(BED, `Bed ${BED / 60}`, 'dx-gl bed');
+    // Your energy over the day: a thin strip at the left edge of the timeline (bright = high)
+    if (P) {
+      const strip = h('i', 'dx-energy');
+      strip.style.top = `${nh}px`;
+      strip.style.height = `${H - nh}px`;
+      const stops = [];
+      for (let m = lo2; m <= hi; m += 30) stops.push(`color-mix(in srgb, #f2c14e ${Math.round(P.energyAt(m / 60) * 100)}%, transparent) ${(((m - lo2) / (hi - lo2)) * 100).toFixed(1)}%`);
+      strip.style.background = `linear-gradient(to bottom, ${stops.join(', ')})`;
+      strip.title = 'Your energy over the day: high in the morning, a dip after lunch. Study sessions go in the bright hours.';
+      gutter.append(strip);
+    }
 
     const topRow = h('div', 'dx-top');
     const headRow = h('div', 'dx-row dx-headrow');
@@ -628,8 +907,9 @@ DASH.widget('w-day', (card, body, guard) => {
       const cc = cell(h('div'), 'dx-chipcell');
       for (const e of chips[i].ad) cc.append(chipFor(e));
       for (const t of chips[i].tk) cc.append(taskBox(t, t.due < iso(d) ? ' late' : ''));
+      for (const t of chips[i].gh) cc.append(taskBox(t, '', true));
       chipRow.append(cc);
-      cols.append(column(d, { ...ctx, tint }, dayItems(d, sugg)));
+      cols.append(column(d, { ...ctx, tint }, dayItems(d, sugg, study)));
     });
     if (nh) { const band = h('div', 'dx-night'); band.style.height = `${nh}px`; cols.append(band); }
     // One Up line and one Bed line across all days
@@ -665,10 +945,12 @@ DASH.widget('w-day', (card, body, guard) => {
     scroll.scrollTop = Math.max(0, nh + ((nowMin - lo2) / 60 - 1) * px);
   }
   window.addEventListener('dash:calendar', guard(render));
+  window.addEventListener('dash:exams', guard(render));
+  window.addEventListener('dash:canvas', guard(render));
   window.addEventListener('dash:tasks', guard(render));
   window.addEventListener('dash:layout', guard(() => { placed = false; setTimeout(toNow, 300); }));
-  window.addEventListener('storage', guard((e) => { if ([LOG, SKIP, PINS, TASKS].includes(e.key)) render(); }));
-  window.addEventListener('dash:synced', guard((e) => { if ([LOG, SKIP, PINS].includes(e.detail.key)) { window.dispatchEvent(new CustomEvent('dash:gym')); render(); } else if (e.detail.key === TASKS) render(); }));
+  window.addEventListener('storage', guard((e) => { if ([LOG, SKIP, PINS, TASKS, 'exams.list', 'exams.log', 'exams.skips'].includes(e.key)) render(); }));
+  window.addEventListener('dash:synced', guard((e) => { if ([LOG, SKIP, PINS].includes(e.detail.key)) { window.dispatchEvent(new CustomEvent('dash:gym')); render(); } else if (e.detail.key === TASKS || /^exams\./.test(e.detail.key)) render(); }));
   window.addEventListener('resize', guard(() => { if (fills() && Math.abs(scroll.clientHeight - lastH) > 8) { lastH = scroll.clientHeight; render(); } }));
   DASH.every(60 * 1000, guard(render));
   render();
