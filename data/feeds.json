@@ -4,13 +4,19 @@
    "name": "NOS",
    "items": [
     {
+     "title": "'Nederlandse taferelen' in België, begrotingscrisis nadert climax",
+     "link": "https://nos.nl/l/2640564",
+     "time": "2026-11-22T11:33:19+01:00",
+     "img": "https://images.cdn.nos.nl/7/y/X/5/o/x/kEDtCk4Mh4Eaow4jKzowrXrQb51gEMXwJNCaPr/185x24x2320x1305-1024x576.webp"
+    },
+    {
      "title": "Nieuwe invasieve exoot in Nederland: waterschildpad plant zich voort in natuur",
      "link": "https://nos.nl/l/2640556",
      "time": "2026-11-22T10:58:17+01:00",
      "img": "https://images.cdn.nos.nl/5/H/R/t/d/W/My15VXFYo549VXrX5hpjyzhNphSCj3Y1aJjLMDn/423x237x2768x1557-1024x576.webp"
     },
     {
-     "title": "Klimaattop bereikt kookpunt: EU-landen willen niet instemmen terwijl de tijd wegtikt",
+     "title": "EU legt bom onder klimaattop Turkije en wijst inhoud van slotakkoord af",
      "link": "https://nos.nl/l/2640550",
      "time": "2026-11-22T10:37:58+01:00",
      "img": "https://images.cdn.nos.nl/4/H/N/A/d/v/k7xEcpH455XSup4ntXCxWeCPsz4995Xd3DT3bN5/8x328x3984x2241-1024x576.webp"
@@ -86,18 +92,18 @@
      "link": "https://nos.nl/l/2640477",
      "time": "2026-11-21T20:39:17+01:00",
      "img": "https://images.cdn.nos.nl/6/4/Z/x/h/9/ZT6j1od3uxAKCVjbRDCv85ThEpaMvEzfz4MZggU/1080x661x2864x1611-1024x576.webp"
-    },
-    {
-     "title": "Maandag alle Belgische vluchten geannuleerd wegens staking",
-     "link": "https://nos.nl/l/2640473",
-     "time": "2026-11-21T19:58:06+01:00",
-     "img": "https://images.cdn.nos.nl/4/E/B/S/q/k/hcJZ5d3KsKywgF8YmrJjWdUW3puU3izEcja3wXU/0x417x4000x2250-1024x576.webp"
     }
    ]
   },
   {
    "name": "NOS Sport",
    "items": [
+    {
+     "title": "ADO weer Haags dankzij jongen van de stad Steijn: 'Van dat schijnheilige houden we niet'",
+     "link": "https://nos.nl/l/2640565",
+     "time": "2026-11-22T11:36:09+01:00",
+     "img": "https://images.cdn.nos.nl/6/u/N/J/8/4/4et2wW9GzfANZJr2jDD9WDuD4BrSrCt28852WG/8x344x3984x2241-1024x576.webp"
+    },
     {
      "title": "Boca Juniors wint na 19 jaar weer internationale prijs, Paredes valt flauw",
      "link": "https://nos.nl/l/2640552",
@@ -181,18 +187,36 @@
      "link": "https://nos.nl/l/2640479",
      "time": "2026-11-21T20:45:32+01:00",
      "img": "https://images.cdn.nos.nl/6/G/R/s/h/t/UmYQaQGrtt4xuFtL1ZBz64g15mbHW4R1yYdYpHv/1557x51x1760x990-1024x576.webp"
-    },
-    {
-     "title": "Vormcrisis Feyenoord houdt aan: Excelsior wint voor het eerst sinds 1980 in De Kuip",
-     "link": "https://nos.nl/l/2640478",
-     "time": "2026-11-21T20:39:56+01:00",
-     "img": "https://images.cdn.nos.nl/5/5/d/G/V/k/378scozKdcy5jDrusdoZW4H5ZErsYT6izgYa5Ff/8x168x3984x2241-1024x576.webp"
     }
    ]
   },
   {
    "name": "NU.nl",
    "items": [
+    {
+     "title": "Verstappen kritisch na 352 inhaalacties in Vegas: 'Mijn racehart genoot niet'",
+     "link": "https://www.nu.nl/formule-1/6417405/verstappen-kritisch-na-352-inhaalacties-in-vegas-mijn-racehart-genoot-niet.html",
+     "time": "2026-11-22T12:17:06+01:00",
+     "img": "https://images.nu.nl/m/usexwjgaxjjm_sqr256/547/5/3650/3650/verstappen-kritisch-na-352-inhaalacties-in-vegas-mijn-racehart-genoot-niet.jpg"
+    },
+    {
+     "title": "Live | Eredivisie | Twente begint tegen hekkensluiter Willem II, later Ajax-ADO",
+     "link": "https://www.nu.nl/voetbal/6417408/eredivisie-twente-begint-tegen-hekkensluiter-willem-ii-later-ajax-ado.html",
+     "time": "2026-11-22T12:01:21+01:00",
+     "img": "https://images.nu.nl/m/strx5l6aihu3_sqr256/1250/0/4000/4000/eredivisie-twente-begint-tegen-hekkensluiter-willem-ii-later-ajax-ado.jpg"
+    },
+    {
+     "title": "Malen bewierookt in Italië na vier 'fantastische' recordgoals: 'Uitzonderlijk goed'",
+     "link": "https://www.nu.nl/voetbal/6417407/malen-bewierookt-in-italie-na-vier-fantastische-recordgoals-uitzonderlijk-goed.html",
+     "time": "2026-11-22T11:44:40+01:00",
+     "img": "https://images.nu.nl/m/3o2x6nyal2mj_sqr256/1872/529/3503/3503/malen-bewierookt-in-italie-na-vier-fantastische-recordgoals-uitzonderlijk-goed.jpg"
+    },
+    {
+     "title": "Minister stapt op na telefoongebruik van 111 scholieren bij examen in Zuid-Korea",
+     "link": "https://www.nu.nl/buitenland/6417404/minister-stapt-op-na-telefoongebruik-van-111-scholieren-bij-examen-in-zuid-korea.html",
+     "time": "2026-11-22T11:21:44+01:00",
+     "img": "https://images.nu.nl/m/w69x82wabhh6_sqr256/2182/0/4350/4350/minister-stapt-op-na-telefoongebruik-van-111-scholieren-bij-examen-in-zuid-korea.jpg"
+    },
     {
      "title": "Uitheemse lettersierschildpad plant zich succesvol voort in Nederland",
      "link": "https://www.nu.nl/dieren/6417403/uitheemse-lettersierschildpad-plant-zich-succesvol-voort-in-nederland.html",
@@ -221,7 +245,7 @@
      "title": "Daleman pakt weer goud op 500 meter bij vierde clean sweep voor Nederland",
      "link": "https://www.nu.nl/schaatsen/6417395/daleman-pakt-weer-goud-op-500-meter-bij-vierde-clean-sweep-voor-nederland.html",
      "time": "2026-11-22T08:53:58+01:00",
-     "img": "https://images.nu.nl/m/75exu7hapsm0_sqr256/732/4/3627/3627/daleman-pakt-weer-goud-op-500-meter-bij-vierde-clean-sweep-voor-nederland.jpg"
+     "img": "https://images.nu.nl/m/p1ax9e2a7n4y_sqr256/865/1/3544/3544/daleman-pakt-weer-goud-op-500-meter-bij-vierde-clean-sweep-voor-nederland.jpg"
     },
     {
      "title": "Verstappen slaat terug naar Russell: 'Grote mond, maar zijn seizoen is aanfluiting'",
@@ -258,30 +282,6 @@
      "link": "https://www.nu.nl/formule-1/6417385/verstappen-boekt-in-spectaculaire-gp-van-las-vegas-vierde-zege-van-het-jaar.html",
      "time": "2026-11-22T06:32:48+01:00",
      "img": "https://images.nu.nl/m/2zoxtuuamng5_sqr256/1264/0/5762/5762/verstappen-boekt-in-spectaculaire-gp-van-las-vegas-vierde-zege-van-het-jaar.jpg"
-    },
-    {
-     "title": "Persoonlijke bezittingen van passagiers Titanic geveild voor recordbedragen",
-     "link": "https://www.nu.nl/buitenland/6417384/persoonlijke-bezittingen-van-passagiers-titanic-geveild-voor-recordbedragen.html",
-     "time": "2026-11-22T05:45:48+01:00",
-     "img": "https://images.nu.nl/m/sudx8csa07qr_sqr256/57/0/347/347/persoonlijke-bezittingen-van-passagiers-titanic-geveild-voor-recordbedragen.jpg"
-    },
-    {
-     "title": "Code geel vanwege mist en gladheid in groot deel van het land",
-     "link": "https://www.nu.nl/weerbericht/6417382/code-geel-vanwege-mist-en-gladheid-in-groot-deel-van-het-land.html",
-     "time": "2026-11-22T05:18:14+01:00",
-     "img": "https://images.nu.nl/m/exfxp5xawgzi_sqr256/0/0/2344/2344/code-geel-vanwege-mist-en-gladheid-in-groot-deel-van-het-land.jpg"
-    },
-    {
-     "title": "Deal met DENK legt groot wantrouwen bloot: 'Moslims als paard van Troje'",
-     "link": "https://www.nu.nl/politiek/6417173/deal-met-denk-legt-groot-wantrouwen-bloot-moslims-als-paard-van-troje.html",
-     "time": "2026-11-22T04:57:31+01:00",
-     "img": "https://images.nu.nl/m/ithxie1abq5f_sqr256/656/0/3404/3404/deal-met-denk-legt-groot-wantrouwen-bloot-moslims-als-paard-van-troje.jpg"
-    },
-    {
-     "title": "F1 | Verstappen vond GP Las Vegas surrealistisch: 'Nog nooit meegemaakt in F1'",
-     "link": "https://www.nu.nl/formule-1/6417324/f1-verstappen-vond-gp-las-vegas-surrealistisch-nog-nooit-meegemaakt-in-f1.html",
-     "time": "2026-11-22T04:55:59+01:00",
-     "img": "https://images.nu.nl/m/1k2xxd6akobu_sqr256/1261/0/5766/5766/f1-verstappen-vond-gp-las-vegas-surrealistisch-nog-nooit-meegemaakt-in-f1.jpg"
     }
    ]
   }
