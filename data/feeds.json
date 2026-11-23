@@ -99,6 +99,12 @@
    "name": "NOS Sport",
    "items": [
     {
+     "title": "Recordaantal inhaalacties en minimale verschillen: waarom was GP Las Vegas zo spectaculair?",
+     "link": "https://nos.nl/l/2640685",
+     "time": "2026-11-23T09:58:23+01:00",
+     "img": "https://images.cdn.nos.nl/3/8/h/R/t/x/wYuayojWcfg3kUq7SN8gJfGHJwJSCFGLQvaq7By/255x386x3184x1791-1024x576.webp"
+    },
+    {
      "title": "Onafhankelijk onderzoek naar angstcultuur bij Picnic-PostNL van start",
      "link": "https://nos.nl/l/2640664",
      "time": "2026-11-23T06:01:18+01:00",
@@ -181,12 +187,6 @@
      "link": "https://nos.nl/l/2640605",
      "time": "2026-11-22T16:28:17+01:00",
      "img": "https://images.cdn.nos.nl/8/2/2/m/o/D/x6Kwpb3xGfThDLVriGQLDeMgnyhbseBdD6x4ZQF/7x3x2032x1143-1024x576.webp"
-    },
-    {
-     "title": "Ajax ziet Mokio geblesseerd uitvallen op makkelijke middag tegen ADO",
-     "link": "https://nos.nl/l/2640604",
-     "time": "2026-11-22T16:23:17+01:00",
-     "img": "https://images.cdn.nos.nl/3/6/X/z/S/H/dEVzSWwe1rJe4BLctVX4woxvHGghtUPPgVfHfyN/4x2x2240x1260-1024x576.webp"
     }
    ]
   },
@@ -194,10 +194,22 @@
    "name": "NU.nl",
    "items": [
     {
+     "title": "Miljuschka Witzenhausen stopt met eigen foodfestival na 'tonnen verlies'",
+     "link": "https://www.nu.nl/achterklap/6417473/miljuschka-witzenhausen-stopt-met-eigen-foodfestival-na-tonnen-verlies.html",
+     "time": "2026-11-23T09:30:21+01:00",
+     "img": "https://images.nu.nl/m/2brxqhta8dl3_sqr256/1803/0/4794/4794/miljuschka-witzenhausen-stopt-met-eigen-foodfestival-na-tonnen-verlies.jpg"
+    },
+    {
+     "title": "Onderzoekers ontwikkelen open MRI-scanner in de vorm van een luie stoel",
+     "link": "https://www.nu.nl/gezondheid/6417464/onderzoekers-ontwikkelen-open-mri-scanner-in-de-vorm-van-een-luie-stoel.html",
+     "time": "2026-11-23T09:25:54+01:00",
+     "img": "https://images.nu.nl/m/f71xczia1j9h_sqr256/249/0/1167/1167/onderzoekers-ontwikkelen-open-mri-scanner-in-de-vorm-van-een-luie-stoel.jpg"
+    },
+    {
      "title": "Zelensky eist droneaanval op Russisch schip voor kust van Libië op",
      "link": "https://www.nu.nl/spanningen-oekraine/6417467/zelensky-eist-droneaanval-op-russisch-schip-voor-kust-van-libie-op.html",
      "time": "2026-11-23T08:54:06+01:00",
-     "img": "https://images.nu.nl/m/35txu07a2x5n_sqr256/284/0/1080/1080/zelensky-eist-droneaanval-op-russisch-schip-voor-kust-van-libie-op.jpg"
+     "img": "https://images.nu.nl/m/35txu07a2x5n_sqr256/284/0/1077/1077/zelensky-eist-droneaanval-op-russisch-schip-voor-kust-van-libie-op.jpg"
     },
     {
      "title": "Sybrand Buma begint aan klus om minderheidskabinet te laten slagen",
@@ -270,18 +282,6 @@
      "link": "https://www.nu.nl/economie/6416391/pakkettenlawine-dendert-op-ons-af-zo-zorg-je-dat-jouw-bestelling-niet-bezwijkt.html",
      "time": "2026-11-23T04:58:58+01:00",
      "img": "https://images.nu.nl/m/ybpx0o0apqhp_sqr256/1800/0/4116/4116/pakkettenlawine-dendert-op-ons-af-zo-zorg-je-dat-jouw-bestelling-niet-bezwijkt.jpg"
-    },
-    {
-     "title": "Democraten behalen grootste meerderheid in Amerikaans Huis sinds 1992",
-     "link": "https://www.nu.nl/verkiezingen-vs/6417450/democraten-behalen-grootste-meerderheid-in-amerikaans-huis-sinds-1992.html",
-     "time": "2026-11-22T22:55:14+01:00",
-     "img": "https://images.nu.nl/m/zzbxet6ai26j_sqr256/2693/567/4875/4875/democraten-behalen-grootste-meerderheid-in-amerikaans-huis-sinds-1992.jpg"
-    },
-    {
-     "title": "Russisch schip gezonken na vermoedelijke droneaanval in Libische haven",
-     "link": "https://www.nu.nl/spanningen-oekraine/6417448/russisch-schip-gezonken-na-vermoedelijke-droneaanval-in-libische-haven.html",
-     "time": "2026-11-22T22:01:40+01:00",
-     "img": "https://images.nu.nl/m/x0jx1wgaeal7_sqr256/3261/717/3889/3889/russisch-schip-gezonken-na-vermoedelijke-droneaanval-in-libische-haven.jpg"
     }
    ]
   }
