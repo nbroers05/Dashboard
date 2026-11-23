@@ -2,6 +2,17 @@
  "user": "nbroers05",
  "logs": [
   {
+   "title": "The Hunger Games",
+   "year": 2012,
+   "rating": 3.5,
+   "watched": "2026-11-23",
+   "rewatch": true,
+   "liked": false,
+   "link": "https://letterboxd.com/nbroers05/film/the-hunger-games/1/",
+   "tmdbId": "70160",
+   "poster": "https://image.tmdb.org/t/p/w342/apa5G43Hha7kH7wJG0gkkHT7FA9.jpg"
+  },
+  {
    "title": "The Cabinet of Dr. Caligari",
    "year": 1920,
    "rating": 3.5,
@@ -209,17 +220,6 @@
    "link": "https://letterboxd.com/nbroers05/film/the-40-year-old-virgin/",
    "tmdbId": "6957",
    "poster": "https://image.tmdb.org/t/p/w342/mVeoqL37gzhMXQVpONi9DGOQ3tZ.jpg"
-  },
-  {
-   "title": "Ghost World",
-   "year": 2001,
-   "rating": 3.5,
-   "watched": "2026-08-27",
-   "rewatch": false,
-   "liked": false,
-   "link": "https://letterboxd.com/nbroers05/film/ghost-world/",
-   "tmdbId": "1548",
-   "poster": "https://image.tmdb.org/t/p/w342/uwKqnUPE4dSM0kKuMW0vXpURh2T.jpg"
   }
  ]
 }
