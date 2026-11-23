@@ -1,5 +1,5 @@
 {
- "day": "2026-11-22",
+ "day": "2026-11-23",
  "sources": [
   "LantarenVenster"
  ],
@@ -8,20 +8,6 @@
   "Pathé": "pathe.nl refuses requests from a GitHub Action (403)"
  },
  "films": [
-  {
-   "title": "30 mei, 1969 (Gritu di un pueblo)",
-   "key": "30mei1969gritudiunpueblo",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/30-mei-1969-gritu-di-un-pueblo/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
   {
    "title": "A Little Gray Wolf Will Come",
    "key": "alittlegraywolfwillcome",
@@ -75,20 +61,6 @@
      "day": null,
      "next": null,
      "until": null
-    }
-   ]
-  },
-  {
-   "title": "All of a Sudden",
-   "key": "allofasudden",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/all-of-a-sudden/",
-     "day": null,
-     "next": null,
-     "until": "2026-11-22"
     }
    ]
   },
@@ -499,20 +471,6 @@
    ]
   },
   {
-   "title": "De Kift",
-   "key": "dekift",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/de-kift-26/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
    "title": "Dekker",
    "key": "dekker",
    "poster": null,
@@ -681,20 +639,6 @@
    ]
   },
   {
-   "title": "Everybody To Kenmure Street",
-   "key": "everybodytokenmurestreet",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/everybody-to-kenmure-street/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
    "title": "Fatherland",
    "key": "fatherland",
    "poster": null,
@@ -803,20 +747,6 @@
      "day": null,
      "next": null,
      "until": "2026-11-29"
-    }
-   ]
-  },
-  {
-   "title": "Flamenco Sketches",
-   "key": "flamencosketches",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/jaleos-flamenco-sketches/",
-     "day": null,
-     "next": null,
-     "until": null
     }
    ]
   },
@@ -1647,20 +1577,6 @@
    ]
   },
   {
-   "title": "Rehearsals for a Revolution",
-   "key": "rehearsalsforarevolution",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/rehearsals-for-a-revolution/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
    "title": "Rembrandt Trio",
    "key": "rembrandttrio",
    "poster": null,
@@ -1835,7 +1751,7 @@
    "shows": [
     {
      "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/tango-aan-de-haven-3/",
+     "url": "https://www.lantarenvenster.nl/programma/tango-aan-de-haven-4/",
      "day": null,
      "next": null,
      "until": null
@@ -1941,20 +1857,6 @@
    ]
   },
   {
-   "title": "The Siege of Paradise - Expat Cinema Rotterdam",
-   "key": "thesiegeofparadiseexpatcinemarotterdam",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/the-siege-of-paradise-expat-cinema-rotterdam/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
    "title": "The Very Merry Music & Film Pubquiz",
    "key": "theverymerrymusicandfilmpubquiz",
    "poster": null,
@@ -2046,20 +1948,6 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/tomeka-reid-quartet/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
-   "title": "Tristan Forever",
-   "key": "tristanforever",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/tristan-forever/",
      "day": null,
      "next": null,
      "until": null
@@ -2203,20 +2091,6 @@
      "day": null,
      "next": null,
      "until": "2026-11-24"
-    }
-   ]
-  },
-  {
-   "title": "Youri - Film&Ontbijt",
-   "key": "yourifilmandontbijt",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/youri-filmontbijt/",
-     "day": null,
-     "next": null,
-     "until": null
     }
    ]
   },
