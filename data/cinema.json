@@ -1,5 +1,5 @@
 {
- "day": "2026-11-23",
+ "day": "2026-11-24",
  "sources": [
   "LantarenVenster"
  ],
@@ -61,6 +61,20 @@
      "day": null,
      "next": null,
      "until": null
+    }
+   ]
+  },
+  {
+   "title": "All of a Sudden",
+   "key": "allofasudden",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/all-of-a-sudden/",
+     "day": null,
+     "next": null,
+     "until": "2026-12-01"
     }
    ]
   },
@@ -396,7 +410,7 @@
      "url": "https://www.lantarenvenster.nl/programma/club-kid/",
      "day": null,
      "next": null,
-     "until": "2026-11-25"
+     "until": "2026-12-02"
     }
    ]
   },
@@ -550,7 +564,7 @@
      "url": "https://www.lantarenvenster.nl/programma/donnie-darko-25th-anniversary/",
      "day": null,
      "next": null,
-     "until": "2026-11-25"
+     "until": "2026-12-02"
     }
    ]
   },
@@ -639,6 +653,20 @@
    ]
   },
   {
+   "title": "Everybody Digs Bill Evans",
+   "key": "everybodydigsbillevans",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/everybody-digs-bill-evans/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "Fatherland",
    "key": "fatherland",
    "poster": null,
@@ -648,7 +676,7 @@
      "url": "https://www.lantarenvenster.nl/programma/fatherland/",
      "day": null,
      "next": null,
-     "until": "2026-11-25"
+     "until": "2026-12-02"
     }
    ]
   },
@@ -760,7 +788,7 @@
      "url": "https://www.lantarenvenster.nl/programma/foret-ivre/",
      "day": null,
      "next": null,
-     "until": "2026-11-25"
+     "until": "2026-12-02"
     }
    ]
   },
@@ -800,6 +828,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/holy-motors-2012/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Home Alone (6+)",
+   "key": "homealone6",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/home-alone-2025/",
      "day": null,
      "next": null,
      "until": null
@@ -1124,7 +1166,7 @@
      "url": "https://www.lantarenvenster.nl/programma/laatbloeier/",
      "day": null,
      "next": null,
-     "until": "2026-11-25"
+     "until": "2026-12-02"
     }
    ]
   },
@@ -1136,6 +1178,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/last-year-at-marienbad-1961/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Le fabuleux destin d'Amélie Poulain",
+   "key": "lefabuleuxdestindameliepoulain",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/amelie/",
      "day": null,
      "next": null,
      "until": null
@@ -1178,20 +1234,6 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/loek-van-den-berg-quintet-27/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
-   "title": "Makandra: Roots",
-   "key": "makandraroots",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/makandra-roots/",
      "day": null,
      "next": null,
      "until": null
@@ -1418,7 +1460,7 @@
      "url": "https://www.lantarenvenster.nl/programma/naza/",
      "day": null,
      "next": null,
-     "until": "2026-11-24"
+     "until": "2026-11-28"
     }
    ]
   },
@@ -1530,7 +1572,7 @@
      "url": "https://www.lantarenvenster.nl/programma/queen-at-sea/",
      "day": null,
      "next": null,
-     "until": "2026-11-25"
+     "until": "2026-12-02"
     }
    ]
   },
@@ -1698,7 +1740,7 @@
      "url": "https://www.lantarenvenster.nl/programma/sneakpreview/",
      "day": null,
      "next": null,
-     "until": "2026-11-23"
+     "until": "2026-11-30"
     }
    ]
   },
@@ -1726,7 +1768,7 @@
      "url": "https://www.lantarenvenster.nl/programma/spinoza/",
      "day": null,
      "next": null,
-     "until": "2026-11-25"
+     "until": "2026-12-02"
     }
    ]
   },
@@ -1768,7 +1810,7 @@
      "url": "https://www.lantarenvenster.nl/programma/the-cycle-of-love/",
      "day": null,
      "next": null,
-     "until": "2026-11-25"
+     "until": "2026-12-02"
     }
    ]
   },
@@ -1810,21 +1852,7 @@
      "url": "https://www.lantarenvenster.nl/programma/the-devils-1971/",
      "day": null,
      "next": null,
-     "until": "2026-11-23"
-    }
-   ]
-  },
-  {
-   "title": "The New Library - Part one | 1983-2026",
-   "key": "thenewlibrarypartone19832026",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/the-new-library-part-one-1983-2026/",
-     "day": null,
-     "next": null,
-     "until": "2026-11-23"
+     "until": "2026-11-28"
     }
    ]
   },
@@ -1908,7 +1936,7 @@
      "url": "https://www.lantarenvenster.nl/programma/the-year-of-the-ghost/",
      "day": null,
      "next": null,
-     "until": "2026-11-24"
+     "until": "2026-12-01"
     }
    ]
   },
@@ -1936,7 +1964,7 @@
      "url": "https://www.lantarenvenster.nl/programma/time-and-water/",
      "day": null,
      "next": null,
-     "until": "2026-11-25"
+     "until": "2026-12-02"
     }
    ]
   },
@@ -2034,7 +2062,7 @@
      "url": "https://www.lantarenvenster.nl/programma/wild-horse-nine/",
      "day": null,
      "next": null,
-     "until": "2026-11-25"
+     "until": "2026-12-02"
     }
    ]
   },
@@ -2090,7 +2118,7 @@
      "url": "https://www.lantarenvenster.nl/programma/youri/",
      "day": null,
      "next": null,
-     "until": "2026-11-24"
+     "until": "2026-12-02"
     }
    ]
   },
