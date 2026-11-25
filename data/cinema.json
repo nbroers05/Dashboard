@@ -1,5 +1,5 @@
 {
- "day": "2026-11-24",
+ "day": "2026-11-25",
  "sources": [
   "LantarenVenster"
  ],
@@ -1143,6 +1143,20 @@
    ]
   },
   {
+   "title": "La Bola Negra - Queer Cinema Preview",
+   "key": "labolanegraqueercinemapreview",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/la-bola-negra-queer-cinema-preview/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "La La Land (2016) - 10th Anniversary",
    "key": "lalaland201610thanniversary",
    "poster": null,
@@ -1150,6 +1164,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/la-la-land-2016-10th-anniversary/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "La vie d'une femme",
+   "key": "laviedunefemme",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/la-vie-dune-femme/",
      "day": null,
      "next": null,
      "until": null
@@ -1297,20 +1325,6 @@
    ]
   },
   {
-   "title": "Maspalomas",
-   "key": "maspalomas",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/maspalomas/",
-     "day": null,
-     "next": null,
-     "until": "2026-11-24"
-    }
-   ]
-  },
-  {
    "title": "Mathias Eick Quartet",
    "key": "mathiaseickquartet",
    "poster": null,
@@ -1416,20 +1430,6 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/mouse/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
-   "title": "Mulholland Drive (2001)",
-   "key": "mulhollanddrive2001",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/mulholland-drive-2001/",
      "day": null,
      "next": null,
      "until": null
@@ -1633,6 +1633,20 @@
    ]
   },
   {
+   "title": "Robben Ford meets Licks & Brains",
+   "key": "robbenfordmeetslicksandbrains",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/robben-ford-meets-licks-brains-27/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "Roosbeef",
    "key": "roosbeef",
    "poster": null,
@@ -1829,6 +1843,20 @@
    ]
   },
   {
+   "title": "The Debut - Aanschuiftafel",
+   "key": "thedebutaanschuiftafel",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/the-debut-aanschuiftafel/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "The Debut - Film&Kerstontbijt",
    "key": "thedebutfilmandkerstontbijt",
    "poster": null,
@@ -1976,6 +2004,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/tomeka-reid-quartet/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Tyreek McDole",
+   "key": "tyreekmcdole",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/tyreek-mcdole/",
      "day": null,
      "next": null,
      "until": null
