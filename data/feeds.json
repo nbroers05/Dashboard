@@ -99,6 +99,12 @@
    "name": "NOS Sport",
    "items": [
     {
+     "title": "Handbalsters in Golden League na rust over de knie bij Denemarken",
+     "link": "https://nos.nl/l/2641178",
+     "time": "2026-11-26T23:55:13+01:00",
+     "img": "https://images.cdn.nos.nl/5/3/S/X/a/X/QHhk7ATHgRzZDn6WwpKvWNXkSF7MPPknveCeh3s/799x79x3152x1773-1024x576.webp"
+    },
+    {
      "title": "Zure nederlaag sterk FC Twente door doelpunt in blessuretijd van Freiburg",
      "link": "https://nos.nl/l/2641175",
      "time": "2026-11-26T23:16:10+01:00",
@@ -111,7 +117,7 @@
      "img": "https://images.cdn.nos.nl/8/B/i/g/9/B/bjEB2T6fmcDMDiTrgTLSk1Hc35KkH86oiBK8utt/0x51x4000x2250-1024x576.webp"
     },
     {
-     "title": "Fraaie comeback AZ bij Sparta Praag: van 2-0 achter naar 2-4 overwinning",
+     "title": "Fraaie comeback AZ bij Sparta Praag: van 2-0 achter naar 2-4 zege",
      "link": "https://nos.nl/l/2641168",
      "time": "2026-11-26T22:51:12+01:00",
      "img": "https://images.cdn.nos.nl/3/B/Q/X/U/P/DPpe1QxJKj2sVm2XTfXTZs2UvNseaeyZFz6gfzK/590x239x3104x1746-1024x576.webp"
@@ -181,12 +187,6 @@
      "link": "https://nos.nl/l/2641069",
      "time": "2026-11-26T09:46:03+01:00",
      "img": "https://images.cdn.nos.nl/7/9/1/D/k/W/qZYd9dVx3MYs4GWHq7EFK5oPcYaM28weCtxQppr/4x178x2992x1683-1024x576.webp"
-    },
-    {
-     "title": "Eerste marathon op natuurijs donderdagavond in Winterswijk",
-     "link": "https://nos.nl/l/2641067",
-     "time": "2026-11-26T09:36:51+01:00",
-     "img": "https://images.cdn.nos.nl/6/B/4/X/L/R/S4fptSosJVSpuNbYjJRVPhtNGUn3h9kxN9TJNTj/8x69x3984x2241-1024x576.webp"
     }
    ]
   },
@@ -194,10 +194,16 @@
    "name": "NU.nl",
    "items": [
     {
+     "title": "Ruim 900.000 huishoudens in VS zonder stroom door 'Thanksgiving-storm'",
+     "link": "https://www.nu.nl/buitenland/6417946/ruim-900000-huishoudens-in-vs-zonder-stroom-door-thanksgiving-storm.html",
+     "time": "2026-11-27T00:23:36+01:00",
+     "img": "https://images.nu.nl/m/nbyxygnal0dl_sqr256/287/0/5504/5504/ruim-900000-huishoudens-in-vs-zonder-stroom-door-thanksgiving-storm.jpg"
+    },
+    {
      "title": "AZ wint na fraaie comeback, ook NEC doet uitstekende zaken in Europa League",
      "link": "https://www.nu.nl/voetbal/6417943/az-wint-na-fraaie-comeback-ook-nec-doet-uitstekende-zaken-in-europa-league.html",
      "time": "2026-11-26T22:53:13+01:00",
-     "img": "https://images.nu.nl/m/395xi8ga1k9l_sqr256/934/2/4128/4128/az-wint-na-fraaie-comeback-ook-nec-doet-uitstekende-zaken-in-europa-league.jpg"
+     "img": "https://images.nu.nl/m/81jxyxzarca5_sqr256/127/0/709/709/az-wint-na-fraaie-comeback-ook-nec-doet-uitstekende-zaken-in-europa-league.jpg"
     },
     {
      "title": "Moordzaak op Curaçao moet opnieuw worden behandeld na nieuw onderzoek",
@@ -276,12 +282,6 @@
      "link": "https://www.nu.nl/binnenland/6417915/overleden-man-in-vrieskist-niet-door-misdrijf-om-het-leven-gekomen.html",
      "time": "2026-11-26T17:57:52+01:00",
      "img": "https://images.nu.nl/m/qqpxaxrau568_sqr256/0/0/4094/4094/overleden-man-in-vrieskist-niet-door-misdrijf-om-het-leven-gekomen.jpg"
-    },
-    {
-     "title": "Moeder bekent doodsteken zoon (12), maar nog onduidelijk wat haar dreef",
-     "link": "https://www.nu.nl/binnenland/6417918/moeder-bekent-doodsteken-zoon-12-maar-nog-onduidelijk-wat-haar-dreef.html",
-     "time": "2026-11-26T17:54:20+01:00",
-     "img": "https://images.nu.nl/m/cgrxkw8ak31c_sqr256/190/494/2960/2960/moeder-bekent-doodsteken-zoon-12-maar-nog-onduidelijk-wat-haar-dreef.jpg"
     }
    ]
   }

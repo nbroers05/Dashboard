@@ -15,6 +15,20 @@
  ],
  "logs": [
   {
+   "title": "The Hunger Games: Sunrise on the Reaping",
+   "year": 2026,
+   "rating": 3.5,
+   "watched": "2026-11-26",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/loekatheactor/film/the-hunger-games-sunrise-on-the-reaping/",
+   "slug": "the-hunger-games-sunrise-on-the-reaping",
+   "tmdbId": "1300968",
+   "poster": "https://image.tmdb.org/t/p/w342/5ffVOGY3x3Sn3jovzvycJeizpks.jpg",
+   "user": "loekatheactor",
+   "name": "Loeka"
+  },
+  {
    "title": "La Haine",
    "year": 1995,
    "rating": 5.0,
@@ -305,20 +319,6 @@
    "slug": "bubble-boy",
    "tmdbId": "9683",
    "poster": "https://a.ltrbxd.com/resized/film-poster/4/6/9/2/1/46921-bubble-boy-0-600-0-900-crop.jpg?v=9ef1717aa8",
-   "user": "loekatheactor",
-   "name": "Loeka"
-  },
-  {
-   "title": "Incoming",
-   "year": 2024,
-   "rating": 1.0,
-   "watched": "2026-09-14",
-   "rewatch": false,
-   "liked": false,
-   "link": "https://letterboxd.com/loekatheactor/film/incoming-2024/",
-   "slug": "incoming-2024",
-   "tmdbId": "1008953",
-   "poster": "https://a.ltrbxd.com/resized/film-poster/9/0/8/6/8/9/908689-incoming-0-600-0-900-crop.jpg?v=c11234276e",
    "user": "loekatheactor",
    "name": "Loeka"
   },

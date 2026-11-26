@@ -1,5 +1,5 @@
 {
- "day": "2026-11-26",
+ "day": "2026-11-27",
  "sources": [
   "LantarenVenster"
  ],
@@ -144,7 +144,7 @@
      "url": "https://www.lantarenvenster.nl/programma/being-john-malkovich-1999/",
      "day": null,
      "next": null,
-     "until": null
+     "until": "2026-12-02"
     }
    ]
   },
@@ -415,6 +415,20 @@
    ]
   },
   {
+   "title": "De Breibios: Tin Castle",
+   "key": "debreibiostincastle",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/de-breibios-tin-castle/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "De dag van de korte film 2026",
    "key": "dedagvandekortefilm2026",
    "poster": null,
@@ -450,6 +464,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/dekker/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Delicatessen (1991)",
+   "key": "delicatessen1991",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/delicatessen-1991/",
      "day": null,
      "next": null,
      "until": null
@@ -590,6 +618,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/eivind-aarset-4tet/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Elsinore",
+   "key": "elsinore",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/elsinore/",
      "day": null,
      "next": null,
      "until": null
@@ -1054,7 +1096,7 @@
      "url": "https://www.lantarenvenster.nl/programma/killer-of-sheep-1978-4k-restoration/",
      "day": null,
      "next": null,
-     "until": null
+     "until": "2026-12-01"
     }
    ]
   },
@@ -1334,7 +1376,7 @@
      "url": "https://www.lantarenvenster.nl/programma/minotaur/",
      "day": null,
      "next": null,
-     "until": null
+     "until": "2026-12-02"
     }
    ]
   },
@@ -1346,20 +1388,6 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/minotaur-expat-cinema-rotterdam/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
-   "title": "Mister and Mississippi",
-   "key": "misterandmississippi",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/mister-and-mississippi/",
      "day": null,
      "next": null,
      "until": null
@@ -1390,7 +1418,7 @@
      "url": "https://www.lantarenvenster.nl/programma/nagi-notes/",
      "day": null,
      "next": null,
-     "until": null
+     "until": "2026-12-02"
     }
    ]
   },
@@ -1927,6 +1955,20 @@
    ]
   },
   {
+   "title": "Tin Castle",
+   "key": "tincastle",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/tin-castle/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "Tomeka Reid Quartet",
    "key": "tomekareidquartet",
    "poster": null,
@@ -2020,7 +2062,7 @@
      "url": "https://www.lantarenvenster.nl/programma/whispers-in-may/",
      "day": null,
      "next": null,
-     "until": null
+     "until": "2026-11-30"
     }
    ]
   },
