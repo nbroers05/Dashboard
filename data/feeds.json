@@ -4,7 +4,25 @@
    "name": "NOS",
    "items": [
     {
-     "title": "Hard tegen hard bij begrotingsonderhandelingen EU",
+     "title": "Definitieve uitslag verkiezingen Nieuw-Zeeland: geen meerderheid voor links of rechts",
+     "link": "https://nos.nl/l/2641181",
+     "time": "2026-11-27T04:31:07+01:00",
+     "img": "https://images.cdn.nos.nl/8/G/2/L/J/c/mQKH3Sjdingz92qfDeDr5LTNcCxeBYepavx6pR2/8x4x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Zelensky kritisch op Amerikaanse steun: 'Tekort aan raketten kost levens'",
+     "link": "https://nos.nl/l/2641180",
+     "time": "2026-11-27T03:45:35+01:00",
+     "img": "https://images.cdn.nos.nl/2/H/E/9/h/d/GyBTop6AZwEf3TGKKzy91rvywQzvGdJuRHq7VA2/8x58x3984x2241-1024x576.webp"
+    },
+    {
+     "title": "Twee auto's slaan over de kop in Arnhem en Haaren, zeven jongeren lichtgewond",
+     "link": "https://nos.nl/l/2641179",
+     "time": "2026-11-27T01:30:59+01:00",
+     "img": "https://images.cdn.nos.nl/7/B/h/4/f/o/Dmha84Sq5yY4Ja2dAUFufJfSrajszXkz2FUh6Cf/8x110x2032x1143-1024x576.webp"
+    },
+    {
+     "title": "Hard tegen hard bij begrotingsonderhandelingen EU, geen akkoord na nachtelijk overleg",
      "link": "https://nos.nl/l/2641176",
      "time": "2026-11-26T23:23:16+01:00",
      "img": "https://images.cdn.nos.nl/4/4/y/Y/o/g/8MzYZPakcswm6quS1xrAoQRTh9ibjuXGL7fA2bH/0x155x4000x2250-1024x576.webp"
@@ -74,24 +92,6 @@
      "link": "https://nos.nl/l/2641141",
      "time": "2026-11-26T18:32:51+01:00",
      "img": "https://images.cdn.nos.nl/6/G/z/7/v/p/23cLofYzKewi81ayVupjxCvRSK3LU4EZETrPnCm/8x132x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Meer kritische geluiden over VVD-leider Yesilgöz, maar niet uit fractie en kabinet",
-     "link": "https://nos.nl/l/2641140",
-     "time": "2026-11-26T18:24:01+01:00",
-     "img": "https://images.cdn.nos.nl/7/7/L/4/g/9/TwTnuNsYbPGdPUNM4MJ2AoghXbBRMpYJaKbQPoD/6x737x3984x2241-1024x576.webp"
-    },
-    {
-     "title": "Deel centrum Heerenveen urenlang afgezet na vondst vuurwerk, twee aanhoudingen",
-     "link": "https://nos.nl/l/2641135",
-     "time": "2026-11-26T17:50:00+01:00",
-     "img": "https://images.cdn.nos.nl/7/F/T/Z/y/s/Z2YAfUFX5GuxzX6VenWwEWqKx9BNwjhpcfwFZ6e/8x216x2032x1143-1024x576.webp"
-    },
-    {
-     "title": "Twee Italianen omgekomen bij droneaanval op Koeweit",
-     "link": "https://nos.nl/l/2641131",
-     "time": "2026-11-26T17:45:05+01:00",
-     "img": "https://images.cdn.nos.nl/6/6/j/s/v/o/j2zFqYtH1i3WdYpzk9T5gDaGUCYPsc8GfMJ6UXo/8x4x3056x1719-1024x576.webp"
     }
    ]
   },
@@ -194,6 +194,12 @@
    "name": "NU.nl",
    "items": [
     {
+     "title": "Black Friday na 10 jaar: wat is er nog over van de echte gouden dealtjes?",
+     "link": "https://www.nu.nl/economie/6417896/black-friday-na-10-jaar-wat-is-er-nog-over-van-de-echte-gouden-dealtjes.html",
+     "time": "2026-11-27T05:03:12+01:00",
+     "img": "https://images.nu.nl/m/jb1x3vrakvxs_sqr256/873/0/4385/4385/black-friday-na-10-jaar-wat-is-er-nog-over-van-de-echte-gouden-dealtjes.jpg"
+    },
+    {
      "title": "Ruim 900.000 huishoudens in VS zonder stroom door 'Thanksgiving-storm'",
      "link": "https://www.nu.nl/buitenland/6417946/ruim-900000-huishoudens-in-vs-zonder-stroom-door-thanksgiving-storm.html",
      "time": "2026-11-27T00:23:36+01:00",
@@ -276,12 +282,6 @@
      "link": "https://www.nu.nl/klimaat/6417848/el-nino-zorgt-voor-hoge-golven-langs-pacifische-kust-maan-stuwt-water-verder-op.html",
      "time": "2026-11-26T19:02:44+01:00",
      "img": "https://images.nu.nl/m/omfxj2da6hzx_sqr256/1101/8/5456/5456/el-nino-zorgt-voor-hoge-golven-langs-pacifische-kust-maan-stuwt-water-verder-op.jpg"
-    },
-    {
-     "title": "Overleden man in vrieskist niet door misdrijf om het leven gekomen",
-     "link": "https://www.nu.nl/binnenland/6417915/overleden-man-in-vrieskist-niet-door-misdrijf-om-het-leven-gekomen.html",
-     "time": "2026-11-26T17:57:52+01:00",
-     "img": "https://images.nu.nl/m/qqpxaxrau568_sqr256/0/0/4094/4094/overleden-man-in-vrieskist-niet-door-misdrijf-om-het-leven-gekomen.jpg"
     }
    ]
   }
@@ -391,19 +391,9 @@
  ],
  "youtube": {
   "channels": [
-   "Patrick (H) Willems",
-   "The Yard",
    "Ken"
   ],
   "videos": [
-   {
-    "title": "We Are Obsessed with GTA6 | The Yard",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/watch?v=fHqPezP15f8",
-    "thumb": "https://i.ytimg.com/vi/fHqPezP15f8/mqdefault.jpg",
-    "time": "2026-11-26T18:49:16+00:00",
-    "short": false
-   },
    {
     "title": "okay supercell",
     "channel": "Ken",
@@ -421,28 +411,12 @@
     "short": false
    },
    {
-    "title": "Into the Gape King’s Hole | Yard D&D | S1E68",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/watch?v=NDd86kPTaaM",
-    "thumb": "https://i.ytimg.com/vi/NDd86kPTaaM/mqdefault.jpg",
-    "time": "2026-11-24T16:30:37+00:00",
-    "short": false
-   },
-   {
     "title": "it's so over",
     "channel": "Ken",
     "link": "https://www.youtube.com/watch?v=YxS7JZtscrw",
     "thumb": "https://i.ytimg.com/vi/YxS7JZtscrw/mqdefault.jpg",
     "time": "2026-11-24T09:00:01+00:00",
     "short": false
-   },
-   {
-    "title": "Maya experiences the average yard episode..  #podcast #theyard #funny",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/shorts/F6TkqrhuDt0",
-    "thumb": "https://i.ytimg.com/vi/F6TkqrhuDt0/mqdefault.jpg",
-    "time": "2026-11-24T04:58:08+00:00",
-    "short": true
    },
    {
     "title": "and clone 😈",
@@ -453,67 +427,11 @@
     "short": false
    },
    {
-    "title": "Slime tells Maya the Ant story.. #podcast #theyard #comedy",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/shorts/meVisp98eik",
-    "thumb": "https://i.ytimg.com/vi/meVisp98eik/mqdefault.jpg",
-    "time": "2026-11-22T18:20:31+00:00",
-    "short": true
-   },
-   {
     "title": "I upgraded it",
     "channel": "Ken",
     "link": "https://www.youtube.com/watch?v=T0rCSvo4nds",
     "thumb": "https://i.ytimg.com/vi/T0rCSvo4nds/mqdefault.jpg",
     "time": "2026-11-22T09:00:24+00:00",
-    "short": false
-   },
-   {
-    "title": "The Maya Higa Episode | The Yard",
-    "channel": "The Yard",
-    "link": "https://www.youtube.com/watch?v=nXwz3D0-9aU",
-    "thumb": "https://i.ytimg.com/vi/nXwz3D0-9aU/mqdefault.jpg",
-    "time": "2026-11-19T19:19:54+00:00",
-    "short": false
-   },
-   {
-    "title": "My Movie Is Coming To A Theater Near You",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=ErhwzAtpPPk",
-    "thumb": "https://i.ytimg.com/vi/ErhwzAtpPPk/mqdefault.jpg",
-    "time": "2026-11-17T17:47:07+00:00",
-    "short": false
-   },
-   {
-    "title": "How Did Interstellar Become Every Dude's Favorite Movie?",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=f5iyzbgBTgA",
-    "thumb": "https://i.ytimg.com/vi/f5iyzbgBTgA/mqdefault.jpg",
-    "time": "2026-11-03T14:14:19+00:00",
-    "short": false
-   },
-   {
-    "title": "Is This The Best Directed Movie Ever?",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=_t76HmE8ib4",
-    "thumb": "https://i.ytimg.com/vi/_t76HmE8ib4/mqdefault.jpg",
-    "time": "2026-09-15T13:11:42+00:00",
-    "short": false
-   },
-   {
-    "title": "Come See My New Film In Theaters",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=uuMbBWR-2Xg",
-    "thumb": "https://i.ytimg.com/vi/uuMbBWR-2Xg/mqdefault.jpg",
-    "time": "2026-09-04T22:53:08+00:00",
-    "short": false
-   },
-   {
-    "title": "We Need To Talk About How Weird HOOK Is",
-    "channel": "Patrick (H) Willems",
-    "link": "https://www.youtube.com/watch?v=hXAWl_Ar6xA",
-    "thumb": "https://i.ytimg.com/vi/hXAWl_Ar6xA/mqdefault.jpg",
-    "time": "2026-08-06T14:38:38+00:00",
     "short": false
    }
   ]
