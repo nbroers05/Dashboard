@@ -17,6 +17,20 @@
   {
    "title": "The Hunger Games: Sunrise on the Reaping",
    "year": 2026,
+   "rating": 5.0,
+   "watched": "2026-11-28",
+   "rewatch": false,
+   "liked": false,
+   "link": "https://letterboxd.com/marrie01/film/the-hunger-games-sunrise-on-the-reaping/",
+   "slug": "the-hunger-games-sunrise-on-the-reaping",
+   "tmdbId": "1300968",
+   "poster": "https://image.tmdb.org/t/p/w342/5ffVOGY3x3Sn3jovzvycJeizpks.jpg",
+   "user": "Marrie01",
+   "name": "Margriet"
+  },
+  {
+   "title": "The Hunger Games: Sunrise on the Reaping",
+   "year": 2026,
    "rating": 3.5,
    "watched": "2026-11-26",
    "rewatch": false,
@@ -249,20 +263,6 @@
    "slug": "unabomber-2026",
    "tmdbId": "1492640",
    "poster": "https://a.ltrbxd.com/resized/film-poster/1/3/6/9/2/1/1/1369211-unabomber-2026-0-600-0-900-crop.jpg?v=8b88a65b3a",
-   "user": "Marrie01",
-   "name": "Margriet"
-  },
-  {
-   "title": "The Curious Case of Benjamin Button",
-   "year": 2008,
-   "rating": 3.5,
-   "watched": "2026-09-28",
-   "rewatch": false,
-   "liked": false,
-   "link": "https://letterboxd.com/marrie01/film/the-curious-case-of-benjamin-button/",
-   "slug": "the-curious-case-of-benjamin-button",
-   "tmdbId": "4922",
-   "poster": "https://a.ltrbxd.com/resized/sm/upload/yh/ob/ip/lw/gjMR102u5hPdIAWX7O2rim8ZWgA-0-600-0-900-crop.jpg?v=3beffc5097",
    "user": "Marrie01",
    "name": "Margriet"
   },
