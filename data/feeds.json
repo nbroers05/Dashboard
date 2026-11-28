@@ -4,6 +4,12 @@
    "name": "NOS",
    "items": [
     {
+     "title": "Acht Peruaanse militairen omgekomen bij helikoptercrash",
+     "link": "https://nos.nl/l/2641335",
+     "time": "2026-11-28T04:10:50+01:00",
+     "img": "https://images.cdn.nos.nl/8/E/S/D/K/q/te8SKB7dYGFPu8rhPrfRU3qWRRagwJHPx8BdkcJ/241x101x3344x1881-1024x576.webp"
+    },
+    {
      "title": "Brandweer begint voorzichtig met blussen van broei in silo Drachten",
      "link": "https://nos.nl/l/2641334",
      "time": "2026-11-28T02:43:17+01:00",
@@ -86,12 +92,6 @@
      "link": "https://nos.nl/l/2641295",
      "time": "2026-11-27T19:13:38+01:00",
      "img": "https://images.cdn.nos.nl/4/n/k/A/E/W/43WyHkQMsivhUZ2jg9xoiiZYcrpmvYcq3zyc6F/0x0x4000x2250-1024x576.webp"
-    },
-    {
-     "title": "Doden en gewonden op migrantenboot onderweg naar Canarisch eiland",
-     "link": "https://nos.nl/l/2641292",
-     "time": "2026-11-27T19:00:08+01:00",
-     "img": "https://images.cdn.nos.nl/3/3/L/s/K/b/HBm8o7ZnezKHgHqNCpSTBdXW7qtFaSa5bX3TDaX/6x72x3056x1719-1024x576.webp"
     }
    ]
   },
@@ -194,6 +194,18 @@
    "name": "NU.nl",
    "items": [
     {
+     "title": "ProRail zet preventief roltrappen uit na incident bij station Bijlmer ArenA",
+     "link": "https://www.nu.nl/binnenland/6418071/prorail-zet-preventief-roltrappen-uit-na-incident-bij-station-bijlmer-arena.html",
+     "time": "2026-11-28T05:47:44+01:00",
+     "img": "https://images.nu.nl/m/j8uxjzma65nt_sqr256/356/0/4312/4312/prorail-zet-preventief-roltrappen-uit-na-incident-bij-station-bijlmer-arena.jpg"
+    },
+    {
+     "title": "Vechten of vertrekken: spannende congresdag voor VVD-leider Yesilgöz",
+     "link": "https://www.nu.nl/politiek/6418022/vechten-of-vertrekken-spannende-congresdag-voor-vvd-leider-yesilgoz.html",
+     "time": "2026-11-28T05:13:14+01:00",
+     "img": "https://images.nu.nl/m/rkpxfd5af57r_sqr256/263/0/4195/4195/vechten-of-vertrekken-spannende-congresdag-voor-vvd-leider-yesilgoz.jpg"
+    },
+    {
      "title": "74-jarige man uit Gouda overleden bij auto-ongeluk in Tanzania, vrouw gewond",
      "link": "https://www.nu.nl/buitenland/6418051/74-jarige-man-uit-gouda-overleden-bij-auto-ongeluk-in-tanzania-vrouw-gewond.html",
      "time": "2026-11-27T22:45:56+01:00",
@@ -212,10 +224,10 @@
      "img": "https://images.nu.nl/m/c0rxzuaa87c8_sqr256/562/1/1079/1079/oekraiense-kinderen-zien-na-jaren-hun-familie-terug.jpg"
     },
     {
-     "title": "Iranoorlog gaat tiende maand in en uitzicht op vrede ontbreekt",
-     "link": "https://www.nu.nl/midden-oostenconflict/6418007/iranoorlog-gaat-tiende-maand-in-en-uitzicht-op-vrede-ontbreekt.html",
+     "title": "Iranoorlog die een maand moest duren gaat tiende maand in",
+     "link": "https://www.nu.nl/midden-oostenconflict/6418007/iranoorlog-die-een-maand-moest-duren-gaat-tiende-maand-in.html",
      "time": "2026-11-27T21:18:02+01:00",
-     "img": "https://images.nu.nl/m/spwxqqfay7c9_sqr256/177/0/1872/1872/iranoorlog-gaat-tiende-maand-in-en-uitzicht-op-vrede-ontbreekt.jpg"
+     "img": "https://images.nu.nl/m/spwxqqfay7c9_sqr256/177/0/1872/1872/iranoorlog-die-een-maand-moest-duren-gaat-tiende-maand-in.jpg"
     },
     {
      "title": "Kabinet komt ondanks kritiek toch met plan voor eigen bijdrage in de jeugdzorg",
@@ -270,18 +282,6 @@
      "link": "https://www.nu.nl/332702/video/hoe-verre-neef-via-dna-een-dader-kan-verraden-enorme-doorbraak.html",
      "time": "2026-11-27T17:42:48+01:00",
      "img": "https://images.nu.nl/m/mb5xxrjadky1_sqr256/43/0/1439/1439/hoe-verre-neef-via-dna-een-dader-kan-verraden-enorme-doorbraak.jpg"
-    },
-    {
-     "title": "Belg ontsnapt na vijf dagen aan ontvoerders, moest eigen graf graven",
-     "link": "https://www.nu.nl/buitenland/6418033/belg-ontsnapt-na-vijf-dagen-aan-ontvoerders-moest-eigen-graf-graven.html",
-     "time": "2026-11-27T17:02:31+01:00",
-     "img": "https://images.nu.nl/m/jo2xlmea8fc0_sqr256/810/0/3239/3239/belg-ontsnapt-na-vijf-dagen-aan-ontvoerders-moest-eigen-graf-graven.jpg"
-    },
-    {
-     "title": "Ex-partner van doodgestoken vrouw (34) uit Houten wordt verdacht van moord",
-     "link": "https://www.nu.nl/misdaad/6418032/ex-partner-van-doodgestoken-vrouw-34-uit-houten-wordt-verdacht-van-moord.html",
-     "time": "2026-11-27T16:31:33+01:00",
-     "img": "https://images.nu.nl/m/fwtxhytarjor_sqr256/602/0/4121/4121/ex-partner-van-doodgestoken-vrouw-34-uit-houten-wordt-verdacht-van-moord.jpg"
     }
    ]
   }
