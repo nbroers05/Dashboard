@@ -1,5 +1,5 @@
 {
- "day": "2026-11-27",
+ "day": "2026-11-28",
  "sources": [
   "LantarenVenster"
  ],
@@ -1073,20 +1073,6 @@
    ]
   },
   {
-   "title": "Kika Sprangers Quintet",
-   "key": "kikasprangersquintet",
-   "poster": null,
-   "shows": [
-    {
-     "cinema": "LantarenVenster",
-     "url": "https://www.lantarenvenster.nl/programma/kika-sprangers-quintet-26/",
-     "day": null,
-     "next": null,
-     "until": null
-    }
-   ]
-  },
-  {
    "title": "Killer Of Sheep (1978) - 4K Restoration",
    "key": "killerofsheep19784krestoration",
    "poster": null,
@@ -1255,6 +1241,20 @@
    ]
   },
   {
+   "title": "Maite Hontelé & La Novia",
+   "key": "maitehonteleandlanovia",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/maite-hontele-la-novia/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
    "title": "Makandra: Spiritualiteit",
    "key": "makandraspiritualiteit",
    "poster": null,
@@ -1334,7 +1334,7 @@
      "url": "https://www.lantarenvenster.nl/programma/memento-2000/",
      "day": null,
      "next": null,
-     "until": null
+     "until": "2026-12-12"
     }
    ]
   },
@@ -1402,6 +1402,20 @@
     {
      "cinema": "LantarenVenster",
      "url": "https://www.lantarenvenster.nl/programma/mouse/",
+     "day": null,
+     "next": null,
+     "until": null
+    }
+   ]
+  },
+  {
+   "title": "Muganga",
+   "key": "muganga",
+   "poster": null,
+   "shows": [
+    {
+     "cinema": "LantarenVenster",
+     "url": "https://www.lantarenvenster.nl/programma/muganga/",
      "day": null,
      "next": null,
      "until": null
